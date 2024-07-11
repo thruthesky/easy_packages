@@ -57,12 +57,30 @@ ChatService.instance.init();
 - `users` field has the list of user's uid who joined the chat room.
   - There is no 1:1 chat room or group chat room. Or you may consider if there are only two users in the room, then it may be 1:1 chat.
 - `invitedUsers` field has the list of invited user's uid. They cannot enter the chat room, until they confirm it in the app.
+- `blockedUsers` is the uid list of blocked users by masters.
+- `masterUsers` is the uid list of master user. See [Masters](#masters)
 - `createdAt` is the Firestore Timestamp when the chat room created.
 - `updatedAt` is the Timestamp when the chat room information updated.
 - `lastMassage` is the last message. It may not exist.
 - `lastMessageAt` is the Timestamp of the last message sent.
 - `lastMessageUid` is the user's uid who sent the last message
 - `lastMessageUrl` is the photo or file url of the last message. It may not exist.
+- `open` if it is set to true, the chat room is open chat. So, it is listed in the open chat rom list and anyone can join the chat room without invitation.
+- `hasPassword` is set to true if the chat room has a password. See [Password](#password)
+
+
+
+### Chat message database struture
+
+For the speed and cost efficiencies, the chat messages are saved under `/chat-messages/{roomId}` in Realtime Database
+
+
+- When sending a chat message, if the text contains a URL, the site information is displayed for previewing. The appropriate values are stored in the following fields below the message:
+    - `previewUrl` - URL
+    - `previewTitle` - Title
+    - `previewDescription` - Description
+    - `previewImageUrl` - Image
+
 
 
 
@@ -71,23 +89,28 @@ ChatService.instance.init();
 - The value of the new message of each chat room is saved under the Realtime Database: `/chat-no-of-new-messages/{uid}/{chatRoomId}/`.
 
 
+- 채팅 메시지는 `/chat-messages/<room-id>/<id>` 에 저장된다.
+
+- `uid` 메시지 전송한 사용자의 uid
+- `createdAt` 메시지 전송한 시간
+- `order` 메시지 목록 순서
+- `text` 텍스트를 전송한 경우.
+- `url` 사진 URL. 사진을 전송한 경우.
+- `deleted` 채팅 메시지가 삭제되면 true 값이 저장되고, text, url, url preview 등의 값이 모두 삭제된다.
+
+
 
 
 ## Logic
 
+### Masters
+
+The one who create chat room automatically becomes a master. And he can add another user as a master.
 
 
-## Messages from unknown
+### Chat invitation
 
-It really happened to one of my own projects that some sent very bad words to many users that he does not know. And he ruined the app. So, we have a special feature to prevent this. And this feature is optional.
-
-It only works in 1:1 chat.
-
-- When A sends a chat message to B for the first time, the package considers that A is sending a chat invitation to B. So, the package send a chat message to B together with the invitation.
-- On B's screen, B will only see a chat invitation on his chat list. B will not see the chat room but invitaion only.
-
-
-## Chat invitation
+It really happened to one of my own projects that someone sent very bad words to many other users that he does not know. And he ruined the app. So, we have a special feature to prevent this. And this feature is optional.
 
 - Chat invitation is an optional.
   - It can be disabled by default with the option that allows each user to enable it.
@@ -106,6 +129,24 @@ It only works in 1:1 chat.
 
 
 
+
+
+
+### Password
+
+The password must kept in secret by the Security rules. Then, how the user can join the chat room without the help of backend? Here is a solution.
+
+- Since the password is secured, the password must not be saved in chat room document.
+- So, it is saved under `/chat-room/{roomId}/chat-room-meta/private` document.
+- And, client cannot read the password and when the user enters the password, how the client can check if the password is correct or not?
+
+The solution is that,
+- The user will save the password in `/users/{uid}/user-meta/private {chatRoomPassword: ...}`
+- And user tries to join the room and in the security rule,
+  - Security rules is the one to check if the password in user meta and in the chat private are the same.
+    - If they are the same, then the user can enter the chat room.
+
+This is the way how it can compare the chat password.
 
 
 
