@@ -67,14 +67,13 @@ class StorageService {
   ///
   /// This method does not handle any exception. You may handle it outisde if you want.
   ///
-  /// TODO remove compressQuality since it does not support Windows.
+  ///
   Future<String?> uploadFile({
     Function(double)? progress,
     Function? complete,
     // Updated the default into zero
     // because videos and files will have problem
     // if we compress them using FlutterImageCompress.
-    int compressQuality = 0,
     String? path,
     String? saveAs,
     String? type,
@@ -93,14 +92,14 @@ class StorageService {
     // It may cause error if you try to compress file or video.
     // So, we should check the file type before compressing.
     // Or... add custom compressing function for file and video, and/or image.
-    if (compressQuality > 0) {
-      // final xfile = await FlutterImageCompress.compressAndGetFile(
-      //   file.absolute.path,
-      //   '${file.absolute.path}.compressed.jpg',
-      //   quality: 100 - compressQuality,
-      // );
-      // file = File(xfile!.path);
-    }
+    // if (compressQuality > 0) {
+    // final xfile = await FlutterImageCompress.compressAndGetFile(
+    //   file.absolute.path,
+    //   '${file.absolute.path}.compressed.jpg',
+    //   quality: 100 - compressQuality,
+    // );
+    // file = File(xfile!.path);
+    // }
     final uploadTask = fileRef.putFile(file);
     if (progress != null) {
       uploadTask.snapshotEvents.listen((event) {
@@ -122,10 +121,19 @@ class StorageService {
   /// If the url is null, it does nothing.
   ///
   /// It will produce an Exception on error.
-  Future<void> delete(String? url) async {
+  ///
+  ///
+  /// if the ref and the field is pass it will delete the url in the firesotre when you save
+  /// the url
+  Future<void> delete(String? url,
+      {DocumentReference? ref, String? field}) async {
     if (url == null || url == '') return;
     final storageRef = FirebaseStorage.instance.refFromURL(url);
     await storageRef.delete();
+
+    if (ref != null && field != null) {
+      await ref.update({field: FieldValue.delete()});
+    }
 
     return;
   }
@@ -197,27 +205,29 @@ class StorageService {
     required BuildContext context,
     Function(double)? progress,
     Function()? complete,
-    int compressQuality = 80,
     String? saveAs,
     bool camera = true,
     bool gallery = true,
     double maxHeight = 1024,
     double maxWidth = 1024,
   }) async {
-    return await uploadFrom(
+    final source = await chooseUploadSource(
       context: context,
-      source: await chooseUploadSource(
-        context: context,
-        camera: camera,
-        gallery: gallery,
-      ),
-      progress: progress,
-      complete: complete,
-      compressQuality: compressQuality,
-      saveAs: saveAs,
-      maxHeight: maxHeight,
-      maxWidth: maxWidth,
+      camera: camera,
+      gallery: gallery,
     );
+    if (context.mounted) {
+      return await uploadFrom(
+        context: context,
+        source: source,
+        progress: progress,
+        complete: complete,
+        saveAs: saveAs,
+        maxHeight: maxHeight,
+        maxWidth: maxWidth,
+      );
+    }
+    return null;
   }
 
   /// Upload a file (or an image) and save the url at the field of the document reference in Firestore.
@@ -249,7 +259,6 @@ class StorageService {
     required String field,
     Function(double)? progress,
     Function()? complete,
-    int compressQuality = 80,
     String? saveAs,
     bool camera = true,
     bool gallery = true,
@@ -274,7 +283,6 @@ class StorageService {
         context: context,
         progress: progress,
         complete: complete,
-        compressQuality: compressQuality,
         saveAs: saveAs,
         camera: camera,
         gallery: gallery,
@@ -287,11 +295,17 @@ class StorageService {
     if (url == null) return null;
 
     /// Upload success, update the field
-    ref.update({field: url});
+    if (!snapshot.exists) {
+      ref.set({field: url});
+    } else {
+      ref.update({field: url});
+    }
 
     /// Delete old url
-    await delete(oldUrl);
-
+    ///
+    if (oldUrl != null) {
+      await delete(oldUrl);
+    }
     return url;
   }
 
@@ -305,7 +319,6 @@ class StorageService {
     required ImageSource? source,
     Function(double)? progress,
     Function? complete,
-    int compressQuality = 80,
     String? saveAs,
     String? type,
     double maxHeight = 1024,
@@ -324,7 +337,6 @@ class StorageService {
       saveAs: saveAs,
       progress: progress,
       complete: complete,
-      compressQuality: compressQuality,
       type: type,
     );
   }
@@ -379,7 +391,6 @@ class StorageService {
   Future<List<String?>?> uploadMultiple({
     Function(double)? progress,
     Function? complete,
-    int compressQuality = 80,
     String? type,
     double maxHeight = 1024,
     double maxWidth = 1024,
@@ -398,7 +409,6 @@ class StorageService {
         path: xFilePick.path,
         progress: progress,
         complete: complete,
-        compressQuality: compressQuality,
         type: type,
       ));
     }

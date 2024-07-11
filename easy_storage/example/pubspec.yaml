@@ -9,6 +9,7 @@ environment:
   sdk: ">=3.4.3 <4.0.0"
 
 dependencies:
+  cloud_firestore: ^5.0.2
   easy_storage:
     path: ..
   firebase_auth: 5.1.2
