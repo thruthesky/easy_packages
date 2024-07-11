@@ -1,3 +1,4 @@
+import 'package:easyuser/easyuser.dart';
 import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  UserService.instance.init();
   runApp(const MyApp());
 }
 

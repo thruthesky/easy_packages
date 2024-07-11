@@ -116,6 +116,12 @@ Future<String> loginAsB() async {
   return await testLoginAs(email: email, password: password);
 }
 
+Future<String> loginAsC() async {
+  const email = "test-user-c@email.com";
+  const password = "12345,*";
+  return await testLoginAs(email: email, password: password);
+}
+
 Future<void> signOut() async {
   await FirebaseAuth.instance.signOut();
 }

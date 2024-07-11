@@ -1,3 +1,5 @@
+import 'package:easy_task/easy_task.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class TaskListScreen extends StatefulWidget {
@@ -9,16 +11,18 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
+  String? get myUid => FirebaseAuth.instance.currentUser?.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TaskList'),
+        title: const Text('Task Assigned to Me'),
       ),
-      body: const Column(
-        children: [
-          Text("TaskList"),
-        ],
+      body: TaskListView(
+        queryOptions: TaskQueryOptions(
+          assignToContains: myUid!,
+        ),
       ),
     );
   }

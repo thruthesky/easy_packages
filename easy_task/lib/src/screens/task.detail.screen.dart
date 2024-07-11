@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:easy_task/src/screens/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
@@ -6,9 +9,13 @@ class TaskDetailScreen extends StatefulWidget {
   const TaskDetailScreen({
     super.key,
     required this.task,
+
+    // review study
+    this.addAssignBuilder,
   });
 
   final Task task;
+  final FutureOr<String?> Function(BuildContext context)? addAssignBuilder;
 
   @override
   State<TaskDetailScreen> createState() => _TaskDetailScreenState();
@@ -49,29 +56,27 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () async {
-                final assignUser = await showGeneralDialog<User?>(
+                String? uid;
+                uid = await showGeneralDialog<String?>(
                   context: context,
                   pageBuilder: (context, a1, a2) {
-                    return Scaffold(
-                      appBar: AppBar(
-                        title: const Text(
-                            "TODO: list users by the search and Assign to"),
-                      ),
-                      body: const Text(''),
+                    return UserListScreen(
+                      onTap: (uid) => Navigator.of(context).pop(uid),
                     );
                   },
                 );
-                if (assignUser == null) return;
+                if (uid == null) return;
                 await Assign.create(
-                  uid: assignUser.uid,
+                  uid: uid,
                   taskId: task.id,
                 );
                 if (!mounted) return;
                 setState(() {
-                  task.assignTo.add(assignUser.uid);
+                  task.assignTo.add(uid!);
                 });
+                return;
               },
-              child: const Text('ASSIGN'),
+              child: const Text('ASSIGN +'),
             ),
             const Spacer(),
             ElevatedButton(

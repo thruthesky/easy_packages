@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/src/task.service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// A task entity class of Todo feature
 ///
@@ -11,7 +12,7 @@ import 'package:easy_task/src/task.service.dart';
 /// [assignTo] method.
 class Task {
   static final CollectionReference col = TaskService.instance.taskCol;
-  DocumentReference get ref => Task.col.doc(id);
+  DocumentReference get ref => col.doc(id);
 
   String id;
   String title;
@@ -19,8 +20,14 @@ class Task {
   DateTime createdAt;
   DateTime updatedAt;
   List<String> assignTo = [];
+  String? groupId;
   DateTime? startAt;
   DateTime? endAt;
+
+  /// [uid] is the uid of the task creator
+  String uid;
+
+  static String get _myUid => FirebaseAuth.instance.currentUser!.uid;
 
   Task({
     required this.id,
@@ -28,9 +35,11 @@ class Task {
     this.content = '',
     required this.createdAt,
     required this.updatedAt,
+    this.assignTo = const [],
+    this.groupId,
     this.startAt,
     this.endAt,
-    this.assignTo = const [],
+    required this.uid,
   });
 
   factory Task.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -49,9 +58,11 @@ class Task {
       content: json['content'] ?? '',
       createdAt: createdAt == null ? DateTime.now() : createdAt.toDate(),
       updatedAt: updatedAt == null ? DateTime.now() : updatedAt.toDate(),
+      assignTo: List<String>.from(json['assignTo'] ?? []),
+      groupId: json['groupId'] ?? '',
       startAt: startAt?.toDate(),
       endAt: endAt?.toDate(),
-      assignTo: List<String>.from(json['assignTo'] ?? []),
+      uid: json['uid'] ?? '',
     );
   }
 
@@ -74,7 +85,7 @@ class Task {
     DateTime? startAt,
     DateTime? endAt,
     List<String>? assignTo,
-    int? priority,
+    String? groupId,
   }) async {
     return await TaskService.instance.taskCol.add({
       'title': title,
@@ -84,7 +95,8 @@ class Task {
       if (startAt != null) 'startAt': Timestamp.fromDate(startAt),
       if (endAt != null) 'endAt': Timestamp.fromDate(endAt),
       if (assignTo != null) 'assignTo': assignTo,
-      if (priority != null) 'priority': priority,
+      if (groupId != null) 'groupId': groupId,
+      'uid': _myUid,
     });
   }
 

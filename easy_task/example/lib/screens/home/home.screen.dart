@@ -1,12 +1,11 @@
-import 'dart:developer';
-
-import 'package:example/screens/task_list/task_list.screen.dart';
+import 'package:example/screens/group/group.list.screen.dart';
+import 'package:example/screens/task/task.list.screen.dart';
 import 'package:example/screens/test/test.screen.dart';
-import 'package:example/widgets/email_password_login.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_task/easy_task.dart';
+import 'package:easyuser/easyuser.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -33,6 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
+              context.push(GroupListScreen.routeName);
+            },
+            icon: const Icon(Icons.group),
+          ),
+          IconButton(
+            onPressed: () {
               context.push(TaskListScreen.routeName);
             },
             icon: const Icon(Icons.checklist),
@@ -41,58 +46,87 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (user == null) ...[
-              EmailPasswordLogin(
-                onLogin: () {
-                  if (!context.mounted) return;
-                  setState(() {});
-                },
-              ),
-            ] else ...[
-              Text("Display Name: ${user!.displayName}"),
-              Text("UID: ${user!.uid}"),
-              const SizedBox(height: 24),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text('List of Tasks Created by Me'),
-                    Expanded(
-                      child: TaskListView(
-                        queryOptions: TaskQueryOptions(
-                          createdBy: user!.uid,
+        child: AuthStateChanges(
+          builder: (user) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (user == null) ...[
+                  EmailPasswordLogin(
+                    onLogin: () {
+                      if (!context.mounted) return;
+                      setState(() {});
+                    },
+                  ),
+                ] else ...[
+                  Text("Display Name: ${user.displayName}"),
+                  Text("UID: ${user.uid}"),
+                  const SizedBox(height: 24),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text('List of Tasks Created by Me'),
+                        Expanded(
+                          child: TaskListView(
+                            queryOptions: TaskQueryOptions(
+                              uid: user.uid,
+                            ),
+                            itemBuilder: (task, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  showGeneralDialog(
+                                    context: context,
+                                    pageBuilder: (_, __, ___) =>
+                                        TaskDetailScreen(
+                                      task: task,
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[100],
+                                    border: Border.all(width: 1),
+                                  ),
+                                  child: Text("Task is ${task.title}"),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  fa.FirebaseAuth.instance.signOut();
-                },
-                child: const Text('+ Create Task'),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () async {
-                  log('TODO: show create');
-                  // showGeneralDialog(context: context, pageBuilder: (context, a1, a2){
-                  //   return
-                  // },);
-                  if (!context.mounted) return;
-                  setState(() {});
-                },
-                child: const Text('Sign Out'),
-              ),
-              const SafeArea(
-                child: SizedBox(height: 24),
-              ),
-            ],
-          ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (context, a1, a2) {
+                          return const TaskCreateScreen();
+                        },
+                      );
+                      if (!context.mounted) return;
+                      setState(() {});
+                    },
+                    child: const Text('+ Create Task'),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await fa.FirebaseAuth.instance.signOut();
+                      if (!context.mounted) return;
+                      setState(() {});
+                    },
+                    child: const Text('Sign Out'),
+                  ),
+                  const SafeArea(
+                    child: SizedBox(height: 24),
+                  ),
+                ],
+              ],
+            );
+          },
         ),
       ),
     );

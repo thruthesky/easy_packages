@@ -1,3 +1,4 @@
+import 'package:easy_task/src/defines.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
@@ -55,14 +56,9 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
             Text("UID: ${widget.assign.uid}"),
             Text("Status: ${widget.assign.status}"),
             const Spacer(),
-            if (widget.assign.uid == currentUser?.uid ||
-                widget.assign.assignedBy == currentUser?.uid) ...[
+            if (widget.assign.uid == myUid ||
+                widget.assign.assignedBy == myUid) ...[
               DropdownMenu<String>(
-                // dropdownMenuEntries: AssignStatus.values()
-                //     .map(
-                //       (status) => DropdownMenuEntry(value: status, label: status),
-                //     )
-                //     .toList(),
                 dropdownMenuEntries: [
                   if (widget.assign.status == AssignStatus.waiting)
                     const DropdownMenuEntry(
