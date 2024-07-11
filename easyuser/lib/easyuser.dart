@@ -11,6 +11,7 @@ export './src/widgets/user.list_tile.dart';
 export './src/widgets/user.list_view.dart';
 export './src/widgets/user.photo.list_view.dart';
 export './src/widgets/user.update_avatar.dart';
+export './src/widgets/user_search.dialog.dart';
 
 export './src/user.dart';
 export './src/user.defines.dart';

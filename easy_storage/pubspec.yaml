@@ -1,7 +1,7 @@
 name: easy_storage
 description: "Storage package for easy upload into Firebase"
 version: 0.0.3
-homepage: https://github.com/thruthesky/easy_storage
+homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_storage
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
