@@ -1,11 +1,13 @@
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easyuser/easyuser.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   runApp(const MyApp());
 }
 
@@ -70,6 +72,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
               },
             ),
+            ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const UserSearchDialog(),
+                  );
+                },
+                child: const Text('User Search Dialog')),
           ],
         ),
       ),
