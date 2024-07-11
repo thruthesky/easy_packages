@@ -81,6 +81,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.4+1"
+  devicelocale:
+    dependency: transitive
+    description:
+      name: devicelocale
+      sha256: "0812b66f9eac57bc55c6ed4c178e0779440aa4e4e7c7e32fe1db02a758501d0e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
+  easy_locale:
+    dependency: "direct main"
+    description:
+      name: easy_locale
+      sha256: ed3616ba6e42ffb6e746ebf4c46fdadef6efc132f9e733621f5d0121097f3573
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   fake_async:
     dependency: transitive
     description:

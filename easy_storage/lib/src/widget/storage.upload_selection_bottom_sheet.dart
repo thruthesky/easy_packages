@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -25,14 +26,14 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
           children: <Widget>[
             const SizedBox(height: 16),
             Text(
-              'Photo Upload',
+              'Photo Upload'.t,
               style: Theme.of(context).textTheme.labelLarge,
             ),
             const SizedBox(height: 16),
             if (gallery)
               ListTile(
                 leading: const Icon(Icons.photo),
-                title: const Text('Select photo from gallery'),
+                title: Text('Select photo from gallery'.t),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   Navigator.pop(context, ImageSource.gallery);
@@ -42,7 +43,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
             if (camera)
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Take photo from camera'),
+                title: Text('Take photo from camera'.t),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   Navigator.pop(context, ImageSource.camera);
@@ -50,7 +51,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
               ),
             const SizedBox(height: 16),
             TextButton(
-              child: Text('close',
+              child: Text('close'.t,
                   style: TextStyle(color: Theme.of(context).primaryColor)),
               onPressed: () {
                 Navigator.pop(context);
