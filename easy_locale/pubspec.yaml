@@ -1,0 +1,21 @@
+name: easy_locale
+description: "Easy localization & internationalization (i18n) library."
+version: 0.0.3
+homepage: https://github.com/thruthesky/easy_locale
+
+environment:
+  sdk: ">=3.4.3 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  devicelocale: ^0.7.1
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  test: ^1.25.2
+
+flutter:
