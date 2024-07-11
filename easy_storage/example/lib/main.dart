@@ -92,7 +92,7 @@ class _HomeScreenScreenState extends State<HomeScreenScreen> {
                         return;
                       }
                       setState(() {});
-                      print('Uploaded: $url');
+                      // print('Uploaded: $url');
                     },
                     child: const Text(
                       'Upload',

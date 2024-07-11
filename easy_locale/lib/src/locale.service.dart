@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_locale/easy_locale.dart';
 
 /// Locale Service
