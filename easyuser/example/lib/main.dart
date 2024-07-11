@@ -72,6 +72,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
               },
             ),
+            ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const UserSearchDialog(),
+                  );
+                },
+                child: const Text('User Search Dialog')),
           ],
         ),
       ),
