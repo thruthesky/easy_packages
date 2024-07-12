@@ -57,6 +57,7 @@ ChatService.instance.init();
 - `users` field has the list of user's uid who joined the chat room.
   - There is no 1:1 chat room or group chat room. Or you may consider if there are only two users in the room, then it may be 1:1 chat.
 - `invitedUsers` field has the list of invited user's uid. They cannot enter the chat room, until they confirm it in the app.
+- `rejectedUsers` field has the uid list of the rejected users from the invitation. Once the user rejected, his uid is moved from `invitedUsers` to `rejectedUsers`. In this way, the rejected users will not see the invitation in the chat list any more and the inviter cannot invite anymore.
 - `blockedUsers` is the uid list of blocked users by masters.
 - `masterUsers` is the uid list of master user. See [Masters](#masters)
 - `createdAt` is the Firestore Timestamp when the chat room created.

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 
 class ChatService {
@@ -9,4 +10,7 @@ class ChatService {
   init() {
     UserService.instance.init();
   }
+
+  CollectionReference get col =>
+      FirebaseFirestore.instance.collection('chat-rooms');
 }
