@@ -69,10 +69,10 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_firestore
-      sha256: "240c1c3598e62ad58ee665b6df9c65172d2fbe4742770c21ed060e013cb8e037"
+      sha256: "1232370ad04c21c699d0e73b2dc2e1c3b49258f89a16f0119036fd3c6e8aa2f5"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.0.2"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
@@ -149,10 +149,10 @@ packages:
     dependency: transitive
     description:
       name: easy_storage
-      sha256: "506b61f339543be13d5af6ee8b290c658619c1ff5b60695e5c6b89b8bac4b81b"
+      sha256: "06db9b38f88e3402b03c7db2f4f47135511dd15443c64e257853b56e58b427e0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   easy_task:
     dependency: "direct main"
     description:
@@ -276,10 +276,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_storage
-      sha256: "472e8532dfdcffd00ed8cc1ff57fda76af6f0a8a26547908bc20f25079922408"
+      sha256: "01fdcef335d2c86a265e9eb3c5b3b489ddc5589e7fc18a74df84b31be9f0c15b"
       url: "https://pub.dev"
     source: hosted
-    version: "12.1.1"
+    version: "12.1.0"
   firebase_storage_platform_interface:
     dependency: transitive
     description:

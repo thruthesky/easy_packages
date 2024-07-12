@@ -42,6 +42,7 @@ class GroupListScreen extends StatelessWidget {
         child: GroupListView(
           queryOptions: GroupQueryOptions(
             membersContain: myUid,
+            moderatorUid: myUid,
           ),
         ),
       ),
