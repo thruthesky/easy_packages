@@ -1,27 +1,25 @@
-# 사용자
-
-회원 관리 패키지
+# Easy User
 
 
 
-## 초기화
-
-
-`UserService.instnace.init()` 을 통해서 사용자 기능을 초기화 합니다. 초기화를 하지 않아도 부분적으로 동작합니다. 하지만 로그인 사용자의 회원 정보 관리, Firestore 의 DB 구조 설정 등은 초기화 과정을 통해서 알려주어야 합니다.
-
-`UserService.instance.init()` 함수는 한번만 초기화를 하도록 되어져 있습니다. 그래서 앱에서 초기화를 하는 경우, 종속된 패키지가 `easyuser` 패키지를 사용한다고 해도 두 번 초기화를 하지 않고, 앱의 초기화 된 설정을 이어서 계속 진행합니다.
-
-
-여러분이 사용하는 앱에서 `easyuser` 패키지를 추가하여 사용하는데, 그 앱에서 추가한 다른 패키지들 중 하나가 `easyuser` 패키지를 사용할 수도 있습니다. 그냥 같이 사용을 하면 됩니다. 일반적으로 어떤 패키지가 `easyuser` 패키지를 사용 할 경우, 앱에서 사용하면 (초기화를 하면) 패키지에서는 초기화를 하지 않습니다.
+The `easyuser` package lets you manage user accounts and their information securely and with ease.
 
 
 
-## 사용법
+## Intialization
+
+
+You can initialize the user functionality with `UserService.instance.init()`. This package actually works partially even without the initialization. However, to manage logged-in user information, you need to go through the initialization process.
+
+The `UserService.instance.init()` function is designed to be initialized only once. Therefore, if an app initializes it, even if a dependent package uses the `easyuser` package, it won't initialize it a second time. Instead, it continues with the app's initialized settings.
+
+
+
+## How to use
 
 
 
 ### 사용자 연결
-
 
 
 여러분의 앱에서 사용하는 사용자 데이터베이스 구조가, `easyuser` 의 기본 구조와 다르다면, 초기화를 통해서 맞추어 주면 됩니다.
