@@ -8,16 +8,24 @@ class Group {
 
   String id;
   String name;
-  List<String> members;
-  String moderatorUid;
+  List<String> users;
+  List<String> moderators;
+  List<String> invitedUsers;
+
+  /// [rejectedUsers] is the list of
+  /// users' uids who rejecte/declined the
+  /// invitation
+  List<String> rejectedUsers;
   DateTime createdAt;
   DateTime updatedAt;
 
   Group({
     required this.id,
     required this.name,
-    this.members = const [],
-    required this.moderatorUid,
+    required this.users,
+    required this.moderators,
+    required this.invitedUsers,
+    required this.rejectedUsers,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -28,8 +36,10 @@ class Group {
     return Group(
       id: id,
       name: json['name'] ?? '',
-      members: List<String>.from(json['members'] ?? []),
-      moderatorUid: json['moderatorUid'],
+      users: json['users'] ?? [],
+      moderators: json['moderators'] ?? [],
+      invitedUsers: json['invitedUsers'] ?? [],
+      rejectedUsers: json['rejectedUsers'] ?? [],
       createdAt: createdAt?.toDate() ?? DateTime.now(),
       updatedAt: updatedAt?.toDate() ?? DateTime.now(),
     );
@@ -45,8 +55,10 @@ class Group {
   }) async {
     final ref = await col.add({
       'name': name,
-      'members': [],
-      'moderatorUid': myUid!,
+      'users': [],
+      'moderators': [myUid!],
+      'invitedUsers': [],
+      'rejectedUsers': [],
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
@@ -70,19 +82,22 @@ class Group {
     await ref.update(updateData);
   }
 
-  Future<void> addMember(String uid) async {
+  Future<void> addUser(String uid) async {
     await ref.update({
       'updatedAt': FieldValue.serverTimestamp(),
       'members': FieldValue.arrayUnion([uid]),
     });
   }
 
-  Future<void> removeMember(String uid) async {
+  Future<void> removeUser(String uid) async {
     await ref.update({
       'updatedAt': FieldValue.serverTimestamp(),
       'members': FieldValue.arrayRemove([uid]),
     });
   }
+
+  /// Invites the user to join the group
+  Future<void> invite(String uid) async {}
 
   Future<void> delete() async {
     await ref.delete();
