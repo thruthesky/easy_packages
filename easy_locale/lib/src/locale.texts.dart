@@ -75,6 +75,22 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Take photo from camera',
     'ko': '카메라에서 사진을 찍다',
   },
+  'find user': {
+    'en': 'Find User',
+    'ko': '사용자 찾기',
+  },
+  'Search User': {
+    'en': 'Search User',
+    'ko': '사용자 검색',
+  },
+  'Search to find user': {
+    'en': 'Search to find user',
+    'ko': '사용자를 찾으려면 검색하세요.'
+  },
+  'no user found': {
+    'en': 'No user found',
+    'ko': '사용자를 찾을 수 없습니다',
+  },
   'there are {n} apple': {
     'en': {
       'zero': 'There is no apple',
