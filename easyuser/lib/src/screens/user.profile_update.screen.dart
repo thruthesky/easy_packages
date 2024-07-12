@@ -1,4 +1,6 @@
 import 'package:date_picker_v2/date_picker.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +55,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Update Profile'),
+          title: Text('Update Profile'.t),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -68,31 +70,27 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                     delete: true,
                   ),
                 ),
+                const SizedBox(height: 24),
                 TextField(
-                    decoration: const InputDecoration(
-                      label: Text('displayName'),
+                    decoration: InputDecoration(
+                      label: Text('displayName'.t),
                     ),
                     controller: displayNameController),
+                const SizedBox(height: 24),
                 TextField(
-                  decoration: const InputDecoration(label: Text('name')),
+                  decoration: InputDecoration(label: Text('name'.t)),
                   controller: nameController,
                 ),
                 const SizedBox(height: 24),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    bottom: 2,
-                  ),
-                  child: Text(
-                    'gender',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
+                Text(
+                  'gender'.t,
+                  style: Theme.of(context).textTheme.labelMedium,
                 ),
                 Row(
                   children: [
                     Expanded(
                       child: RadioListTile<String>(
-                        title: const Text('Male'),
+                        title: Text('Male'.t),
                         value: 'M',
                         groupValue: gender,
                         onChanged: (value) {
@@ -105,7 +103,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: RadioListTile<String>(
-                        title: const Text('Female'),
+                        title: Text('Female'.t),
                         value: 'F',
                         groupValue: gender,
                         onChanged: (value) {
@@ -133,9 +131,9 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                     birthDay = day;
                     setState(() {});
                   },
-                  labelYear: '   ${'year'}',
-                  labelMonth: ' ${'month'}',
-                  labelDay: ' ${'day'}',
+                  labelYear: '   ${'year'.t}',
+                  labelMonth: ' ${'month'.t}',
+                  labelDay: ' ${'day'.t}',
                 ),
                 const SizedBox(height: 24),
                 Center(
@@ -149,11 +147,9 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                         birthDay: birthDay,
                         gender: gender,
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          showCloseIcon: true,
-                          content: Text('Profile Updated Successfully'),
-                        ),
+                      toast(
+                        context: context,
+                        message: 'Profile Updated Successfully'.t,
                       );
                     },
                     child: const Text('Update'),

@@ -1,3 +1,4 @@
+import 'package:easy_helpers/src/helper.service.dart';
 import 'package:flutter/material.dart';
 
 /// Display a snackbar
@@ -26,6 +27,8 @@ ScaffoldFeatureController toast({
     backgroundColor ??= Theme.of(context).colorScheme.error;
     foregroundColor ??= Theme.of(context).colorScheme.onError;
   }
+
+  context = HelperService.instance.globalContext ?? context;
 
   return ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
