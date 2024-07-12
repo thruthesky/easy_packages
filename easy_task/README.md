@@ -391,3 +391,252 @@ This list view is responsible to list all kinds of tasks which includes but not 
   - task that are create by himself and not assigned to any one,
   - task that are create by himself and assigned to more than 2 others,
   - and more more options.
+
+
+## Usage
+
+These are the usage of how you code using easy_task package.
+
+### Creating Task
+
+To make a button that opens a Task Create Screen, use the code below.
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, a1, a2) {
+        return const TaskCreateScreen();
+      },
+    );
+  },
+  child: const Text('+ Create A Task'),
+),
+```
+
+The code above will use the easy_task's default task create screen. However, for customization, you can code your own task create screen.
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, a1, a2) {
+        return const CustomTaskCreateScreen();
+      },
+    );
+  },
+  child: const Text('+ Create A Task'),
+),
+```
+
+In your `CustomTaskCreateScreen`, what you can do is to add the create button that calls a function like the code below.
+
+```dart
+class _TaskCreateScreenState extends State<TaskCreateScreen>{
+  final titleController = TextEditingController();
+  final contentController = TextEditingController();
+  // ...
+  // add your field controllers as needed.
+  // ...
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: //...
+      body: Column(
+        children: [
+          // ...
+          // add your text fields as needed.
+          // ...
+          ElevatedButton(
+            onPressed: createTask,
+            child: const Text("Create Task"),
+          ),
+          // ...
+        ],
+      ),
+    );
+  }
+
+  createTask() async {
+    final createRef = await Task.create(
+      title: titleController.text,
+      content: contentController.text,
+      groupId: widget.group?.id,
+    );
+    final task = await Task.get(createRef.id);
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => TaskDetailScreen(
+        task: task!,
+      ),
+    );
+  }
+}
+```
+
+### Viewing a Task
+
+To view or to display the details of the task, use the code below.
+
+```dart
+// We need to get task from somewhere. Here we got it from snapshot.
+final task = Task.fromSnapshot(snapshot.docs[index]);
+
+// We can show the details of the task here.
+showGeneralDialog(
+  context: context,
+  pageBuilder: (_, __, ___) => TaskDetailScreen(
+    task: task,
+  ),
+);
+```
+
+The code above will use the easy_task's default TaskDetailScreen. However, for customization, you can code your own task detail screen.
+
+### Listing Tasks
+
+Create your task list screen using `TaskListView` widget. Check the code below.
+
+```dart
+class TaskListScreen extends StatelessWidget {
+  const TaskListScreen({super.key});
+
+  String? get myUid => FirebaseAuth.instance.currentUser?.uid;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Task Assigned to Me'),
+      ),
+      body: TaskListView(
+        queryOptions: TaskQueryOptions(
+          assignToContains: myUid!,
+        ),
+      ),
+    );
+  }
+}
+```
+
+The `TaskListView` widget will use a default queryOptions that will list all the task if queryOptions is not provided. Automatically, the listing is ordered by `createdAt` field, descending.
+
+The `TaskListView` widget uses it's own ListTile widget to display each task in list. Modify the widgets using the itemBuilder. Check the code below.
+
+```dart
+class TaskListScreen extends StatelessWidget {
+  const TaskListScreen({super.key});
+
+  String? get myUid => FirebaseAuth.instance.currentUser?.uid;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Task Assigned to Me'),
+      ),
+      body: TaskListView(
+        queryOptions: TaskQueryOptions(
+          assignToContains: myUid!,
+        ),
+        itemBuilder: (task, index) {
+          // Replace this with your own list tile.
+          return ListTile(
+            title: Text(task.title),
+          );
+        },
+      ),
+    );
+  }
+}
+```
+
+### Assigning a Task (Creating Assign)
+
+To assign a task, in easy_task, it means creating `assign` doc. As an example check the code below to see how to create assign button.
+
+```dart
+// Get task somewhere. Here we got it thru id.
+final task = Task.get(taskId)
+
+// ...
+// Normally, this is being returned inside build method.
+ElevatedButton(
+  onPressed: () async {
+    // Get the target user to be assigned somewhere.
+    // This will depend on your user model.
+    final user = User.get(uid);
+    await Assign.create(
+      uid: user.uid,
+      taskId: task.id,
+    );
+  },
+  child: const Text('ASSIGN +'),
+),
+```
+
+The code above shows an example to assign a task to a user. However, we can also assign task to group as well.
+
+```dart
+// Get the group somewhere. Here we got it thru id.
+final group = Group.get(groupId);
+
+// ...
+// Normally, this is being returned inside build method.
+ElevatedButton(
+  onPressed: () async {
+    TaskService.instance.assignGroup(
+      taskId: task.id,
+      groupId: group!.id,
+    );
+  },
+  child: const Text('ASSIGN +'),
+),
+```
+
+As shown in code above, we can use `TaskService.instance.assignGroup()` to assign a task to a group.
+
+### Viewing an Assign
+
+To view or to display the details of the assign, use the code below.
+
+```dart
+// We need to get assign from somewhere. Here we got it from snapshot.
+final assign = Assign.fromSnapshot(snapshot.docs[index]);
+
+// We can show the details of the assign here.
+showGeneralDialog(
+  context: context,
+  pageBuilder: (_, __, ___) => AssignDetailScreen(
+    assign: assign,
+  ),
+);
+```
+
+The code above uses easy_task's default assign detail screen. However, for customization, you can code your own assign detail screen.
+
+### Listing Assigns
+
+In task, we can assign it to a user or to multiple users. In each task, we can have multiple assigns. Check the code below to see how we can code with assign listing.
+
+```dart
+// We need only the task ID. Here we got it from snapshot.
+final task = Task.fromSnapshot(snapshot.docs[index]);
+
+// ...
+// This is usually inside build method.
+// ...
+AssignListView(
+  queryOptions: AssignQueryOptions(
+    taskId: task.id,
+  ),
+),
+// ...
+```
+
+The code above will display the list of assign of the task. If `queryOptions` was not provided, it will use default `AssignQueryOptions` and list all assigns across all tasks.
+

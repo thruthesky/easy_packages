@@ -6,14 +6,14 @@ import 'package:easy_task/easy_task.dart';
 
 class AssignQueryOptions {
   const AssignQueryOptions({
-    this.task,
+    this.taskId,
     this.limit = 20,
     this.orderBy = 'createdAt',
     this.orderByDescending = true,
     this.uid,
   });
 
-  final Task? task;
+  final String? taskId;
   final int limit;
   final String orderBy;
   final bool orderByDescending;
@@ -74,10 +74,10 @@ class AssignListView extends StatelessWidget {
   Widget build(BuildContext context) {
     Query assignQuery = Assign.col;
     if (queryOptions != null) {
-      if (queryOptions!.task != null) {
+      if (queryOptions!.taskId != null) {
         assignQuery = assignQuery.where(
           'taskId',
-          isEqualTo: queryOptions!.task!.id,
+          isEqualTo: queryOptions!.taskId,
         );
       }
       if (queryOptions!.uid != null) {

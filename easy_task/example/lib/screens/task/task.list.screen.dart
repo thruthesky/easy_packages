@@ -2,15 +2,10 @@ import 'package:easy_task/easy_task.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class TaskListScreen extends StatefulWidget {
+class TaskListScreen extends StatelessWidget {
   static const String routeName = '/TaskList';
   const TaskListScreen({super.key});
 
-  @override
-  State<TaskListScreen> createState() => _TaskListScreenState();
-}
-
-class _TaskListScreenState extends State<TaskListScreen> {
   String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
   @override

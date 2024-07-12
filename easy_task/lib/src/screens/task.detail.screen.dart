@@ -49,7 +49,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             Expanded(
               child: AssignListView(
                 queryOptions: AssignQueryOptions(
-                  task: task,
+                  taskId: task.id,
                 ),
               ),
             ),

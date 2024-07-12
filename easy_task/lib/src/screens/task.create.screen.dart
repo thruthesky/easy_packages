@@ -11,10 +11,10 @@ class TaskCreateScreen extends StatefulWidget {
   final Group? group;
 
   @override
-  State<TaskCreateScreen> createState() => _TodoCreateScreenState();
+  State<TaskCreateScreen> createState() => _TaskCreateScreenState();
 }
 
-class _TodoCreateScreenState extends State<TaskCreateScreen> {
+class _TaskCreateScreenState extends State<TaskCreateScreen> {
   final titleController = TextEditingController();
   final contentController = TextEditingController();
 
@@ -29,7 +29,7 @@ class _TodoCreateScreenState extends State<TaskCreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo Create'),
+        title: const Text('Task Create'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -40,12 +40,19 @@ class _TodoCreateScreenState extends State<TaskCreateScreen> {
               Text("Group Name: ${widget.group!.name}"),
             ],
             TextField(
-              decoration: const InputDecoration(label: Text('TITLE')),
+              decoration: const InputDecoration(
+                label: Text('TITLE'),
+              ),
               controller: titleController,
             ),
             TextField(
-              decoration: const InputDecoration(label: Text('CONTENT')),
+              decoration: const InputDecoration(
+                label: Text('CONTENT'),
+              ),
               controller: contentController,
+              keyboardType: TextInputType.multiline,
+              minLines: 3,
+              maxLines: 5,
             ),
             const Spacer(),
             ElevatedButton(

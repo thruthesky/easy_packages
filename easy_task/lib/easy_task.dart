@@ -5,6 +5,7 @@ export 'src/entities/invitation.dart';
 export 'src/entities/task.dart';
 
 export 'src/functions.dart';
+export 'src/screens/group.create.screen.dart';
 export 'src/screens/assign.detail.screen.dart';
 export 'src/screens/task.create.screen.dart';
 export 'src/screens/task.detail.screen.dart';
