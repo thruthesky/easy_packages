@@ -89,14 +89,14 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                         UserListTile(
                           contentPadding: EdgeInsets.zero,
                           user: user,
-                          trailing: IconButton(
-                            onPressed: () {
-                              // add friend function
-                            },
-                            icon: const Icon(
-                              Icons.add_box,
-                            ),
-                          ),
+                          // trailing: IconButton(
+                          //   onPressed: () {
+                          //     // add friend function
+                          //   },
+                          //   icon: const Icon(
+                          //     Icons.add_box,
+                          //   ),
+                          // ),
                         ),
                   ),
                 )
