@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Add. more texts.
+
 ## 0.0.3
 
 * Fix. remove console print.
