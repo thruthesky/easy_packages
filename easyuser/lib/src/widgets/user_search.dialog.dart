@@ -14,6 +14,12 @@ import 'package:flutter/material.dart';
 /// [itemBuilder] use item builder to create your own item list but keep in mind
 /// that UserSearchDialog is just a dialog and we should keep it small as much as
 /// possible by default we are using a contraint max heigth of 224
+///
+/// [exactSearch] if true the search will be exact if false the search will be
+/// partial search.
+///
+/// [searchName] if true the search will be based on the name if false the
+/// search will be based on the displayName. By default it is true.
 class UserSearchDialog extends StatefulWidget {
   const UserSearchDialog({
     super.key,
@@ -21,12 +27,14 @@ class UserSearchDialog extends StatefulWidget {
     this.padding,
     this.itemBuilder,
     this.exactSearch = true,
+    this.searchName = true,
   });
 
   final Widget Function(bool)? emptyBuilder;
   final EdgeInsetsGeometry? padding;
   final Widget Function(User, int)? itemBuilder;
   final bool exactSearch;
+  final bool searchName;
 
   @override
   State<UserSearchDialog> createState() => _UserSearchDialogState();
@@ -43,11 +51,15 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
     searchController.dispose();
   }
 
-  Query get query => widget.exactSearch
-      ? userCol.where('displayName', isEqualTo: searchText)
-      : userCol
-          .where('displayName', isGreaterThanOrEqualTo: searchText)
-          .where('displayName', isLessThanOrEqualTo: '$searchText\uf8ff');
+  Query get query {
+    final field = widget.searchName ? 'name' : 'displayName';
+    return widget.exactSearch
+        ? userCol.where(field, isEqualTo: searchText)
+        : userCol
+            .where(field, isGreaterThanOrEqualTo: searchText)
+            .where(field, isLessThanOrEqualTo: '$searchText\uf8ff');
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -60,7 +72,6 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Find User'.t),
               const SizedBox(
                 height: 8,
               ),
@@ -106,7 +117,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                     SizedBox(
                       height: 224,
                       child: Center(
-                        child: Text('Search to find user'.t),
+                        child: Text('Search user description'.t),
                       ),
                     ),
               }

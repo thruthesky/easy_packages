@@ -197,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-````
+```
 
 
 
@@ -208,4 +208,11 @@ class _MyHomePageState extends State<MyHomePage> {
 `test` 폴더에 있는 테스트 코드를 보고, 사용법을 익히셔도 됩니다.
 
 
+
+
+
+## Trouble shooting
+
+
+- If the translation is not working, then check if the easy_locale package has been initialized.
 

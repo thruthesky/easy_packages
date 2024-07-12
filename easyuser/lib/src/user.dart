@@ -14,7 +14,18 @@ class User {
   final bool admin;
 
   String displayName;
+
+  /// [caseIncensitiveDisplayName] is the display name that is case insensitive.
+  /// It is saved in the database and used to search user name.
+  /// Note that this is not needed for serialization.
+  String caseIncensitiveDisplayName;
   String name;
+
+  /// [caseIncensitiveName] is the name that is case insensitive.
+  /// It is saved in the database and used to search user name.
+  /// Note that this is not needed for serialization.
+  String caseIncensitveName;
+
   String? gender;
 
   /// 처음 회원 가입을 하고, 최초 데이터를 업데이트(저장)하는 동안에는 createdAt 이 null 이 될 수 있다.
@@ -35,7 +46,9 @@ class User {
     required this.uid,
     this.admin = false,
     this.displayName = '',
+    this.caseIncensitiveDisplayName = '',
     this.name = '',
+    this.caseIncensitveName = '',
     this.gender,
     this.createdAt,
     this.updatedAt,
@@ -174,7 +187,10 @@ class User {
       {
         'updatedAt': FieldValue.serverTimestamp(),
         if (displayName != null) 'displayName': displayName,
+        if (displayName != null)
+          'caseIncensitiveDisplayName': displayName.toLowerCase(),
         if (name != null) 'name': name,
+        if (name != null) 'caseIncensitveName': name.toLowerCase(),
         if (birthYear != null) 'birthYear': birthYear,
         if (birthMonth != null) 'birthMonth': birthMonth,
         if (birthDay != null) 'birthDay': birthDay,
