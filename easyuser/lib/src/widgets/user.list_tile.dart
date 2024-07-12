@@ -7,14 +7,20 @@ class UserListTile extends StatelessWidget {
     super.key,
     required this.user,
     this.onTap,
+    this.trailing,
+    this.contentPadding,
   });
 
   final User user;
   final Function()? onTap;
+  final Widget? trailing;
+  final EdgeInsetsGeometry? contentPadding;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: contentPadding,
+      trailing: trailing,
       leading: UserAvatar(user: user),
       title: Text(
         user.displayName,

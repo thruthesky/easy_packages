@@ -176,4 +176,20 @@ class UserService {
               : UserService.instance.profileUpdateScreen!.call();
         });
   }
+
+  showUserSearchDialog(
+    BuildContext context, {
+    Widget Function(bool)? emptyBuilder,
+    EdgeInsetsGeometry? padding,
+    Widget Function(User, int)? itemBuilder,
+  }) {
+    return showDialog(
+      context: context,
+      builder: (context) => UserSearchDialog(
+        emptyBuilder: emptyBuilder,
+        padding: padding,
+        itemBuilder: itemBuilder,
+      ),
+    );
+  }
 }
