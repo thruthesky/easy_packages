@@ -13,8 +13,8 @@ class InvitationToMeListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Invitations"),
       ),
-      body: GroupListView(
-        queryOptions: GroupQueryOptions(
+      body: TaskGroupListView(
+        queryOptions: TaskGroupQueryOptions(
           invitedUsersContain: myUid!,
         ),
         itemBuilder: (group, index) {

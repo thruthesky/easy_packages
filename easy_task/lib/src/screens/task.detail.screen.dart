@@ -9,13 +9,11 @@ class TaskDetailScreen extends StatefulWidget {
   const TaskDetailScreen({
     super.key,
     required this.task,
-
-    // review study
-    this.addAssignBuilder,
+    this.onAssignUidList,
   });
 
   final Task task;
-  final FutureOr<String?> Function(BuildContext context)? addAssignBuilder;
+  final FutureOr<String?> Function(BuildContext context)? onAssignUidList;
 
   @override
   State<TaskDetailScreen> createState() => _TaskDetailScreenState();
@@ -57,6 +55,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             ElevatedButton(
               onPressed: () async {
                 String? uid;
+                // TODO
+                // uid = widget. onAssignUidList
                 uid = await showGeneralDialog<String?>(
                   context: context,
                   pageBuilder: (context, a1, a2) {
@@ -78,7 +78,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               },
               child: const Text('ASSIGN +'),
             ),
-            const Spacer(),
+            const SizedBox(height: 48),
             ElevatedButton(
               onPressed: () async {
                 final updatedTask = await showGeneralDialog<Task?>(

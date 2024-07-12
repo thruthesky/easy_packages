@@ -39,8 +39,8 @@ class GroupListScreen extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: GroupListView(
-          queryOptions: GroupQueryOptions(
+        child: TaskGroupListView(
+          queryOptions: TaskGroupQueryOptions(
             usersContain: myUid,
             moderatorUsersContain: myUid,
           ),

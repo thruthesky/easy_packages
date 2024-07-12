@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_task/src/entities/group.dart';
 import 'package:easy_task/src/screens/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +10,15 @@ class GroupInvitationListScreen extends StatefulWidget {
     required this.group,
 
     // Review on Invite user?
+    this.onInviteUidList,
   });
 
   final Group group;
+
+  /// To use own user listing, use `onInviteUidList`.
+  /// It must return List of uids of users to invite into group.
+  /// If it returned null, it will not do anything.
+  final FutureOr<List<String>?> Function()? onInviteUidList;
 
   @override
   State<GroupInvitationListScreen> createState() =>
@@ -26,15 +34,15 @@ class _GroupInvitationListScreenState extends State<GroupInvitationListScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              final inviteUid = await showGeneralDialog<String?>(
+              final inviteUids = await showGeneralDialog<List<String>?>(
                 context: context,
                 pageBuilder: (context, a1, a2) => UserListScreen(
-                  onTap: (uid) => Navigator.of(context).pop(uid),
+                  onTap: (uid) => Navigator.of(context).pop([uid]),
                 ),
               );
-              if (inviteUid == null) return;
-              widget.group.inviteUsers([inviteUid]);
-              widget.group.invitedUsers.add(inviteUid);
+              if (inviteUids == null) return;
+              widget.group.inviteUsers(inviteUids);
+              inviteUids.addAll(inviteUids);
               if (!mounted) return;
               setState(() {});
             },
