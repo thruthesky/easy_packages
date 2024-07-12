@@ -1,12 +1,6 @@
 # Easy Task
 
-
 This package is a todo like task manage system which allows a user to create groups, user lists, tasks and assign the task to the users of the group, and moderating the workflow.
-
-
-
-
-
 
 ## Logic
 
@@ -16,13 +10,7 @@ This package is a todo like task manage system which allows a user to create gro
   - And by default, this package uses `dispalyName` in the document to get the user's name to display on the screen. And `photoUrl` to get the user's photoUrl. If your document uses different fields, you can set it on initialization.
   - For user search screen(or dislog), it will use the display name in user documents.
 
-
-
-
 ## Coding convention
-
-
-
 
 ### Documenations
 
@@ -34,8 +22,6 @@ This package is a todo like task manage system which allows a user to create gro
 - Process must be `WORK[xxxx]`
 - Create, Save, Update, Delete, or anything that need Database work must be `SAVE[(CREATE|UPDATE|DELETE)]`
 - Subroutines, or the next screen, dialog should be displayed with `NEXT_SCREEN[[List screen xxx]]`.
-
-
 
 ### Model class
 
@@ -51,20 +37,15 @@ Service class does
 - search & listing data
 - initialization, listening, etc.
 
-
 ### Data listing
 
 Use `FirestoreQueryBuilder` or `FirebaseDatabaseQueryBuilder`. Use query builder all the time.
-
-
 
 ## Documentation
 
 There is no english version of documents. So, write all the document in the source code. The comment int source code will turn into dartdoc when it is deployed into pub.dev.
 
-
 ## Test
-
 
 ### Unit test
 
@@ -72,16 +53,11 @@ Do the unit test as Flutter does.
 
 ### Widget test
 
-
 Do the widget test as Flutter does.
-
 
 ### House test
 
-
 This is a special test for house only. This is because it's not easy to test while connection with Firebase.
-
-
 
 ## Translation
 
@@ -100,7 +76,6 @@ void main() async {
 Translation.instance.setLocale('ko');
 'name'.t // 결과: 이름
 ```
-
 
 - tr
 
@@ -137,9 +112,7 @@ n = 3;
 expect('apple'.tr(args: {'name': 'J', 'n': n}, form: n), 'J has 3 apples.');
 ```
 
-
-## TODO feature
-
+## Task feature
 
 - A task can not be shared to multiple users. It's not sharing. It's like the same task is given to muliple user.
   - `Sharing task and working together is not supported, yet`.
@@ -150,21 +123,12 @@ expect('apple'.tr(args: {'name': 'J', 'n': n}, form: n), 'J has 3 apples.');
 
 - The relation of creator and assignee is N:M.
 
-
-
-
-
-
-
-
-
 - flow of task.
 ```
 creator -> assigned -> in-progress(working) -> [ finished | quit ] -> review -> [ accept | reject ]
 ```
 
 - creator can schedule the task.
-
 ```
 accept -> archive
 ```
@@ -219,11 +183,6 @@ task7 {
 ...
 
 
-
-
-
-
-
 ## TODO feature
 
 
@@ -232,8 +191,7 @@ task7 {
 There are more to improve. But these work will be done later.
 
 - a moderator should be able to give permission to whom he can create tasks.
-- A moderator can create his own user groups so he can quickly add all his member without inviting them indivisually in each groupo.
-
+- A moderator can create his own user groups so he can quickly add all his member without inviting them indivisually in each group.
 
 ### Terms
 
@@ -244,7 +202,6 @@ There are more to improve. But these work will be done later.
 ### Logic of TODO feature
 
 - A moderator should begin with creating a group to start managing tasks and users.
-
 
 ```mermaid
 flowchart LR
@@ -262,7 +219,6 @@ flowchart TD
       --> SAVE[(CREATE)]
         --> DETAILS[[Task Detail Screen]]
           --> OPTIONS>Many options]
-
 
   OPTIONS
     --> INVITE[Invite user]
@@ -358,13 +314,12 @@ flowchart TD
   --> End(((End)))
 ```
 
-### Todo database
+### Firestore Database
 
 ### Todo-Task collection
 
 - `uid` is the creator.
 - `assignedTo` is a list of uids that the task was aissgend to. This will help on getting the user list of the task.
-
 - `updatedAt` is updated when there is any changes on the task itself. Not the chagnes of other entitles like asignees.
 
 ### Todo-assign collection
