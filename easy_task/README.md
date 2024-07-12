@@ -536,6 +536,40 @@ InvitationListView(
 ),
 ```
 
+To list the invitations received by the current user, check the code below.
+
+```dart
+class InvitationToMeListScreen extends StatelessWidget {
+  const InvitationToMeListScreen({super.key});
+
+  String? get myUid => FirebaseAuth.instance.currentUser?.uid;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Invitations"),
+      ),
+      body: InvitationListView(
+        queryOptions: InvitationQueryOptions(uid: myUid),
+      ),
+    );
+  }
+}
+```
+
+In the code above, it is using `queryOptions: InvitationQueryOptions(uid: myUid)` to list the invitations received by the current user.
+
+```dart
+String? get myUid => FirebaseAuth.instance.currentUser?.uid;
+
+// ...
+
+InvitationListView(
+  queryOptions: InvitationQueryOptions(uid: myUid),
+),
+```
+
 
 
 ### Creating Task
