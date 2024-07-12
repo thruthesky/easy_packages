@@ -1,4 +1,4 @@
-// import 'package:example/firebase_options.dart';
+import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easyuser/easyuser.dart';
@@ -6,8 +6,8 @@ import 'package:easyuser/easyuser.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      // options: DefaultFirebaseOptions.currentPlatform,
-      );
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -65,6 +65,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
+                            onPressed: () => UserService.instance
+                                .showProfileUpdaeScreen(context),
+                            child: const Text('Profile update'),
+                          ),
+                          ElevatedButton(
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
@@ -73,13 +78,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const UserSearchDialog(),
-                  );
-                },
-                child: const Text('User Search Dialog')),
+              onPressed: () {
+                UserService.instance.showUserSearchDialog(
+                  context,
+                  exactSearch: true,
+                );
+              },
+              child: const Text('User Search Dialog'),
+            ),
           ],
         ),
       ),
