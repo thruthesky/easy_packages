@@ -96,3 +96,9 @@ AuthStateChanges(
   },
 ),
 ```
+
+
+
+## Trouble shooting
+
+- `user-document-not-loaded` this happens when the `UserService.instance.user` is accessed when it is null. If the user is logged in and this exception happens, then you should check if you are using it too early.
