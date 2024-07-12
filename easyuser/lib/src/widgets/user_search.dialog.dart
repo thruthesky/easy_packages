@@ -6,6 +6,12 @@ import 'package:flutter/material.dart';
 /// the query result and return false if the empty is called
 /// when the textfield is empty or the user is not yet searching in this way you
 /// customize which emtpy you want to display
+///
+/// [padding] padding create padding around the dialog content
+///
+/// [itemBuilder] use item builder to create your own item list but keep in mind
+/// that UserSearchDialog is just a dialog and we should keep it small as much as
+/// possible by default we are using a contraint max heigth of 224
 class UserSearchDialog extends StatefulWidget {
   const UserSearchDialog(
       {super.key, this.emptyBuilder, this.padding, this.itemBuilder});
@@ -26,11 +32,6 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
   void dispose() {
     super.dispose();
     searchController.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override

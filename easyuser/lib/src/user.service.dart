@@ -177,6 +177,8 @@ class UserService {
         });
   }
 
+// to easily display userSearchDialog you can use
+// `UserService.intance.cshowUserSearchDialog`
   showUserSearchDialog(
     BuildContext context, {
     Widget Function(bool)? emptyBuilder,
