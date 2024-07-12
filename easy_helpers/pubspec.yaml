@@ -1,7 +1,7 @@
 name: easy_helpers
 description: "Helper classes, functions, and extensions for FireFlutter"
 version: 0.0.3
-homepage: https://github.com/thruthesky/easy_helpers
+homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_helpers
 
 environment:
   sdk: ">=3.4.3 <4.0.0"

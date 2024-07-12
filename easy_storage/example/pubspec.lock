@@ -42,7 +42,7 @@ packages:
     source: hosted
     version: "1.1.1"
   cloud_firestore:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: cloud_firestore
       sha256: "240c1c3598e62ad58ee665b6df9c65172d2fbe4742770c21ed060e013cb8e037"
@@ -89,6 +89,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  devicelocale:
+    dependency: transitive
+    description:
+      name: devicelocale
+      sha256: "0812b66f9eac57bc55c6ed4c178e0779440aa4e4e7c7e32fe1db02a758501d0e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
+  easy_locale:
+    dependency: transitive
+    description:
+      name: easy_locale
+      sha256: ed3616ba6e42ffb6e746ebf4c46fdadef6efc132f9e733621f5d0121097f3573
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   easy_storage:
     dependency: "direct main"
     description:

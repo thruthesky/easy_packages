@@ -48,19 +48,44 @@ Add these entitlements for allowing the app to use Camera and Gallery.
 
 ## How to use
 
-
+- Upload image to firebase cloud storage.
 ```dart
 StorageService.instance.upload(
     camera: true,
     gallery: true,
+    progress: (p) => setState(()  => progress = p),
+    complete: () => setState(() => progress = null),
 );
 ```
 
+
+- Upload image to firebase clound storage and save url to firebase cloud firestore
 ```dart
 StorageService.instance.uploadAt(
-    documentReference: my.ref,
-    camera: true,
-    gallery: false,
+    ref: myDocumentReference,
+    field: 'url',
+    camera: false,
+    gallery: true,
+    progress: (p) => setState(()  => progress = p),
+    complete: () => setState(() => progress = null),
 );
 ```
 
+
+- Uploading muliple image in Firebase Cloud Storage.
+```dart 
+StorageService.intance.uploadMultiple(
+    progress: (p) => setState(()  => progress = p),
+    complete: () => setState(() => progress = null),
+);
+```
+
+- Deleteing image from Firebase cloud storage
+```dart
+StorageService.intance.delete(url);
+```
+
+- Deleting image from Firebase cloud storage and url path save in Firebase cloud firestore.
+```dart
+StorageService.intance.delete(url, ref: myDocumentRef, field: 'url');
+```
