@@ -7,9 +7,20 @@ class Group {
   DocumentReference get ref => col.doc(id);
 
   String id;
+
+  /// [name] is the name of the group
   String name;
+
+  /// [users] is the list of
+  /// users' uids who are members
   List<String> users;
-  List<String> moderators;
+
+  /// [moderatorUsers] is the list of
+  /// users' uids who are moderators
+  List<String> moderatorUsers;
+
+  /// [invitedUsers] is the list of
+  /// users' uids who invited the group
   List<String> invitedUsers;
 
   /// [rejectedUsers] is the list of
@@ -23,7 +34,7 @@ class Group {
     required this.id,
     required this.name,
     required this.users,
-    required this.moderators,
+    required this.moderatorUsers,
     required this.invitedUsers,
     required this.rejectedUsers,
     required this.createdAt,
@@ -36,10 +47,10 @@ class Group {
     return Group(
       id: id,
       name: json['name'] ?? '',
-      users: json['users'] ?? [],
-      moderators: json['moderators'] ?? [],
-      invitedUsers: json['invitedUsers'] ?? [],
-      rejectedUsers: json['rejectedUsers'] ?? [],
+      users: List<String>.from(json['users'] ?? []),
+      moderatorUsers: List<String>.from(json['moderatorUsers'] ?? []),
+      invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
+      rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
       createdAt: createdAt?.toDate() ?? DateTime.now(),
       updatedAt: updatedAt?.toDate() ?? DateTime.now(),
     );
@@ -56,7 +67,7 @@ class Group {
     final ref = await col.add({
       'name': name,
       'users': [],
-      'moderators': [myUid!],
+      'moderatorUsers': [myUid!],
       'invitedUsers': [],
       'rejectedUsers': [],
       'createdAt': FieldValue.serverTimestamp(),
@@ -97,8 +108,42 @@ class Group {
   }
 
   /// Invites the user to join the group
-  Future<void> invite(String uid) async {}
+  Future<void> inviteUsers(List<String> uid) async {
+    await ref.update({
+      'updatedAt': FieldValue.serverTimestamp(),
+      'invitedUsers': FieldValue.arrayUnion(uid),
+    });
+  }
 
+  /// Rejects the invitation
+  ///
+  /// Current user rejects the group invitation by
+  /// adding his/her uid in `rejectedUsers`
+  Future<void> reject() async {
+    await ref.update({
+      'updatedAt': FieldValue.serverTimestamp(),
+      'invitedUsers': FieldValue.arrayRemove([myUid!]),
+      'rejectedUsers': FieldValue.arrayUnion([myUid!]),
+    });
+  }
+
+  /// Accepts the invitation
+  ///
+  /// Current user accepts the group invitation by
+  /// adding his/her uid in `users`.
+  Future<void> accept() async {
+    if (!invitedUsers.contains(myUid!)) {
+      throw 'You are not invited to join this group';
+    }
+    await ref.update({
+      'updatedAt': FieldValue.serverTimestamp(),
+      'invitedUsers': FieldValue.arrayRemove([myUid!]),
+      'rejectedUsers': FieldValue.arrayRemove([myUid!]),
+      'users': FieldValue.arrayUnion([myUid!])
+    });
+  }
+
+  /// Deletes the group
   Future<void> delete() async {
     await ref.delete();
   }

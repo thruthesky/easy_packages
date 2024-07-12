@@ -16,12 +16,12 @@ class AssignDetailScreen extends StatefulWidget {
 
 class _AssignDetailScreenState extends State<AssignDetailScreen> {
   Task? task;
-  final statusController = TextEditingController();
+  String? statusSelected;
 
   @override
   void initState() {
     super.initState();
-
+    statusSelected = widget.assign.status;
     _initTask();
   }
 
@@ -31,12 +31,6 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
     setState(() {
       this.task = task;
     });
-  }
-
-  @override
-  void dispose() {
-    statusController.dispose();
-    super.dispose();
   }
 
   @override
@@ -60,7 +54,8 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
                 widget.assign.assignedBy == myUid) ...[
               DropdownMenu<String>(
                 dropdownMenuEntries: [
-                  if (widget.assign.status == AssignStatus.waiting)
+                  if (widget.assign.status == AssignStatus.waiting ||
+                      widget.assign.assignedBy == currentUser?.uid)
                     const DropdownMenuEntry(
                       value: AssignStatus.waiting,
                       label: "Waiting",
@@ -85,14 +80,14 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
                   ],
                 ],
                 initialSelection: widget.assign.status,
-                controller: statusController,
+                onSelected: (value) => statusSelected = value,
               ),
               ElevatedButton(
                 onPressed: () async {
-                  await widget.assign.changeStatus(statusController.text);
+                  await widget.assign.changeStatus(statusSelected!);
                   if (!context.mounted) return;
                   setState(() {
-                    widget.assign.status = statusController.text;
+                    widget.assign.status = statusSelected!;
                   });
                 },
                 child: const Text("CHANGE STATUS"),

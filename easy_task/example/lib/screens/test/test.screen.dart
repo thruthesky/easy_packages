@@ -34,12 +34,6 @@ class TestScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                testInvitationCRUD();
-              },
-              child: const Text('Test Invitation CRUD'),
-            ),
-            ElevatedButton(
-              onPressed: () {
                 testGroupCRUD();
               },
               child: const Text('Test Group CRUD'),

@@ -13,8 +13,34 @@ class InvitationToMeListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Invitations"),
       ),
-      body: InvitationListView(
-        queryOptions: InvitationQueryOptions(uid: myUid),
+      body: GroupListView(
+        queryOptions: GroupQueryOptions(
+          invitedUsersContain: myUid!,
+        ),
+        itemBuilder: (group, index) {
+          return ListTile(
+            title: Text(group.name),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    await group.accept();
+                    if (!context.mounted) return;
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Accept"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    group.reject();
+                  },
+                  child: const Text("Reject"),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -400,7 +400,6 @@ These are the usage of how you code using easy_task package.
 In easy task there are these entities:
 
 - group
-- invitation
 - assign
 - task
 
@@ -490,7 +489,7 @@ showGeneralDialog(
 
 However, for customization, you can code your own group detail screen.
 
-### Creating Invitation
+### Inviting User in a group
 
 In easy_task, creating invitation means, inviting the other user to join the group. Check the code below.
 
@@ -529,9 +528,16 @@ The code above will show a default invitation list screen for group. However, fo
 The code below will show a listing for group's invitation.
 
 ```dart
-InvitationListView(
-  queryOptions: InvitationQueryOptions(
-    groupId: group.id,
+// We need to get group from somewhere. Here we got it thru id.
+final group = await Group.get(groupRef.id);
+
+// ...
+// This is usually inside build method.
+// ...
+ListView.builder(
+  itemCount: group.invitedUsers.length,
+  itemBuilder: (context, index) => ListTile(
+    title: Text(group.invitedUsers[index]),
   ),
 ),
 ```
@@ -550,27 +556,97 @@ class InvitationToMeListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Invitations"),
       ),
-      body: InvitationListView(
-        queryOptions: InvitationQueryOptions(uid: myUid),
+      body: GroupListView(
+        queryOptions: GroupQueryOptions(
+          invitedUsersContain: myUid!,
+        ),
+        itemBuilder: (group, index) {
+          return ListTile(
+            title: Text(group.name),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    await group.accept();
+                    if (!context.mounted) return;
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Accept"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    group.reject();
+                  },
+                  child: const Text("Reject"),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 }
 ```
 
-In the code above, it is using `queryOptions: InvitationQueryOptions(uid: myUid)` to list the invitations received by the current user.
+In the code above, it is using `queryOptions: GroupQueryOption(invitedUsersContain: myUid!)` to list the invitations received by the current user, using `GroupListView` widget.
 
 ```dart
 String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
 // ...
+GroupListView(
+  queryOptions: GroupQueryOptions(
+    invitedUsersContain: myUid!,
+  ),
+)
+```
 
-InvitationListView(
-  queryOptions: InvitationQueryOptions(uid: myUid),
+### Accepting/Rejecting a Group Invitation
+
+To create an Accept/Reject buttons, check the code below.
+
+```dart
+// We need to get group from somewhere. Here we got it thru id.
+final group = await Group.get(groupRef.id);
+
+// ...
+// Normally, this is being returned inside build method.
+// ...
+Row(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    ElevatedButton(
+      onPressed: () async {
+        await group.accept();
+        if (!context.mounted) return;
+        Navigator.of(context).pop();
+      },
+      child: const Text("Accept"),
+    ),
+    ElevatedButton(
+      onPressed: () {
+        group.reject();
+      },
+      child: const Text("Reject"),
+    ),
+  ],
 ),
 ```
 
+To accept a group, using `group.accept()` will accept the invitation and let the current user join the group.
 
+To reject a group, using `group.reject()` will reject the invitation.
+
+
+```dart
+// accept
+await group.accept();
+
+// reject
+await group.reject();
+```
 
 ### Creating Task
 
@@ -814,3 +890,19 @@ AssignListView(
 ```
 
 The code above will display the list of assign of the task. If `queryOptions` was not provided, it will use default `AssignQueryOptions` and list all assigns across all tasks.
+
+
+### Status of an Assigned Task
+
+Once the task is assigned, by default the status is `waiting`.
+
+To change the status, check the code below.
+
+```dart
+// We need to get assign from somewhere. Here we got it thru id.
+final assign = Assign.get(assignId);
+
+await assign.changeStatus(AssignStatus.progress);
+```
+
+The code above will update the assign into `progress` status.

@@ -1,7 +1,6 @@
 // Entities
 export 'src/entities/assign.dart';
 export 'src/entities/group.dart';
-export 'src/entities/invitation.dart';
 export 'src/entities/task.dart';
 
 export 'src/functions.dart';
@@ -23,7 +22,6 @@ export 'src/task.service.dart';
 // Widgets
 export 'src/widgets/assign.list_view.dart';
 export 'src/widgets/group.list_view.dart';
-export 'src/widgets/invitation.list_view.dart';
 export 'src/widgets/task.grid_view.dart';
 export 'src/widgets/task.list_view.dart';
 

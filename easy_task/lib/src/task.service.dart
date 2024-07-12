@@ -47,48 +47,6 @@ class TaskService {
     return Assign.fromSnapshot(snapshot.docs[0]);
   }
 
-  Future<void> acceptGroupInvitation(String groupId) async {
-    final invitationSnapshot = await invitationCol
-        .where('groupId', isEqualTo: groupId)
-        .where('uid', isEqualTo: myUid!)
-        .get();
-    if (invitationSnapshot.docs.isEmpty) {
-      throw 'You were not invited to this group.';
-    }
-
-    // Delete invitations to group
-    final futures = invitationSnapshot.docs
-        .map((doc) => Invitation.fromSnapshot(doc).delete())
-        .toList();
-
-    final group = await Group.get(groupId);
-    if (group == null) {
-      throw 'Group not found.';
-    }
-
-    // Add myself
-    futures.add(group.addMember(myUid!));
-
-    await Future.wait(futures);
-  }
-
-  Future<void> declineGroupInvitation(String groupId) async {
-    final invitationSnapshot = await invitationCol
-        .where('groupId', isEqualTo: groupId)
-        .where('uid', isEqualTo: myUid!)
-        .get();
-    if (invitationSnapshot.docs.isEmpty) {
-      throw 'You were not invited to this group.';
-    }
-
-    // Delete invitations to group
-    final futureDeletes = invitationSnapshot.docs
-        .map((doc) => Invitation.fromSnapshot(doc).delete())
-        .toList();
-
-    await Future.wait(futureDeletes);
-  }
-
   Future<List<DocumentReference>?> assignGroup({
     required String taskId,
     required String groupId,
@@ -97,7 +55,7 @@ class TaskService {
     if (group == null) {
       throw 'Group not found.';
     }
-    final memberUids = group.members;
+    final memberUids = group.users;
     final futures = memberUids.map(
       (uid) => Assign.create(
         uid: uid,

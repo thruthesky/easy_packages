@@ -30,16 +30,9 @@ void testAllTask() async {
   // await testDeleteField();
   // await testCreateWithPriority();
 
-  // Invitation CRUD
-  await testInvitationCreateAndRetrieve();
-  // No need for update invitation because it is not needed for now.
-  await testInvitationDelete();
-
   // Group CRUD
   await testGroupCreateAndRetrieve();
   await testGroupUpdate();
-  await testGroupAddMember();
-  await testGroupRemoveMember();
   await testDeleteGroup();
 
   // Invite accept and Decline
@@ -47,6 +40,11 @@ void testAllTask() async {
   await testDeclineGroupInvitation();
 
   // Group invites
+  await testGroupInvitation();
+  await testAcceptGroupInvitation();
+  await testDeclineGroupInvitation();
+
+  // Task assignment to group
   await testTaskAssignmentToGroup();
 
   await testReport();
@@ -316,72 +314,11 @@ Future testAssignRetrieveMyDocFromTaskID() async {
   isTrue(retrieveAssignOfB?.uid == uidB, "Expect: assign.uid must be uidB");
 }
 
-Future testInvitationCRUD() async {
-  testStart('Invitation CRUD Test');
-  await testInvitationCreateAndRetrieve();
-  // No need for update because it is not needed for now.
-  await testInvitationDelete();
-  await testReport();
-}
-
-Future testInvitationCreateAndRetrieve() async {
-  // uidB is the one going to be invited
-  final uidB = await loginAsB();
-
-  // uidA is the one going to invite B
-  final uidA = await loginAsA();
-
-  const groupId = 'group-1';
-
-  // A invite B
-  final invitationRef = await Invitation.create(uid: uidB, groupId: groupId);
-
-  final invitation = await Invitation.get(invitationRef.id);
-
-  isTrue(
-    invitation!.groupId == groupId,
-    'Expect: Created Invitation must have same group id',
-  );
-
-  isTrue(
-    invitation.invitedBy == uidA,
-    'Expect: Invitation must be automatically be made by FirebaseAuth user',
-  );
-
-  isTrue(
-    invitation.uid == uidB,
-    'Expect: Created Invitation uid must be the uid of the invited user',
-  );
-}
-
-Future testInvitationDelete() async {
-  // uidB is the one going to be invited
-  final uidB = await loginAsB();
-
-  // uidA is the one going to invite B
-  await loginAsA();
-
-  const groupId = 'group-1';
-
-  // A invite B
-  final invitationRef = await Invitation.create(uid: uidB, groupId: groupId);
-
-  final invitation = await Invitation.get(invitationRef.id);
-
-  await invitation!.delete();
-
-  final deleted = await Invitation.get(invitationRef.id);
-  isTrue(deleted == null,
-      'Expect: Invitation.get() must return null after delete');
-}
-
 Future testGroupCRUD() async {
   testStart('Group CRUD Test');
 
   await testGroupCreateAndRetrieve();
   await testGroupUpdate();
-  await testGroupAddMember();
-  await testGroupRemoveMember();
   await testDeleteGroup();
 
   await testReport();
@@ -403,13 +340,13 @@ Future testGroupCreateAndRetrieve() async {
   );
 
   isTrue(
-    group.moderatorUid == uidA,
+    group.moderatorUsers.contains(uidA),
     'Expect: The moderator of the Group must be automatically be the FirebaseAuth user',
   );
 
   isTrue(
-    group.members.isEmpty,
-    'Expect: The newly created group must have no members',
+    group.users.isEmpty,
+    'Expect: The newly created group must have no members/users',
   );
 }
 
@@ -435,65 +372,7 @@ Future testGroupUpdate() async {
   );
 
   isTrue(
-    group.moderatorUid == uidA,
-    'Expect: The moderator of the Group should not be affected',
-  );
-}
-
-Future testGroupAddMember() async {
-  final uidB = await loginAsB();
-  // uidA is the one going to create a group
-  final uidA = await loginAsA();
-
-  const groupName = 'The Best Group';
-
-  final groupRef = await Group.create(name: groupName);
-
-  final group = await Group.get(groupRef.id);
-
-  await group!.addMember(uidB);
-
-  final updatedGroup = await Group.get(groupRef.id);
-
-  isTrue(updatedGroup!.members.contains(uidB),
-      "Expect: uidB must be added to members");
-
-  isTrue(
-    group.moderatorUid == uidA,
-    'Expect: The moderator of the Group should not be affected',
-  );
-}
-
-Future testGroupRemoveMember() async {
-  final uidB = await loginAsB();
-
-  // uidA is the one going to create a group
-  final uidA = await loginAsA();
-
-  const groupName = 'The Best Group';
-
-  final groupRef = await Group.create(name: groupName);
-
-  final group = await Group.get(groupRef.id);
-
-  await group!.addMember(uidB);
-
-  final updatedGroup = await Group.get(groupRef.id);
-
-  isTrue(updatedGroup!.members.contains(uidB),
-      "Expect: uidB must be added to members");
-
-  await updatedGroup.removeMember(uidB);
-
-  final removedMemberGroup = await Group.get(groupRef.id);
-
-  isTrue(
-    !removedMemberGroup!.members.contains(uidB),
-    "Expect: uidB must be removed from members",
-  );
-
-  isTrue(
-    group.moderatorUid == uidA,
+    group.moderatorUsers.contains(uidA),
     'Expect: The moderator of the Group should not be affected',
   );
 }
@@ -514,73 +393,103 @@ Future testDeleteGroup() async {
   isTrue(deleted == null, 'Expect: Group.get() must return null after delete');
 }
 
-Future testAcceptGroupInvitation() async {
-  // uidB is the one going to be invited
+Future testGroupInvitation() async {
   final uidB = await loginAsB();
 
   // uidA is the one going to create a group
   await loginAsA();
 
-  const groupName = 'The Best Group';
+  const groupName = 'Invite Test';
 
   final groupRef = await Group.create(name: groupName);
 
-  await Invitation.create(uid: uidB, groupId: groupRef.id);
+  final group = await Group.get(groupRef.id);
 
-  await loginAsB();
+  await group!.inviteUsers([uidB]);
 
-  await TaskService.instance.acceptGroupInvitation(groupRef.id);
+  final updatedGroup = await Group.get(groupRef.id);
+
+  isTrue(
+    updatedGroup!.invitedUsers.contains(uidB),
+    "Expect: uidB must be added to invited users",
+  );
+
+  isTrue(
+    !updatedGroup.users.contains(uidB),
+    "Expect: uidB must not be added to users yet",
+  );
+}
+
+Future testAcceptGroupInvitation() async {
+  final uidB = await loginAsB();
+
+  // uidA is the one going to create a group
+  await loginAsA();
+
+  const groupName = 'Invite Accept Test';
+
+  final groupRef = await Group.create(name: groupName);
 
   final group = await Group.get(groupRef.id);
 
+  await group!.inviteUsers([uidB]);
+
+  await loginAsB();
+
+  final updatedGroup = await Group.get(groupRef.id);
+
+  // B accepts the invitation
+  await updatedGroup!.accept();
+
+  final updatedGroup2 = await Group.get(groupRef.id);
+
   isTrue(
-    group!.members.contains(uidB),
-    "Expect: uidB must be added to members",
+    updatedGroup2!.users.contains(uidB),
+    "Expect: uidB must be added to users",
   );
-
-  final invitationSnapshot = await TaskService.instance.invitationCol
-      .where('groupdId', isEqualTo: groupRef.id)
-      .where('uid', isEqualTo: myUid!)
-      .get();
-
   isTrue(
-    invitationSnapshot.docs.isEmpty,
-    "Expect: invitations must be deleted",
+    !updatedGroup2.invitedUsers.contains(uidB),
+    "Expect: uidB must be removed from invited users",
+  );
+  isTrue(
+    !updatedGroup2.rejectedUsers.contains(uidB),
+    "Expect: uidB must not be in rejected users",
   );
 }
 
 Future testDeclineGroupInvitation() async {
-  // uidB is the one going to be invited
   final uidB = await loginAsB();
 
   // uidA is the one going to create a group
   await loginAsA();
 
-  // Create Group
-  const groupName = 'The Best Group';
+  const groupName = 'Invite Decline Test';
+
   final groupRef = await Group.create(name: groupName);
-
-  // Invite B
-  await Invitation.create(uid: uidB, groupId: groupRef.id);
-
-  await loginAsB();
-  await TaskService.instance.declineGroupInvitation(groupRef.id);
 
   final group = await Group.get(groupRef.id);
 
+  await group!.inviteUsers([uidB]);
+
+  await loginAsB();
+  final updatedGroup = await Group.get(groupRef.id);
+
+  // B reject the invitation
+  await updatedGroup!.reject();
+
+  final updatedGroup2 = await Group.get(groupRef.id);
+
   isTrue(
-    !group!.members.contains(uidB),
-    "Expect: uidB must not be added to members",
+    !updatedGroup2!.users.contains(uidB),
+    "Expect: uidB must not be added to users",
   );
-
-  final invitationSnapshot = await TaskService.instance.invitationCol
-      .where('groupdId', isEqualTo: groupRef.id)
-      .where('uid', isEqualTo: myUid!)
-      .get();
-
   isTrue(
-    invitationSnapshot.docs.isEmpty,
-    "Expect: invitations must be deleted",
+    !updatedGroup2.invitedUsers.contains(uidB),
+    "Expect: uidB must not be in invited users",
+  );
+  isTrue(
+    updatedGroup2.rejectedUsers.contains(uidB),
+    "Expect: uidB must be in rejected users",
   );
 }
 
@@ -598,19 +507,22 @@ Future testTaskAssignmentToGroup() async {
   const groupName = 'The Assignment Group';
   final groupRef = await Group.create(name: groupName);
 
-  // Invite B
-  await Invitation.create(uid: uidB, groupId: groupRef.id);
+  final group = await Group.get(groupRef.id);
 
-  // Invite C
-  await Invitation.create(uid: uidC, groupId: groupRef.id);
+  // Invite B and C
+  await group!.inviteUsers([uidB, uidC]);
 
   // Let B accept the group
   await loginAsB();
-  await TaskService.instance.acceptGroupInvitation(groupRef.id);
+  final updatedGroup = await Group.get(groupRef.id);
+  // B accepts the invitation
+  await updatedGroup!.accept();
 
   // Let C accept the group
   await loginAsC();
-  await TaskService.instance.acceptGroupInvitation(groupRef.id);
+  final updatedGroup2 = await Group.get(groupRef.id);
+  // C accepts the invitation
+  await updatedGroup2!.accept();
 
   // uidA will create a task for the group
   await loginAsA();

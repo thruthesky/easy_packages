@@ -44,10 +44,10 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                   body: ListView.builder(
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text(widget.group.members[index]),
+                        title: Text(widget.group.users[index]),
                       );
                     },
-                    itemCount: widget.group.members.length,
+                    itemCount: widget.group.users.length,
                   ),
                 ),
               );
@@ -66,7 +66,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             ),
           )),
           const Spacer(),
-          if (widget.group.moderatorUid == myUid)
+          if (widget.group.moderatorUsers.contains(myUid))
             ElevatedButton(
               onPressed: () {
                 showGeneralDialog(

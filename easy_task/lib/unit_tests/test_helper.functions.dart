@@ -105,19 +105,19 @@ Future<void> testLogout() async {
 }
 
 Future<String> loginAsA() async {
-  const email = "test-user-a@email.com";
+  const email = "test-user-a2@email.com";
   const password = "12345,*";
   return await testLoginAs(email: email, password: password);
 }
 
 Future<String> loginAsB() async {
-  const email = "test-user-b@email.com";
+  const email = "test-user-b2@email.com";
   const password = "12345,*";
   return await testLoginAs(email: email, password: password);
 }
 
 Future<String> loginAsC() async {
-  const email = "test-user-c@email.com";
+  const email = "test-user-c2@email.com";
   const password = "12345,*";
   return await testLoginAs(email: email, password: password);
 }

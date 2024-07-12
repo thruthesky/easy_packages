@@ -7,17 +7,21 @@ import 'package:easy_task/easy_task.dart';
 class GroupQueryOptions {
   GroupQueryOptions({
     this.limit = 20,
-    this.orderBy = 'createdAt',
+    this.orderBy = 'updatedAt',
     this.orderByDescending = true,
-    this.membersContain,
-    this.moderatorUid,
+    this.usersContain,
+    this.moderatorUsersContain,
+    this.invitedUsersContain,
+    this.rejectedUsersContain,
   });
 
   final int limit;
   final String orderBy;
   final bool orderByDescending;
-  final String? membersContain;
-  final String? moderatorUid;
+  final String? usersContain;
+  final String? moderatorUsersContain;
+  final String? invitedUsersContain;
+  final String? rejectedUsersContain;
 }
 
 /// Group list view
@@ -76,29 +80,40 @@ class GroupListView extends StatelessWidget {
   Query get getQuery {
     Query groupQuery = Group.col;
     if (queryOptions != null) {
-      if (queryOptions!.membersContain != null &&
-          queryOptions!.moderatorUid != null) {
+      // Ask Help to revise
+      if (queryOptions!.usersContain != null &&
+          queryOptions!.moderatorUsersContain != null) {
         groupQuery = groupQuery.where(
           Filter.or(
             Filter(
-              "members",
-              arrayContains: queryOptions!.membersContain!,
+              "users",
+              arrayContains: queryOptions!.usersContain!,
             ),
             Filter(
-              "moderatorUid",
-              isEqualTo: queryOptions!.moderatorUid!,
+              "moderatorUsers",
+              arrayContains: queryOptions!.moderatorUsersContain!,
             ),
           ),
         );
-      } else if (queryOptions!.membersContain != null) {
+      } else if (queryOptions!.usersContain != null) {
         groupQuery = groupQuery.where(
-          "members",
-          arrayContains: queryOptions!.membersContain!,
+          "users",
+          arrayContains: queryOptions!.usersContain!,
         );
-      } else if (queryOptions!.moderatorUid != null) {
+      } else if (queryOptions!.moderatorUsersContain != null) {
         groupQuery = groupQuery.where(
-          "moderatorUid",
-          isEqualTo: queryOptions!.moderatorUid!,
+          "moderatorUsers",
+          arrayContains: queryOptions!.moderatorUsersContain!,
+        );
+      } else if (queryOptions!.invitedUsersContain != null) {
+        groupQuery = groupQuery.where(
+          "invitedUsers",
+          arrayContains: queryOptions!.invitedUsersContain!,
+        );
+      } else if (queryOptions!.rejectedUsersContain != null) {
+        groupQuery = groupQuery.where(
+          "rejectedUsers",
+          arrayContains: queryOptions!.rejectedUsersContain!,
         );
       }
       groupQuery = groupQuery
@@ -128,8 +143,7 @@ class GroupListView extends StatelessWidget {
         }
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
-          return emptyBuilder?.call() ??
-              const Center(child: Text('todo list is empty'));
+          return emptyBuilder?.call() ?? const Center(child: Text('Empty'));
         }
 
         return ListView.separated(
