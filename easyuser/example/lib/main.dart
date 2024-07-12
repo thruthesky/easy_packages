@@ -65,6 +65,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
+                            onPressed: () => UserService.instance
+                                .showProfileUpdaeScreen(context),
+                            child: const Text('Profile update'),
+                          ),
+                          ElevatedButton(
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
@@ -74,7 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                UserService.instance.showUserSearchDialog(context);
+                UserService.instance.showUserSearchDialog(
+                  context,
+                  exactSearch: true,
+                );
               },
               child: const Text('User Search Dialog'),
             ),

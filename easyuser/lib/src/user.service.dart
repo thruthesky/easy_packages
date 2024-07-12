@@ -184,6 +184,7 @@ class UserService {
     Widget Function(bool)? emptyBuilder,
     EdgeInsetsGeometry? padding,
     Widget Function(User, int)? itemBuilder,
+    bool exactSearch = true,
   }) {
     return showDialog(
       context: context,
@@ -191,6 +192,7 @@ class UserService {
         emptyBuilder: emptyBuilder,
         padding: padding,
         itemBuilder: itemBuilder,
+        exactSearch: exactSearch,
       ),
     );
   }
