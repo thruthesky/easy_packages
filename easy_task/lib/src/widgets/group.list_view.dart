@@ -4,8 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
-class GroupQueryOptions {
-  GroupQueryOptions({
+class TaskGroupQueryOptions {
+  TaskGroupQueryOptions({
     this.limit = 20,
     this.orderBy = 'updatedAt',
     this.orderByDescending = true,
@@ -22,13 +22,15 @@ class GroupQueryOptions {
   final String? moderatorUsersContain;
   final String? invitedUsersContain;
   final String? rejectedUsersContain;
+
+  
 }
 
 /// Group list view
 ///
 /// This widget displays a list of groups using [ListView.separated] widget.
-class GroupListView extends StatelessWidget {
-  const GroupListView({
+class TaskGroupListView extends StatelessWidget {
+  const TaskGroupListView({
     super.key,
     this.pageSize = 20,
     this.loadingBuilder,
@@ -75,7 +77,7 @@ class GroupListView extends StatelessWidget {
   final Clip clipBehavior;
   final Widget Function(Group group, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
-  final GroupQueryOptions? queryOptions;
+  final TaskGroupQueryOptions? queryOptions;
 
   Query get getQuery {
     Query groupQuery = Group.col;
@@ -128,6 +130,10 @@ class GroupListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
     return FirestoreQueryBuilder(
       query: getQuery,
       builder: (context, snapshot, _) {
