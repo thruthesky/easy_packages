@@ -39,7 +39,6 @@ class _GroupCreateScreenState extends State<GroupCreateScreen> {
               onPressed: () async {
                 final groupRef = await Group.create(name: nameController.text);
                 final group = await Group.get(groupRef.id);
-
                 if (!context.mounted) return;
                 Navigator.of(context).pop(nameController.text);
                 if (group == null) return;

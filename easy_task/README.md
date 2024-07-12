@@ -397,6 +397,147 @@ This list view is responsible to list all kinds of tasks which includes but not 
 
 These are the usage of how you code using easy_task package.
 
+In easy task there are these entities:
+
+- group
+- invitation
+- assign
+- task
+
+### Creating a Group
+
+To create a Group, you can check the example code below.
+
+```dart
+class GroupCreateScreen extends StatefulWidget {
+  const GroupCreateScreen({super.key});
+
+  @override
+  State<GroupCreateScreen> createState() => _GroupCreateScreenState();
+}
+
+class _GroupCreateScreenState extends State<GroupCreateScreen> {
+  final nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create Group"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: "Group Name",
+              ),
+            ),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () async {
+                final groupRef = await Group.create(name: nameController.text);
+                final group = await Group.get(groupRef.id);
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+              },
+              child: const Text("Create"),
+            ),
+            const SafeArea(
+              child: SizedBox(
+                height: 24,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+To simplify, the code that creates a group is:
+
+```dart
+final groupRef = await Group.create(name: nameController.text);
+```
+
+`Group.create()` will automatically set the current user as the moderator of the group.
+
+### Viewing the Group Details
+
+To view the details of the group, check the code below.
+
+```dart
+// We need to get group from somewhere. Here we got it thru id.
+final group = await Group.get(groupRef.id);
+showGeneralDialog(
+  context: context,
+  pageBuilder: (context, a1, a2) {
+    return GroupDetailScreen(group: group!);
+  },
+);
+```
+
+However, for customization, you can code your own group detail screen.
+
+### Creating Invitation
+
+In easy_task, creating invitation means, inviting the other user to join the group. Check the code below.
+
+```dart
+// Must get the uid of the user to invite, somewhere.
+final inviteUid = user.uid;
+
+await Invitation.create(
+  groupId: group.id,
+  uid: inviteUid,
+);
+```
+
+It will depend on how you want to use invitation or how to choose who to invite (or get the uid of the user to invite).
+
+### Listing Invitations
+
+To list the invitations by the group, check the code below.
+
+```dart
+IconButton(
+  onPressed: () {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, a1, a2) => GroupInvitationListScreen(
+        group: widget.group,
+      ),
+    );
+  },
+  icon: const Icon(Icons.outbox),
+),
+```
+
+The code above will show a default invitation list screen for group. However, for customization, you can code your own invitation list screen.
+
+The code below will show a listing for group's invitation.
+
+```dart
+InvitationListView(
+  queryOptions: InvitationQueryOptions(
+    groupId: group.id,
+  ),
+),
+```
+
+
+
 ### Creating Task
 
 To make a button that opens a Task Create Screen, use the code below.
@@ -639,4 +780,3 @@ AssignListView(
 ```
 
 The code above will display the list of assign of the task. If `queryOptions` was not provided, it will use default `AssignQueryOptions` and list all assigns across all tasks.
-
