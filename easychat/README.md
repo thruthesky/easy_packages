@@ -76,6 +76,12 @@ ChatService.instance.init();
 For the speed and cost efficiencies, the chat messages are saved under `/chat-messages/{roomId}` in Realtime Database
 
 
+- `senderUid` is the chat message sender uid.
+- `createdAt` is the date time of the chat message.
+- `order` is the chat message list order.
+- `text` is the text of the chat message.
+- `url` is the url of photo or file of the chat message.
+- `deleted` is true when the message is deleted. if the message is deleted, then text, url, url preview values will be deleted.
 - When sending a chat message, if the text contains a URL, the site information is displayed for previewing. The appropriate values are stored in the following fields below the message:
     - `previewUrl` - URL
     - `previewTitle` - Title
@@ -85,19 +91,17 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
 
 
 
-### Chat new message database struture
+### Chat room settings per each users
 
-- The value of the new message of each chat room is saved under the Realtime Database: `/chat-no-of-new-messages/{uid}/{chatRoomId}/`.
+- Chat room user setting will be saved under `/chat-room/{uid}/{roomId}` in Realtime Database.
 
-
-- 채팅 메시지는 `/chat-messages/<room-id>/<id>` 에 저장된다.
-
-- `uid` 메시지 전송한 사용자의 uid
-- `createdAt` 메시지 전송한 시간
-- `order` 메시지 목록 순서
-- `text` 텍스트를 전송한 경우.
-- `url` 사진 URL. 사진을 전송한 경우.
-- `deleted` 채팅 메시지가 삭제되면 true 값이 저장되고, text, url, url preview 등의 값이 모두 삭제된다.
+- Why is the personal chat room setting required?
+  - Users can customize their chat rooms in several ways, such as:
+    - Naming their chat rooms.
+    - Marking certain chat rooms as favorites.
+    - Subscribing to push notifications for updates.
+  - Or the chat package saves the number of new messages in each chat room.
+  - And much more.
 
 
 
