@@ -118,13 +118,11 @@ class StorageService {
 
   /// Delete the uploaded file in Firebase Storage by the url.
   ///
-  /// If the url is null, it does nothing.
-  ///
-  /// It will produce an Exception on error.
+  /// If the url is null or empty, it does nothing.
   ///
   ///
-  /// if the ref and the field is pass it will delete the url in the firesotre when you save
-  /// the url
+  /// If the [ref] and the [field] are passed, it will delete the url at the
+  /// field of the document when the url is deleted.
   Future<void> delete(String? url,
       {DocumentReference? ref, String? field}) async {
     if (url == null || url == '') return;
