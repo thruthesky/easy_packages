@@ -162,7 +162,7 @@ class ChatRoom {
       'open': true,
       'hasPassword': false,
       'users': [],
-      'masterUsers': [my?.uid],
+      'masterUsers': [my.uid],
       'invitedUsers': [],
       'blockedUsers': [],
       'rejectedUsers': [],
