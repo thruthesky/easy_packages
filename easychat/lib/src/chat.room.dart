@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat/src/chat.service.dart';
+import 'package:easyuser/easyuser.dart';
 
 class ChatRoom {
   static CollectionReference col = ChatService.instance.col;
@@ -152,5 +153,27 @@ class ChatRoom {
   @override
   String toString() {
     return 'ChatRoom(${toJson()})';
+  }
+
+  static Future<DocumentReference> create() async {
+    return await col.add({
+      'name': 'New Chat Room',
+      'description': 'This is a new chat room.',
+      'open': true,
+      'hasPassword': false,
+      'users': [],
+      'masterUsers': [my?.uid],
+      'invitedUsers': [],
+      'blockedUsers': [],
+      'rejectedUsers': [],
+      'createdAt': DateTime.now(),
+      'updatedAt': DateTime.now(),
+      'text': null,
+      'url': null,
+      'urlForVerifiedUserOnly': false,
+      'uploadForVerifiedUserOnly': false,
+      'gender': null,
+      'domain': null,
+    });
   }
 }
