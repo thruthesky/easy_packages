@@ -206,13 +206,20 @@ packages:
       relative: true
     source: path
     version: "0.0.3"
+  easychat:
+    dependency: "direct main"
+    description:
+      path: "../easychat"
+      relative: true
+    source: path
+    version: "0.0.5"
   easyuser:
     dependency: "direct main"
     description:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.7"
+    version: "0.0.8"
   fake_async:
     dependency: transitive
     description:

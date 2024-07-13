@@ -155,25 +155,32 @@ class ChatRoom {
     return 'ChatRoom(${toJson()})';
   }
 
-  static Future<DocumentReference> create() async {
-    return await col.add({
-      'name': 'New Chat Room',
-      'description': 'This is a new chat room.',
-      'open': true,
-      'hasPassword': false,
-      'users': [],
+  /// [create] creates a new chat room.
+  ///
+  /// This method creates a new chat room with the minimal properties with
+  /// the current user as the master user.
+  ///
+  /// Keep this method as minimal as possible and if you need to add more
+  /// properties, you can use [update] method after creating the chat room.
+  ///
+  ///
+  /// Returns the document reference of the chat room.
+  static Future<ChatRoom> create() async {
+    /// Create a new chat room
+    final ref = await col.add({
+      'users': [my.uid],
       'masterUsers': [my.uid],
-      'invitedUsers': [],
-      'blockedUsers': [],
-      'rejectedUsers': [],
-      'createdAt': DateTime.now(),
-      'updatedAt': DateTime.now(),
-      'text': null,
-      'url': null,
-      'urlForVerifiedUserOnly': false,
-      'uploadForVerifiedUserOnly': false,
-      'gender': null,
-      'domain': null,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
     });
+
+    /// Return the chat room from the document reference
+    return ChatRoom.fromJson(
+      {
+        'users': [my.uid],
+        'masterUsers': [my.uid],
+      },
+      ref.id,
+    );
   }
 }
