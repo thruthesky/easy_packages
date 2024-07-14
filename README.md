@@ -132,7 +132,6 @@ Please refer to the [Task Management System Package - easy_task](https://pub.dev
 - easy_locale - A multilingual translation package. There are many translation packages on pub.dev, but we use the simpler easy_locale package. There's no need for you to use this package in your app, but you can if you want.
 
 
-
 ## Engine
 
 - `easy_engine` package is the counter part of the [easy-engin](https://github.com/thruthesky/easy-engine) backend.
