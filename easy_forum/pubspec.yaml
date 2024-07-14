@@ -1,10 +1,10 @@
 name: easy_forum
-description: "A new Flutter package project."
+description: "An easy to use forum package for Flutter and Firebase."
 version: 0.0.1
-homepage:
+homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_forum
 
 environment:
-  sdk: '>=3.4.3 <4.0.0'
+  sdk: ">=3.4.3 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
