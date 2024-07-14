@@ -156,17 +156,17 @@ packages:
     dependency: transitive
     description:
       name: easy_storage
-      sha256: "06db9b38f88e3402b03c7db2f4f47135511dd15443c64e257853b56e58b427e0"
+      sha256: "1146dd1df17345c834e163041399418ce7b92a2d6ecc36642173e419b2cc9a63"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   easyuser:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.0.7"
+    version: "0.0.8"
   fake_async:
     dependency: transitive
     description:

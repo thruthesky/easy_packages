@@ -205,7 +205,7 @@ packages:
       path: "../easy_storage"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   easychat:
     dependency: "direct main"
     description:

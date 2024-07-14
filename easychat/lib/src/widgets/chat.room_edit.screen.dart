@@ -1,3 +1,4 @@
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +51,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           ),
 
           /// Chat room icon upload
-          // UploadImage(),
+          const UploadImage(),
 
           ///
           Padding(
