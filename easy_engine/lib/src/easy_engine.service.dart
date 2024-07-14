@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class EasyEngineService {
   static EasyEngineService? _instance;
@@ -7,18 +8,18 @@ class EasyEngineService {
 
   EasyEngineService._();
 
-  /// [region] is the region of the Firebase Cloud Functions.
+  /// [defaultRegion] is the region of the Firebase Cloud Functions.
   ///
   /// If it is null, it will use the default region.
   ///
   /// Each function call may have its own region parameter.
-  String? region;
+  String? defaultRegion;
 
   void init({
     String? region,
   }) {
     // init code
-    this.region = region;
+    defaultRegion = region;
   }
 
   /// Claim a user as an admin.
@@ -30,13 +31,19 @@ class EasyEngineService {
     String? region,
   }) async {
     FirebaseFunctions functions = FirebaseFunctions.instance;
-    if (region != null) {
-      functions = FirebaseFunctions.instanceFor(region: region);
+
+    functions = FirebaseFunctions.instanceFor(
+      region: region ?? defaultRegion,
+    );
+
+    final HttpsCallable callable =
+        functions.httpsCallable('ext-easy-extensions-claimAdmin');
+    try {
+      final result = await callable.call();
+      return result.data;
+    } on FirebaseFunctionsException catch (e) {
+      log("e.code: ${e.code}, e.message: ${e.message}, e.details: ${e.details}");
+      rethrow;
     }
-    final HttpsCallable callable = functions.httpsCallable('claimAdmin');
-    final result = await callable.call({
-      'uid': FirebaseAuth.instance.currentUser?.uid,
-    });
-    return result.data;
   }
 }
