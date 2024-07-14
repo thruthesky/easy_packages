@@ -1,3 +1,4 @@
+import 'package:easy_engine/easy_engine.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
-                          // ClaimAdminButton(),
+                          const ClaimAdminButton(),
                         ],
                       );
               },
