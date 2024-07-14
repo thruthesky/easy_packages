@@ -3,31 +3,6 @@
 - This framework supports many features using the Flutter Firebase Client SDK, except for those that can't be implemented with it. For example, previously, push notifications were sent from Firebase Cloud Functions (backend) because it was more efficient than handling them in Flutter (client side). However, with the `easy_packages`, push notifications are now managed entirely from the Flutter side, even if it's not as efficient.
 
 
-- [Easy Framework](#easy-framework)
-- [Overview](#overview)
-- [Install](#install)
-  - [Install a package into your app](#install-a-package-into-your-app)
-  - [Install as a easy frame developer](#install-as-a-easy-frame-developer)
-- [Packages](#packages)
-  - [Storage](#storage)
-  - [User](#user)
-  - [Chat](#chat)
-  - [Forum](#forum)
-  - [Task](#task)
-  - [Locale](#locale)
-- [Other packages](#other-packages)
-- [Developers Guideline](#developers-guideline)
-  - [uid](#uid)
-- [Mermaid](#mermaid)
-- [Model](#model)
-- [Service](#service)
-- [Widget](#widget)
-  - [intialValue and cache](#intialvalue-and-cache)
-  - [List Widgets](#list-widgets)
-- [Unit test](#unit-test)
-- [Widget test](#widget-test)
-
-
 # Overview
 
 

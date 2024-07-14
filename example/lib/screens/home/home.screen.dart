@@ -43,7 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
-                          const ClaimAdminButton(),
+                          const ClaimAdminButton(
+                            region: 'asia-northeast3',
+                          ),
                         ],
                       );
               },
