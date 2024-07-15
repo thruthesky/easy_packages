@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 
 /// UserAvatarUpdate
 ///
@@ -118,6 +120,14 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                           /// 이전 사진 삭제
                           ///
                           /// 삭제 실패해도, 계속 진행되도록 한다.
+                          ///
+                          final re = await confirm(
+                              context: context,
+                              title: 'Delete Avatar?'.t,
+                              message:
+                                  'Are you sure you wanted to delete this avatar?'
+                                      .t);
+                          if (re == false) return;
                           StorageService.instance
                               .delete(event.data!['photoUrl']);
                           UserService.instance.col.doc(my.uid).update({

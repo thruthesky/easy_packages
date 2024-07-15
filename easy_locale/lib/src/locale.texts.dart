@@ -131,4 +131,12 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Access permission to the gallery has been denied',
     'ko': '갤러리에 대한 접근 권한이 거부되었습니다',
   },
+  'yes': {
+    'en': 'Yes',
+    'ko': '예',
+  },
+  'no': {
+    'en': 'No',
+    'ko': '아니요',
+  },
 };
