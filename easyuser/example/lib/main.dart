@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:easyuser/easyuser.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  lo.init();
   await Firebase.initializeApp(
       // options: DefaultFirebaseOptions.currentPlatform,
       );
@@ -54,8 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            Text(
+              'age'.t,
             ),
             AuthStateChanges(
               builder: (user) {
@@ -65,6 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
+                            onPressed: () => UserService.instance
+                                .showProfileUpdaeScreen(context),
+                            child: const Text('Profile update'),
+                          ),
+                          ElevatedButton(
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
@@ -73,13 +80,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const UserSearchDialog(),
-                  );
-                },
-                child: const Text('User Search Dialog')),
+              onPressed: () {
+                UserService.instance.showUserSearchDialog(
+                  context,
+                  exactSearch: true,
+                );
+              },
+              child: const Text('User Search Dialog'),
+            ),
           ],
         ),
       ),

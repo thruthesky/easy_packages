@@ -63,7 +63,7 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
         ///
         await StorageService.instance.uploadAt(
           context: context,
-          ref: my!.doc,
+          ref: my.doc,
           field: 'photoUrl',
           progress: (p) => setState(() => progress = p),
           complete: () => setState(() => progress = null),
@@ -108,7 +108,7 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
             ),
           if (widget.delete && isNotUploading)
             StreamBuilder(
-              stream: UserService.instance.col.doc(my!.uid).snapshots(),
+              stream: UserService.instance.col.doc(my.uid).snapshots(),
               builder: (_, event) => event.hasData && event.data!.exists
                   ? Positioned(
                       top: 0,
@@ -120,7 +120,7 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                           /// 삭제 실패해도, 계속 진행되도록 한다.
                           StorageService.instance
                               .delete(event.data!['photoUrl']);
-                          UserService.instance.col.doc(my!.uid).update({
+                          UserService.instance.col.doc(my.uid).update({
                             'photoUrl': FieldValue.delete(),
                           });
                         },

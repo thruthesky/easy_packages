@@ -3,7 +3,7 @@
 - This framework supports many features using the Flutter Firebase Client SDK, except for those that can't be implemented with it. For example, previously, push notifications were sent from Firebase Cloud Functions (backend) because it was more efficient than handling them in Flutter (client side). However, with the `easy_packages`, push notifications are now managed entirely from the Flutter side, even if it's not as efficient.
 
 
-## Overview
+# Overview
 
 
 - **Easy Frame**: This is a Flutter framework that offers a wide range of UI/UX components, logic modules, and more. It's designed to help you build apps quickly and efficiently, suitable for various types of projects.
@@ -18,9 +18,9 @@ Key Features:
 
 
 
-## Install
+# Install
 
-### Install a package into your app
+## Install a package into your app
 
 If you want to install easy local package, you can add like below.
 
@@ -33,7 +33,7 @@ dependencies:
 You can add any easy pakcages like this.
 
 
-### Install as a easy frame developer
+## Install as a easy frame developer
 
 - You can fork and clone the `https://github.com/thruthesky/easy_frame` repository inside your flutter app folder.
 
@@ -59,10 +59,10 @@ dependency_overrides:
 
 
 
-## Packages
+# Packages
 
 
-### Storage
+## Storage
 
 This package helps your app upload photos and videos to Firebase Storage.
 
@@ -70,7 +70,7 @@ Please refer to the [Storage Package - easy_storage](https://pub.dev/packages/ea
 
 
 
-### User
+## User
 
 
 This package helps manage users in your app. If your app has different database structure, you can customize it to work with other `easy frame` packages by using the `easyuser` package.
@@ -80,24 +80,19 @@ Please refer to the [User Package - easyuser](https://pub.dev/packages/easyuser)
 
 
 
-### Friend
-
-This feature allows you to make friends and chat with each other.
-
-Please refer to the [Friend Package - easy_friend](https://pub.dev/packages/easy_friend).
-
-
-### Chat
+## Chat
 
 - A package that includes all the features of a chat room
 
 Please refer to the [Chat Package - easychat](https://pub.dev/packages/easychat).
 
 
-### Forum
+## Forum
 
 
-### Task
+
+
+## Task
 
 
 The task management system is a system for managing tasks that need to be done in various situations, such as company work, school assignments, and more. It can be thought of as a simple app with `TODO` functionality, or more broadly, as a work management system.
@@ -107,13 +102,19 @@ Please refer to the [Task Management System Package - easy_task](https://pub.dev
 
 
 
-### Locale
+## Locale
 
 - easy_locale - A multilingual translation package. There are many translation packages on pub.dev, but we use the simpler easy_locale package. There's no need for you to use this package in your app, but you can if you want.
 
 
+## Engine
 
-## Other packages
+- `easy_engine` package is the counter part of the [easy-engin](https://github.com/thruthesky/easy-engine) backend.
+
+- You only need to install this package and the firebase easy-engine in your project. This way, you can manage your Firebase more efficiently without needing other `easy packages` seriese.
+
+
+# Other packages
 
 Although not directly related to FireFlutter, these packages are used internally by FireFlutter.
 
@@ -130,12 +131,18 @@ Although not directly related to FireFlutter, these packages are used internally
 
 
 
-## Developers Guideline
+# Coding Style Guide
 
 This is the style guide of the development easy packages.
 
 
-### Mermaid
+- The code must be readable and short. If the code is complicated, then that code will be deleted. If the code is long, then that code will be deleted, also.
+
+
+
+
+
+# Mermaid
 
 - Starting must be `START(xxxx)`
 - End must be `END(())`
@@ -147,15 +154,8 @@ This is the style guide of the development easy packages.
 
 
 
-### uid
 
-`uid` 는 문서 또는 데이터의 소유자임을 나타낸다. 이 `uid` 를 바탕으로 사용자 정보에서 `displayName` 과 `photoUrl` 을 가져와 보여준다.
-
-
-
-
-
-### Model
+# Model
 
 
 Model class does
@@ -166,7 +166,7 @@ Model class does
 
 
 
-### Service
+# Service
 
 Service class does
 - something that are related with the model(entity) or the service can handle for the whole function(feacher).
@@ -177,7 +177,7 @@ Service class does
 
 
 
-### Widget
+# Widget
 
 하우스는 파이어베이스와 연관된 로직 뿐만아니라 UI 도 제공을 한다. UI 는 주로 위젯을 통해서 화면에 표시하는 디자인적인 요소를 말하며 크게 두 가지 종류가 있다.
 
@@ -193,7 +193,7 @@ Service class does
 
 
 
-#### intialValue and cache
+## intialValue and cache
 
 초기값과 캐시 속성은 많은 위젯에서 공통적으로 사용이 된다.
 
@@ -214,7 +214,7 @@ For instance, `UserDoc` is the one that works in this way.
 
 
 
-#### List Widgets
+## List Widgets
 
 
 
@@ -235,11 +235,11 @@ Use `FirestoreQueryBuilder` or `FirebaseDatabaseQueryBuilder`. Use query builder
 
 
 
-### Unit test
+# Unit test
 
 Do the unit test as Flutter does.
 
-### Widget test
+# Widget test
 
 
 Do the widget test as Flutter does.
