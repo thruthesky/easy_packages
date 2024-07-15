@@ -110,41 +110,47 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
             ),
           if (widget.delete && isNotUploading)
             StreamBuilder(
-              stream: UserService.instance.col.doc(my.uid).snapshots(),
-              builder: (_, event) => event.hasData && event.data!.exists
-                  ? Positioned(
-                      top: 0,
-                      left: 0,
-                      child: IconButton(
-                        onPressed: () async {
-                          /// 이전 사진 삭제
-                          ///
-                          /// 삭제 실패해도, 계속 진행되도록 한다.
-                          ///
-                          final re = await confirm(
-                              context: context,
-                              title: 'Delete Avatar?'.t,
-                              message:
-                                  'Are you sure you wanted to delete this avatar?'
-                                      .t);
-                          if (re == false) return;
-                          StorageService.instance
-                              .delete(event.data!['photoUrl']);
-                          UserService.instance.col.doc(my.uid).update({
-                            'photoUrl': FieldValue.delete(),
-                          });
-                        },
-                        padding: EdgeInsets.zero,
-                        visualDensity: VisualDensity.compact,
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Colors.grey.shade600,
-                          size: 30,
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
+                stream: UserService.instance.col.doc(my.uid).snapshots(),
+                builder: (_, event) {
+                  if (event.data == null) return const SizedBox.shrink();
+                  if (!event.hasData && !event.data!.exists) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final data = event.data!.data() as Map<String, dynamic>?;
+                  return data!.containsKey('photoUrl')
+                      ? Positioned(
+                          top: 0,
+                          left: 0,
+                          child: IconButton(
+                            onPressed: () async {
+                              /// 이전 사진 삭제
+                              ///
+                              /// 삭제 실패해도, 계속 진행되도록 한다.
+                              ///
+                              final re = await confirm(
+                                  context: context,
+                                  title: 'Delete Avatar?'.t,
+                                  message:
+                                      'Are you sure you wanted to delete this avatar?'
+                                          .t);
+                              if (re == false) return;
+                              StorageService.instance.delete(data['photoUrl']);
+                              UserService.instance.col.doc(my.uid).update({
+                                'photoUrl': FieldValue.delete(),
+                              });
+                            },
+                            padding: EdgeInsets.zero,
+                            visualDensity: VisualDensity.compact,
+                            icon: Icon(
+                              Icons.remove_circle,
+                              color: Colors.grey.shade600,
+                              size: 30,
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink();
+                }),
         ],
       ),
     );
