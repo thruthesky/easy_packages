@@ -77,7 +77,7 @@ class TaskListView extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
           return emptyBuilder?.call() ??
-              const Center(child: Text('todo list is empty'));
+              const Center(child: Text('Task list is empty.'));
         }
 
         return ListView.separated(

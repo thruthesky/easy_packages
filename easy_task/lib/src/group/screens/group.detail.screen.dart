@@ -23,17 +23,18 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       appBar: AppBar(
         title: const Text("Group"),
         actions: [
-          IconButton(
-            onPressed: () {
-              showGeneralDialog(
-                context: context,
-                pageBuilder: (context, a1, a2) => GroupInvitationListScreen(
-                  group: widget.group,
-                ),
-              );
-            },
-            icon: const Icon(Icons.outbox),
-          ),
+          if (widget.group.moderatorUsers.contains(myUid))
+            IconButton(
+              onPressed: () {
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (context, a1, a2) => GroupInvitationListScreen(
+                    group: widget.group,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.outbox),
+            ),
           IconButton(
             onPressed: () {
               showGeneralDialog(
