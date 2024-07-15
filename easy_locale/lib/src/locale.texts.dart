@@ -1,4 +1,8 @@
 final Map<String, dynamic> localeTexts = {
+  'version': {
+    'en': 'Version: {v}',
+    'ko': '버전: {v}',
+  },
   'home': {
     'en': 'Home',
     'ko': '홈',
@@ -100,7 +104,7 @@ final Map<String, dynamic> localeTexts = {
     'ko': '나이',
   },
   'phone number': {
-    'en': 'Phone Number ~~~',
+    'en': 'Phone Number',
     'ko': '전화번호',
   },
 };
