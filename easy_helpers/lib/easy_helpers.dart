@@ -9,5 +9,3 @@ export './src/functions/log.functions.dart';
 export './src/functions/platform.functions.dart';
 export './src/functions/string.functions.dart';
 export './src/functions/toast.function.dart';
-
-export './src/helper.service.dart';
