@@ -129,6 +129,7 @@ class TaskListView extends StatelessWidget {
                         context: context,
                         pageBuilder: (_, __, ___) => AssignDetailScreen(
                           assign: assign,
+                          task: task,
                         ),
                       );
                     }

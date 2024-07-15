@@ -7,7 +7,7 @@ class AssignDetailScreen extends StatefulWidget {
     super.key,
     required this.assign,
     this.task,
-  }) : assert(task == null || assign.id == task.id);
+  }) : assert(task == null || assign.taskId == task.id);
 
   final Assign assign;
 
