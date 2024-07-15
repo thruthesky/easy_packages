@@ -48,6 +48,9 @@ class LocaleService {
     this.useKeyAsDefaultText = useKeyAsDefaultText;
     if (deviceLocale) {
       await LocaleService.instance.setDeviceLocale();
+    } else {
+      /// If the device locale is not set, use the default locale. (added by @thruthesky Jul 15, 2024)
+      locale = defaultLocale;
     }
 
     initConvertExistingTextKeysToLowerCase();
