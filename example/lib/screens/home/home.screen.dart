@@ -1,5 +1,8 @@
+import 'package:easy_engine/easy_engine.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:example/screens/storage/upload_image.screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -40,6 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
+                          const ClaimAdminButton(
+                            region: 'asia-northeast3',
+                          ),
                         ],
                       );
               },
@@ -61,6 +67,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
               child: const Text('User Search Dialog: partial search search'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                ChatService.instance.showChatRoomListScreen(context);
+              },
+              child: const Text('Chat Room List Screen'),
+            ),
+            ElevatedButton(
+              onPressed: () => showGeneralDialog(
+                context: context,
+                pageBuilder: (_, __, ___) => const UploadImageScreen(),
+              ),
+              child: const Text('Upload Image'),
             ),
           ],
         ),

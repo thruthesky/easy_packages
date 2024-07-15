@@ -40,7 +40,12 @@ class User {
   /// Collection reference of the user's collection.
   ///
   CollectionReference col = UserService.instance.col;
+
+  /// [doc] is the document reference of this user model.
   DocumentReference get doc => col.doc(uid);
+
+  /// [ref] is an alias of [doc].
+  DocumentReference get ref => doc;
 
   User({
     required this.uid,

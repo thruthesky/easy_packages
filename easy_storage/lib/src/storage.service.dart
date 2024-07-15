@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -182,13 +184,9 @@ class StorageService {
   ///
   /// This method does not handle any exception. You may handle it outisde if you want.
   ///
-  /// [path] is the file path on mobile phone(local storage) to upload.
-  ///
   /// [saveAs] is the path on the Firebase storage to save the uploaded file.
   /// If it's empty, it willl save the file under "/users/$uid/". You can use
   /// this option to save the file under a different path.
-  ///
-  /// [compressQuality] is the quality of the compress for the image before uploading.
   ///
   /// [camera] is a flag to allow the user to choose the camera as the source.
   ///
@@ -197,6 +195,13 @@ class StorageService {
   /// [maxHeight] is the maximum height of the image to upload.
   ///
   /// [maxWidth] is the maximum width of the image to upload.
+  ///
+  /// If specified, the images will be at most [maxWidth] wide and
+  /// [maxHeight] tall. Otherwise the images will be returned at it's
+  /// original width and height.
+  ///
+  /// The image compression quality is no longer supported. For using image
+  /// thumbnail, refer to README.md
   ///
   /// It returns the download url of the uploaded file.
   Future<String?> upload({
@@ -241,15 +246,11 @@ class StorageService {
   ///
   /// example:
   /// ```dart
-  /// final url = await StorageService.instance.uploadAt(
+  /// await StorageService.instance.uploadAt(
   ///   context: context,
-  ///   ref: documentReference,
-  ///   progress: (p) => setState(() => progress = p),
-  ///   complete: () => setState(() => progress = null),
+  ///   ref: my.ref,
+  ///   filed: 'photoUrl',
   /// );
-  /// if (url != null) {
-  ///   await my!.update(photoUrl: url);
-  /// }
   /// ```
   Future<String?> uploadAt({
     required BuildContext context,
@@ -365,17 +366,21 @@ class StorageService {
       if (enableFilePickerExceptionHandler == false) rethrow;
 
       if (error.code == 'photo_access_denied') {
-        // errorToast(
-        //   context: context,
-        //   title: T.galleryAccessDeniedTitle.tr,
-        //   message: T.galleryAccessDeniedContent.tr,
-        // );
+        errorToast(
+          context: context,
+
+          /// TODO translation
+          title: 'galleryAccessDeniedTitle'.t,
+          message: 'galleryAccessDeniedContent'.t,
+        );
       } else if (error.code == 'camera_access_denied') {
-        // errorToast(
-        //   context: context,
-        //   title: T.cameraAccessDeniedTitle.tr,
-        //   message: T.cameraAccessDeniedContent.tr,
-        // );
+        errorToast(
+          context: context,
+
+          /// TODO translation
+          title: 'cameraAccessDeniedTitle'.t,
+          message: 'cameraAccessDeniedContent'.t,
+        );
       } else {
         /// rethrow the unhandled error from PlatformException if there's any
         rethrow;
