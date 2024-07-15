@@ -100,7 +100,23 @@ final Map<String, dynamic> localeTexts = {
     'ko': '나이',
   },
   'phone number': {
-    'en': 'Phone Number ~~~',
+    'en': 'Phone Number',
     'ko': '전화번호',
+  },
+  'Camera Access Denied': {
+    'en': 'Camera Access Denied',
+    'ko': '카메라 액세스가 거부되었습니다',
+  },
+  'Access permission to the Camera has been denied': {
+    'en': 'Access permission to the Camera has been denied',
+    'ko': '카메라에 대한 접근 권한이 거부되었습니다.',
+  },
+  'Gallery Access Denied': {
+    'en': 'Gallery Access Denied',
+    'ko': '갤러리 액세스가 거부되었습니다',
+  },
+  'Access permission to the gallery has been denied': {
+    'en': 'Access permission to the gallery has been denied',
+    'ko': '갤러리에 대한 접근 권한이 거부되었습니다',
   },
 };

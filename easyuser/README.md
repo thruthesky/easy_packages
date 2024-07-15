@@ -79,10 +79,7 @@ The fields used in the user document are as follows. If your app uses fields oth
 
 ### User sign-in or sign-out
 
-
 You display UI based on the user's login status with `AuthStateChanges` as shown below.
-
-
 ```dart
 AuthStateChanges(
   builder: (user) {
@@ -96,8 +93,45 @@ AuthStateChanges(
   },
 ),
 ```
+### Finding user 
+
+You can search user from collection by thier display name. use `UserSearchDialog()` or `UserService.instance.showUserSearchDialog` 
+
+- if `exactSearch` is `true` it will search the exact text search provided in the user collection (ex: You search John Smith it will show result of user who name exactly Johm Smith). while if its `false` it will search base on the given and provide what might be your searching (ex: you search John and it will show result of user who have John in thier name John Smith, John Doe, John Carl, etc)
 
 
+- if `searchName` is `true` is will search from the name field of the user. and if `searchName` is `false` it will search from the display name field of the user. `search is case insensitive` and the `default search is name`.
+
+Note: Search is `case-insensitive` and the by default it will search `exact match` of the user `name` field.
+
+
+Using UserSearchDialog Widget
+```dart
+ElevatedButton (
+  onPressed:() {
+    showDialog(
+      context: context,
+      builder: (context) => UserSearchDialog(
+        exactSearch: false,
+        searchName: true,
+      ),
+    )
+  },
+  child: const Text('Search User'),
+);
+```
+
+Using UserService.instance.showUserSearchDialog
+```dart
+ElevatedButton(onPressed: () {
+  UserService.instance.showUserSearchDialog(
+      exactSearch: false,
+      searchName: true,
+    );
+  }, 
+  child: const Text('Search User'),
+),
+```
 
 ## Trouble shooting
 
