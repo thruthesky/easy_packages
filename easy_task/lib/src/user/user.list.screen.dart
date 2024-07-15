@@ -50,19 +50,17 @@ class UserListScreen extends StatelessWidget {
               final userUid = snapshot.docs[index].id;
               final userDisplayName = user['displayName'];
 
-              return Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.teal[100],
-                  border: Border.all(width: 1),
+              return ListTile(
+                leading: const Icon(Icons.person),
+                title: Text(
+                  "Uid: $userUid",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                child: ListTile(
-                  title: Text("Uid: $userUid"),
-                  subtitle: Text("Name: $userDisplayName"),
-                  onTap: () {
-                    onTap?.call(userUid);
-                  },
-                ),
+                subtitle: Text("Name: $userDisplayName"),
+                onTap: () {
+                  onTap?.call(userUid);
+                },
               );
             },
           );

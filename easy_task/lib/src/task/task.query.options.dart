@@ -5,7 +5,7 @@ import 'package:easy_task/src/defines.dart';
 class TaskQueryOptions {
   const TaskQueryOptions({
     this.limit = 20,
-    this.orderBy = 'createdAt',
+    this.orderBy = 'updatedAt',
     this.orderByDescending = true,
     this.assignToContains,
     this.assignTo,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/group/screens/group.invitation.list.screen.dart';
@@ -9,9 +11,15 @@ class GroupDetailScreen extends StatefulWidget {
   const GroupDetailScreen({
     super.key,
     required this.group,
+    this.inviteUids,
   });
 
   final Group group;
+
+  /// To use own user listing, use `inviteUids`.
+  /// It must return List of uids of users to invite into group.
+  /// If it returned null, it will not do anything.
+  final FutureOr<List<String>?> Function(BuildContext context)? inviteUids;
 
   @override
   State<GroupDetailScreen> createState() => _GroupDetailScreenState();
@@ -31,6 +39,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                   context: context,
                   pageBuilder: (context, a1, a2) => GroupInvitationListScreen(
                     group: widget.group,
+                    inviteUids: widget.inviteUids,
                   ),
                 );
               },
@@ -80,20 +89,23 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
           )),
           const Spacer(),
           if (widget.group.moderatorUsers.contains(myUid))
-            ElevatedButton(
-              onPressed: () {
-                showGeneralDialog(
-                  context: context,
-                  pageBuilder: (context, a1, a2) {
-                    return TaskCreateScreen(
-                      group: widget.group,
-                    );
-                  },
-                );
-                if (!context.mounted) return;
-                setState(() {});
-              },
-              child: const Text('+ Create Group Task'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: ElevatedButton(
+                onPressed: () {
+                  showGeneralDialog(
+                    context: context,
+                    pageBuilder: (context, a1, a2) {
+                      return TaskCreateScreen(
+                        group: widget.group,
+                      );
+                    },
+                  );
+                  if (!context.mounted) return;
+                  setState(() {});
+                },
+                child: const Text('+ Create Group Task'),
+              ),
             ),
           const SafeArea(
             child: SizedBox(
