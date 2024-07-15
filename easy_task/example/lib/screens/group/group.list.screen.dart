@@ -21,7 +21,7 @@ class GroupListScreen extends StatelessWidget {
               showGeneralDialog(
                 context: context,
                 pageBuilder: (context, a1, a2) =>
-                    const InvitationToMeListScreen(),
+                    const ReceivedInvitationScreen(),
               );
             },
             icon: const Icon(Icons.inbox),

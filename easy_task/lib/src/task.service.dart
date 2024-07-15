@@ -17,20 +17,11 @@ class TaskService {
 
   /// CollectionReference for Assign docs
   CollectionReference assignCol =
-      FirebaseFirestore.instance.collection('todo-assign');
+      FirebaseFirestore.instance.collection('todo-task-assign');
 
-  /// Group relationship collection
-  ///
-  /// All tasks must belong to a group and the task can be assigned to users
-  /// in the same group.
+  /// CollectionReference for Task User Group
   CollectionReference groupCol =
-      FirebaseFirestore.instance.collection('todo-group');
-
-  /// CollectionReference for Invitation docs
-  ///
-  /// Before adding to group, the user must accept
-  CollectionReference invitationCol =
-      FirebaseFirestore.instance.collection('todo-group-invitation');
+      FirebaseFirestore.instance.collection('task-user-group');
 
   /// Get assingees of the task
   Future<List<Assign>> getAssigns(String taskId) async {

@@ -2,8 +2,8 @@ import 'package:easy_task/easy_task.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class InvitationToMeListScreen extends StatelessWidget {
-  const InvitationToMeListScreen({super.key});
+class ReceivedInvitationScreen extends StatelessWidget {
+  const ReceivedInvitationScreen({super.key});
 
   String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 

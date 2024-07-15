@@ -185,7 +185,6 @@ task7 {
 
 ## TODO feature
 
-
 ### TO DOs
 
 There are more to improve. But these work will be done later.
@@ -272,7 +271,6 @@ flowchart TD
   --> assign[[Assign]]
   --> HasMember
 
-
 ```
 
 - User B Does the task assigned by User A
@@ -316,13 +314,15 @@ flowchart TD
 
 ### Firestore Database
 
-### Todo-Task collection
+
+
+#### Todo-Task collection
 
 - `uid` is the creator.
 - `assignedTo` is a list of uids that the task was aissgend to. This will help on getting the user list of the task.
 - `updatedAt` is updated when there is any changes on the task itself. Not the chagnes of other entitles like asignees.
 
-### Todo-assign collection
+#### Todo-assign collection
 
 - `status` is the status of the task.
   - The `status` can be chagned by the creator or assignee.
@@ -500,8 +500,8 @@ ListView.builder(
 To list the invitations received by the current user, check the code below.
 
 ```dart
-class InvitationToMeListScreen extends StatelessWidget {
-  const InvitationToMeListScreen({super.key});
+class ReceivedInvitationScreen extends StatelessWidget {
+  const ReceivedInvitationScreen({super.key});
 
   String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
