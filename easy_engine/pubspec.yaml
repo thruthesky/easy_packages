@@ -1,15 +1,15 @@
 name: easy_engine
 description: "The counter part of the easy_engine project."
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/thruthesky/easy_extensions
 
 environment:
-  sdk: ">=3.4.3 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
-  cloud_functions: 5.0.2
-  firebase_auth: 5.1.1
+  cloud_functions: ^5.0.2
+  firebase_auth: ^5.1.1
   flutter:
     sdk: flutter
 
