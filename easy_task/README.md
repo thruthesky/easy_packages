@@ -314,16 +314,26 @@ flowchart TD
 
 ### Firestore Database
 
+These are the collections relating to easy_task:
 
+- `todo-task` is the collection for tasks.
+- `todo-task-assign` is the collleciton for assigns.
+- `task-user-group` is the collection for group.
 
-#### Todo-Task collection
+#### todo-task collection (Task)
 
-- `uid` is the creator.
-- `assignedTo` is a list of uids that the task was aissgend to. This will help on getting the user list of the task.
-- `updatedAt` is updated when there is any changes on the task itself. Not the chagnes of other entitles like asignees.
+- `uid` is the uid of creator.
+- `assignedTo` is a list of uids that the task was assigned to. This will help on getting the user list of the task.
+- `title` is the title of the task.
+- `content` is the content of the task.
+- `createdAt` is when it was created.
+- `updatedAt` is updated when there is any changes on the task itself.
 
-#### Todo-assign collection
+#### todo-task-assign collection (Assign)
 
+- `uid` is the uid of the assignee.
+- `assignedBy` is the uid of the assignor.
+- `taskId` is the id of the task.
 - `status` is the status of the task.
   - The `status` can be chagned by the creator or assignee.
   - It can be one of;
@@ -333,6 +343,21 @@ flowchart TD
     - `review` - the work is in review. asking, the moderator to review it.
     - `closed` - the moderator can only mark it as `closed`. If the task is in `closed` status, assignee cannot update(change) anyting including the status anymore.
   - For example, The status can be changed at any time. Assignee can mark it as `review` and the moderator can mark it as `progress` soon after. But the moderator is the only one who can mark it as `closed` and once it is closed, it cannot be updated(changed).
+- `createdAt` is when it was created.
+- `updatedAt` is updated when there is any changes on the assign itself.
+- `taskId` is the id of the task which the assign is related to.
+
+
+#### task-user-group Collection (TaskUserGroup)
+
+- `name` is the name of the group.
+- `users` is the uids of the users under the group.
+- `moderatorUsers` is the uids of the moderators of the group.
+- `invitedUsers` is a list of users' uids who were invited by the moderator.
+- `rejectedUsers` is a list of users' uids who rejected the invitation.
+- `createdAt` is when it was created.
+- `updatedAt` is updated when there is any changes on the group itself.
+
 
 ### Widgets of TODO
 

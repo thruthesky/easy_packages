@@ -1,5 +1,5 @@
 import 'package:easy_task/easy_task.dart';
-import 'package:example/screens/group/invitation.to_me.list.screen.dart';
+import 'package:example/screens/group/received_invitation.screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,16 +16,6 @@ class GroupListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Group List'),
         actions: [
-          IconButton(
-            onPressed: () {
-              showGeneralDialog(
-                context: context,
-                pageBuilder: (context, a1, a2) =>
-                    const ReceivedInvitationScreen(),
-              );
-            },
-            icon: const Icon(Icons.inbox),
-          ),
           IconButton(
             onPressed: () {
               showGeneralDialog(

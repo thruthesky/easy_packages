@@ -1,4 +1,5 @@
 import 'package:example/screens/group/group.list.screen.dart';
+import 'package:example/screens/group/received_invitation.screen.dart';
 import 'package:example/screens/task/task.list.screen.dart';
 import 'package:example/screens/test/test.screen.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
@@ -30,18 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: const Icon(Icons.fact_check),
           ),
-          IconButton(
-            onPressed: () {
-              context.push(GroupListScreen.routeName);
-            },
-            icon: const Icon(Icons.group),
-          ),
-          IconButton(
-            onPressed: () {
-              context.push(TaskListScreen.routeName);
-            },
-            icon: const Icon(Icons.checklist),
-          ),
         ],
       ),
       body: Padding(
@@ -62,62 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text("Display Name: ${user.displayName}"),
                   Text("UID: ${user.uid}"),
                   const SizedBox(height: 24),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text('List of Tasks Created by Me'),
-                        Expanded(
-                          child: TaskListView(
-                            queryOptions: TaskQueryOptions.myCreates(),
-                            itemBuilder: (task, index) {
-                              return ListTile(
-                                onTap: () async {
-                                  if (task.uid == my.uid) {
-                                    showGeneralDialog(
-                                      context: context,
-                                      pageBuilder: (_, __, ___) =>
-                                          TaskDetailScreen(
-                                        task: task,
-                                      ),
-                                    );
-                                  } else if (task.assignTo.contains(my.uid)) {
-                                    final assign = await TaskService.instance
-                                        .getMyAssignFrom(task.id);
-                                    if (assign == null) return;
-                                    if (!context.mounted) return;
-                                    showGeneralDialog(
-                                      context: context,
-                                      pageBuilder: (_, __, ___) =>
-                                          AssignDetailScreen(
-                                        assign: assign,
-                                      ),
-                                    );
-                                  }
-                                },
-                                title: Text(
-                                  task.title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                leading: const Icon(Icons.checklist_rounded),
-                                subtitle: task.content.isEmpty
-                                    ? null
-                                    : Text(
-                                        task.content,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                trailing:
-                                    const Icon(Icons.chevron_right_outlined),
-                                contentPadding: EdgeInsets.zero,
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   ElevatedButton(
                     onPressed: () {
                       showGeneralDialog(
@@ -130,6 +63,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       setState(() {});
                     },
                     child: const Text('+ Create Task'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.push(TaskListScreen.routeName);
+                    },
+                    child: const Text('Task Lists'),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.push(GroupListScreen.routeName);
+                    },
+                    child: const Text("Group"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (context, a1, a2) =>
+                            const ReceivedInvitationScreen(),
+                      );
+                    },
+                    child: const Text("Received Group Invitations"),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(

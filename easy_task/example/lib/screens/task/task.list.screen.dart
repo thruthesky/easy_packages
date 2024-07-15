@@ -54,7 +54,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               return DropdownMenuItem<String>(
                 value: e,
                 child: SizedBox(
-                  width: 240,
+                  width: MediaQuery.of(context).size.width - 48 - 48 - 24,
                   child: Text(
                     e,
                     overflow: TextOverflow.ellipsis,

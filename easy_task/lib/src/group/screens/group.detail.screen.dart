@@ -1,6 +1,7 @@
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/group/screens/group.invitation.list.screen.dart';
+import 'package:easy_task/src/group/screens/group.update.screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -113,9 +114,39 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      widget.group.name,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    const SafeArea(
+                      top: true,
+                      bottom: false,
+                      child: SizedBox(height: 4),
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: Text(
+                            widget.group.name,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            showGeneralDialog(
+                              context: context,
+                              pageBuilder: (context, a1, a2) =>
+                                  GroupUpdateScreen(
+                                group: widget.group,
+                                onUpdate: () {
+                                  if (!context.mounted) return;
+                                  setState(() => {});
+                                },
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.edit),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 24),
                     Text(
