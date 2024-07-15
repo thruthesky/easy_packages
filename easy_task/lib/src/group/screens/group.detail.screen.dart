@@ -55,6 +55,16 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             },
             icon: const Icon(Icons.group),
           ),
+          Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+              );
+            },
+          ),
         ],
       ),
       body: Column(
@@ -89,6 +99,53 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             ),
           ),
         ],
+      ),
+      endDrawer: Drawer(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - 24 - 48,
+              ),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      widget.group.name,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "Moderators:",
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                    ...widget.group.moderatorUsers.map((e) => Text(e)),
+                    const SizedBox(height: 24),
+                    Text(
+                      "Users:",
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                    ...widget.group.users.map((e) => Text(e)),
+                    const SizedBox(height: 24),
+                    const Spacer(),
+                    const SizedBox(height: 24),
+                    Builder(builder: (context) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          Scaffold.of(context).closeEndDrawer();
+                        },
+                        child: const Text("Close"),
+                      );
+                    }),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

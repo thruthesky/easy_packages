@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/src/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
@@ -32,6 +33,41 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TaskDetail'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final re = await confirm(
+                context: context,
+                title: "Task Delete",
+                message: "Are you sure you want to delete the task?",
+              );
+              if (re != true) return;
+              await task.delete();
+              if (!context.mounted) return;
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.delete),
+          ),
+          IconButton(
+            onPressed: () async {
+              final updatedTask = await showGeneralDialog<Task?>(
+                context: context,
+                pageBuilder: (context, a1, a2) => TaskUpdateScreen(task: task),
+              );
+              if (updatedTask == null) return;
+              if (!mounted) return;
+              setState(() {
+                task = updatedTask;
+              });
+            },
+            icon: const Icon(Icons.edit),
+          ),
+          const SafeArea(
+            child: SizedBox(
+              height: 24,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -80,34 +116,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               child: const Text('ASSIGN +'),
             ),
             const SizedBox(height: 48),
-            ElevatedButton(
-              onPressed: () async {
-                final updatedTask = await showGeneralDialog<Task?>(
-                  context: context,
-                  pageBuilder: (context, a1, a2) =>
-                      TaskUpdateScreen(task: task),
-                );
-                if (updatedTask == null) return;
-                if (!mounted) return;
-                setState(() {
-                  task = updatedTask;
-                });
-              },
-              child: const Text('UPDATE'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await task.delete();
-                if (!context.mounted) return;
-                Navigator.of(context).pop();
-              },
-              child: const Text('DELETE'),
-            ),
-            const SafeArea(
-              child: SizedBox(
-                height: 24,
-              ),
-            ),
           ],
         ),
       ),

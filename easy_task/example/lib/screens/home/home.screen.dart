@@ -70,6 +70,49 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           child: TaskListView(
                             queryOptions: TaskQueryOptions.myCreates(),
+                            itemBuilder: (task, index) {
+                              return ListTile(
+                                onTap: () async {
+                                  if (task.uid == my.uid) {
+                                    showGeneralDialog(
+                                      context: context,
+                                      pageBuilder: (_, __, ___) =>
+                                          TaskDetailScreen(
+                                        task: task,
+                                      ),
+                                    );
+                                  } else if (task.assignTo.contains(my.uid)) {
+                                    final assign = await TaskService.instance
+                                        .getMyAssignFrom(task.id);
+                                    if (assign == null) return;
+                                    if (!context.mounted) return;
+                                    showGeneralDialog(
+                                      context: context,
+                                      pageBuilder: (_, __, ___) =>
+                                          AssignDetailScreen(
+                                        assign: assign,
+                                      ),
+                                    );
+                                  }
+                                },
+                                title: Text(
+                                  task.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                leading: const Icon(Icons.checklist_rounded),
+                                subtitle: task.content.isEmpty
+                                    ? null
+                                    : Text(
+                                        task.content,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                trailing:
+                                    const Icon(Icons.chevron_right_outlined),
+                                contentPadding: EdgeInsets.zero,
+                              );
+                            },
                           ),
                         ),
                       ],

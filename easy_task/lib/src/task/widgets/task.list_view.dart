@@ -133,10 +133,21 @@ class TaskListView extends StatelessWidget {
                       );
                     }
                   },
-                  title: Text(task.title),
+                  title: Text(
+                    task.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   leading: const Icon(Icons.checklist_rounded),
-                  subtitle: task.content.isEmpty ? null : Text(task.content),
+                  subtitle: task.content.isEmpty
+                      ? null
+                      : Text(
+                          task.content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                   trailing: const Icon(Icons.chevron_right_outlined),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 );
           },
         );

@@ -107,7 +107,7 @@ class TaskGroupListView extends StatelessWidget {
             final group = Group.fromSnapshot(snapshot.docs[index]);
 
             return itemBuilder?.call(group, index) ??
-                GestureDetector(
+                ListTile(
                   onTap: () async {
                     showGeneralDialog(
                       context: context,
@@ -116,14 +116,13 @@ class TaskGroupListView extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.teal[100],
-                      border: Border.all(width: 1),
-                    ),
-                    child: Text("Group is ${group.name}"),
+                  title: Text(
+                    group.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  subtitle: Text("${group.users.length} Member(s)"),
+                  trailing: const Icon(Icons.chevron_right),
                 );
           },
         );

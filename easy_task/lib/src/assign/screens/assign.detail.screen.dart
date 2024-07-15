@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
 class AssignDetailScreen extends StatefulWidget {
-  const AssignDetailScreen({
+  AssignDetailScreen({
     super.key,
     required this.assign,
-  });
+    this.task,
+  }) : assert(task == null || assign.id == task.id);
 
   final Assign assign;
+
+  /// For faster, and less rebuild, add [task]
+  /// so that it doesn't have to get and wait for future
+  final Task? task;
 
   @override
   State<AssignDetailScreen> createState() => _AssignDetailScreenState();
@@ -22,6 +27,8 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
   void initState() {
     super.initState();
     statusSelected = widget.assign.status;
+    task = widget.task;
+    if (task != null) return;
     _initTask();
   }
 

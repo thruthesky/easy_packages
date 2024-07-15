@@ -66,14 +66,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
           },
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: TaskListView(
-              queryOptions: queryOptions,
-            ),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: TaskListView(
+          queryOptions: queryOptions,
+        ),
       ),
     );
   }
