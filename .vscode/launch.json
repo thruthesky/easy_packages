@@ -21,6 +21,14 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "EasyTask Example - iPhone 15 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro Max",
+            "cwd": "easy_task/example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "easy_helpers",
             "cwd": "easy_helpers",
             "request": "launch",
