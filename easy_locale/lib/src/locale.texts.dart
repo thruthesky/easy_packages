@@ -1,4 +1,8 @@
 final Map<String, dynamic> localeTexts = {
+  'version': {
+    'en': 'Version: {v}',
+    'ko': '버전: {v}',
+  },
   'home': {
     'en': 'Home',
     'ko': '홈',

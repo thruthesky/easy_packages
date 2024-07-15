@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
 
-class EasyEngineService {
-  static EasyEngineService? _instance;
-  static EasyEngineService get instance => _instance ??= EasyEngineService._();
+class EngineService {
+  static EngineService? _instance;
+  static EngineService get instance => _instance ??= EngineService._();
 
-  EasyEngineService._();
+  EngineService._();
 
   /// [defaultRegion] is the region of the Firebase Cloud Functions.
   ///
