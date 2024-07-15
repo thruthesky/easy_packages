@@ -1,4 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
+import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -37,6 +38,16 @@ void main() {
       n = 3;
       expect(
           'apple'.tr(args: {'name': 'J', 'n': n}, form: n), 'J has 3 apples.');
+    });
+
+    test('Sliding Puzzle Level {n}', () {
+      /// Test for Sliding puzzle game,
+      /// Level 1 to Level 8
+      for (int i = 1; i <= 8; i++) {
+        String tr = 'level'.tr(args: {'n': i}, form: i);
+        expect(tr, 'Level $i');
+        debugPrint(tr);
+      }
     });
 
     test("Choose Defualt language en when the locale is missing", () {
