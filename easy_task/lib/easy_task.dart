@@ -22,7 +22,6 @@ export 'src/task.service.dart';
 // Widgets
 export 'src/widgets/assign.list_view.dart';
 export 'src/widgets/group.list_view.dart';
-export 'src/widgets/task.grid_view.dart';
 export 'src/widgets/task.list_view.dart';
 
 // Screens
