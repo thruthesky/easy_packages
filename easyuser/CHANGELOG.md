@@ -1,3 +1,7 @@
+## 0.0.8
+* Change. `my` is not nullable.
+
+
 ## 0.0.7
 * Change. anonymous sign in is truned off.
 * Update. document.

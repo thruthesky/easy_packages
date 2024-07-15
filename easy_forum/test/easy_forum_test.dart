@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:easy_friend/easy_friend.dart';
+import 'package:easy_forum/easy_forum.dart';
 
 void main() {
   test('adds one to input values', () {

@@ -1,4 +1,4 @@
-library easy_friend;
+library easy_forum;
 
 /// A Calculator.
 class Calculator {

@@ -141,26 +141,26 @@ packages:
     dependency: "direct main"
     description:
       name: easy_locale
-      sha256: ed3616ba6e42ffb6e746ebf4c46fdadef6efc132f9e733621f5d0121097f3573
+      sha256: b8a76fe12150b21c2080afb7d12183b2fd0cf0430d8ec3abca2a2526e0571a51
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   easy_storage:
     dependency: "direct main"
     description:
       name: easy_storage
-      sha256: "506b61f339543be13d5af6ee8b290c658619c1ff5b60695e5c6b89b8bac4b81b"
+      sha256: "1146dd1df17345c834e163041399418ce7b92a2d6ecc36642173e419b2cc9a63"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.4"
   easyuser:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "23758abf2a242235d94dfb35347eaccc94162b761fc5faf9ef999d368ca81180"
+      sha256: "36941d3b3890fdc0f487e7ae05875038463eb8a441d731d4a7408e7393858359"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7"
+    version: "0.0.8"
   fake_async:
     dependency: transitive
     description:
@@ -417,10 +417,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: "4161e1f843d8480d2e9025ee22411778c3c9eb7e40076dcf2da23d8242b7b51c"
+      sha256: ff39a10ab4f48f4ac70776d0494a97bf073cd2570892cd46bc8a5cac162c25db
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.12+3"
+    version: "0.8.12+4"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -734,10 +734,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "814e9e88f21a176ae1359149021870e87f7cddaf633ab678a5d2b0bff7fd1ba8"
+      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.0"
+    version: "4.4.2"
   vector_math:
     dependency: transitive
     description:

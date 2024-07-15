@@ -30,12 +30,12 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
 
   // prepare data add more condition if needed
   void prepareData() {
-    displayNameController.text = my?.displayName ?? '';
-    nameController.text = my?.name ?? '';
-    birthYear = my?.birthYear ?? DateTime.now().year;
-    birthMonth = my?.birthMonth ?? DateTime.now().month;
-    birthDay = my?.birthDay ?? DateTime.now().day;
-    gender = my?.gender;
+    displayNameController.text = my.displayName;
+    nameController.text = my.name;
+    birthYear = my.birthYear ?? DateTime.now().year;
+    birthMonth = my.birthMonth ?? DateTime.now().month;
+    birthDay = my.birthDay ?? DateTime.now().day;
+    gender = my.gender;
   }
 
   @override
@@ -141,7 +141,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      my?.update(
+                      my.update(
                         name: nameController.text,
                         displayName: displayNameController.text,
                         birthYear: birthYear,

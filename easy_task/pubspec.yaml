@@ -1,7 +1,7 @@
 name: easy_task
 description: "A TODO like task management system that allows users to create, update, delete and view tasks."
 version: 0.0.1
-homepage: https://github.com/thruthesky/easy_task
+homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_task
 
 environment:
   sdk: ">=3.4.3 <4.0.0"

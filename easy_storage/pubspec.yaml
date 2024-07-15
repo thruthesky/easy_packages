@@ -1,14 +1,17 @@
 name: easy_storage
 description: "Storage package for easy upload into Firebase"
-version: 0.0.3
-homepage: https://github.com/thruthesky/easy_storage
+version: 0.0.4
+homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_storage
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
+  cached_network_image: ^3.3.1
   cloud_firestore: ^5.0.2
+  easy_helpers: ^0.0.3
+  easy_locale: ^0.0.3
   firebase_auth: ^5.1.1
   firebase_core: ^3.1.1
   firebase_storage: ^12.1.0
