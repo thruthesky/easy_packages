@@ -69,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Text('List of Tasks Created by Me'),
                         Expanded(
                           child: TaskListView(
-                            queryOptions: TaskQueryOptions(
-                              uid: user.uid,
-                            ),
+                            queryOptions: TaskQueryOptions.myCreates(),
                             itemBuilder: (task, index) {
                               return GestureDetector(
                                 onTap: () {

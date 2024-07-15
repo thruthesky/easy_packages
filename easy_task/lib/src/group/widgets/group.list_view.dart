@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_task/src/defines.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
 class TaskGroupQueryOptions {
-  TaskGroupQueryOptions({
+  const TaskGroupQueryOptions({
     this.limit = 20,
     this.orderBy = 'updatedAt',
     this.orderByDescending = true,
@@ -23,7 +24,72 @@ class TaskGroupQueryOptions {
   final String? invitedUsersContain;
   final String? rejectedUsersContain;
 
-  
+  /// Query Options for groups that invited me
+  TaskGroupQueryOptions.invitedMe() : this(invitedUsersContain: myUid!);
+
+  /// Query Options for groups that I rejected
+  TaskGroupQueryOptions.myRejects() : this(rejectedUsersContain: myUid!);
+
+  /// Query Options for groups that I
+  /// either moderate or joined (accepted invitation).
+  TaskGroupQueryOptions.involvesMe()
+      : this(
+          moderatorUsersContain: myUid!,
+          usersContain: myUid,
+        );
+
+  /// Query Options for groups that I accepted
+  TaskGroupQueryOptions.myJoins() : this(usersContain: myUid!);
+
+  Map<String, dynamic> get options => {
+        if (usersContain != null) "users": usersContain,
+        if (moderatorUsersContain != null)
+          "moderatorUsers": moderatorUsersContain,
+        if (invitedUsersContain != null) "invitedUsers": invitedUsersContain,
+        if (rejectedUsersContain != null) "rejectedUsers": rejectedUsersContain
+      };
+
+  Query get getQuery {
+    Query groupQuery = Group.col;
+    if (options.length == 1) {
+      groupQuery = groupQuery.where(
+        options.keys.first,
+        arrayContains: options.values.first,
+      );
+    } else if (options.length >= 2) {
+      groupQuery = groupQuery.where(
+        Filter.or(
+          Filter(
+            options.keys.first,
+            arrayContains: options.values.first,
+          ),
+          Filter(
+            options.keys.elementAt(1),
+            arrayContains: options.values.elementAt(1),
+          ),
+          options.length >= 3
+              ? Filter(
+                  options.keys.elementAt(2),
+                  arrayContains: options.values.elementAt(2),
+                )
+              : null,
+          options.length >= 4
+              ? Filter(
+                  options.keys.elementAt(3),
+                  arrayContains: options.values.elementAt(3),
+                )
+              : null,
+        ),
+      );
+    }
+    groupQuery = groupQuery
+        .orderBy(
+          orderBy,
+          descending: orderByDescending,
+        )
+        .limit(limit);
+    return groupQuery;
+  }
 }
 
 /// Group list view
@@ -53,7 +119,7 @@ class TaskGroupListView extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
     this.emptyBuilder,
-    this.queryOptions,
+    this.queryOptions = const TaskGroupQueryOptions(),
   });
 
   final int pageSize;
@@ -77,65 +143,12 @@ class TaskGroupListView extends StatelessWidget {
   final Clip clipBehavior;
   final Widget Function(Group group, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
-  final TaskGroupQueryOptions? queryOptions;
-
-  Query get getQuery {
-    Query groupQuery = Group.col;
-    if (queryOptions != null) {
-      // Ask Help to revise
-      if (queryOptions!.usersContain != null &&
-          queryOptions!.moderatorUsersContain != null) {
-        groupQuery = groupQuery.where(
-          Filter.or(
-            Filter(
-              "users",
-              arrayContains: queryOptions!.usersContain!,
-            ),
-            Filter(
-              "moderatorUsers",
-              arrayContains: queryOptions!.moderatorUsersContain!,
-            ),
-          ),
-        );
-      } else if (queryOptions!.usersContain != null) {
-        groupQuery = groupQuery.where(
-          "users",
-          arrayContains: queryOptions!.usersContain!,
-        );
-      } else if (queryOptions!.moderatorUsersContain != null) {
-        groupQuery = groupQuery.where(
-          "moderatorUsers",
-          arrayContains: queryOptions!.moderatorUsersContain!,
-        );
-      } else if (queryOptions!.invitedUsersContain != null) {
-        groupQuery = groupQuery.where(
-          "invitedUsers",
-          arrayContains: queryOptions!.invitedUsersContain!,
-        );
-      } else if (queryOptions!.rejectedUsersContain != null) {
-        groupQuery = groupQuery.where(
-          "rejectedUsers",
-          arrayContains: queryOptions!.rejectedUsersContain!,
-        );
-      }
-      groupQuery = groupQuery
-          .orderBy(
-            queryOptions!.orderBy,
-            descending: queryOptions!.orderByDescending,
-          )
-          .limit(queryOptions!.limit);
-    }
-    return groupQuery;
-  }
+  final TaskGroupQueryOptions queryOptions;
 
   @override
   Widget build(BuildContext context) {
-
-
-
-
     return FirestoreQueryBuilder(
-      query: getQuery,
+      query: queryOptions.getQuery,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ??

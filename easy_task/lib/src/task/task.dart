@@ -94,7 +94,11 @@ class Task {
       'updatedAt': FieldValue.serverTimestamp(),
       if (startAt != null) 'startAt': Timestamp.fromDate(startAt),
       if (endAt != null) 'endAt': Timestamp.fromDate(endAt),
-      if (assignTo != null) 'assignTo': assignTo,
+      // Take note
+      // assignTo is important to be saved as empty so that
+      // we can easily query to check which tasks are unassigned.
+      // @withcenter.dev2
+      'assignTo': assignTo ?? [],
       if (groupId != null) 'groupId': groupId,
       'uid': _myUid,
     });
