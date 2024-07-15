@@ -7,14 +7,14 @@ import 'package:easy_task/src/group/screens/group.update.screen.dart';
 
 import 'package:flutter/material.dart';
 
-class GroupDetailScreen extends StatefulWidget {
-  const GroupDetailScreen({
+class TaskUserGroupDetailScreen extends StatefulWidget {
+  const TaskUserGroupDetailScreen({
     super.key,
     required this.group,
     this.inviteUids,
   });
 
-  final Group group;
+  final TaskUserGroup group;
 
   /// To use own user listing, use `inviteUids`.
   /// It must return List of uids of users to invite into group.
@@ -22,10 +22,11 @@ class GroupDetailScreen extends StatefulWidget {
   final FutureOr<List<String>?> Function(BuildContext context)? inviteUids;
 
   @override
-  State<GroupDetailScreen> createState() => _GroupDetailScreenState();
+  State<TaskUserGroupDetailScreen> createState() =>
+      _TaskUserGroupDetailScreenState();
 }
 
-class _GroupDetailScreenState extends State<GroupDetailScreen> {
+class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +38,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
               onPressed: () {
                 showGeneralDialog(
                   context: context,
-                  pageBuilder: (context, a1, a2) => GroupInvitationListScreen(
+                  pageBuilder: (context, a1, a2) =>
+                      TaskUserGroupInvitationListScreen(
                     group: widget.group,
                     inviteUids: widget.inviteUids,
                   ),
@@ -147,7 +149,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                             showGeneralDialog(
                               context: context,
                               pageBuilder: (context, a1, a2) =>
-                                  GroupUpdateScreen(
+                                  TaskUserGroupUpdateScreen(
                                 group: widget.group,
                                 onUpdate: () {
                                   if (!context.mounted) return;

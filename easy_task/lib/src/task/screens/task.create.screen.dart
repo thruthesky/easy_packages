@@ -8,7 +8,7 @@ class TaskCreateScreen extends StatefulWidget {
     this.group,
   });
 
-  final Group? group;
+  final TaskUserGroup? group;
 
   @override
   State<TaskCreateScreen> createState() => _TaskCreateScreenState();

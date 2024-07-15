@@ -1,13 +1,12 @@
 import 'package:easy_task/easy_task.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:example/screens/group/received_invitation.screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class GroupListScreen extends StatelessWidget {
+class TaskUserGroupListScreen extends StatelessWidget {
   static const routeName = '/group-list';
 
-  const GroupListScreen({super.key});
+  const TaskUserGroupListScreen({super.key});
 
   String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
@@ -21,7 +20,8 @@ class GroupListScreen extends StatelessWidget {
             onPressed: () {
               showGeneralDialog(
                 context: context,
-                pageBuilder: (context, a1, a2) => const GroupCreateScreen(),
+                pageBuilder: (context, a1, a2) =>
+                    const TaskUserGroupDetailScreen(),
               );
             },
             icon: const Icon(Icons.add_circle_outline),
@@ -36,14 +36,14 @@ class GroupListScreen extends StatelessWidget {
               onTap: () async {
                 showGeneralDialog(
                   context: context,
-                  pageBuilder: (_, __, ___) => GroupDetailScreen(
+                  pageBuilder: (_, __, ___) => TaskUserGroupDetailScreen(
                     group: group,
                     inviteUids: (context) async {
                       return await showGeneralDialog<List<String>?>(
                         context: context,
                         pageBuilder: (context, a1, a2) => Scaffold(
                           appBar: AppBar(
-                            title: Text("Invite Users"),
+                            title: const Text("Invite Users"),
                           ),
                           body: UserListView(
                             itemBuilder: (user, index) {

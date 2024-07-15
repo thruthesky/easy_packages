@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 
-class Group {
+class TaskUserGroup {
   static final CollectionReference col = TaskService.instance.groupCol;
   DocumentReference get ref => col.doc(id);
 
@@ -30,7 +30,7 @@ class Group {
   DateTime createdAt;
   DateTime updatedAt;
 
-  Group({
+  TaskUserGroup({
     required this.id,
     required this.name,
     required this.users,
@@ -41,10 +41,10 @@ class Group {
     required this.updatedAt,
   });
 
-  factory Group.fromJson(Map<String, dynamic> json, String id) {
+  factory TaskUserGroup.fromJson(Map<String, dynamic> json, String id) {
     final Timestamp? createdAt = json['createdAt'];
     final Timestamp? updatedAt = json['updatedAt'];
-    return Group(
+    return TaskUserGroup(
       id: id,
       name: json['name'] ?? '',
       users: List<String>.from(json['users'] ?? []),
@@ -56,9 +56,9 @@ class Group {
     );
   }
 
-  factory Group.fromSnapshot(DocumentSnapshot snapshot) {
+  factory TaskUserGroup.fromSnapshot(DocumentSnapshot snapshot) {
     final json = snapshot.data() as Map<String, dynamic>;
-    return Group.fromJson(json, snapshot.id);
+    return TaskUserGroup.fromJson(json, snapshot.id);
   }
 
   static Future<DocumentReference> create({
@@ -76,11 +76,11 @@ class Group {
     return ref;
   }
 
-  /// Get a Group by its id
-  static Future<Group?> get(String id) async {
+  /// Get a TaskUserGroup by its id
+  static Future<TaskUserGroup?> get(String id) async {
     final snapshot = await col.doc(id).get();
     if (!snapshot.exists) return null;
-    return Group.fromSnapshot(snapshot);
+    return TaskUserGroup.fromSnapshot(snapshot);
   }
 
   Future<void> update({

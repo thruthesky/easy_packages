@@ -317,7 +317,7 @@ flowchart TD
 These are the collections relating to easy_task:
 
 - `todo-task` is the collection for tasks.
-- `todo-task-assign` is the collleciton for assigns.
+- `todo-task-assign` is the collleciton for assigns. It has `taskId` to relate to tasks.
 - `task-user-group` is the collection for group.
 
 #### todo-task collection (Task)
@@ -388,14 +388,14 @@ In easy task there are these entities:
 To create a Group, you can check the example code below.
 
 ```dart
-class GroupCreateScreen extends StatefulWidget {
-  const GroupCreateScreen({super.key});
+class TaskUserGroupDetailScreen extends StatefulWidget {
+  const TaskUserGroupDetailScreen({super.key});
 
   @override
-  State<GroupCreateScreen> createState() => _GroupCreateScreenState();
+  State<TaskUserGroupDetailScreen> createState() => _TaskUserGroupDetailScreenState();
 }
 
-class _GroupCreateScreenState extends State<GroupCreateScreen> {
+class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
   final nameController = TextEditingController();
 
   @override
@@ -462,7 +462,7 @@ final group = await Group.get(groupRef.id);
 showGeneralDialog(
   context: context,
   pageBuilder: (context, a1, a2) {
-    return GroupDetailScreen(group: group!);
+    return TaskUserGroupDetailScreen(group: group!);
   },
 );
 ```
@@ -494,7 +494,7 @@ IconButton(
   onPressed: () {
     showGeneralDialog(
       context: context,
-      pageBuilder: (context, a1, a2) => GroupInvitationListScreen(
+      pageBuilder: (context, a1, a2) => TaskUserGroupInvitationListScreen(
         group: widget.group,
       ),
     );

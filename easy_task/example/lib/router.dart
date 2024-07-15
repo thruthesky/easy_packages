@@ -21,8 +21,8 @@ final router = GoRouter(
       builder: (context, state) => const TaskListScreen(),
     ),
     GoRoute(
-      path: GroupListScreen.routeName,
-      builder: (context, state) => const GroupListScreen(),
+      path: TaskUserGroupListScreen.routeName,
+      builder: (context, state) => const TaskUserGroupListScreen(),
     ),
     GoRoute(
       path: TestScreen.routeName,

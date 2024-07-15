@@ -105,24 +105,6 @@ class AssignListView extends StatelessWidget {
             final assign = Assign.fromSnapshot(snapshot.docs[index]);
 
             return itemBuilder?.call(assign, index) ??
-                // GestureDetector(
-                //   onTap: () {
-                //     showGeneralDialog(
-                //       context: context,
-                //       pageBuilder: (_, __, ___) => AssignDetailScreen(
-                //         assign: assign,
-                //       ),
-                //     );
-                //   },
-                //   child: Container(
-                //     padding: const EdgeInsets.all(8),
-                //     decoration: BoxDecoration(
-                //       color: Colors.teal[100],
-                //       border: Border.all(),
-                //     ),
-                //     child: Text("${assign.uid}: ${assign.status}"),
-                //   ),
-                // );
                 ListTile(
                   onTap: () {
                     showGeneralDialog(

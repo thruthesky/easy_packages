@@ -47,7 +47,7 @@ class TaskGroupQueryOptions {
       };
 
   Query get getQuery {
-    Query groupQuery = Group.col;
+    Query groupQuery = TaskUserGroup.col;
     if (options.length == 1) {
       groupQuery = groupQuery.where(
         options.keys.first,

@@ -330,9 +330,9 @@ Future testGroupCreateAndRetrieve() async {
 
   const groupName = 'The Best Group';
 
-  final groupRef = await Group.create(name: groupName);
+  final groupRef = await TaskUserGroup.create(name: groupName);
 
-  final group = await Group.get(groupRef.id);
+  final group = await TaskUserGroup.get(groupRef.id);
 
   isTrue(
     group!.name == groupName,
@@ -356,15 +356,15 @@ Future testGroupUpdate() async {
 
   const groupName = 'The Best Group';
 
-  final groupRef = await Group.create(name: groupName);
+  final groupRef = await TaskUserGroup.create(name: groupName);
 
-  final group = await Group.get(groupRef.id);
+  final group = await TaskUserGroup.get(groupRef.id);
 
   const groupNameUpdated = 'No Longer the Best Group';
 
   await group!.update(name: groupNameUpdated);
 
-  final updatedGroup = await Group.get(groupRef.id);
+  final updatedGroup = await TaskUserGroup.get(groupRef.id);
 
   isTrue(
     updatedGroup!.name == groupNameUpdated,
@@ -383,14 +383,15 @@ Future testDeleteGroup() async {
 
   const groupName = 'The Best Group';
 
-  final groupRef = await Group.create(name: groupName);
+  final groupRef = await TaskUserGroup.create(name: groupName);
 
-  final group = await Group.get(groupRef.id);
+  final group = await TaskUserGroup.get(groupRef.id);
 
   await group!.delete();
 
-  final deleted = await Group.get(groupRef.id);
-  isTrue(deleted == null, 'Expect: Group.get() must return null after delete');
+  final deleted = await TaskUserGroup.get(groupRef.id);
+  isTrue(deleted == null,
+      'Expect: TaskUserGroup.get() must return null after delete');
 }
 
 Future testGroupInvitation() async {
@@ -401,13 +402,13 @@ Future testGroupInvitation() async {
 
   const groupName = 'Invite Test';
 
-  final groupRef = await Group.create(name: groupName);
+  final groupRef = await TaskUserGroup.create(name: groupName);
 
-  final group = await Group.get(groupRef.id);
+  final group = await TaskUserGroup.get(groupRef.id);
 
   await group!.inviteUsers([uidB]);
 
-  final updatedGroup = await Group.get(groupRef.id);
+  final updatedGroup = await TaskUserGroup.get(groupRef.id);
 
   isTrue(
     updatedGroup!.invitedUsers.contains(uidB),
@@ -428,20 +429,20 @@ Future testAcceptGroupInvitation() async {
 
   const groupName = 'Invite Accept Test';
 
-  final groupRef = await Group.create(name: groupName);
+  final groupRef = await TaskUserGroup.create(name: groupName);
 
-  final group = await Group.get(groupRef.id);
+  final group = await TaskUserGroup.get(groupRef.id);
 
   await group!.inviteUsers([uidB]);
 
   await loginAsB();
 
-  final updatedGroup = await Group.get(groupRef.id);
+  final updatedGroup = await TaskUserGroup.get(groupRef.id);
 
   // B accepts the invitation
   await updatedGroup!.accept();
 
-  final updatedGroup2 = await Group.get(groupRef.id);
+  final updatedGroup2 = await TaskUserGroup.get(groupRef.id);
 
   isTrue(
     updatedGroup2!.users.contains(uidB),
@@ -465,19 +466,19 @@ Future testDeclineGroupInvitation() async {
 
   const groupName = 'Invite Decline Test';
 
-  final groupRef = await Group.create(name: groupName);
+  final groupRef = await TaskUserGroup.create(name: groupName);
 
-  final group = await Group.get(groupRef.id);
+  final group = await TaskUserGroup.get(groupRef.id);
 
   await group!.inviteUsers([uidB]);
 
   await loginAsB();
-  final updatedGroup = await Group.get(groupRef.id);
+  final updatedGroup = await TaskUserGroup.get(groupRef.id);
 
   // B reject the invitation
   await updatedGroup!.reject();
 
-  final updatedGroup2 = await Group.get(groupRef.id);
+  final updatedGroup2 = await TaskUserGroup.get(groupRef.id);
 
   isTrue(
     !updatedGroup2!.users.contains(uidB),
@@ -505,22 +506,22 @@ Future testTaskAssignmentToGroup() async {
 
   // Create Group
   const groupName = 'The Assignment Group';
-  final groupRef = await Group.create(name: groupName);
+  final groupRef = await TaskUserGroup.create(name: groupName);
 
-  final group = await Group.get(groupRef.id);
+  final group = await TaskUserGroup.get(groupRef.id);
 
   // Invite B and C
   await group!.inviteUsers([uidB, uidC]);
 
   // Let B accept the group
   await loginAsB();
-  final updatedGroup = await Group.get(groupRef.id);
+  final updatedGroup = await TaskUserGroup.get(groupRef.id);
   // B accepts the invitation
   await updatedGroup!.accept();
 
   // Let C accept the group
   await loginAsC();
-  final updatedGroup2 = await Group.get(groupRef.id);
+  final updatedGroup2 = await TaskUserGroup.get(groupRef.id);
   // C accepts the invitation
   await updatedGroup2!.accept();
 

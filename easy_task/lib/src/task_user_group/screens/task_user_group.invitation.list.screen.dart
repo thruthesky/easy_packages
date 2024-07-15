@@ -4,14 +4,14 @@ import 'package:easy_task/src/group/group.dart';
 import 'package:easy_task/src/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
 
-class GroupInvitationListScreen extends StatefulWidget {
-  const GroupInvitationListScreen({
+class TaskUserGroupInvitationListScreen extends StatefulWidget {
+  const TaskUserGroupInvitationListScreen({
     super.key,
     required this.group,
     this.inviteUids,
   });
 
-  final Group group;
+  final TaskUserGroup group;
 
   /// To use own user listing, use `inviteUids`.
   /// It must return List of uids of users to invite into group.
@@ -19,11 +19,12 @@ class GroupInvitationListScreen extends StatefulWidget {
   final FutureOr<List<String>?> Function(BuildContext context)? inviteUids;
 
   @override
-  State<GroupInvitationListScreen> createState() =>
-      _GroupInvitationListScreenState();
+  State<TaskUserGroupInvitationListScreen> createState() =>
+      _TaskUserGroupInvitationListScreenState();
 }
 
-class _GroupInvitationListScreenState extends State<GroupInvitationListScreen> {
+class _TaskUserGroupInvitationListScreenState
+    extends State<TaskUserGroupInvitationListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

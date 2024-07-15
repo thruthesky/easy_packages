@@ -74,8 +74,15 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Title: ${task.title}"),
-            Text("Content: ${task.content}"),
+            Text(
+              task.title,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              task.content,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             const SizedBox(height: 24),
             const Text("Assignees:"),
             const SizedBox(height: 12),

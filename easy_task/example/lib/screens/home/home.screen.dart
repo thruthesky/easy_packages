@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      context.push(GroupListScreen.routeName);
+                      context.push(TaskUserGroupListScreen.routeName);
                     },
                     child: const Text("Group"),
                   ),

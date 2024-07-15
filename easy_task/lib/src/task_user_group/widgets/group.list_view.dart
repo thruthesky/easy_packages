@@ -52,7 +52,7 @@ class TaskGroupListView extends StatelessWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
-  final Widget Function(Group group, int index)? itemBuilder;
+  final Widget Function(TaskUserGroup group, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
   final TaskGroupQueryOptions queryOptions;
 
@@ -104,14 +104,14 @@ class TaskGroupListView extends StatelessWidget {
               snapshot.fetchMore();
             }
 
-            final group = Group.fromSnapshot(snapshot.docs[index]);
+            final group = TaskUserGroup.fromSnapshot(snapshot.docs[index]);
 
             return itemBuilder?.call(group, index) ??
                 ListTile(
                   onTap: () async {
                     showGeneralDialog(
                       context: context,
-                      pageBuilder: (_, __, ___) => GroupDetailScreen(
+                      pageBuilder: (_, __, ___) => TaskUserGroupDetailScreen(
                         group: group,
                       ),
                     );

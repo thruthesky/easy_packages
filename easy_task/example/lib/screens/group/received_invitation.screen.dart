@@ -17,7 +17,11 @@ class ReceivedInvitationScreen extends StatelessWidget {
         queryOptions: TaskGroupQueryOptions.invitedMe(),
         itemBuilder: (group, index) {
           return ListTile(
-            title: Text(group.name),
+            title: Text(
+              group.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -26,9 +30,17 @@ class ReceivedInvitationScreen extends StatelessWidget {
                     await group.accept();
                     if (!context.mounted) return;
                     Navigator.of(context).pop();
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (context, a1, a2) =>
+                          TaskUserGroupDetailScreen(
+                        group: group,
+                      ),
+                    );
                   },
                   child: const Text("Accept"),
                 ),
+                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
                     group.reject();
@@ -37,6 +49,7 @@ class ReceivedInvitationScreen extends StatelessWidget {
                 ),
               ],
             ),
+            contentPadding: const EdgeInsets.fromLTRB(24, 0, 12, 0),
           );
         },
       ),

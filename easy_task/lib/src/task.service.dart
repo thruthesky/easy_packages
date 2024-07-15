@@ -42,7 +42,7 @@ class TaskService {
     required String taskId,
     required String groupId,
   }) async {
-    final group = await Group.get(groupId);
+    final group = await TaskUserGroup.get(groupId);
     if (group == null) {
       throw 'Group not found.';
     }
