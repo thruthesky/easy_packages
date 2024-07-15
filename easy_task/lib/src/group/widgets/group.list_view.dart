@@ -1,4 +1,3 @@
-import 'package:easy_task/src/group/task_group.query.options.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

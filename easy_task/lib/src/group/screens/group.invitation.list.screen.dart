@@ -8,17 +8,15 @@ class GroupInvitationListScreen extends StatefulWidget {
   const GroupInvitationListScreen({
     super.key,
     required this.group,
-
-    // Review on Invite user?
-    this.onInviteUidList,
+    this.inviteUids,
   });
 
   final Group group;
 
-  /// To use own user listing, use `onInviteUidList`.
+  /// To use own user listing, use `inviteUids`.
   /// It must return List of uids of users to invite into group.
   /// If it returned null, it will not do anything.
-  final FutureOr<List<String>?> Function()? onInviteUidList;
+  final FutureOr<List<String>?> Function(BuildContext context)? inviteUids;
 
   @override
   State<GroupInvitationListScreen> createState() =>
@@ -34,15 +32,20 @@ class _GroupInvitationListScreenState extends State<GroupInvitationListScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              final inviteUids = await showGeneralDialog<List<String>?>(
-                context: context,
-                pageBuilder: (context, a1, a2) => UserListScreen(
-                  onTap: (uid) => Navigator.of(context).pop([uid]),
-                ),
-              );
+              List<String>? inviteUids;
+              if (widget.inviteUids != null) {
+                inviteUids = await widget.inviteUids!.call(context);
+              } else {
+                inviteUids = await showGeneralDialog<List<String>?>(
+                  context: context,
+                  pageBuilder: (context, a1, a2) => UserListScreen(
+                    onTap: (uid) => Navigator.of(context).pop([uid]),
+                  ),
+                );
+              }
               if (inviteUids == null) return;
               widget.group.inviteUsers(inviteUids);
-              inviteUids.addAll(inviteUids);
+              widget.group.invitedUsers.addAll(inviteUids);
               if (!mounted) return;
               setState(() {});
             },

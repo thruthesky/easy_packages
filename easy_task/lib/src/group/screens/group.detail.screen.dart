@@ -1,7 +1,7 @@
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/group/screens/group.invitation.list.screen.dart';
-import 'package:easy_task/src/task/task.query.options.dart';
+
 import 'package:flutter/material.dart';
 
 class GroupDetailScreen extends StatefulWidget {

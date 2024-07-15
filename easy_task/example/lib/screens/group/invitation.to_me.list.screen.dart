@@ -14,9 +14,7 @@ class InvitationToMeListScreen extends StatelessWidget {
         title: const Text("Invitations"),
       ),
       body: TaskGroupListView(
-        queryOptions: TaskGroupQueryOptions(
-          invitedUsersContain: myUid!,
-        ),
+        queryOptions: TaskGroupQueryOptions.invitedMe(),
         itemBuilder: (group, index) {
           return ListTile(
             title: Text(group.name),

@@ -27,6 +27,7 @@ export 'src/group/task_group.query.options.dart';
 // Group Widgets
 export 'src/group/widgets/group.list_view.dart';
 // Group Screens
+export 'src/group/screens/group.create.screen.dart';
 export 'src/group/screens/group.detail.screen.dart';
 
 // Others ===============

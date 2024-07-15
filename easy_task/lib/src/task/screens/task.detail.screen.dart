@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:easy_task/src/assign/assign.query.options.dart';
 import 'package:easy_task/src/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
@@ -10,11 +8,11 @@ class TaskDetailScreen extends StatefulWidget {
   const TaskDetailScreen({
     super.key,
     required this.task,
-    this.onAssignUidList,
+    this.assignUids,
   });
 
   final Task task;
-  final FutureOr<String?> Function(BuildContext context)? onAssignUidList;
+  final FutureOr<String?> Function(BuildContext context)? assignUids;
 
   @override
   State<TaskDetailScreen> createState() => _TaskDetailScreenState();
@@ -56,16 +54,18 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             ElevatedButton(
               onPressed: () async {
                 String? uid;
-                // TODO
-                // uid = widget. onAssignUidList
-                uid = await showGeneralDialog<String?>(
-                  context: context,
-                  pageBuilder: (context, a1, a2) {
-                    return UserListScreen(
-                      onTap: (uid) => Navigator.of(context).pop(uid),
-                    );
-                  },
-                );
+                if (widget.assignUids != null) {
+                  uid = await widget.assignUids!.call(context);
+                } else {
+                  uid = await showGeneralDialog<String?>(
+                    context: context,
+                    pageBuilder: (context, a1, a2) {
+                      return UserListScreen(
+                        onTap: (uid) => Navigator.of(context).pop(uid),
+                      );
+                    },
+                  );
+                }
                 if (uid == null) return;
                 await Assign.create(
                   uid: uid,
