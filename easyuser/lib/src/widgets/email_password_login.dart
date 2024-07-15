@@ -87,7 +87,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
 
                   widget.onLogin?.call();
                 },
-                child: Text('login'.toUpperCase()),
+                child: Text('login'.t.toUpperCase()),
               ),
               const Spacer(),
               ElevatedButton(
@@ -114,7 +114,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
                     }
                   }
                 },
-                child: const Text('Link Currnet Accout'),
+                child: Text('Link Currnet Accout'.t),
               )
             ],
           ),
