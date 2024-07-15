@@ -111,7 +111,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                     itemBuilder: (user, index) =>
                         widget.itemBuilder?.call(user, index) ??
                         UserListTile(
-                          contentPadding: EdgeInsets.zero,
+                          // contentPadding: EdgeInsets.zero,
                           user: user,
                         ),
                   ),
