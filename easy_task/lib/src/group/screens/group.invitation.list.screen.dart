@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:easy_task/src/entities/group.dart';
-import 'package:easy_task/src/screens/user/user.list.screen.dart';
+import 'package:easy_task/src/group/group.dart';
+import 'package:easy_task/src/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
 
 class GroupInvitationListScreen extends StatefulWidget {

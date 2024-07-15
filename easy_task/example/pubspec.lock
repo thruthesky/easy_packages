@@ -141,18 +141,18 @@ packages:
     dependency: transitive
     description:
       name: easy_locale
-      sha256: ed3616ba6e42ffb6e746ebf4c46fdadef6efc132f9e733621f5d0121097f3573
+      sha256: b8a76fe12150b21c2080afb7d12183b2fd0cf0430d8ec3abca2a2526e0571a51
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   easy_storage:
     dependency: transitive
     description:
       name: easy_storage
-      sha256: "06db9b38f88e3402b03c7db2f4f47135511dd15443c64e257853b56e58b427e0"
+      sha256: "1146dd1df17345c834e163041399418ce7b92a2d6ecc36642173e419b2cc9a63"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   easy_task:
     dependency: "direct main"
     description:
@@ -164,10 +164,10 @@ packages:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "23758abf2a242235d94dfb35347eaccc94162b761fc5faf9ef999d368ca81180"
+      sha256: "36941d3b3890fdc0f487e7ae05875038463eb8a441d731d4a7408e7393858359"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7"
+    version: "0.0.8"
   fake_async:
     dependency: transitive
     description:
@@ -733,10 +733,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "814e9e88f21a176ae1359149021870e87f7cddaf633ab678a5d2b0bff7fd1ba8"
+      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.0"
+    version: "4.4.2"
   vector_math:
     dependency: transitive
     description:

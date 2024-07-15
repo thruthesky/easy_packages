@@ -1,24 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_task/src/assign/assign.query.options.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
-
-class AssignQueryOptions {
-  const AssignQueryOptions({
-    this.taskId,
-    this.limit = 20,
-    this.orderBy = 'createdAt',
-    this.orderByDescending = true,
-    this.uid,
-  });
-
-  final String? taskId;
-  final int limit;
-  final String orderBy;
-  final bool orderByDescending;
-  final String? uid;
-}
 
 class AssignListView extends StatelessWidget {
   const AssignListView({
@@ -44,7 +28,7 @@ class AssignListView extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
     this.emptyBuilder,
-    this.queryOptions,
+    this.queryOptions = const AssignQueryOptions(),
   });
 
   final int pageSize;
@@ -68,33 +52,12 @@ class AssignListView extends StatelessWidget {
   final Clip clipBehavior;
   final Widget Function(Assign assign, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
-  final AssignQueryOptions? queryOptions;
+  final AssignQueryOptions queryOptions;
 
   @override
   Widget build(BuildContext context) {
-    Query assignQuery = Assign.col;
-    if (queryOptions != null) {
-      if (queryOptions!.taskId != null) {
-        assignQuery = assignQuery.where(
-          'taskId',
-          isEqualTo: queryOptions!.taskId,
-        );
-      }
-      if (queryOptions!.uid != null) {
-        assignQuery = assignQuery.where(
-          'uid',
-          isEqualTo: queryOptions!.uid,
-        );
-      }
-      assignQuery = assignQuery
-          .orderBy(
-            queryOptions!.orderBy,
-            descending: queryOptions!.orderByDescending,
-          )
-          .limit(queryOptions!.limit);
-    }
     return FirestoreQueryBuilder(
-      query: assignQuery,
+      query: queryOptions.getQuery,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ??
@@ -144,11 +107,6 @@ class AssignListView extends StatelessWidget {
 
             return GestureDetector(
               onTap: () {
-                // Navigator.of(context).pushNamed(
-                //   TaskDetailScreen.routeName,
-                //   arguments: task,
-                // );
-
                 showGeneralDialog(
                   context: context,
                   pageBuilder: (_, __, ___) => AssignDetailScreen(
