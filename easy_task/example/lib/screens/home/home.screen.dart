@@ -70,27 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           child: TaskListView(
                             queryOptions: TaskQueryOptions.myCreates(),
-                            itemBuilder: (task, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  showGeneralDialog(
-                                    context: context,
-                                    pageBuilder: (_, __, ___) =>
-                                        TaskDetailScreen(
-                                      task: task,
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red[100],
-                                    border: Border.all(width: 1),
-                                  ),
-                                  child: Text("Task is ${task.title}"),
-                                ),
-                              );
-                            },
                           ),
                         ),
                       ],

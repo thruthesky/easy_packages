@@ -111,7 +111,7 @@ class TaskListView extends StatelessWidget {
             final task = Task.fromSnapshot(snapshot.docs[index]);
 
             return itemBuilder?.call(task, index) ??
-                GestureDetector(
+                ListTile(
                   onTap: () async {
                     if (task.uid == myUid) {
                       showGeneralDialog(
@@ -133,14 +133,10 @@ class TaskListView extends StatelessWidget {
                       );
                     }
                   },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.teal[100],
-                      border: Border.all(width: 1),
-                    ),
-                    child: Text("Task is ${task.title}"),
-                  ),
+                  title: Text(task.title),
+                  leading: const Icon(Icons.checklist_rounded),
+                  subtitle: task.content.isEmpty ? null : Text(task.content),
+                  trailing: const Icon(Icons.chevron_right_outlined),
                 );
           },
         );
