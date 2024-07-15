@@ -55,6 +55,14 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Gender',
     'ko': '성별',
   },
+  'male': {
+    'en': 'Male',
+    'ko': '남자',
+  },
+  'female': {
+    'en': 'Female',
+    'ko': '여자',
+  },
   'Update Profile': {
     'en': 'Update Profile',
     'ko': '프로필 수정',

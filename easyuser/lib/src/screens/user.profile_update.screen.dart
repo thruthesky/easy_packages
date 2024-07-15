@@ -152,7 +152,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                         message: 'Profile Updated Successfully'.t,
                       );
                     },
-                    child: const Text('Update'),
+                    child: Text('Update'.t),
                   ),
                 ),
               ],
