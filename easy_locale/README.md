@@ -32,6 +32,11 @@ pub.dev 에는 여러가지 좋은 다국어(언어 번역) 패키지들이 있�
 
 안드로이드에서는 따로 설정 할 것이 없습니다.
 
+## Examples
+
+
+- Refer the [example code](https://github.com/thruthesky/easy_frame/blob/main/example/lib/screens/locale/locale.screen.dart) to know more about it.
+
 
 ## 초기화
 
