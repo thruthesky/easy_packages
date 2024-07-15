@@ -1,3 +1,3 @@
-import 'package:easy_engine/src/engine.service.dart';
+import 'package:easy_engine/easy_engine.dart';
 
 EngineService get engine => EngineService.instance;
