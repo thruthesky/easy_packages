@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_engine/easy_engine.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
@@ -45,6 +46,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: const Text('Sign out'),
                           ),
                           const ClaimAdminButton(region: 'asia-northeast3'),
+                          ElevatedButton(
+                            onPressed: () async {
+                              try {
+                                final re = await engine.deleteAccount();
+                                print(re);
+                              } on FirebaseFunctionsException catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('Error: ${e.code}/${e.message}'),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error: $e'),
+                                  ),
+                                );
+                              }
+                            },
+                            child: const Text('Delete Account'),
+                          ),
                         ],
                       );
               },

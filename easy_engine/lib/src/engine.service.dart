@@ -36,8 +36,31 @@ class EngineService {
       region: region ?? defaultRegion,
     );
 
-    final HttpsCallable callable =
-        functions.httpsCallable('ext-easy-extensions-claimAdmin');
+    final HttpsCallable callable = functions.httpsCallable('claimAdmin');
+    try {
+      final result = await callable.call();
+      return result.data;
+    } on FirebaseFunctionsException catch (e) {
+      log("e.code: ${e.code}, e.message: ${e.message}, e.details: ${e.details}");
+      rethrow;
+    }
+  }
+
+  /// Delete the login user's account
+  ///
+  /// Calls the OnCall Firebase Cloud Function to delete the login user's account.
+  ///
+  /// [region] is the region of the Firebase Cloud Functions.
+  Future<dynamic> deleteAccount({
+    String? region,
+  }) async {
+    FirebaseFunctions functions = FirebaseFunctions.instance;
+
+    functions = FirebaseFunctions.instanceFor(
+      region: region ?? defaultRegion,
+    );
+
+    final HttpsCallable callable = functions.httpsCallable('deleteAccount');
     try {
       final result = await callable.call();
       return result.data;
