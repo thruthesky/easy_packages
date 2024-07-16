@@ -9,7 +9,9 @@ environment:
 
 dependencies:
   cloud_firestore: ^5.0.2
+  easy_helpers: ^0.0.3
   easy_storage: ^0.0.4
+  easyuser: ^0.0.8
   flutter:
     sdk: flutter
 
