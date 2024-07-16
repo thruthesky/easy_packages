@@ -29,6 +29,22 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "EasyTask Example - iPhone 15 Pro",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro",
+            "cwd": "easy_task/example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "EasyTask Example - iPhone SE",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone SE",
+            "cwd": "easy_task/example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "easy_helpers",
             "cwd": "easy_helpers",
             "request": "launch",

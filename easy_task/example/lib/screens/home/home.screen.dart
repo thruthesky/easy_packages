@@ -1,4 +1,4 @@
-import 'package:example/screens/group/group.list.screen.dart';
+import 'package:example/screens/group/task.user.group.list.screen.dart';
 import 'package:example/screens/group/received_invitation.screen.dart';
 import 'package:example/screens/task/task.list.screen.dart';
 import 'package:example/screens/test/test.screen.dart';

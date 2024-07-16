@@ -61,25 +61,35 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
                 widget.assign.assignedBy == myUid) ...[
               DropdownMenu<String>(
                 dropdownMenuEntries: [
-                  if (widget.assign.status == AssignStatus.waiting ||
-                      widget.assign.assignedBy == currentUser?.uid)
+                  if (widget.assign.status != AssignStatus.closed) ...[
+                    if (widget.assign.status == AssignStatus.waiting ||
+                        widget.assign.assignedBy == currentUser?.uid)
+                      const DropdownMenuEntry(
+                        value: AssignStatus.waiting,
+                        label: "Waiting",
+                      ),
                     const DropdownMenuEntry(
-                      value: AssignStatus.waiting,
-                      label: "Waiting",
+                      value: AssignStatus.progress,
+                      label: "In Progress",
                     ),
-                  const DropdownMenuEntry(
-                    value: AssignStatus.progress,
-                    label: "In Progress",
-                  ),
-                  const DropdownMenuEntry(
-                    value: AssignStatus.review,
-                    label: "Review",
-                  ),
-                  if (widget.assign.assignedBy == currentUser?.uid) ...[
                     const DropdownMenuEntry(
-                      value: AssignStatus.finished,
-                      label: "Finished",
+                      value: AssignStatus.review,
+                      label: "Review",
                     ),
+                    if (widget.assign.assignedBy == currentUser?.uid ||
+                        widget.assign.status == AssignStatus.finished) ...[
+                      const DropdownMenuEntry(
+                        value: AssignStatus.finished,
+                        label: "Finished",
+                      ),
+                    ],
+                    if (widget.assign.assignedBy == currentUser?.uid) ...[
+                      const DropdownMenuEntry(
+                        value: AssignStatus.closed,
+                        label: "Closed",
+                      ),
+                    ],
+                  ] else ...[
                     const DropdownMenuEntry(
                       value: AssignStatus.closed,
                       label: "Closed",

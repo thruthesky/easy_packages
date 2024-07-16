@@ -50,11 +50,11 @@ class TaskQueryOptions {
         );
 
   /// Query Options for tasks that I created and assigned to others.
-  /// Note that this may still query tasks that were assigned to
+  /// Note that this may still return tasks that were assigned to
   /// others but were assigned to me as well.
   TaskQueryOptions.myAssignsToOthers()
       : this(
-          assignToContains: myUid!,
+          uid: myUid!,
           notAssignTo: [myUid!],
         );
 

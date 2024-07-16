@@ -21,7 +21,7 @@ class TaskUserGroupListScreen extends StatelessWidget {
               showGeneralDialog(
                 context: context,
                 pageBuilder: (context, a1, a2) =>
-                    const TaskUserGroupDetailScreen(),
+                    const TaskUserGroupCreateScreen(),
               );
             },
             icon: const Icon(Icons.add_circle_outline),
@@ -29,8 +29,8 @@ class TaskUserGroupListScreen extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: TaskGroupListView(
-          queryOptions: TaskGroupQueryOptions.involvesMe(),
+        child: TaskUserGroupListView(
+          queryOptions: TaskUserGroupQueryOptions.involvesMe(),
           itemBuilder: (group, index) {
             return ListTile(
               onTap: () async {

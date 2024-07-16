@@ -6,8 +6,8 @@ import 'package:easy_task/easy_task.dart';
 /// Group list view
 ///
 /// This widget displays a list of groups using [ListView.separated] widget.
-class TaskGroupListView extends StatelessWidget {
-  const TaskGroupListView({
+class TaskUserGroupListView extends StatelessWidget {
+  const TaskUserGroupListView({
     super.key,
     this.pageSize = 20,
     this.loadingBuilder,
@@ -30,7 +30,7 @@ class TaskGroupListView extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
     this.emptyBuilder,
-    this.queryOptions = const TaskGroupQueryOptions(),
+    this.queryOptions = const TaskUserGroupQueryOptions(),
   });
 
   final int pageSize;
@@ -54,7 +54,7 @@ class TaskGroupListView extends StatelessWidget {
   final Clip clipBehavior;
   final Widget Function(TaskUserGroup group, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
-  final TaskGroupQueryOptions queryOptions;
+  final TaskUserGroupQueryOptions queryOptions;
 
   @override
   Widget build(BuildContext context) {

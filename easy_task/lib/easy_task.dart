@@ -22,13 +22,13 @@ export 'src/assign/widgets/assign.list_view.dart';
 export 'src/assign/screens/assign.detail.screen.dart';
 
 // GROUP ================
-export 'src/group/group.dart';
-export 'src/group/task_group.query.options.dart';
+export 'src/task_user_group/task_user_group.dart';
+export 'src/task_user_group/task_user_group.query.options.dart';
 // Group Widgets
-export 'src/group/widgets/group.list_view.dart';
+export 'src/task_user_group/widgets/task_user_group.list_view.dart';
 // Group Screens
-export 'src/group/screens/group.create.screen.dart';
-export 'src/group/screens/group.detail.screen.dart';
+export 'src/task_user_group/screens/task_user_group.create.screen.dart';
+export 'src/task_user_group/screens/task_user_group.detail.screen.dart';
 
 // Others ===============
 export 'src/functions.dart';

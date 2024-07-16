@@ -326,6 +326,7 @@ These are the collections relating to easy_task:
 - `assignedTo` is a list of uids that the task was assigned to. This will help on getting the user list of the task.
 - `title` is the title of the task.
 - `content` is the content of the task.
+- `groupId` is the id of the group. Can be null if the task is not related to any group.
 - `createdAt` is when it was created.
 - `updatedAt` is updated when there is any changes on the task itself.
 
@@ -343,10 +344,10 @@ These are the collections relating to easy_task:
     - `review` - the work is in review. asking, the moderator to review it.
     - `closed` - the moderator can only mark it as `closed`. If the task is in `closed` status, assignee cannot update(change) anyting including the status anymore.
   - For example, The status can be changed at any time. Assignee can mark it as `review` and the moderator can mark it as `progress` soon after. But the moderator is the only one who can mark it as `closed` and once it is closed, it cannot be updated(changed).
+- `groupId` is the id of the group. Can be null if the task is not related to any group.
 - `createdAt` is when it was created.
 - `updatedAt` is updated when there is any changes on the assign itself.
 - `taskId` is the id of the task which the assign is related to.
-
 
 #### task-user-group Collection (TaskUserGroup)
 
@@ -357,7 +358,6 @@ These are the collections relating to easy_task:
 - `rejectedUsers` is a list of users' uids who rejected the invitation.
 - `createdAt` is when it was created.
 - `updatedAt` is updated when there is any changes on the group itself.
-
 
 ### Widgets of TODO
 

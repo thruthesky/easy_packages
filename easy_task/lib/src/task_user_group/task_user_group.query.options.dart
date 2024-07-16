@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 
-class TaskGroupQueryOptions {
-  const TaskGroupQueryOptions({
+class TaskUserGroupQueryOptions {
+  const TaskUserGroupQueryOptions({
     this.limit = 20,
     this.orderBy = 'updatedAt',
     this.orderByDescending = true,
@@ -22,21 +22,21 @@ class TaskGroupQueryOptions {
   final String? rejectedUsersContain;
 
   /// Query Options for groups that invited me
-  TaskGroupQueryOptions.invitedMe() : this(invitedUsersContain: myUid!);
+  TaskUserGroupQueryOptions.invitedMe() : this(invitedUsersContain: myUid!);
 
   /// Query Options for groups that I rejected
-  TaskGroupQueryOptions.myRejects() : this(rejectedUsersContain: myUid!);
+  TaskUserGroupQueryOptions.myRejects() : this(rejectedUsersContain: myUid!);
 
   /// Query Options for groups that I
   /// either moderate or joined (accepted invitation).
-  TaskGroupQueryOptions.involvesMe()
+  TaskUserGroupQueryOptions.involvesMe()
       : this(
           moderatorUsersContain: myUid!,
           usersContain: myUid,
         );
 
   /// Query Options for groups that I accepted
-  TaskGroupQueryOptions.myJoins() : this(usersContain: myUid!);
+  TaskUserGroupQueryOptions.myJoins() : this(usersContain: myUid!);
 
   Map<String, dynamic> get options => {
         if (usersContain != null) "users": usersContain,

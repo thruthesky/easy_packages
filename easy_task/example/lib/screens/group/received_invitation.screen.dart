@@ -13,8 +13,8 @@ class ReceivedInvitationScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Invitations"),
       ),
-      body: TaskGroupListView(
-        queryOptions: TaskGroupQueryOptions.invitedMe(),
+      body: TaskUserGroupListView(
+        queryOptions: TaskUserGroupQueryOptions.invitedMe(),
         itemBuilder: (group, index) {
           return ListTile(
             title: Text(

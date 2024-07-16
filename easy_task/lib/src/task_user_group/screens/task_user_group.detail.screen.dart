@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
-import 'package:easy_task/src/group/screens/group.invitation.list.screen.dart';
-import 'package:easy_task/src/group/screens/group.update.screen.dart';
+import 'package:easy_task/src/task_user_group/screens/task_user_group.invitation.list.screen.dart';
+import 'package:easy_task/src/task_user_group/screens/task_user_group.update.screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -83,6 +83,10 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(24, 12, 24, 0),
+            child: Text("Tasks:"),
+          ),
           Expanded(
               child: TaskListView(
             queryOptions: TaskQueryOptions(
@@ -90,25 +94,24 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
             ),
           )),
           const Spacer(),
-          if (widget.group.moderatorUsers.contains(myUid))
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: ElevatedButton(
-                onPressed: () {
-                  showGeneralDialog(
-                    context: context,
-                    pageBuilder: (context, a1, a2) {
-                      return TaskCreateScreen(
-                        group: widget.group,
-                      );
-                    },
-                  );
-                  if (!context.mounted) return;
-                  setState(() {});
-                },
-                child: const Text('+ Create Group Task'),
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: ElevatedButton(
+              onPressed: () {
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (context, a1, a2) {
+                    return TaskCreateScreen(
+                      group: widget.group,
+                    );
+                  },
+                );
+                if (!context.mounted) return;
+                setState(() {});
+              },
+              child: const Text('+ Create Group Task'),
             ),
+          ),
           const SafeArea(
             child: SizedBox(
               height: 24,
