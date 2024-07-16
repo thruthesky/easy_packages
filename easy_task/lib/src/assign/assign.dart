@@ -111,7 +111,7 @@ class Assign {
   ///
   Future<void> delete() async {
     TaskService.instance.taskCol.doc(taskId).update({
-      'assignTo': FieldValue.arrayRemove([uid]),
+      'assignTo': FieldValue.arrayRemove([assignTo]),
     });
 
     // Must delete other related data like photos.

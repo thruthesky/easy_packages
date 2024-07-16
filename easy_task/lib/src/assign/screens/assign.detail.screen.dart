@@ -30,19 +30,21 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
   Task? task;
   TaskUserGroup? group;
   String? statusSelected;
+  late Assign assign;
 
   @override
   void initState() {
     super.initState();
-    statusSelected = widget.assign.status;
+    assign = widget.assign;
+    statusSelected = assign.status;
     task = widget.task;
     if (task == null) _initTask();
     group = widget.group;
-    if (widget.assign.groupId != null && widget.group == null) _initGroup();
+    if (assign.groupId != null && widget.group == null) _initGroup();
   }
 
   _initGroup() async {
-    final group = await TaskUserGroup.get(widget.assign.groupId!);
+    final group = await TaskUserGroup.get(assign.groupId!);
     if (group == null) throw 'Assign has group id but Group not found.';
     setState(() {
       this.group = group;
@@ -50,7 +52,7 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
   }
 
   _initTask() async {
-    final task = await Task.get(widget.assign.taskId);
+    final task = await Task.get(assign.taskId);
     if (task == null) throw 'Task not found.';
     setState(() {
       this.task = task;
@@ -71,18 +73,18 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
             Text("Task: ${task?.title}"),
             Text("Task Content: ${task?.content}"),
             const SizedBox(height: 24),
-            Text("UID: ${widget.assign.uid}"),
-            Text("Status: ${widget.assign.status}"),
+            Text("UID: ${assign.assignTo}"),
+            Text("Status: ${assign.status}"),
             const Spacer(),
-            if (widget.assign.uid == myUid ||
-                widget.assign.assignedBy == myUid ||
+            if (assign.assignTo == myUid ||
+                assign.assignedBy == myUid ||
                 (group?.moderatorUsers.contains(myUid) ?? false)) ...[
               DropdownMenu<String>(
                 width: MediaQuery.of(context).size.width - 48,
                 dropdownMenuEntries: [
-                  if (widget.assign.status != AssignStatus.closed) ...[
-                    if (widget.assign.status == AssignStatus.waiting ||
-                        widget.assign.assignedBy == currentUser?.uid)
+                  if (assign.status != AssignStatus.closed) ...[
+                    if (assign.status == AssignStatus.waiting ||
+                        assign.assignedBy == currentUser?.uid)
                       const DropdownMenuEntry(
                         value: AssignStatus.waiting,
                         label: "Waiting",
@@ -95,8 +97,8 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
                       value: AssignStatus.review,
                       label: "Review",
                     ),
-                    if (widget.assign.assignedBy == currentUser?.uid ||
-                        widget.assign.status == AssignStatus.finished) ...[
+                    if (assign.assignedBy == currentUser?.uid ||
+                        assign.status == AssignStatus.finished) ...[
                       const DropdownMenuEntry(
                         value: AssignStatus.finished,
                         label: "Finished",
@@ -115,26 +117,25 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
                     ),
                   ],
                 ],
-                initialSelection: widget.assign.status,
+                initialSelection: assign.status,
                 onSelected: (value) => statusSelected = value,
               ),
               const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: () async {
-                  await widget.assign.changeStatus(statusSelected!);
+                  await assign.changeStatus(statusSelected!);
                   if (!context.mounted) return;
-                  setState(() {
-                    widget.assign.status = statusSelected!;
-                  });
+                  assign = (await Assign.get(assign.id))!;
+                  setState(() {});
                 },
                 child: const Text("CHANGE STATUS"),
               ),
             ],
             const SizedBox(height: 24),
-            if (widget.assign.assignedBy == currentUser?.uid)
+            if (assign.assignedBy == currentUser?.uid)
               ElevatedButton(
                 onPressed: () async {
-                  await widget.assign.delete();
+                  await assign.delete();
                   if (!context.mounted) return;
                   Navigator.of(context).pop();
                 },

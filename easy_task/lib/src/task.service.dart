@@ -38,7 +38,7 @@ class TaskService {
   }
 
   Future<List<DocumentReference>?> assignGroup({
-    required String taskId,
+    required Task task,
     required String groupId,
   }) async {
     final group = await TaskUserGroup.get(groupId);
@@ -48,8 +48,8 @@ class TaskService {
     final memberUids = group.users;
     final futures = memberUids.map(
       (uid) => Assign.create(
-        uid: uid,
-        taskId: taskId,
+        assignTo: uid,
+        task: task,
         groupId: groupId,
       ),
     );

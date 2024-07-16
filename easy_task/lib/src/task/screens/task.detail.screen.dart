@@ -110,7 +110,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            if (group?.moderatorUsers.contains(myUid) ?? task.uid == myUid)
+            if (group?.moderatorUsers.contains(myUid) ?? task.creator == myUid)
               ElevatedButton(
                 onPressed: () async {
                   String? uid;
@@ -128,8 +128,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                   }
                   if (uid == null) return;
                   await Assign.create(
-                    uid: uid,
-                    taskId: task.id,
+                    assignTo: uid,
+                    task: task,
                   );
                   if (!mounted) return;
                   setState(() {

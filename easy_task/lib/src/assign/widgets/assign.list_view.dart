@@ -115,7 +115,7 @@ class AssignListView extends StatelessWidget {
                     );
                   },
                   title: Text(
-                    assign.uid,
+                    assign.assignTo,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
