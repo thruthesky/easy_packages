@@ -772,7 +772,6 @@ AssignListView(
 
 The code above will display the list of assign of the task. If `queryOptions` was not provided, it will use default `AssignQueryOptions` and list all assigns across all tasks.
 
-
 ### Status of an Assigned Task
 
 Once the task is assigned, by default the status is `waiting`.

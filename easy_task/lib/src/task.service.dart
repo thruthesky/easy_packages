@@ -2,14 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/easy_task.dart';
 
-/// To-do service
+typedef TaskUserDocInfo = ({
+  String collection,
+  String name,
+  String photoUrl,
+});
+
+/// Task service
 ///
-/// This service is the only service for the whole to-do feature.
+/// This service is the only service for the whole task feature.
 class TaskService {
   static TaskService? _instance;
   static TaskService get instance => _instance ??= TaskService._();
 
   TaskService._();
+
+  TaskUserDocInfo userDocInfo = (
+    collection: 'users',
+    name: 'displayName',
+    photoUrl: 'photoUrl',
+  );
+
+  init(
+    TaskUserDocInfo? user,
+  ) {
+    if (user != null) {
+      userDocInfo = user;
+    }
+  }
 
   /// CollectionReference for Task docs
   CollectionReference taskCol = FirebaseFirestore.instance.collection('task');

@@ -188,11 +188,6 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                     ...group.moderatorUsers.map(
                       (e) => Text(e),
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      "Users:",
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
                     ...group.users.map((e) => Text(e)),
                     const SizedBox(height: 24),
                     const Spacer(),

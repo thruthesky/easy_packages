@@ -87,7 +87,7 @@ class TaskQueryOptions {
     }
     if (uid != null) {
       taskQuery = taskQuery.where(
-        "uid",
+        "creator",
         isEqualTo: uid!,
       );
     }
