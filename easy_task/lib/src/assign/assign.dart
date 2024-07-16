@@ -97,7 +97,7 @@ class Assign {
     return Assign.fromSnapshot(snapshot);
   }
 
-  /// Change stauts
+  /// Change status
   Future<void> changeStatus(String status) async {
     await ref.update({
       'status': status,
@@ -106,7 +106,6 @@ class Assign {
   }
 
   /// Delete an assign
-  ///
   ///
   Future<void> delete() async {
     TaskService.instance.taskCol.doc(taskId).update({

@@ -113,14 +113,7 @@ class TaskListView extends StatelessWidget {
             return itemBuilder?.call(task, index) ??
                 ListTile(
                   onTap: () async {
-                    if (task.uid == myUid) {
-                      showGeneralDialog(
-                        context: context,
-                        pageBuilder: (_, __, ___) => TaskDetailScreen(
-                          task: task,
-                        ),
-                      );
-                    } else if (task.assignTo.contains(myUid)) {
+                    if (task.assignTo.contains(myUid)) {
                       final assign =
                           await TaskService.instance.getMyAssignFrom(task.id);
                       if (assign == null) return;
@@ -129,6 +122,13 @@ class TaskListView extends StatelessWidget {
                         context: context,
                         pageBuilder: (_, __, ___) => AssignDetailScreen(
                           assign: assign,
+                          task: task,
+                        ),
+                      );
+                    } else {
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) => TaskDetailScreen(
                           task: task,
                         ),
                       );

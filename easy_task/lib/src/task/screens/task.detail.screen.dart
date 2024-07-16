@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
@@ -10,10 +11,13 @@ class TaskDetailScreen extends StatefulWidget {
     super.key,
     required this.task,
     this.assignUids,
+    this.group,
   });
 
   final Task task;
   final FutureOr<String?> Function(BuildContext context)? assignUids;
+
+  final TaskUserGroup? group;
 
   @override
   State<TaskDetailScreen> createState() => _TaskDetailScreenState();
@@ -21,18 +25,29 @@ class TaskDetailScreen extends StatefulWidget {
 
 class _TaskDetailScreenState extends State<TaskDetailScreen> {
   late Task task;
+  TaskUserGroup? group;
 
   @override
   void initState() {
     super.initState();
     task = widget.task;
+    group = widget.group;
+    if (widget.task.groupId != null && group == null) _initGroup();
+  }
+
+  _initGroup() async {
+    final group = await TaskUserGroup.get(widget.task.groupId!);
+    if (group == null) throw 'Task has group id but Group not found.';
+    setState(() {
+      this.group = group;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TaskDetail'),
+        title: const Text('Task Detail'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -94,34 +109,35 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () async {
-                String? uid;
-                if (widget.assignUids != null) {
-                  uid = await widget.assignUids!.call(context);
-                } else {
-                  uid = await showGeneralDialog<String?>(
-                    context: context,
-                    pageBuilder: (context, a1, a2) {
-                      return UserListScreen(
-                        onTap: (uid) => Navigator.of(context).pop(uid),
-                      );
-                    },
+            if (group?.moderatorUsers.contains(myUid) ?? task.uid == myUid)
+              ElevatedButton(
+                onPressed: () async {
+                  String? uid;
+                  if (widget.assignUids != null) {
+                    uid = await widget.assignUids!.call(context);
+                  } else {
+                    uid = await showGeneralDialog<String?>(
+                      context: context,
+                      pageBuilder: (context, a1, a2) {
+                        return UserListScreen(
+                          onTap: (uid) => Navigator.of(context).pop(uid),
+                        );
+                      },
+                    );
+                  }
+                  if (uid == null) return;
+                  await Assign.create(
+                    uid: uid,
+                    taskId: task.id,
                   );
-                }
-                if (uid == null) return;
-                await Assign.create(
-                  uid: uid,
-                  taskId: task.id,
-                );
-                if (!mounted) return;
-                setState(() {
-                  task.assignTo.add(uid!);
-                });
-                return;
-              },
-              child: const Text('ASSIGN +'),
-            ),
+                  if (!mounted) return;
+                  setState(() {
+                    task.assignTo.add(uid!);
+                  });
+                  return;
+                },
+                child: const Text('ASSIGN +'),
+              ),
             const SizedBox(height: 48),
           ],
         ),

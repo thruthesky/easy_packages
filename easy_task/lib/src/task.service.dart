@@ -20,10 +20,10 @@ class TaskService {
       FirebaseFirestore.instance.collection('todo-task-assign');
 
   /// CollectionReference for Task User Group
-  CollectionReference groupCol =
+  CollectionReference userGroupCol =
       FirebaseFirestore.instance.collection('task-user-group');
 
-  /// Get assingees of the task
+  /// Get assignees of the task
   Future<List<Assign>> getAssigns(String taskId) async {
     final snapshot = await assignCol.where('taskId', isEqualTo: taskId).get();
     return snapshot.docs.map((e) => Assign.fromSnapshot(e)).toList();

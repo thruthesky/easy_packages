@@ -38,7 +38,7 @@ class TaskUserGroupListScreen extends StatelessWidget {
                   context: context,
                   pageBuilder: (_, __, ___) => TaskUserGroupDetailScreen(
                     group: group,
-                    inviteUids: (context) async {
+                    onInviteUids: (context) async {
                       return await showGeneralDialog<List<String>?>(
                         context: context,
                         pageBuilder: (context, a1, a2) => Scaffold(
@@ -58,6 +58,39 @@ class TaskUserGroupListScreen extends StatelessWidget {
                         ),
                       );
                     },
+                    userListTileBuilder: (uid) => UserDoc(
+                      uid: uid,
+                      builder: (user) => ListTile(
+                        leading: user == null
+                            ? Container(
+                                height: 48,
+                                width: 48,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.person),
+                                ),
+                              )
+                            : UserAvatar(user: user),
+                        title: Text(
+                          user?.displayName ?? uid,
+                        ),
+                        subtitle: Text(
+                          user?.createdAt.toString() ?? '',
+                        ),
+                        onTap: () {
+                          if (!context.mounted) return;
+                          if (user == null) return;
+                          showGeneralDialog(
+                            context: context,
+                            pageBuilder: (_, __, ___) =>
+                                UserPublicProfileScreen(user: user),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 );
               },

@@ -3,7 +3,7 @@ import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 
 class TaskUserGroup {
-  static final CollectionReference col = TaskService.instance.groupCol;
+  static final CollectionReference col = TaskService.instance.userGroupCol;
   DocumentReference get ref => col.doc(id);
 
   String id;

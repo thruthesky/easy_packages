@@ -11,7 +11,8 @@ class TaskUserGroupDetailScreen extends StatefulWidget {
   const TaskUserGroupDetailScreen({
     super.key,
     required this.group,
-    this.inviteUids,
+    this.onInviteUids,
+    this.userListTileBuilder,
   });
 
   final TaskUserGroup group;
@@ -19,7 +20,10 @@ class TaskUserGroupDetailScreen extends StatefulWidget {
   /// To use own user listing, use `inviteUids`.
   /// It must return List of uids of users to invite into group.
   /// If it returned null, it will not do anything.
-  final FutureOr<List<String>?> Function(BuildContext context)? inviteUids;
+  final FutureOr<List<String>?> Function(BuildContext context)? onInviteUids;
+
+  /// To build own custom List Tile to display user, use `userListTileBuilder`.
+  final Widget Function(String uid)? userListTileBuilder;
 
   @override
   State<TaskUserGroupDetailScreen> createState() =>
@@ -41,7 +45,7 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                   pageBuilder: (context, a1, a2) =>
                       TaskUserGroupInvitationListScreen(
                     group: widget.group,
-                    inviteUids: widget.inviteUids,
+                    onInviteUids: widget.onInviteUids,
                   ),
                 );
               },
@@ -57,9 +61,11 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                   ),
                   body: ListView.builder(
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(widget.group.users[index]),
-                      );
+                      return widget.userListTileBuilder
+                              ?.call(widget.group.users[index]) ??
+                          ListTile(
+                            title: Text(widget.group.users[index]),
+                          );
                     },
                     itemCount: widget.group.users.length,
                   ),
@@ -170,7 +176,9 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                       "Moderators:",
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
-                    ...widget.group.moderatorUsers.map((e) => Text(e)),
+                    ...widget.group.moderatorUsers.map(
+                      (e) => Text(e),
+                    ),
                     const SizedBox(height: 24),
                     Text(
                       "Users:",

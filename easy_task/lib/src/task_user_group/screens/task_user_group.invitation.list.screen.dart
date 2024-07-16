@@ -8,15 +8,15 @@ class TaskUserGroupInvitationListScreen extends StatefulWidget {
   const TaskUserGroupInvitationListScreen({
     super.key,
     required this.group,
-    this.inviteUids,
+    this.onInviteUids,
   });
 
   final TaskUserGroup group;
 
-  /// To use own user listing, use `inviteUids`.
+  /// To use own user listing, use `onInviteUids`.
   /// It must return List of uids of users to invite into group.
   /// If it returned null, it will not do anything.
-  final FutureOr<List<String>?> Function(BuildContext context)? inviteUids;
+  final FutureOr<List<String>?> Function(BuildContext context)? onInviteUids;
 
   @override
   State<TaskUserGroupInvitationListScreen> createState() =>
@@ -34,8 +34,8 @@ class _TaskUserGroupInvitationListScreenState
           IconButton(
             onPressed: () async {
               List<String>? inviteUids;
-              if (widget.inviteUids != null) {
-                inviteUids = await widget.inviteUids!.call(context);
+              if (widget.onInviteUids != null) {
+                inviteUids = await widget.onInviteUids!.call(context);
               } else {
                 inviteUids = await showGeneralDialog<List<String>?>(
                   context: context,

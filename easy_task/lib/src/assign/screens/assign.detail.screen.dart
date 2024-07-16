@@ -1,4 +1,5 @@
 import 'package:easy_task/src/defines.dart';
+import 'package:easy_task/src/task_user_group/task_user_group.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
@@ -7,7 +8,11 @@ class AssignDetailScreen extends StatefulWidget {
     super.key,
     required this.assign,
     this.task,
-  }) : assert(task == null || assign.taskId == task.id);
+    this.group,
+  })  : assert(task == null || assign.taskId == task.id,
+            "Assign and Task must be related."),
+        assert(group == null || assign.groupId == group.id,
+            "Assign and Group must be related.");
 
   final Assign assign;
 
@@ -15,12 +20,16 @@ class AssignDetailScreen extends StatefulWidget {
   /// so that it doesn't have to get and wait for future
   final Task? task;
 
+  /// Since only moderator can close task, we need the user group information.
+  final TaskUserGroup? group;
+
   @override
   State<AssignDetailScreen> createState() => _AssignDetailScreenState();
 }
 
 class _AssignDetailScreenState extends State<AssignDetailScreen> {
   Task? task;
+  TaskUserGroup? group;
   String? statusSelected;
 
   @override
@@ -28,13 +37,22 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
     super.initState();
     statusSelected = widget.assign.status;
     task = widget.task;
-    if (task != null) return;
-    _initTask();
+    if (task == null) _initTask();
+    group = widget.group;
+    if (widget.assign.groupId != null && widget.group == null) _initGroup();
+  }
+
+  _initGroup() async {
+    final group = await TaskUserGroup.get(widget.assign.groupId!);
+    if (group == null) throw 'Assign has group id but Group not found.';
+    setState(() {
+      this.group = group;
+    });
   }
 
   _initTask() async {
     final task = await Task.get(widget.assign.taskId);
-    if (task == null) return;
+    if (task == null) throw 'Task not found.';
     setState(() {
       this.task = task;
     });
@@ -60,6 +78,7 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
             if (widget.assign.uid == myUid ||
                 widget.assign.assignedBy == myUid) ...[
               DropdownMenu<String>(
+                width: MediaQuery.of(context).size.width - 48,
                 dropdownMenuEntries: [
                   if (widget.assign.status != AssignStatus.closed) ...[
                     if (widget.assign.status == AssignStatus.waiting ||
@@ -83,7 +102,7 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
                         label: "Finished",
                       ),
                     ],
-                    if (widget.assign.assignedBy == currentUser?.uid) ...[
+                    if (group?.moderatorUsers.contains(myUid) ?? false) ...[
                       const DropdownMenuEntry(
                         value: AssignStatus.closed,
                         label: "Closed",
@@ -99,6 +118,7 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
                 initialSelection: widget.assign.status,
                 onSelected: (value) => statusSelected = value,
               ),
+              const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: () async {
                   await widget.assign.changeStatus(statusSelected!);
