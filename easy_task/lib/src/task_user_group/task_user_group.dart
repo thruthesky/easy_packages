@@ -6,29 +6,29 @@ class TaskUserGroup {
   static final CollectionReference col = TaskService.instance.userGroupCol;
   DocumentReference get ref => col.doc(id);
 
-  String id;
+  final String id;
 
   /// [name] is the name of the group
-  String name;
+  final String name;
 
   /// [users] is the list of
   /// users' uids who are members
-  List<String> users;
+  final List<String> users;
 
   /// [moderatorUsers] is the list of
   /// users' uids who are moderators
-  List<String> moderatorUsers;
+  final List<String> moderatorUsers;
 
   /// [invitedUsers] is the list of
   /// users' uids who invited the group
-  List<String> invitedUsers;
+  final List<String> invitedUsers;
 
   /// [rejectedUsers] is the list of
   /// users' uids who rejecte/declined the
   /// invitation
-  List<String> rejectedUsers;
-  DateTime createdAt;
-  DateTime updatedAt;
+  final List<String> rejectedUsers;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   TaskUserGroup({
     required this.id,

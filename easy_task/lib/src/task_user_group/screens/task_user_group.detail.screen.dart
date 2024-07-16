@@ -31,20 +31,28 @@ class TaskUserGroupDetailScreen extends StatefulWidget {
 }
 
 class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
+  late TaskUserGroup group;
+
+  @override
+  void initState() {
+    super.initState();
+    group = widget.group;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Group"),
         actions: [
-          if (widget.group.moderatorUsers.contains(myUid))
+          if (group.moderatorUsers.contains(myUid))
             IconButton(
               onPressed: () {
                 showGeneralDialog(
                   context: context,
                   pageBuilder: (context, a1, a2) =>
                       TaskUserGroupInvitationListScreen(
-                    group: widget.group,
+                    group: group,
                     onInviteUids: widget.onInviteUids,
                   ),
                 );
@@ -62,12 +70,12 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                   body: ListView.builder(
                     itemBuilder: (context, index) {
                       return widget.userListTileBuilder
-                              ?.call(widget.group.users[index]) ??
+                              ?.call(group.users[index]) ??
                           ListTile(
-                            title: Text(widget.group.users[index]),
+                            title: Text(group.users[index]),
                           );
                     },
-                    itemCount: widget.group.users.length,
+                    itemCount: group.users.length,
                   ),
                 ),
               );
@@ -96,7 +104,7 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
           Expanded(
               child: TaskListView(
             queryOptions: TaskQueryOptions(
-              groupId: widget.group.id,
+              groupId: group.id,
             ),
           )),
           const Spacer(),
@@ -108,7 +116,7 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                   context: context,
                   pageBuilder: (context, a1, a2) {
                     return TaskCreateScreen(
-                      group: widget.group,
+                      group: group,
                     );
                   },
                 );
@@ -147,7 +155,7 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                         Flexible(
                           flex: 1,
                           child: Text(
-                            widget.group.name,
+                            group.name,
                             style: Theme.of(context).textTheme.headlineSmall,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -159,8 +167,10 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                               context: context,
                               pageBuilder: (context, a1, a2) =>
                                   TaskUserGroupUpdateScreen(
-                                group: widget.group,
-                                onUpdate: () {
+                                group: group,
+                                onUpdate: () async {
+                                  if (!context.mounted) return;
+                                  group = (await TaskUserGroup.get(group.id))!;
                                   if (!context.mounted) return;
                                   setState(() => {});
                                 },
@@ -176,7 +186,7 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                       "Moderators:",
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
-                    ...widget.group.moderatorUsers.map(
+                    ...group.moderatorUsers.map(
                       (e) => Text(e),
                     ),
                     const SizedBox(height: 24),
@@ -184,7 +194,7 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                       "Users:",
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
-                    ...widget.group.users.map((e) => Text(e)),
+                    ...group.users.map((e) => Text(e)),
                     const SizedBox(height: 24),
                     const Spacer(),
                     const SizedBox(height: 24),
