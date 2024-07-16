@@ -24,18 +24,18 @@ class Assign {
   static final CollectionReference col = TaskService.instance.assignCol;
   DocumentReference get ref => col.doc(id);
 
-  String id;
-  String uid;
-  String taskId;
-  String status;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String assignedBy;
-  String? groupId;
+  final String id;
+  final String assignTo;
+  final String taskId;
+  final String status;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String assignedBy;
+  final String? groupId;
 
   Assign({
     required this.id,
-    required this.uid,
+    required this.assignTo,
     required this.taskId,
     required this.status,
     required this.createdAt,
@@ -49,7 +49,7 @@ class Assign {
     final Timestamp? updatedAt = json['updatedAt'];
     return Assign(
       id: id,
-      uid: json['uid'],
+      assignTo: json['assignTo'],
       taskId: json['taskId'],
       status: json['status'],
       createdAt: createdAt == null ? DateTime.now() : createdAt.toDate(),
@@ -69,23 +69,25 @@ class Assign {
   /// This method creates a new assign document and updates the 'assignTo'
   /// field of the task document.
   ///
+  /// [assignTo] is the uid of the user to assign the task to.
+  ///
   /// See the README.en.md for details.
   static Future<DocumentReference> create({
-    required String uid,
-    required String taskId,
+    required String assignTo,
+    required Task task,
     String? groupId,
   }) async {
     final ref = await col.add({
-      'uid': uid,
-      'taskId': taskId,
+      'uid': assignTo,
+      'taskId': task.id,
       'status': AssignStatus.waiting,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
       'assignedBy': myUid,
       if (groupId != null) 'groupId': groupId,
     });
-    await TaskService.instance.taskCol.doc(taskId).update({
-      'assignTo': FieldValue.arrayUnion([uid]),
+    await TaskService.instance.taskCol.doc(task.id).update({
+      'assignTo': FieldValue.arrayUnion([assignTo]),
     });
     return ref;
   }

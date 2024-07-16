@@ -104,7 +104,7 @@ Future testTaskUnassign() async {
 Future testTaskCreate() async {
   final ref = await Task.create(title: 'fisrt task');
   final created = await Task.get(ref.id) as Task;
-  isTrue(created.title == 'fisrt task', 'title is not correct');
+  isTrue(created.title == 'fisrt task', 'succes -> title is correct');
 }
 
 Future testTaskUpdate() async {

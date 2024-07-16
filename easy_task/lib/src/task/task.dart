@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/task.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,32 +15,30 @@ class Task {
   static final CollectionReference col = TaskService.instance.taskCol;
   DocumentReference get ref => col.doc(id);
 
-  String id;
-  String title;
-  String content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  List<String> assignTo = [];
-  String? groupId;
-  DateTime? startAt;
-  DateTime? endAt;
+  final String id;
+  final String title;
+  final String content;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final List<String> assignTo;
+  final String? groupId;
+  final DateTime? startAt;
+  final DateTime? endAt;
 
-  /// [uid] is the uid of the task creator
-  String uid;
-
-  static String get _myUid => FirebaseAuth.instance.currentUser!.uid;
+  /// [creator] is the uid of the task creator
+  String creator;
 
   Task({
     required this.id,
     required this.title,
-    this.content = '',
+    required this.content,
     required this.createdAt,
     required this.updatedAt,
-    this.assignTo = const [],
-    this.groupId,
+    required this.assignTo,
+    required this.groupId,
     this.startAt,
     this.endAt,
-    required this.uid,
+    required this.creator,
   });
 
   factory Task.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -54,15 +53,15 @@ class Task {
 
     return Task(
       id: id,
-      title: json['title'],
+      title: json['title'] ?? '',
       content: json['content'] ?? '',
       createdAt: createdAt == null ? DateTime.now() : createdAt.toDate(),
       updatedAt: updatedAt == null ? DateTime.now() : updatedAt.toDate(),
       assignTo: List<String>.from(json['assignTo'] ?? []),
-      groupId: json['groupId'] ?? '',
+      groupId: json['groupId'],
       startAt: startAt?.toDate(),
       endAt: endAt?.toDate(),
-      uid: json['uid'] ?? '',
+      creator: json['creator'],
     );
   }
 
@@ -72,6 +71,8 @@ class Task {
   /// ```dart
   /// return (await get(createdRef.id))!;
   /// ```
+  ///
+  /// Warning! avoid to use this method as much as possible since it costs a lot.
   static Future<Task?> get(String id) async {
     final snapshot = await col.doc(id).get();
     if (!snapshot.exists) return null;
@@ -79,28 +80,27 @@ class Task {
   }
 
   /// Create a task
+  ///
+  /// [title] is the title of the task.
+  ///
   static Future<DocumentReference> create({
-    required String title,
+    String? title,
     String? content,
     DateTime? startAt,
     DateTime? endAt,
     List<String>? assignTo,
     String? groupId,
   }) async {
-    return await TaskService.instance.taskCol.add({
-      'title': title,
+    return await col.add({
+      if (title != null) 'title': title,
       if (content != null) 'content': content,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
       if (startAt != null) 'startAt': Timestamp.fromDate(startAt),
       if (endAt != null) 'endAt': Timestamp.fromDate(endAt),
-      // Take note
-      // assignTo is important to be saved as empty so that
-      // we can easily query to check which tasks are unassigned.
-      // @withcenter.dev2
       'assignTo': assignTo ?? [],
       if (groupId != null) 'groupId': groupId,
-      'uid': _myUid,
+      'creator': myUid!,
     });
   }
 
