@@ -36,6 +36,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   }
 
   _initGroup() async {
+    if (widget.task.groupId == null || widget.task.groupId!.isEmpty) return;
     final group = await TaskUserGroup.get(widget.task.groupId!);
     if (group == null) throw 'Task has group id but Group not found.';
     setState(() {

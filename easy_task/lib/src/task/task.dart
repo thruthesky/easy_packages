@@ -73,7 +73,7 @@ class Task {
   /// return (await get(createdRef.id))!;
   /// ```
   static Future<Task?> get(String id) async {
-    final snapshot = await TaskService.instance.taskCol.doc(id).get();
+    final snapshot = await col.doc(id).get();
     if (!snapshot.exists) return null;
     return Task.fromSnapshot(snapshot);
   }

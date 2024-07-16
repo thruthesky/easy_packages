@@ -1,5 +1,4 @@
 import 'package:easy_task/src/defines.dart';
-import 'package:easy_task/src/task_user_group/task_user_group.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
@@ -76,7 +75,8 @@ class _AssignDetailScreenState extends State<AssignDetailScreen> {
             Text("Status: ${widget.assign.status}"),
             const Spacer(),
             if (widget.assign.uid == myUid ||
-                widget.assign.assignedBy == myUid) ...[
+                widget.assign.assignedBy == myUid ||
+                (group?.moderatorUsers.contains(myUid) ?? false)) ...[
               DropdownMenu<String>(
                 width: MediaQuery.of(context).size.width - 48,
                 dropdownMenuEntries: [

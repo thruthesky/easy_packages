@@ -7,7 +7,7 @@ This package is a todo like task manage system which allows a user to create gro
 - `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
 - User collection must be set on the `TaskService.instance.init( user: { collection: 'users', displayName: 'name', photoUrl:'photoURL', } )`.
   - The document id of the user collection must be the uid.
-  - And by default, this package uses `dispalyName` in the document to get the user's name to display on the screen. And `photoUrl` to get the user's photoUrl. If your document uses different fields, you can set it on initialization.
+  - And by default, this package uses `displayName` in the document to get the user's name to display on the screen. And `photoUrl` to get the user's photoUrl. If your document uses different fields, you can set it on initialization.
   - For user search screen(or dislog), it will use the display name in user documents.
 
 ## Coding convention
@@ -384,7 +384,7 @@ In easy task there are these entities:
 
 ### Creating a Group
 
-To create a Group, you can check the example code below.
+To create a TaskUserGroup, you can check the example code below.
 
 ```dart
 class TaskUserGroupDetailScreen extends StatefulWidget {
@@ -457,7 +457,7 @@ To view the details of the group, check the code below.
 
 ```dart
 // We need to get group from somewhere. Here we got it thru id.
-final group = await Group.get(groupRef.id);
+final group = await TaskUserGroup.get(groupRef.id);
 showGeneralDialog(
   context: context,
   pageBuilder: (context, a1, a2) {
@@ -470,16 +470,41 @@ However, for customization, you can code your own group detail screen.
 
 ### Inviting User in a group
 
-In easy_task, creating invitation means, inviting the other user to join the group. Check the code below.
+In easy_task, invited users' uid will be included under invitedUsers field in TaskUserGroup. Check the code below.
 
 ```dart
-// Must get the uid of the user to invite, somewhere.
-final inviteUid = user.uid;
-
-await Invitation.create(
-  groupId: group.id,
-  uid: inviteUid,
-);
+IconButton(
+  onPressed: () {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, a1, a2) =>
+          TaskUserGroupInvitationListScreen(
+        group: widget.group,
+        onInviteUids: (context) async {
+          return await showGeneralDialog<List<String>?>(
+            context: context,
+            pageBuilder: (context, a1, a2) => Scaffold(
+              appBar: AppBar(
+                title: const Text("Invite Users"),
+              ),
+              body: UserListView(
+                itemBuilder: (user, index) {
+                  return UserListTile(
+                    user: user,
+                    onTap: () => {
+                      Navigator.of(context).pop([user.uid]),
+                    },
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  },
+  icon: const Icon(Icons.outbox),
+),
 ```
 
 It will depend on how you want to use invitation or how to choose who to invite (or get the uid of the user to invite).
@@ -508,7 +533,7 @@ The code below will show a listing for group's invitation.
 
 ```dart
 // We need to get group from somewhere. Here we got it thru id.
-final group = await Group.get(groupRef.id);
+final group = await TaskUserGroup.get(groupRef.id);
 
 // ...
 // This is usually inside build method.
@@ -535,8 +560,8 @@ class ReceivedInvitationScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Invitations"),
       ),
-      body: GroupListView(
-        queryOptions: GroupQueryOptions(
+      body: TaskUserGroupListView(
+        queryOptions: TaskUserGroupQueryOptions(
           invitedUsersContain: myUid!,
         ),
         itemBuilder: (group, index) {
@@ -569,14 +594,14 @@ class ReceivedInvitationScreen extends StatelessWidget {
 }
 ```
 
-In the code above, it is using `queryOptions: GroupQueryOption(invitedUsersContain: myUid!)` to list the invitations received by the current user, using `GroupListView` widget.
+In the code above, it is using `queryOptions: TaskUserGroupQueryOption(invitedUsersContain: myUid!)` to list the invitations received by the current user, using `TaskUserGroupListView` widget.
 
 ```dart
 String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
 // ...
-GroupListView(
-  queryOptions: GroupQueryOptions(
+TaskUserGroupListView(
+  queryOptions: TaskUserGroupQueryOptions(
     invitedUsersContain: myUid!,
   ),
 )
@@ -588,7 +613,7 @@ To create an Accept/Reject buttons, check the code below.
 
 ```dart
 // We need to get group from somewhere. Here we got it thru id.
-final group = await Group.get(groupRef.id);
+final group = await TaskUserGroup.get(groupRef.id);
 
 // ...
 // Normally, this is being returned inside build method.
@@ -813,7 +838,7 @@ The code above shows an example to assign a task to a user. However, we can also
 
 ```dart
 // Get the group somewhere. Here we got it thru id.
-final group = Group.get(groupId);
+final group = TaskUserGroup.get(groupId);
 
 // ...
 // Normally, this is being returned inside build method.
