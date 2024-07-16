@@ -191,7 +191,7 @@ packages:
       path: "../easy_engine"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   easy_helpers:
     dependency: "direct main"
     description:
