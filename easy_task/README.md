@@ -316,8 +316,8 @@ flowchart TD
 
 These are the collections relating to easy_task:
 
-- `todo-task` is the collection for tasks.
-- `todo-task-assign` is the collleciton for assigns. It has `taskId` to relate to tasks.
+- `task` is the collection for tasks.
+- `task-assign` is the collleciton for assigns. It has `taskId` to relate to tasks.
 - `task-user-group` is the collection for group.
 
 #### todo-task collection (Task)
@@ -371,7 +371,6 @@ This list view is responsible to list all kinds of tasks which includes but not 
   - task that are create by himself and not assigned to any one,
   - task that are create by himself and assigned to more than 2 others,
   - and more more options.
-
 
 ## Usage
 
@@ -447,10 +446,10 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
 To simplify, the code that creates a group is:
 
 ```dart
-final groupRef = await Group.create(name: nameController.text);
+final groupRef = await TaskUserGroup.create(name: nameController.text);
 ```
 
-`Group.create()` will automatically set the current user as the moderator of the group.
+`TaskUserGroup.create()` will automatically set the current user as the moderator of the group.
 
 ### Viewing the Group Details
 

@@ -12,12 +12,11 @@ class TaskService {
   TaskService._();
 
   /// CollectionReference for Task docs
-  CollectionReference taskCol =
-      FirebaseFirestore.instance.collection('todo-task');
+  CollectionReference taskCol = FirebaseFirestore.instance.collection('task');
 
   /// CollectionReference for Assign docs
   CollectionReference assignCol =
-      FirebaseFirestore.instance.collection('todo-task-assign');
+      FirebaseFirestore.instance.collection('task-assign');
 
   /// CollectionReference for Task User Group
   CollectionReference userGroupCol =
