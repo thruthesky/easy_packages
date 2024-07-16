@@ -50,20 +50,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () async {
                               try {
                                 final re = await engine.deleteAccount();
-                                print(re);
+                                debugPrint(re);
                               } on FirebaseFunctionsException catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content:
-                                        Text('Error: ${e.code}/${e.message}'),
-                                  ),
-                                );
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('Error: ${e.code}/${e.message}'),
+                                    ),
+                                  );
+                                }
                               } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Error: $e'),
-                                  ),
-                                );
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Error: $e'),
+                                    ),
+                                  );
+                                }
                               }
                             },
                             child: const Text('Delete Account'),
