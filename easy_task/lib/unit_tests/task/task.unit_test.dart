@@ -61,10 +61,10 @@ void testTaskCrud() async {
 
 Future testTaskAssign() async {
   final task = await createTask();
-  final createdRef = await Assign.create(taskId: task.id, uid: myUid!);
+  final createdRef = await Assign.create(task: task, assignTo: myUid!);
   final createdAssign = await Assign.get(createdRef.id) as Assign;
   isTrue(createdAssign.taskId == task.id, 'Task id is not correct');
-  isTrue(createdAssign.uid == myUid, 'User id is not correct');
+  isTrue(createdAssign.assignTo == myUid, 'User id is not correct');
 
   final updatedTask = await Task.get(task.id) as Task;
 
@@ -76,10 +76,10 @@ Future testTaskAssign() async {
 
 Future testTaskUnassign() async {
   final task = await createTask();
-  final createdRef = await Assign.create(taskId: task.id, uid: myUid!);
+  final createdRef = await Assign.create(task: task, assignTo: myUid!);
   final createdAssign = await Assign.get(createdRef.id) as Assign;
   isTrue(createdAssign.taskId == task.id, 'Task id is not correct');
-  isTrue(createdAssign.uid == myUid!, 'User id is not correct');
+  isTrue(createdAssign.assignTo == myUid!, 'User id is not correct');
 
   final updatedTask = await Task.get(task.id) as Task;
 
@@ -131,7 +131,7 @@ Future testTaskDeleteWithAssign() async {
   final ref = await Task.create(title: 'task - ${DateTime.now()}');
   final created = await Task.get(ref.id) as Task;
 
-  final assignRef = await Assign.create(taskId: created.id, uid: myUid!);
+  final assignRef = await Assign.create(task: created, assignTo: myUid!);
 
   await created.delete();
   final deleted = await Task.get(ref.id);
@@ -150,13 +150,13 @@ Future testTaskDeleteComplicated() async {
   final taskB = await createTask();
 
   /// assign taskA to 3 users
-  await Assign.create(taskId: taskA.id, uid: myUid!);
-  await Assign.create(taskId: taskA.id, uid: 'abc');
-  await Assign.create(taskId: taskA.id, uid: 'def');
+  await Assign.create(task: taskA, assignTo: myUid!);
+  await Assign.create(task: taskA, assignTo: 'abc');
+  await Assign.create(task: taskA, assignTo: 'def');
 
   /// assign taskB to 2 users
-  await Assign.create(taskId: taskB.id, uid: '1');
-  await Assign.create(taskId: taskB.id, uid: '2');
+  await Assign.create(task: taskB, assignTo: '1');
+  await Assign.create(task: taskB, assignTo: '2');
 
   /// Check if taskA has 3 assigns
   final List<Assign> assigns1 = await TaskService.instance.getAssigns(taskA.id);
@@ -184,7 +184,7 @@ Future testTaskStatus() async {
 
   // uidA created a task and assigned it to uidB
   final task = await createTask();
-  final createdAssignRef = await Assign.create(uid: uidB, taskId: task.id);
+  final createdAssignRef = await Assign.create(assignTo: uidB, task: task);
   final createdAssign = await Assign.get(createdAssignRef.id);
 
   isTrue(createdAssign!.status == AssignStatus.waiting,
@@ -217,7 +217,7 @@ Future testTaskFlow() async {
 
   // uidA created a task and assigned it to uidB
   final task = await createTask();
-  final createdAssignRef = await Assign.create(uid: uidB, taskId: task.id);
+  final createdAssignRef = await Assign.create(assignTo: uidB, task: task);
   final createdAssign = await Assign.get(createdAssignRef.id);
 
   isTrue(createdAssign!.status == AssignStatus.waiting,
@@ -299,7 +299,7 @@ Future testAssignRetrieveMyDocFromTaskID() async {
 
   // uidA created a task and assigned it to uidB
   final task = await createTask();
-  final createdAssignRef = await Assign.create(uid: uidB, taskId: task.id);
+  final createdAssignRef = await Assign.create(assignTo: uidB, task: task);
   await Assign.get(createdAssignRef.id);
 
   final retrieveAssignOfA = await TaskService.instance.getMyAssignFrom(task.id);
@@ -311,7 +311,8 @@ Future testAssignRetrieveMyDocFromTaskID() async {
 
   final retrieveAssignOfB = await TaskService.instance.getMyAssignFrom(task.id);
 
-  isTrue(retrieveAssignOfB?.uid == uidB, "Expect: assign.uid must be uidB");
+  isTrue(retrieveAssignOfB?.assignTo == uidB,
+      "Expect: assign.assignTo must be uidB");
 }
 
 Future testGroupCRUD() async {
@@ -532,8 +533,8 @@ Future testTaskAssignmentToGroup() async {
 
   final task = await Task.get(taskRef.id);
 
-  final assignRefs = await TaskService.instance
-      .assignGroup(taskId: task!.id, groupId: groupRef.id);
+  final assignRefs =
+      await TaskService.instance.assignGroup(task: task!, groupId: groupRef.id);
 
   isTrue(assignRefs!.length == 2,
       "Expect: Since there are two member, there must be two assigns");
@@ -544,11 +545,11 @@ Future testTaskAssignmentToGroup() async {
       "Expect: Since there are two member, there must be two assigns");
 
   isTrue(
-    [uidB, uidC].contains(assigns[0].uid),
+    [uidB, uidC].contains(assigns[0].assignTo),
     "Expect: Uid B or C must be used one of the assigns.",
   );
   isTrue(
-    [uidB, uidC].contains(assigns[1].uid),
+    [uidB, uidC].contains(assigns[1].assignTo),
     "Expect: Uid B or C must be used one of the assigns.",
   );
 }

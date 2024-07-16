@@ -85,7 +85,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
     if (widget.group != null) {
       TaskService.instance.assignGroup(
-        taskId: task.id,
+        task: task,
         groupId: widget.group!.id,
       );
     }
