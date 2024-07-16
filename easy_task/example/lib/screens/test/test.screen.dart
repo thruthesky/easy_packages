@@ -9,21 +9,43 @@ class TestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              testAllTask();
-            },
-            child: const Text('Test ALL'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              testTaskCrud();
-            },
-            child: const Text('Test CRUD'),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                testAllTask();
+              },
+              child: const Text('Test ALL'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                testTaskCrud();
+              },
+              child: const Text('Test CRUD'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                testAssignRetrieveMyDocFromTaskID();
+              },
+              child: const Text('Test Get My Assign from Task Id'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                testGroupCRUD();
+              },
+              child: const Text('Test Group CRUD'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                testTaskAssignmentToGroup();
+              },
+              child: const Text('Test Assignment to Group'),
+            ),
+          ],
+        ),
       ),
     );
   }

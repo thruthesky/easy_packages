@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 ///
 /// [searchName] if true the search will be based on the name if false the
 /// search will be based on the displayName. By default it is true.
+///
+///
 class UserSearchDialog extends StatefulWidget {
   const UserSearchDialog({
     super.key,
@@ -52,7 +54,9 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
   }
 
   Query get query {
-    final field = widget.searchName ? 'name' : 'displayName';
+    final field =
+        widget.searchName ? 'caseIncensitveName' : 'caseIncensitiveDisplayName';
+
     return widget.exactSearch
         ? userCol.where(field, isEqualTo: searchText)
         : userCol
@@ -80,7 +84,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                   hintText: 'Search user'.t,
                   suffixIcon: IconButton(
                     onPressed: () {
-                      searchText = searchController.text;
+                      searchText = searchController.text.toLowerCase();
                       dog(searchText);
                       setState(() {});
                     },
@@ -107,7 +111,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                     itemBuilder: (user, index) =>
                         widget.itemBuilder?.call(user, index) ??
                         UserListTile(
-                          contentPadding: EdgeInsets.zero,
+                          // contentPadding: EdgeInsets.zero,
                           user: user,
                         ),
                   ),

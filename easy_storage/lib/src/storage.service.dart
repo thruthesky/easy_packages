@@ -368,18 +368,14 @@ class StorageService {
       if (error.code == 'photo_access_denied') {
         errorToast(
           context: context,
-
-          /// TODO translation
-          title: 'galleryAccessDeniedTitle'.t,
-          message: 'galleryAccessDeniedContent'.t,
+          title: 'Gallery Access Denied'.t,
+          message: 'Access permission to the gallery has been denied'.t,
         );
       } else if (error.code == 'camera_access_denied') {
         errorToast(
           context: context,
-
-          /// TODO translation
-          title: 'cameraAccessDeniedTitle'.t,
-          message: 'cameraAccessDeniedContent'.t,
+          title: 'Camera Access Denied'.t,
+          message: 'Access permission to the Camera has been denied'.t,
         );
       } else {
         /// rethrow the unhandled error from PlatformException if there's any

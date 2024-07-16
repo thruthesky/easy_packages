@@ -157,12 +157,7 @@ class ChatRoom {
 
   /// [create] creates a new chat room.
   ///
-  /// This method creates a new chat room with the minimal properties with
-  /// the current user as the master user.
-  ///
-  /// Keep this method as minimal as possible and if you need to add more
-  /// properties, you can use [update] method after creating the chat room.
-  ///
+  /// TODO 전체 속성을 다 받아서 생성해야함. 채팅 생성 중에 속성 문제로 에러가 날 수 있기 때문.
   ///
   /// Returns the document reference of the chat room.
   static Future<ChatRoom> create() async {

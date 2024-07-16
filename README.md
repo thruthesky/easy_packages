@@ -5,7 +5,6 @@
 
 # Overview
 
-
 - **Easy Frame**: This is a Flutter framework that offers a wide range of UI/UX components, logic modules, and more. It's designed to help you build apps quickly and efficiently, suitable for various types of projects.
 
 - The framework is made up of several small, independent packages. Each package has its own specific functions but is designed to work well with others. You can use these packages individually or together in your app.
@@ -38,6 +37,7 @@ You can add any easy pakcages like this.
 - You can fork and clone the `https://github.com/thruthesky/easy_frame` repository inside your flutter app folder.
 
 - Then, add the dependencies like below.
+  - Since the packages are installed by dependencies, to use the cloned version of easy_frame, you will need to override them.
 
 ```yaml
 dependencies:
@@ -56,6 +56,7 @@ dependency_overrides:
   easyuser:
     path: ./easy_frame/easyuser
 ```
+
 
 
 
@@ -140,8 +141,6 @@ This is the style guide of the development easy packages.
 
 
 
-
-
 # Mermaid
 
 - Starting must be `START(xxxx)`
@@ -156,7 +155,6 @@ This is the style guide of the development easy packages.
 
 
 # Model
-
 
 Model class does
 - serialization/deserialization

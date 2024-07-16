@@ -9,3 +9,12 @@ This package provides the complete functionality of the forum including
 
 
 
+# Push notification
+
+- This package sends push notifications for forum activities only.
+- However, the app needs to handle saving push notification tokens, receiving, and displaying the notifications.
+
+
+# Things to note
+
+- This package doesn't handle forum categories because they're not essential for creating the forum feature.

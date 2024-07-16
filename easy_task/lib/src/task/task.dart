@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/task.service.dart';
 
 /// A task entity class of Todo feature
@@ -11,26 +12,32 @@ import 'package:easy_task/src/task.service.dart';
 /// [assignTo] method.
 class Task {
   static final CollectionReference col = TaskService.instance.taskCol;
-  DocumentReference get ref => Task.col.doc(id);
+  DocumentReference get ref => col.doc(id);
 
-  String id;
-  String title;
-  String content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  List<String> assignTo = [];
-  DateTime? startAt;
-  DateTime? endAt;
+  final String id;
+  final String title;
+  final String content;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final List<String> assignTo;
+  final String? groupId;
+  final DateTime? startAt;
+  final DateTime? endAt;
+
+  /// [creator] is the uid of the task creator
+  String creator;
 
   Task({
     required this.id,
     required this.title,
-    this.content = '',
+    required this.content,
     required this.createdAt,
     required this.updatedAt,
+    required this.assignTo,
+    required this.groupId,
     this.startAt,
     this.endAt,
-    this.assignTo = const [],
+    required this.creator,
   });
 
   factory Task.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -45,13 +52,15 @@ class Task {
 
     return Task(
       id: id,
-      title: json['title'],
+      title: json['title'] ?? '',
       content: json['content'] ?? '',
       createdAt: createdAt == null ? DateTime.now() : createdAt.toDate(),
       updatedAt: updatedAt == null ? DateTime.now() : updatedAt.toDate(),
+      assignTo: List<String>.from(json['assignTo'] ?? []),
+      groupId: json['groupId'],
       startAt: startAt?.toDate(),
       endAt: endAt?.toDate(),
-      assignTo: List<String>.from(json['assignTo'] ?? []),
+      creator: json['creator'],
     );
   }
 
@@ -61,30 +70,36 @@ class Task {
   /// ```dart
   /// return (await get(createdRef.id))!;
   /// ```
+  ///
+  /// Warning! avoid to use this method as much as possible since it costs a lot.
   static Future<Task?> get(String id) async {
-    final snapshot = await TaskService.instance.taskCol.doc(id).get();
+    final snapshot = await col.doc(id).get();
     if (!snapshot.exists) return null;
     return Task.fromSnapshot(snapshot);
   }
 
   /// Create a task
+  ///
+  /// [title] is the title of the task.
+  ///
   static Future<DocumentReference> create({
-    required String title,
+    String? title,
     String? content,
     DateTime? startAt,
     DateTime? endAt,
     List<String>? assignTo,
-    int? priority,
+    String? groupId,
   }) async {
-    return await TaskService.instance.taskCol.add({
-      'title': title,
+    return await col.add({
+      if (title != null) 'title': title,
       if (content != null) 'content': content,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
       if (startAt != null) 'startAt': Timestamp.fromDate(startAt),
       if (endAt != null) 'endAt': Timestamp.fromDate(endAt),
-      if (assignTo != null) 'assignTo': assignTo,
-      if (priority != null) 'priority': priority,
+      'assignTo': assignTo ?? [],
+      if (groupId != null) 'groupId': groupId,
+      'creator': myUid!,
     });
   }
 

@@ -1,30 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
-class TaskQueryOptions {
-  TaskQueryOptions({
-    this.limit = 20,
-    this.orderBy = 'createdAt',
-    this.orderByDescending = true,
-    this.assignToContains,
-    this.createdBy,
-  });
-
-  final int limit;
-  final String orderBy;
-  final bool orderByDescending;
-  final String? assignToContains;
-  final String? createdBy;
-}
-
-/// Task list view
-///
-/// This widget displays a list of tasks using [ListView.separated] widget.
-class TaskListView extends StatelessWidget {
-  const TaskListView({
+class AssignListView extends StatelessWidget {
+  const AssignListView({
     super.key,
     this.pageSize = 20,
     this.loadingBuilder,
@@ -47,7 +27,7 @@ class TaskListView extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
     this.emptyBuilder,
-    this.queryOptions,
+    this.queryOptions = const AssignQueryOptions(),
   });
 
   final int pageSize;
@@ -69,38 +49,14 @@ class TaskListView extends StatelessWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
-  final Widget Function(Task task, int index)? itemBuilder;
+  final Widget Function(Assign assign, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
-  final TaskQueryOptions? queryOptions;
+  final AssignQueryOptions queryOptions;
 
   @override
   Widget build(BuildContext context) {
-    Query taskQuery = Task.col;
-
-    if (queryOptions != null) {
-      if (queryOptions!.assignToContains != null) {
-        taskQuery = taskQuery.where(
-          "assignTo",
-          arrayContains: queryOptions!.assignToContains!,
-        );
-      }
-      if (queryOptions!.createdBy != null) {
-        taskQuery = taskQuery.where(
-          "createdBy",
-          isEqualTo: queryOptions!.createdBy!,
-        );
-      }
-
-      taskQuery = taskQuery
-          .orderBy(
-            queryOptions!.orderBy,
-            descending: queryOptions!.orderByDescending,
-          )
-          .limit(queryOptions!.limit);
-    }
-
     return FirestoreQueryBuilder(
-      query: taskQuery,
+      query: queryOptions.getQuery,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ??
@@ -146,26 +102,26 @@ class TaskListView extends StatelessWidget {
               snapshot.fetchMore();
             }
 
-            final task = Task.fromSnapshot(snapshot.docs[index]);
+            final assign = Assign.fromSnapshot(snapshot.docs[index]);
 
-            return itemBuilder?.call(task, index) ??
-                GestureDetector(
+            return itemBuilder?.call(assign, index) ??
+                ListTile(
                   onTap: () {
                     showGeneralDialog(
                       context: context,
-                      pageBuilder: (_, __, ___) => TaskDetailScreen(
-                        task: task,
+                      pageBuilder: (_, __, ___) => AssignDetailScreen(
+                        assign: assign,
                       ),
                     );
                   },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.teal[100],
-                      border: Border.all(width: 1),
-                    ),
-                    child: Text("Task is ${task.title}"),
+                  title: Text(
+                    assign.assignTo,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  leading: const Icon(Icons.picture_in_picture_alt_outlined),
+                  subtitle: Text(assign.status),
+                  trailing: const Icon(Icons.chevron_right_outlined),
                 );
           },
         );

@@ -59,6 +59,14 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Gender',
     'ko': '성별',
   },
+  'male': {
+    'en': 'Male',
+    'ko': '남자',
+  },
+  'female': {
+    'en': 'Female',
+    'ko': '여자',
+  },
   'Update Profile': {
     'en': 'Update Profile',
     'ko': '프로필 수정',
@@ -106,5 +114,29 @@ final Map<String, dynamic> localeTexts = {
   'phone number': {
     'en': 'Phone Number',
     'ko': '전화번호',
+  },
+  'Camera Access Denied': {
+    'en': 'Camera Access Denied',
+    'ko': '카메라 액세스가 거부되었습니다',
+  },
+  'Access permission to the Camera has been denied': {
+    'en': 'Access permission to the Camera has been denied',
+    'ko': '카메라에 대한 접근 권한이 거부되었습니다.',
+  },
+  'Gallery Access Denied': {
+    'en': 'Gallery Access Denied',
+    'ko': '갤러리 액세스가 거부되었습니다',
+  },
+  'Access permission to the gallery has been denied': {
+    'en': 'Access permission to the gallery has been denied',
+    'ko': '갤러리에 대한 접근 권한이 거부되었습니다',
+  },
+  'yes': {
+    'en': 'Yes',
+    'ko': '예',
+  },
+  'no': {
+    'en': 'No',
+    'ko': '아니요',
   },
 };

@@ -1,27 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
 
-class AssignQueryOptions {
-  const AssignQueryOptions({
-    this.task,
-    this.limit = 20,
-    this.orderBy = 'createdAt',
-    this.orderByDescending = true,
-    this.uid,
-  });
-
-  final Task? task;
-  final int limit;
-  final String orderBy;
-  final bool orderByDescending;
-  final String? uid;
-}
-
-class AssignListView extends StatelessWidget {
-  const AssignListView({
+/// Task list view
+///
+/// This widget displays a list of tasks using [ListView.separated] widget.
+class TaskListView extends StatelessWidget {
+  const TaskListView({
     super.key,
     this.pageSize = 20,
     this.loadingBuilder,
@@ -44,7 +31,7 @@ class AssignListView extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
     this.emptyBuilder,
-    this.queryOptions,
+    this.queryOptions = const TaskQueryOptions(),
   });
 
   final int pageSize;
@@ -66,35 +53,16 @@ class AssignListView extends StatelessWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
-  final Widget Function(Assign assign, int index)? itemBuilder;
+  final Widget Function(Task task, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
-  final AssignQueryOptions? queryOptions;
+  final TaskQueryOptions queryOptions;
+
+  String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
   @override
   Widget build(BuildContext context) {
-    Query assignQuery = Assign.col;
-    if (queryOptions != null) {
-      if (queryOptions!.task != null) {
-        assignQuery = assignQuery.where(
-          'taskId',
-          isEqualTo: queryOptions!.task!.id,
-        );
-      }
-      if (queryOptions!.uid != null) {
-        assignQuery = assignQuery.where(
-          'uid',
-          isEqualTo: queryOptions!.uid,
-        );
-      }
-      assignQuery = assignQuery
-          .orderBy(
-            queryOptions!.orderBy,
-            descending: queryOptions!.orderByDescending,
-          )
-          .limit(queryOptions!.limit);
-    }
     return FirestoreQueryBuilder(
-      query: assignQuery,
+      query: queryOptions.getQuery,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ??
@@ -109,7 +77,7 @@ class AssignListView extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
           return emptyBuilder?.call() ??
-              const Center(child: Text('todo list is empty'));
+              const Center(child: Text('Task list is empty.'));
         }
 
         return ListView.separated(
@@ -140,32 +108,48 @@ class AssignListView extends StatelessWidget {
               snapshot.fetchMore();
             }
 
-            final assign = Assign.fromSnapshot(snapshot.docs[index]);
+            final task = Task.fromSnapshot(snapshot.docs[index]);
 
-            return GestureDetector(
-              onTap: () {
-                // Navigator.of(context).pushNamed(
-                //   TaskDetailScreen.routeName,
-                //   arguments: task,
-                // );
-
-                showGeneralDialog(
-                  context: context,
-                  pageBuilder: (_, __, ___) => AssignDetailScreen(
-                    assign: assign,
+            return itemBuilder?.call(task, index) ??
+                ListTile(
+                  onTap: () async {
+                    if (task.assignTo.contains(myUid)) {
+                      final assign =
+                          await TaskService.instance.getMyAssignFrom(task.id);
+                      if (assign == null) return;
+                      if (!context.mounted) return;
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) => AssignDetailScreen(
+                          assign: assign,
+                          task: task,
+                        ),
+                      );
+                    } else {
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) => TaskDetailScreen(
+                          task: task,
+                        ),
+                      );
+                    }
+                  },
+                  title: Text(
+                    task.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  leading: const Icon(Icons.checklist_rounded),
+                  subtitle: task.content.isEmpty
+                      ? null
+                      : Text(
+                          task.content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                  trailing: const Icon(Icons.chevron_right_outlined),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 );
-              },
-              child: itemBuilder?.call(assign, index) ??
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.teal[100],
-                      border: Border.all(),
-                    ),
-                    child: Text("${assign.uid}: ${assign.status}"),
-                  ),
-            );
           },
         );
       },
