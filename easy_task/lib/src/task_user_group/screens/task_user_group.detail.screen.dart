@@ -165,11 +165,10 @@ class _TaskUserGroupDetailScreenState extends State<TaskUserGroupDetailScreen> {
                           onPressed: () {
                             showGeneralDialog(
                               context: context,
-                              pageBuilder: (context, a1, a2) =>
+                              pageBuilder: (dialogContext, a1, a2) =>
                                   TaskUserGroupUpdateScreen(
                                 group: group,
                                 onUpdate: () async {
-                                  if (!context.mounted) return;
                                   group = (await TaskUserGroup.get(group.id))!;
                                   if (!context.mounted) return;
                                   setState(() => {});
