@@ -1,24 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_task/easy_task.dart';
-
-class TaskQueryOptions {
-  TaskQueryOptions({
-    this.limit = 20,
-    this.orderBy = 'createdAt',
-    this.orderByDescending = true,
-    this.assignToContains,
-    this.createdBy,
-  });
-
-  final int limit;
-  final String orderBy;
-  final bool orderByDescending;
-  final String? assignToContains;
-  final String? createdBy;
-}
 
 /// Task list view
 ///
@@ -47,7 +31,7 @@ class TaskListView extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
     this.emptyBuilder,
-    this.queryOptions,
+    this.queryOptions = const TaskQueryOptions(),
   });
 
   final int pageSize;
@@ -71,36 +55,14 @@ class TaskListView extends StatelessWidget {
   final Clip clipBehavior;
   final Widget Function(Task task, int index)? itemBuilder;
   final Widget Function()? emptyBuilder;
-  final TaskQueryOptions? queryOptions;
+  final TaskQueryOptions queryOptions;
+
+  String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
   @override
   Widget build(BuildContext context) {
-    Query taskQuery = Task.col;
-
-    if (queryOptions != null) {
-      if (queryOptions!.assignToContains != null) {
-        taskQuery = taskQuery.where(
-          "assignTo",
-          arrayContains: queryOptions!.assignToContains!,
-        );
-      }
-      if (queryOptions!.createdBy != null) {
-        taskQuery = taskQuery.where(
-          "createdBy",
-          isEqualTo: queryOptions!.createdBy!,
-        );
-      }
-
-      taskQuery = taskQuery
-          .orderBy(
-            queryOptions!.orderBy,
-            descending: queryOptions!.orderByDescending,
-          )
-          .limit(queryOptions!.limit);
-    }
-
     return FirestoreQueryBuilder(
-      query: taskQuery,
+      query: queryOptions.getQuery,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ??
@@ -115,7 +77,7 @@ class TaskListView extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
           return emptyBuilder?.call() ??
-              const Center(child: Text('todo list is empty'));
+              const Center(child: Text('Task list is empty.'));
         }
 
         return ListView.separated(
@@ -149,23 +111,44 @@ class TaskListView extends StatelessWidget {
             final task = Task.fromSnapshot(snapshot.docs[index]);
 
             return itemBuilder?.call(task, index) ??
-                GestureDetector(
-                  onTap: () {
-                    showGeneralDialog(
-                      context: context,
-                      pageBuilder: (_, __, ___) => TaskDetailScreen(
-                        task: task,
-                      ),
-                    );
+                ListTile(
+                  onTap: () async {
+                    if (task.assignTo.contains(myUid)) {
+                      final assign =
+                          await TaskService.instance.getMyAssignFrom(task.id);
+                      if (assign == null) return;
+                      if (!context.mounted) return;
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) => AssignDetailScreen(
+                          assign: assign,
+                          task: task,
+                        ),
+                      );
+                    } else {
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) => TaskDetailScreen(
+                          task: task,
+                        ),
+                      );
+                    }
                   },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.teal[100],
-                      border: Border.all(width: 1),
-                    ),
-                    child: Text("Task is ${task.title}"),
+                  title: Text(
+                    task.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  leading: const Icon(Icons.checklist_rounded),
+                  subtitle: task.content.isEmpty
+                      ? null
+                      : Text(
+                          task.content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                  trailing: const Icon(Icons.chevron_right_outlined),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 );
           },
         );

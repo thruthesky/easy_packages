@@ -13,6 +13,22 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "iPhone 15 Pro",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "iPhone SE",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone SE",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "task_management_system (profile mode)",
             "request": "launch",
             "type": "dart",
