@@ -192,6 +192,13 @@ packages:
       relative: true
     source: path
     version: "0.0.4"
+  easy_forum:
+    dependency: "direct main"
+    description:
+      path: "../easy_forum"
+      relative: true
+    source: path
+    version: "0.0.1"
   easy_helpers:
     dependency: "direct main"
     description:
