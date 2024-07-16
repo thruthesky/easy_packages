@@ -1,4 +1,5 @@
 import 'package:easy_task/easy_task.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -68,6 +69,63 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       body: TaskListView(
         queryOptions: queryOptions,
+        itemBuilder: (task, index) {
+          return ListTile(
+            onTap: () async {
+              if (task.assignTo.contains(myUid)) {
+                final assign =
+                    await TaskService.instance.getMyAssignFrom(task.id);
+                if (assign == null) return;
+                if (!context.mounted) return;
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (_, __, ___) => AssignDetailScreen(
+                    assign: assign,
+                    task: task,
+                  ),
+                );
+              } else {
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (_, __, ___) => TaskDetailScreen(
+                    task: task,
+                    assignUids: (context) async {
+                      final uids = await showGeneralDialog<String?>(
+                        context: context,
+                        pageBuilder: (_, __, ___) => UserListView(
+                          itemBuilder: (user, index) {
+                            return UserListTile(
+                              user: user,
+                              onTap: () => {
+                                Navigator.of(context).pop([user.uid]),
+                              },
+                            );
+                          },
+                        ),
+                      );
+                      return uids;
+                    },
+                  ),
+                );
+              }
+            },
+            title: Text(
+              task.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            leading: const Icon(Icons.checklist_rounded),
+            subtitle: task.content.isEmpty
+                ? null
+                : Text(
+                    task.content,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+            trailing: const Icon(Icons.chevron_right_outlined),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+          );
+        },
       ),
     );
   }

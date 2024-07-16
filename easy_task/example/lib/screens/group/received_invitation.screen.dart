@@ -1,4 +1,5 @@
 import 'package:easy_task/easy_task.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -34,8 +35,28 @@ class ReceivedInvitationScreen extends StatelessWidget {
                       context: context,
                       pageBuilder: (context, a1, a2) =>
                           TaskUserGroupDetailScreen(
-                        group: group,
-                      ),
+                              group: group,
+                              onInviteUids: (context) async {
+                                return await showGeneralDialog<List<String>?>(
+                                  context: context,
+                                  pageBuilder: (context, a1, a2) => Scaffold(
+                                    appBar: AppBar(
+                                      title: const Text("Invite Users"),
+                                    ),
+                                    body: UserListView(
+                                      itemBuilder: (user, index) {
+                                        return UserListTile(
+                                          user: user,
+                                          onTap: () => {
+                                            Navigator.of(context)
+                                                .pop([user.uid]),
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              }),
                     );
                   },
                   child: const Text("Accept"),

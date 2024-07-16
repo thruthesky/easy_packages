@@ -320,7 +320,7 @@ These are the collections relating to easy_task:
 - `task-assign` is the collleciton for assigns. It has `taskId` to relate to tasks.
 - `task-user-group` is the collection for group.
 
-#### todo-task collection (Task)
+#### task collection (Task)
 
 - `uid` is the uid of creator.
 - `assignedTo` is a list of uids that the task was assigned to. This will help on getting the user list of the task.
@@ -330,7 +330,7 @@ These are the collections relating to easy_task:
 - `createdAt` is when it was created.
 - `updatedAt` is updated when there is any changes on the task itself.
 
-#### todo-task-assign collection (Assign)
+#### task-assign collection (Assign)
 
 - `uid` is the uid of the assignee.
 - `assignedBy` is the uid of the assignor.

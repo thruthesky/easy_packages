@@ -20,8 +20,42 @@ class TaskUserGroupListScreen extends StatelessWidget {
             onPressed: () {
               showGeneralDialog(
                 context: context,
-                pageBuilder: (context, a1, a2) =>
-                    const TaskUserGroupCreateScreen(),
+                pageBuilder: (context, a1, a2) => TaskUserGroupCreateScreen(
+                  onCreate: (context, ref) async {
+                    final group = await TaskUserGroup.get(ref.id);
+                    if (!context.mounted) return;
+                    Navigator.of(context).pop();
+                    if (group == null) return;
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (context, a1, a2) {
+                        return TaskUserGroupDetailScreen(
+                          group: group,
+                          onInviteUids: (context) async {
+                            return await showGeneralDialog<List<String>?>(
+                              context: context,
+                              pageBuilder: (context, a1, a2) => Scaffold(
+                                appBar: AppBar(
+                                  title: const Text("Invite Users"),
+                                ),
+                                body: UserListView(
+                                  itemBuilder: (user, index) {
+                                    return UserListTile(
+                                      user: user,
+                                      onTap: () => {
+                                        Navigator.of(context).pop([user.uid]),
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
               );
             },
             icon: const Icon(Icons.add_circle_outline),
