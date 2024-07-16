@@ -78,7 +78,7 @@ class Assign {
     String? groupId,
   }) async {
     final ref = await col.add({
-      'uid': assignTo,
+      'assignTo': assignTo,
       'taskId': task.id,
       'status': AssignStatus.waiting,
       'createdAt': FieldValue.serverTimestamp(),
