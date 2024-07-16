@@ -68,7 +68,7 @@ class UserService {
     if (enableAnonymousSignIn) {
       final user = fa.FirebaseAuth.instance.currentUser;
       if (user == null) {
-        // dog('initAnonymousSignIn: sign in anonymously');
+        dog('initAnonymousSignIn: sign in anonymously');
         await fa.FirebaseAuth.instance.signInAnonymously();
       }
     }
