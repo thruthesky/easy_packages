@@ -16,7 +16,7 @@ class UploadIconButton extends StatelessWidget {
     this.file = true,
     this.progress,
     this.complete,
-    this.icon,
+    this.icon = const Icon(Icons.add),
     this.iconSize,
     this.visualDensity,
     this.iconPadding,
@@ -25,7 +25,7 @@ class UploadIconButton extends StatelessWidget {
   });
 
   final void Function(String url) onUpload;
-  final Widget? icon;
+  final Widget icon;
   final Function(double)? progress;
   final Function()? complete;
   final VisualDensity? visualDensity;
@@ -47,10 +47,10 @@ class UploadIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: icon ?? const Icon(Icons.add_box_rounded),
+      icon: icon,
       iconSize: iconSize,
       visualDensity: visualDensity,
-      padding: padding,
+      padding: iconPadding,
       onPressed: () async {
         final uploadedUrl = await StorageService.instance.upload(
           context: context,

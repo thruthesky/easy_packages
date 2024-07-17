@@ -29,14 +29,30 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: padding ?? EdgeInsets.zero,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+        child: ListView(
+          shrinkWrap: true,
           children: <Widget>[
-            const SizedBox(height: 16),
-            Text(
-              'Photo Upload'.t,
-              style: Theme.of(context).textTheme.labelLarge,
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 40,
+              child: Stack(
+                children: [
+                  Center(
+                    child: Text(
+                      'Upload from'.t,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.cancel),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             if (photoGallery == true) ...[
@@ -107,7 +123,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
             ],
             SizedBox(height: spacing != null && spacing! >= 8 ? 8 : 16),
             TextButton(
-              child: Text('close'.t,
+              child: Text('Close'.t,
                   style: TextStyle(color: Theme.of(context).primaryColor)),
               onPressed: () {
                 Navigator.pop(context);

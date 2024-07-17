@@ -1,3 +1,4 @@
+
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class ImageUploadIconButton extends StatelessWidget {
     this.gallery = true,
     this.progress,
     this.complete,
-    this.icon,
+    this.icon = const Icon(Icons.camera_alt),
     this.iconSize,
     this.visualDensity,
     this.iconPadding,
@@ -21,7 +22,7 @@ class ImageUploadIconButton extends StatelessWidget {
   });
 
   final void Function(String url) onUpload;
-  final Widget? icon;
+  final Widget icon;
   final Function(double)? progress;
   final Function()? complete;
   final VisualDensity? visualDensity;

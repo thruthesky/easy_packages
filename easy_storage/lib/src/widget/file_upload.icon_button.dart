@@ -12,7 +12,7 @@ class FileUploadIconButton extends StatelessWidget {
     this.file = true,
     this.progress,
     this.complete,
-    this.icon,
+    this.icon = const Icon(Icons.attach_file),
     this.iconSize,
     this.visualDensity,
     this.iconPadding,
@@ -21,7 +21,7 @@ class FileUploadIconButton extends StatelessWidget {
   });
 
   final void Function(String url) onUpload;
-  final Widget? icon;
+  final Widget icon;
   final Function(double)? progress;
   final Function()? complete;
   final VisualDensity? visualDensity;
