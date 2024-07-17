@@ -22,6 +22,7 @@ class ForumScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => PostService.instance.showPostEditScreen(
                 context: context,
+                category: null,
               ),
               child: const Text('Post Edit Screen'),
             ),

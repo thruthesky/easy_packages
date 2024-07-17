@@ -16,23 +16,24 @@ class PostService {
     initialized = true;
   }
 
-  Future<Post?> showPostEditScreen({
+  Future<DocumentReference?> showPostEditScreen({
     required BuildContext context,
+    required String? category,
     Post? post,
   }) {
-    return showGeneralDialog<Post?>(
+    return showGeneralDialog<DocumentReference?>(
       context: context,
       pageBuilder: (_, __, ___) {
-        return const PostEditScreen();
+        return PostEditScreen(category: category);
       },
     );
   }
 
-  Future<Post?> showPostListScreen({
+  Future showPostListScreen({
     required BuildContext context,
     Post? post,
   }) {
-    return showGeneralDialog<Post?>(
+    return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) {
         return const PostListScreen();

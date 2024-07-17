@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class PostListView extends StatelessWidget {
   const PostListView({
     super.key,
-    this.query,
+    this.category,
     this.pageSize = 40,
     this.loadingBuilder,
     this.errorBuilder,
@@ -34,7 +34,7 @@ class PostListView extends StatelessWidget {
     this.itemBuilder,
     this.emptyBuilder,
   });
-  final Query? query;
+  final String? category;
 
   final int pageSize;
   final Widget Function()? loadingBuilder;
@@ -59,11 +59,14 @@ class PostListView extends StatelessWidget {
   final Widget Function()? emptyBuilder;
   @override
   Widget build(BuildContext context) {
+    Query query = PostService.instance.col;
+    if (category != null) {
+      query = query.where('category', isEqualTo: category);
+    }
+    query = query.orderBy('createdAt', descending: true).limit(pageSize);
+
     return FirestoreQueryBuilder(
-      query: query ??
-          PostService.instance.col
-              .orderBy('createdAt', descending: true)
-              .limit(pageSize),
+      query: query,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ??

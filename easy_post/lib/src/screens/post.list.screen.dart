@@ -10,6 +10,7 @@ class PostListScreen extends StatefulWidget {
 }
 
 class _PostListScreenState extends State<PostListScreen> {
+  String? category;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,16 +20,56 @@ class _PostListScreenState extends State<PostListScreen> {
           IconButton(
             onPressed: () => PostService.instance.showPostEditScreen(
               context: context,
+              category: category,
             ),
             icon: const Icon(Icons.add),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(40),
+          child: SizedBox(
+            height: 40,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                TextButton(
+                  onPressed: () => setState(() => category = 'qna'),
+                  child: const Text('QnA'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => category = 'discussion'),
+                  child: const Text('Discussion'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => category = 'news'),
+                  child: const Text('News'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => category = 'news'),
+                  child: const Text('News 2'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => category = 'news'),
+                  child: const Text('News 3'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => category = 'news'),
+                  child: const Text('News 4'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => category = 'news'),
+                  child: const Text('News 5'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => category = 'news'),
+                  child: const Text('News 6'),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-      body: const Column(
-        children: [
-          Text("PostList"),
-        ],
-      ),
+      body: PostListView(category: category),
     );
   }
 }
