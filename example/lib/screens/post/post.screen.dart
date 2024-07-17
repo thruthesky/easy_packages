@@ -1,5 +1,5 @@
 import 'package:easy_forum/easy_forum.dart';
-import 'package:easy_helpers/easy_helpers.dart';
+import 'package:example/screens/post/post.unit_test.screen.dart';
 import 'package:flutter/material.dart';
 
 class PostScreen extends StatelessWidget {
@@ -12,12 +12,19 @@ class PostScreen extends StatelessWidget {
         body: Column(
           children: [
             ElevatedButton(
-                onPressed: () async {
-                  final re = await createPost();
-
-                  dog('$re');
-                },
-                child: const Text('Test Create'))
+                onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) {
+                      return const PostUniteTestScreen();
+                    }),
+                child: const Text('UnitTest')),
+            ElevatedButton(
+                onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) {
+                      return const PostEditScreen();
+                    }),
+                child: const Text('Post Edit Screen'))
           ],
         ));
   }
