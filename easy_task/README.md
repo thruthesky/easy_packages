@@ -786,3 +786,69 @@ await assign.changeStatus(AssignStatus.progress);
 ```
 
 The code above will update the assign into `progress` status.
+
+## Customizing the Task, Assign, Group
+
+Developers can have a way to make their own custom entities from Task, Assign, and Group.
+
+This is an example using `extends`.
+
+```dart
+class CheckListEntryTask extends Task {
+  CheckListEntryTask({
+    required super.id,
+    required super.title,
+    required super.content,
+    required super.createdAt,
+    required super.updatedAt,
+    required super.assignTo,
+    required super.groupId,
+    required super.creator,
+    required super.data,
+  });
+
+  // Custom Value can simply be a getter from data.
+  bool get isChecked => data['isChecked'] as bool;
+
+  // For mutable variables, we can create private
+  // variable and make a setter for it.
+  bool? _isFavorite;
+  bool get isFavorite {
+    // depends on your preferred way
+    _isFavorite ??= (data['isFavorite'] ?? false) as bool;
+    return _isFavorite!;
+  }
+  set isFavorite(bool value) {
+    _isFavorite = value;
+  }
+
+  // For adding it on update, developers can
+  // override the existing functions.
+  @override
+  Future<void> update({
+    String? title,
+    String? content,
+    DateTime? startAt,
+    DateTime? endAt,
+    bool? isChecked,
+    bool? isFavorite,
+  }) async {
+    final data = <String, dynamic>{
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+    if (title != null) data['title'] = title;
+    if (content != null) data['content'] = content;
+    if (startAt != null) data['startAt'] = Timestamp.fromDate(startAt);
+    if (endAt != null) data['endAt'] = Timestamp.fromDate(endAt);
+    if (isChecked != null) data['isChecked'] = isChecked;
+    if (isFavorite != null) data['isFavorite'] = isFavorite;
+    await ref.update(data);
+  }
+
+  // Developers can also create their own functions
+  void favorite() {
+    isFavorite = !isFavorite;
+    update(isFavorite: isFavorite);
+  }
+}
+```
