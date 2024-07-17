@@ -34,6 +34,8 @@ export 'src/task_user_group/screens/task_user_group.detail.screen.dart';
 export 'src/functions.dart';
 // Unit Test
 export 'unit_tests/task/task.unit_test.dart';
+export 'unit_tests/task/task.unit_test.crud.extra_data.dart';
+
 
 // FOR REVIEW ===========
 // NOTE: User should not be exported

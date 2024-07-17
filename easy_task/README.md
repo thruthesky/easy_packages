@@ -5,7 +5,7 @@ This package is a todo like task manage system which allows a user to create gro
 ## Logic
 
 - `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
-- User collection must be set on the `TaskService.instance.init( user: { collection: 'users', displayName: 'name', photoUrl:'photoURL', } )`.
+- User collection must be set on the `TaskService.instance.init( user:  (collection: 'users', displayName: 'name', photoUrl:'photoURL' ) )`.
   - The document id of the user collection must be the uid.
   - And by default, this package uses `displayName` in the document to get the user's name to display on the screen. And `photoUrl` to get the user's photoUrl. If your document uses different fields, you can set it on initialization.
   - For user search screen(or dislog), it will use the display name in user documents.

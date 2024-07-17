@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/easy_task.dart';
 
-typedef TaskUserDocInfo = ({
+typedef TaskUserRefSource = ({
   String collection,
   String name,
   String photoUrl,
@@ -17,14 +17,14 @@ class TaskService {
 
   TaskService._();
 
-  TaskUserDocInfo userDocInfo = (
+  TaskUserRefSource userDocInfo = (
     collection: 'users',
     name: 'displayName',
     photoUrl: 'photoUrl',
   );
 
   init(
-    TaskUserDocInfo? user,
+    TaskUserRefSource? user,
   ) {
     if (user != null) {
       userDocInfo = user;

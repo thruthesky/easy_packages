@@ -65,10 +65,17 @@ class TaskUserGroup {
     return TaskUserGroup.fromJson(json, snapshot.id);
   }
 
+  /// Create TaskUserGroup doc in Firestore
+  ///
+  /// Be warned in creating with [extraData] because it may
+  /// be overriden by other fields if the field is also
+  /// set upon create. Please review the existing fields.
   static Future<DocumentReference> create({
     required String name,
+    Map<String, dynamic>? extraData,
   }) async {
     final ref = await col.add({
+      ...?extraData,
       'name': name,
       'users': [],
       'moderatorUsers': [myUid!],

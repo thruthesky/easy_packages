@@ -47,6 +47,8 @@ void testAllTask() async {
   // Task assignment to group
   await testTaskAssignmentToGroup();
 
+  await testCrudExtraData();
+
   await testReport();
 }
 
