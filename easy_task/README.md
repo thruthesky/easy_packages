@@ -807,6 +807,20 @@ class CheckListEntryTask extends Task {
     required super.data,
   });
 
+  factory CheckListEntryTask.fromTask(Task task) {
+    return CheckListEntryTask(
+      id: task.id,
+      title: task.title,
+      content: task.content,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+      assignTo: task.assignTo,
+      groupId: task.groupId,
+      creator: task.creator,
+      data: task.data,
+    );
+  }
+
   // Custom Value can simply be a getter from data.
   bool get isChecked => data['isChecked'] as bool;
 
@@ -849,6 +863,27 @@ class CheckListEntryTask extends Task {
   void favorite() {
     isFavorite = !isFavorite;
     update(isFavorite: isFavorite);
+  }
+}
+```
+
+However, because easy_task already provides some widgets that uses the original entities, developers may add extra code if they choose to use `extends`. Moreover, you can simply extend Task, Assign, and Group using `extension` so that the developers may simply use the existing widgets. Check out the next example.
+
+```dart
+extension CheckListEntryExtension on Task {
+  // Custom Value can simply be a getter from data.
+  bool get isChecked => (data['isChecked'] ?? false)  as bool;
+
+  check() {
+    update(extraData: {
+      'isChecked': true,
+    });
+  }
+
+  uncheck() {
+    update(extraData: {
+      'isChecked': false,
+    });
   }
 }
 ```

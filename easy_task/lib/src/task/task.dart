@@ -108,15 +108,29 @@ class Task {
 
   /// Update task
   ///
+  /// The [update] method is used to update fields and is using
+  /// `DocumentReference.update(updateData)` from cloud_functions.
+  /// It means that if fields are existing it will be replaced by
+  /// the values being updated. Therefore fields that are `maps`
+  /// will be replaced by the map value if they are being updated
+  /// here.
+  ///
   /// NOTE: This cannot be used to `nullify` any field. Use
   /// [deleteField] method to delete a field.
+  ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the update is also
+  /// updating other task fields (the fields that are originally
+  /// in Task already).
   Future<void> update({
     String? title,
     String? content,
     DateTime? startAt,
     DateTime? endAt,
+    Map<String, dynamic>? extraData,
   }) async {
     final data = <String, dynamic>{
+      ...?extraData,
       'updatedAt': FieldValue.serverTimestamp(),
     };
     if (title != null) data['title'] = title;
