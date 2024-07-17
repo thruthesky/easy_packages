@@ -32,6 +32,7 @@ class Assign {
   final DateTime updatedAt;
   final String assignedBy;
   final String? groupId;
+  final Map<String, dynamic> data;
 
   Assign({
     required this.id,
@@ -42,6 +43,7 @@ class Assign {
     required this.updatedAt,
     required this.assignedBy,
     this.groupId,
+    required this.data,
   });
 
   factory Assign.fromJson(Map<String, dynamic> json, String id) {
@@ -56,6 +58,7 @@ class Assign {
       updatedAt: updatedAt == null ? DateTime.now() : updatedAt.toDate(),
       assignedBy: json['assignedBy'] ?? '',
       groupId: json['groupId'],
+      data: json,
     );
   }
 
@@ -72,12 +75,18 @@ class Assign {
   /// [assignTo] is the uid of the user to assign the task to.
   ///
   /// See the README.en.md for details.
+  ///
+  /// Be warned in creating with [extraData] because it may
+  /// be overriden by other fields if the field is also
+  /// set upon create. Please review the existing fields.
   static Future<DocumentReference> create({
     required String assignTo,
     required Task task,
     String? groupId,
+    Map<String, dynamic>? extraData,
   }) async {
     final ref = await col.add({
+      ...?extraData,
       'assignTo': assignTo,
       'taskId': task.id,
       'status': AssignStatus.waiting,

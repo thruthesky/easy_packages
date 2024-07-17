@@ -5,7 +5,7 @@ This package is a todo like task manage system which allows a user to create gro
 ## Logic
 
 - `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
-- User collection must be set on the `TaskService.instance.init( user: { collection: 'users', displayName: 'name', photoUrl:'photoURL', } )`.
+- User collection must be set on the `TaskService.instance.init( user:  (collection: 'users', displayName: 'name', photoUrl:'photoURL' ) )`.
   - The document id of the user collection must be the uid.
   - And by default, this package uses `displayName` in the document to get the user's name to display on the screen. And `photoUrl` to get the user's photoUrl. If your document uses different fields, you can set it on initialization.
   - For user search screen(or dislog), it will use the display name in user documents.
@@ -772,7 +772,6 @@ AssignListView(
 
 The code above will display the list of assign of the task. If `queryOptions` was not provided, it will use default `AssignQueryOptions` and list all assigns across all tasks.
 
-
 ### Status of an Assigned Task
 
 Once the task is assigned, by default the status is `waiting`.
@@ -787,3 +786,104 @@ await assign.changeStatus(AssignStatus.progress);
 ```
 
 The code above will update the assign into `progress` status.
+
+## Customizing the Task, Assign, Group
+
+Developers can have a way to make their own custom entities from Task, Assign, and Group.
+
+This is an example using `extends`.
+
+```dart
+class CheckListEntryTask extends Task {
+  CheckListEntryTask({
+    required super.id,
+    required super.title,
+    required super.content,
+    required super.createdAt,
+    required super.updatedAt,
+    required super.assignTo,
+    required super.groupId,
+    required super.creator,
+    required super.data,
+  });
+
+  factory CheckListEntryTask.fromTask(Task task) {
+    return CheckListEntryTask(
+      id: task.id,
+      title: task.title,
+      content: task.content,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+      assignTo: task.assignTo,
+      groupId: task.groupId,
+      creator: task.creator,
+      data: task.data,
+    );
+  }
+
+  // Custom Value can simply be a getter from data.
+  bool get isChecked => data['isChecked'] as bool;
+
+  // For mutable variables, we can create private
+  // variable and make a setter for it.
+  bool? _isFavorite;
+  bool get isFavorite {
+    // depends on your preferred way
+    _isFavorite ??= (data['isFavorite'] ?? false) as bool;
+    return _isFavorite!;
+  }
+  set isFavorite(bool value) {
+    _isFavorite = value;
+  }
+
+  // For adding it on update, developers can
+  // override the existing functions.
+  @override
+  Future<void> update({
+    String? title,
+    String? content,
+    DateTime? startAt,
+    DateTime? endAt,
+    bool? isChecked,
+    bool? isFavorite,
+  }) async {
+    final data = <String, dynamic>{
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+    if (title != null) data['title'] = title;
+    if (content != null) data['content'] = content;
+    if (startAt != null) data['startAt'] = Timestamp.fromDate(startAt);
+    if (endAt != null) data['endAt'] = Timestamp.fromDate(endAt);
+    if (isChecked != null) data['isChecked'] = isChecked;
+    if (isFavorite != null) data['isFavorite'] = isFavorite;
+    await ref.update(data);
+  }
+
+  // Developers can also create their own functions
+  void favorite() {
+    isFavorite = !isFavorite;
+    update(isFavorite: isFavorite);
+  }
+}
+```
+
+However, because easy_task already provides some widgets that uses the original entities, developers may add extra code if they choose to use `extends`. Moreover, you can simply extend Task, Assign, and Group using `extension` so that the developers may simply use the existing widgets. Check out the next example.
+
+```dart
+extension CheckListEntryExtension on Task {
+  // Custom Value can simply be a getter from data.
+  bool get isChecked => (data['isChecked'] ?? false)  as bool;
+
+  check() {
+    update(extraData: {
+      'isChecked': true,
+    });
+  }
+
+  uncheck() {
+    update(extraData: {
+      'isChecked': false,
+    });
+  }
+}
+```

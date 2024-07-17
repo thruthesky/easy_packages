@@ -23,6 +23,7 @@ class Task {
   final String? groupId;
   final DateTime? startAt;
   final DateTime? endAt;
+  final Map<String, dynamic> data;
 
   /// [creator] is the uid of the task creator
   String creator;
@@ -38,6 +39,7 @@ class Task {
     this.startAt,
     this.endAt,
     required this.creator,
+    required this.data,
   });
 
   factory Task.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -61,6 +63,7 @@ class Task {
       startAt: startAt?.toDate(),
       endAt: endAt?.toDate(),
       creator: json['creator'],
+      data: json,
     );
   }
 
@@ -82,6 +85,9 @@ class Task {
   ///
   /// [title] is the title of the task.
   ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the field is also
+  /// set upon create.
   static Future<DocumentReference> create({
     String? title,
     String? content,
@@ -89,8 +95,10 @@ class Task {
     DateTime? endAt,
     List<String>? assignTo,
     String? groupId,
+    Map<String, dynamic>? extraData,
   }) async {
     return await col.add({
+      ...?extraData,
       if (title != null) 'title': title,
       if (content != null) 'content': content,
       'createdAt': FieldValue.serverTimestamp(),
@@ -105,15 +113,30 @@ class Task {
 
   /// Update task
   ///
+  /// The [update] method is used to update fields and is using
+  /// `DocumentReference.update(updateData)` from cloud_functions.
+  /// It means that if fields are existing it will be replaced by
+  /// the values being updated. Therefore fields that are `maps`
+  /// will be replaced by the map value if they are being updated
+  /// here.
+  ///
   /// NOTE: This cannot be used to `nullify` any field. Use
   /// [deleteField] method to delete a field.
+  ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the update is also
+  /// updating other task fields (the fields that are originally
+  /// in Task already). Also, it can update any existing
+  /// fields as well.
   Future<void> update({
     String? title,
     String? content,
     DateTime? startAt,
     DateTime? endAt,
+    Map<String, dynamic>? extraData,
   }) async {
     final data = <String, dynamic>{
+      ...?extraData,
       'updatedAt': FieldValue.serverTimestamp(),
     };
     if (title != null) data['title'] = title;

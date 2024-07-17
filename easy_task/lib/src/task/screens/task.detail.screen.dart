@@ -10,12 +10,12 @@ class TaskDetailScreen extends StatefulWidget {
   const TaskDetailScreen({
     super.key,
     required this.task,
-    this.assignUids,
+    this.onAssignUid,
     this.group,
   });
 
   final Task task;
-  final FutureOr<String?> Function(BuildContext context)? assignUids;
+  final FutureOr<String?> Function(BuildContext context)? onAssignUid;
 
   final TaskUserGroup? group;
 
@@ -114,8 +114,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               ElevatedButton(
                 onPressed: () async {
                   String? uid;
-                  if (widget.assignUids != null) {
-                    uid = await widget.assignUids!.call(context);
+                  if (widget.onAssignUid != null) {
+                    uid = await widget.onAssignUid!.call(context);
                   } else {
                     uid = await showGeneralDialog<String?>(
                       context: context,
