@@ -51,7 +51,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           ),
 
           /// Chat room icon upload
-          const UploadImage(),
+          const ImageUpload(),
 
           ///
           Padding(

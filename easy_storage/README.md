@@ -159,12 +159,13 @@ If you want to handle the error yourself, set this false and you should handle t
 
 # Widgets
 
-## UploadImage
+## ImageUpload
 
-- The `UploadImage` widget simplifies the image uploading process.
+- The `ImageUpload` widget simplifies the image uploading process.
+- The difference between `ImageUpload` and `ImageUploadIconButton` is that, you can customize any shape(UI) with `ImageUpload` widget while `ImageUploadIconButton` shows an IconButon to upload an image where you can customize icon only.
 
 ```dart
-UploadImage(
+ImageUpload(
   icon: Icon(
     Icons.person,
     size: 100,
@@ -177,7 +178,7 @@ UploadImage(
 - Upload image and save the url in the Firestore document.
 
 ```dart
-UploadImage(
+ImageUpload(
   initialData: my.photoUrl,
   ref: my.ref,
   field: 'photoUrl',

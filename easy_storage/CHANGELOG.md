@@ -1,5 +1,5 @@
 ## 0.0.4
-* Add. UploadImage widget.
+* Add. ImageUpload widget.
 
 ## 0.0.3
 * Flutter Firebase SDK version adjustment.
