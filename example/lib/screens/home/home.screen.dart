@@ -4,6 +4,7 @@ import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/locale/locale.screen.dart';
+import 'package:example/screens/post/post.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
 import 'package:flutter/material.dart';
 
@@ -113,6 +114,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 pageBuilder: (_, __, ___) => const LocaleScreen(),
               ),
               child: const Text('Easy Locale Screen'),
+            ),
+            ElevatedButton(
+              onPressed: () => showGeneralDialog(
+                context: context,
+                pageBuilder: (_, __, ___) => const PostScreen(),
+              ),
+              child: const Text('Easy Forum Screen'),
             ),
           ],
         ),

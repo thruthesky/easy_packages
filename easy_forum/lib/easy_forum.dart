@@ -1,7 +1,7 @@
-library easy_forum;
+export './src/comment.dart';
+export './src/comment.service.dart';
+export './src/post.dart';
+export './src/post.service.dart';
+export './src/screens/post.edit.screen.dart';
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'unit_test/post_test.dart';
