@@ -1,17 +1,15 @@
-# Easy Framework
+# Easy Packages
 
-- This framework supports many features using the Flutter Firebase Client SDK, except for those that can't be implemented with it. For example, previously, push notifications were sent from Firebase Cloud Functions (backend) because it was more efficient than handling them in Flutter (client side). However, with the `easy_packages`, push notifications are now managed entirely from the Flutter side, even if it's not as efficient.
-
+- This project is composed of several packages, each designed for specific functionalities.
 
 # Overview
 
-- **Easy Frame**: This is a Flutter framework that offers a wide range of UI/UX components, logic modules, and more. It's designed to help you build apps quickly and efficiently, suitable for various types of projects.
+- **Easy Packages**: A Flutter framework with many UI/UX components and logic modules. It helps you create apps fast for different projects.
 
-- The framework is made up of several small, independent packages. Each package has its own specific functions but is designed to work well with others. You can use these packages individually or together in your app.
+- This framework includes various small packages, each designed for a specific purpose. You can use any package individually or combine them to enhance your app. The goal is to provide key app functionalities as standalone, user-friendly packages available on pub.dev, making app development more efficient and modular.
 
-- This project aims to provide common features needed in apps as separate packages. These are available on pub.dev, making it easy for anyone to enhance their app's functionality.
+# Key Features
 
-Key Features:
 - **Independence**: Each package is independent. You can use only what you need. For example, if your app needs a chat feature, you can just add the `easychat` package.
 - **Variety**: Offers a range of packages for different needs, such as chat, member management, forums, friend management, and social features, and much more. You're also free to add any other package you find necessary.
 
@@ -32,12 +30,12 @@ dependencies:
 You can add any easy pakcages like this.
 
 
-## Install as a easy frame developer
+## Install as a easy packages developer
 
-- You can fork and clone the `https://github.com/thruthesky/easy_frame` repository inside your flutter app folder.
+- You can fork and clone the `https://github.com/thruthesky/easy_packages` repository inside your flutter app folder.
 
 - Then, add the dependencies like below.
-  - Since the packages are installed by dependencies, to use the cloned version of easy_frame, you will need to override them.
+  - Since the packages are installed by dependencies, to use the cloned version of easy_packages, you will need to override them.
 
 ```yaml
 dependencies:
@@ -48,13 +46,13 @@ dependencies:
 
 dependency_overrides:
   easy_helpers:
-    path: ./easy_frame/easy_helpers
+    path: ./easy_packages/easy_helpers
   easy_locale:
-    path: ./easy_frame/easy_locale
+    path: ./easy_packages/easy_locale
   easy_storage:
-    path: ./easy_frame/easy_storage
+    path: ./easy_packages/easy_storage
   easyuser:
-    path: ./easy_frame/easyuser
+    path: ./easy_packages/easyuser
 ```
 
 
@@ -71,11 +69,10 @@ Please refer to the [Storage Package - easy_storage](https://pub.dev/packages/ea
 
 
 
-## User
+## easyuser package
 
 
-This package helps manage users in your app. If your app has different database structure, you can customize it to work with other `easy frame` packages by using the `easyuser` package.
-
+This package helps manage users in your app. If your app has different database structure, you can customize your database structure to work with other `easyuser`.
 
 Please refer to the [User Package - easyuser](https://pub.dev/packages/easyuser).
 
@@ -136,12 +133,11 @@ Although not directly related to FireFlutter, these packages are used internally
 
 This is the style guide of the development easy packages.
 
-
 - The code must be readable and short. If the code is complicated, then that code will be deleted. If the code is long, then that code will be deleted, also.
 
 
 
-# Mermaid
+## Mermaid
 
 - Starting must be `START(xxxx)`
 - End must be `END(())`
@@ -154,7 +150,7 @@ This is the style guide of the development easy packages.
 
 
 
-# Model
+## Model
 
 Model class does
 - serialization/deserialization
@@ -164,7 +160,7 @@ Model class does
 
 
 
-# Service
+## Service
 
 Service class does
 - something that are related with the model(entity) or the service can handle for the whole function(feacher).

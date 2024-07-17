@@ -4,6 +4,9 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
+/// Chat Service
+///
+/// This is the chat service class that will be used to manage the chat rooms.
 class ChatService {
   static ChatService? _instance;
   static ChatService get instance => _instance ??= ChatService._();
@@ -32,8 +35,19 @@ class ChatService {
     this.chatRoomEditScreen = chatRoomEditScreen ?? this.chatRoomEditScreen;
   }
 
-  CollectionReference get col =>
+  /// CollectionReference for Chat Room docs
+  CollectionReference get roomCol =>
       FirebaseFirestore.instance.collection('chat-rooms');
+
+  /// CollectionReference for Chat Room Meta docs
+  CollectionReference roomMetaCol(String roomId) => FirebaseFirestore.instance
+      .collection('chat-rooms')
+      .doc(roomId)
+      .collection('chat-room-meta');
+
+  /// DocumentReference for chat room private settings.
+  DocumentReference roomPrivateDoc(String roomId) =>
+      roomMetaCol(roomId).doc('private');
 
   showChatRoomListScreen(BuildContext context) {
     return showGeneralDialog(
