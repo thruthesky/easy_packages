@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:easy_task/easy_task.dart';
+import 'package:easy_task/src/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +15,8 @@ class UserListScreen extends StatelessWidget {
 
   final Function(String uid)? onTap;
 
+  String get userCollection => TaskService.instance.userDocInfo.collection;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +24,7 @@ class UserListScreen extends StatelessWidget {
         title: const Text('User List'),
       ),
       body: FirestoreQueryBuilder(
-        query: FirebaseFirestore.instance.collection('users'),
+        query: FirebaseFirestore.instance.collection(userCollection),
         builder: (context, snapshot, _) {
           if (snapshot.isFetching) {
             return const Center(child: CircularProgressIndicator.adaptive());
@@ -46,20 +50,18 @@ class UserListScreen extends StatelessWidget {
                 snapshot.fetchMore();
               }
 
-              final user = snapshot.docs[index].data();
-              final userUid = snapshot.docs[index].id;
-              final userDisplayName = user['displayName'];
+              final user = User.fromSnapshot(snapshot.docs[index]);
 
               return ListTile(
                 leading: const Icon(Icons.person),
-                title: Text(
-                  "Uid: $userUid",
+                title: Text("${user.name}"),
+                subtitle: Text(
+                  user.uid,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text("Name: $userDisplayName"),
                 onTap: () {
-                  onTap?.call(userUid);
+                  onTap?.call(user.uid);
                 },
               );
             },
