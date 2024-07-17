@@ -63,6 +63,7 @@ class Post {
         'uid': uid,
         'createdAt': createdAt,
         'updateAt': updateAt,
+        'urls': urls,
       };
 
   @override
@@ -98,6 +99,7 @@ class Post {
   static Future<Post?> create({
     required String title,
     required String content,
+    List<String>? urls,
   }) async {
     if (iam.user == null) {
       throw Exception('Post.create: You must login firt to create a post');
@@ -108,6 +110,7 @@ class Post {
       'title': title,
       'content': content,
       'uid': iam.user!.uid,
+      if (urls != null) 'urls': urls,
       'createdAt': FieldValue.serverTimestamp(),
     };
     await PostService.instance.col.doc(id).set(
@@ -120,10 +123,12 @@ class Post {
   Future<Post?> update({
     String? title,
     String? content,
+    List<String>? urls,
   }) async {
     final data = {
       if (title != null) 'title': title,
       if (content != null) 'content': content,
+      if (urls != null) 'urls': urls,
     };
     if (data.isEmpty) {
       throw Exception('Post.update: No data to update');
