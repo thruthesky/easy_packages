@@ -30,6 +30,8 @@ class TaskUserGroup {
   final DateTime createdAt;
   final DateTime updatedAt;
 
+  final Map<String, dynamic> data;
+
   TaskUserGroup({
     required this.id,
     required this.name,
@@ -39,6 +41,7 @@ class TaskUserGroup {
     required this.rejectedUsers,
     required this.createdAt,
     required this.updatedAt,
+    required this.data,
   });
 
   factory TaskUserGroup.fromJson(Map<String, dynamic> json, String id) {
@@ -53,6 +56,7 @@ class TaskUserGroup {
       rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
       createdAt: createdAt?.toDate() ?? DateTime.now(),
       updatedAt: updatedAt?.toDate() ?? DateTime.now(),
+      data: json,
     );
   }
 
@@ -83,10 +87,19 @@ class TaskUserGroup {
     return TaskUserGroup.fromSnapshot(snapshot);
   }
 
+  /// Updates the TaskUserGroup doc in Firestore
+  ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the update is also
+  /// updating other task fields (the fields that are originally
+  /// in Task already). Also, it can update any existing
+  /// fields as well.
   Future<void> update({
     String? name,
+    Map<String, dynamic>? extraData,
   }) async {
     final updateData = <String, dynamic>{
+      ...?extraData,
       'updatedAt': FieldValue.serverTimestamp(),
     };
     if (name != null) updateData['name'] = name;
@@ -96,14 +109,14 @@ class TaskUserGroup {
   Future<void> addUser(String uid) async {
     await ref.update({
       'updatedAt': FieldValue.serverTimestamp(),
-      'members': FieldValue.arrayUnion([uid]),
+      'users': FieldValue.arrayUnion([uid]),
     });
   }
 
   Future<void> removeUser(String uid) async {
     await ref.update({
       'updatedAt': FieldValue.serverTimestamp(),
-      'members': FieldValue.arrayRemove([uid]),
+      'users': FieldValue.arrayRemove([uid]),
     });
   }
 

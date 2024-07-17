@@ -85,6 +85,9 @@ class Task {
   ///
   /// [title] is the title of the task.
   ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the field is also
+  /// set upon create.
   static Future<DocumentReference> create({
     String? title,
     String? content,
@@ -92,8 +95,10 @@ class Task {
     DateTime? endAt,
     List<String>? assignTo,
     String? groupId,
+    Map<String, dynamic>? extraData,
   }) async {
     return await col.add({
+      ...?extraData,
       if (title != null) 'title': title,
       if (content != null) 'content': content,
       'createdAt': FieldValue.serverTimestamp(),
@@ -121,7 +126,8 @@ class Task {
   /// Be warned in updating [extraData] because it may
   /// be overriden by other fields if the update is also
   /// updating other task fields (the fields that are originally
-  /// in Task already).
+  /// in Task already). Also, it can update any existing
+  /// fields as well.
   Future<void> update({
     String? title,
     String? content,
