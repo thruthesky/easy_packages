@@ -105,7 +105,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
               ),
               if (spacing != null) SizedBox(height: spacing),
             ],
-            SizedBox(height: spacing != null && spacing! >= 8 ? 4 : 16),
+            SizedBox(height: spacing != null && spacing! >= 8 ? 8 : 16),
             TextButton(
               child: Text('close'.t,
                   style: TextStyle(color: Theme.of(context).primaryColor)),
