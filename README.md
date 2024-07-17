@@ -87,6 +87,9 @@ Please refer to the [Chat Package - easychat](https://pub.dev/packages/easychat)
 
 ## Forum
 
+- Refer `easy_post` and `easy_comment` to add a forum function to your app.
+
+
 
 
 
