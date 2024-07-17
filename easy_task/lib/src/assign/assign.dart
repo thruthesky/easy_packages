@@ -82,8 +82,13 @@ class Assign {
     String? groupId,
   }) async {
     if (groupId == null && assignTo != myUid) {
-      throw 'You can only assign to yourself.';
+      throw 'task/assign-create-invalid-params To assign a task to another user, you must provide a groupId.';
     }
+
+    await TaskService.instance.taskCol.doc(task.id).update({
+      'assignTo': FieldValue.arrayUnion([assignTo]),
+    });
+
     final ref = await col.add({
       'assignTo': assignTo,
       'taskId': task.id,
@@ -92,9 +97,6 @@ class Assign {
       'updatedAt': FieldValue.serverTimestamp(),
       'assignedBy': myUid,
       if (groupId != null) 'groupId': groupId,
-    });
-    await TaskService.instance.taskCol.doc(task.id).update({
-      'assignTo': FieldValue.arrayUnion([assignTo]),
     });
     return ref;
   }
