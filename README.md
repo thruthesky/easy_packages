@@ -170,6 +170,15 @@ Service class does
 
 
 
+## Throwing An Exception
+
+- The package must throw an except in this format.
+  - `domain/code message`
+  - `domain` is the feature or category.
+  - `code` is the code of exception
+  - `message` is the reason(or description/explanation) of the exception.
+  - For instance, `task/auth-required User sign in required to use task feature`.
+
 
 # Widget
 

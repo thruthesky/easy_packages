@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/task.service.dart';
 
@@ -23,7 +24,6 @@ class Task {
   final String? groupId;
   final DateTime? startAt;
   final DateTime? endAt;
-  final Map<String, dynamic> data;
 
   /// [creator] is the uid of the task creator
   String creator;
@@ -39,7 +39,6 @@ class Task {
     this.startAt,
     this.endAt,
     required this.creator,
-    required this.data,
   });
 
   factory Task.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -63,7 +62,6 @@ class Task {
       startAt: startAt?.toDate(),
       endAt: endAt?.toDate(),
       creator: json['creator'],
-      data: json,
     );
   }
 
@@ -95,10 +93,8 @@ class Task {
     DateTime? endAt,
     List<String>? assignTo,
     String? groupId,
-    Map<String, dynamic>? extraData,
   }) async {
     return await col.add({
-      ...?extraData,
       if (title != null) 'title': title,
       if (content != null) 'content': content,
       'createdAt': FieldValue.serverTimestamp(),
@@ -170,4 +166,15 @@ class Task {
     // Delete the task if all the assigns are deleted
     await ref.delete();
   }
+
+  /// ---------------------------- Helper Methods ----------------------------
+  ///
+
+  /// Assign a task to a user
+  Future<DocumentReference> assignToUser({required String assignTo}) async =>
+      await Assign.create(task: this, assignTo: assignTo);
+
+  /// Assign a task to myself
+  Future<DocumentReference> assignToMe() async =>
+      await assignToUser(assignTo: myUid!);
 }
