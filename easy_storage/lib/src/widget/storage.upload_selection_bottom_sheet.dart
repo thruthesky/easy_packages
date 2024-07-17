@@ -47,6 +47,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                     right: 0,
                     top: 0,
                     child: IconButton(
+                      visualDensity: VisualDensity.compact,
                       onPressed: () => Navigator.pop(context),
                       icon: const Icon(Icons.cancel),
                     ),

@@ -53,10 +53,6 @@ To customize upload source. By default `photoCamera`, and `photoGallery` is set 
 StorageService.instance.upload(
     photoCamera = true,
     photoGallery = true,
-    videoCamera = false,
-    videoGallery = false,
-    gallery = false,
-    file = false,
     progress: (p) => setState(()  => progress = p),
     complete: () => setState(() => progress = null),
 );
