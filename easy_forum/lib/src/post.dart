@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_forum/easy_forum.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easyuser/easyuser.dart';
 
 class Post {
