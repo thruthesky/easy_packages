@@ -2,21 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_forum/easy_forum.dart';
 import 'package:easyuser/easyuser.dart';
 
-///  Crud
-/// create
-/// read
-/// update
-/// delete
+/// Post mostly contains a `title` and `content` there might be also a image when
+/// the user post image
+///
+/// `id` is the postid and it also the document id of the post
+///
+/// `title` is the title of the post
+///
+/// `content` is the content of the post
+///
+/// `urls` is the list of post image urls
+///
+/// `createdAt` is the time when the post is created
+///
+/// `updateAt` is the time when the post is update
 class Post {
   // collectionReference post's collection
-  static CollectionReference col = PostService.instance.col;
 
-  // post id
   final String id;
   final String title;
   final String content;
   final String uid;
   final DateTime? createdAt;
+  final DateTime? updateAt;
+  final List<String>? urls;
+
+  CollectionReference col = PostService.instance.col;
+
+  DocumentReference doc(String id) => col.doc(id);
 
   Post({
     required this.id,
@@ -24,6 +37,8 @@ class Post {
     required this.content,
     required this.uid,
     required this.createdAt,
+    required this.updateAt,
+    this.urls,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -35,6 +50,10 @@ class Post {
       createdAt: json['createdAt'] is Timestamp
           ? (json['createdAt'] as Timestamp).toDate()
           : null,
+      updateAt: json['updateAt'] is Timestamp
+          ? (json['updateAt'] as Timestamp).toDate()
+          : null,
+      urls: json['urls'] != null ? List<String>.from(json['urls']) : null,
     );
   }
   Map<String, dynamic> toJson() => {
@@ -43,6 +62,7 @@ class Post {
         'content': content,
         'uid': uid,
         'createdAt': createdAt,
+        'updateAt': updateAt,
       };
 
   @override
@@ -64,7 +84,7 @@ class Post {
     if (id == null) {
       throw Exception('Post id is null');
     }
-    final documentSnapshot = await col.doc(id).get();
+    final documentSnapshot = await PostService.instance.col.doc(id).get();
     if (documentSnapshot.exists == false) {
       throw Exception('Post.get: Post not found');
     }
@@ -82,7 +102,7 @@ class Post {
     if (iam.user == null) {
       throw Exception('Post.create: You must login firt to create a post');
     }
-    final id = Post.col.doc().id;
+    final id = PostService.instance.col.doc().id;
     final data = {
       'id': id,
       'title': title,
@@ -90,7 +110,7 @@ class Post {
       'uid': iam.user!.uid,
       'createdAt': FieldValue.serverTimestamp(),
     };
-    await col.doc(id).set(
+    await PostService.instance.col.doc(id).set(
           data,
           SetOptions(merge: true),
         );
@@ -108,7 +128,12 @@ class Post {
     if (data.isEmpty) {
       throw Exception('Post.update: No data to update');
     }
-    await col.doc(id).update(data);
+    await doc(id).update(
+      {
+        ...data,
+        'updateAt': FieldValue.serverTimestamp(),
+      },
+    );
 
     return get(id);
   }

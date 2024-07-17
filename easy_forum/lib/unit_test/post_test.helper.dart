@@ -16,6 +16,23 @@ isTrue(bool re, String message) {
   }
 }
 
+// use this to check if the code will return un exception
+// if return an exception it is consider  a success
+Future<void> isException(Future<void> Function() action) async {
+  testCount++;
+
+  try {
+    await action();
+    // If no exception, log success (optional)
+    testCountFailed++;
+    log('No exception occurred', name: '❌');
+  } catch (e) {
+    testCountSuccess++;
+    log('Exception: $e', name: '🟢');
+  }
+  return;
+}
+
 testStart(String name) {
   testName = name;
   testCount = 0;

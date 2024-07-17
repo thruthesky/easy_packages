@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_forum/easy_forum.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -40,6 +41,7 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     UserService.instance.init();
+    PostService.instance.init(collectionName: 'post');
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       ChatService.instance.showChatRoomEditScreen(globalContext);
