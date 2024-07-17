@@ -23,6 +23,7 @@ class Task {
   final String? groupId;
   final DateTime? startAt;
   final DateTime? endAt;
+  final Map<String, dynamic> data;
 
   /// [creator] is the uid of the task creator
   String creator;
@@ -38,6 +39,7 @@ class Task {
     this.startAt,
     this.endAt,
     required this.creator,
+    required this.data,
   });
 
   factory Task.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -61,6 +63,7 @@ class Task {
       startAt: startAt?.toDate(),
       endAt: endAt?.toDate(),
       creator: json['creator'],
+      data: json,
     );
   }
 
