@@ -161,3 +161,17 @@ This is the way how it can compare the chat password.
 
 
 
+# Development Tip
+
+
+## Opening chat room create in main.dart
+
+```dart
+class MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      ChatService.instance.showChatRoomEditScreen(globalContext);
+    });
+```
+

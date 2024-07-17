@@ -3,7 +3,7 @@ import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
 
 class ChatRoom {
-  static CollectionReference col = ChatService.instance.col;
+  static CollectionReference col = ChatService.instance.roomCol;
 
   /// [id] is the chat room id.
   final String id;
@@ -45,6 +45,9 @@ class ChatRoom {
 
   /// [url] is the last message url in the chat room.
   final String? url;
+
+  /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
+  final bool verifiedUserOnly;
 
   /// [urlForVerifiedUserOnly] is true if only the verified users can sent the
   /// url (or include any url in the text).
@@ -88,6 +91,7 @@ class ChatRoom {
     required this.updatedAt,
     this.text,
     this.url,
+    this.verifiedUserOnly = false,
     this.urlForVerifiedUserOnly = false,
     this.uploadForVerifiedUserOnly = false,
     this.gender,
@@ -119,6 +123,7 @@ class ChatRoom {
           : DateTime.now(),
       text: json['text'],
       url: json['url'],
+      verifiedUserOnly: json['verifiedUserOnly'] ?? false,
       urlForVerifiedUserOnly: json['urlForVerifiedUserOnly'] ?? false,
       uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'] ?? false,
       gender: json['gender'],
@@ -142,6 +147,7 @@ class ChatRoom {
       'updatedAt': updatedAt,
       'text': text,
       'url': url,
+      'verifiedUserOnly': verifiedUserOnly,
       'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
       'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
       'gender': gender,
@@ -157,14 +163,34 @@ class ChatRoom {
 
   /// [create] creates a new chat room.
   ///
-  /// TODO 전체 속성을 다 받아서 생성해야함. 채팅 생성 중에 속성 문제로 에러가 날 수 있기 때문.
   ///
   /// Returns the document reference of the chat room.
-  static Future<ChatRoom> create() async {
+  static Future<ChatRoom> create({
+    String? name,
+    String? description,
+    String? iconUrl,
+    bool open = true,
+    String? password,
+    List<String>? invitedUsers,
+    bool? verifiedUserOnly,
+    bool? urlForVerifiedUserOnly,
+    bool? uploadForVerifiedUserOnly,
+    String? gender,
+    String? domain,
+  }) async {
     /// Create a new chat room
     final ref = await col.add({
       'users': [my.uid],
       'masterUsers': [my.uid],
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (iconUrl != null) 'iconUrl': iconUrl,
+      'open': open,
+      'hasPassword': password != null,
+      'invitedUsers': invitedUsers,
+      'verifiedUserOnly': verifiedUserOnly,
+      'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
+      'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
