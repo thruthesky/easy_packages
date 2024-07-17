@@ -1,20 +1,29 @@
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_storage/src/enum/storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class StorageUploadSelectionBottomSheet extends StatelessWidget {
   const StorageUploadSelectionBottomSheet({
     super.key,
-    this.camera = true,
-    this.gallery = true,
+    this.photoGallery = true,
+    this.photoCamera = true,
+    this.videoGallery = false,
+    this.videoCamera = false,
+    this.gallery = false,
+    this.file = false,
     this.padding,
     this.spacing,
   });
 
-  final bool camera;
-  final bool gallery;
+  final bool? photoGallery;
+  final bool? photoCamera;
+  final bool? videoGallery;
+  final bool? videoCamera;
+  final bool? gallery;
+  final bool? file;
   final EdgeInsetsGeometry? padding;
   final double? spacing;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,26 +39,73 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
               style: Theme.of(context).textTheme.labelLarge,
             ),
             const SizedBox(height: 16),
-            if (gallery)
+            if (photoGallery == true) ...[
               ListTile(
                 leading: const Icon(Icons.photo),
                 title: Text('Select photo from gallery'.t),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  Navigator.pop(context, ImageSource.gallery);
+                  Navigator.pop(context, SourceType.photoGallery);
                 },
               ),
-            if (spacing != null) SizedBox(height: spacing),
-            if (camera)
+              if (spacing != null) SizedBox(height: spacing),
+            ],
+            if (photoCamera == true) ...[
               ListTile(
                 leading: const Icon(Icons.camera_alt),
                 title: Text('Take photo from camera'.t),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  Navigator.pop(context, ImageSource.camera);
+                  Navigator.pop(context, SourceType.photoCamera);
                 },
               ),
-            const SizedBox(height: 16),
+              if (spacing != null) SizedBox(height: spacing),
+            ],
+            if (videoGallery == true) ...[
+              ListTile(
+                leading: const Icon(Icons.videocam),
+                title: Text('Select video from gallery'.t),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.pop(context, SourceType.videoGallery);
+                },
+              ),
+              if (spacing != null) SizedBox(height: spacing),
+            ],
+            if (videoCamera == true) ...[
+              ListTile(
+                leading: const Icon(Icons.video_call),
+                title: Text('Take video from camera'.t),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.pop(context, SourceType.videoCamera);
+                },
+              ),
+              if (spacing != null) SizedBox(height: spacing),
+            ],
+            if (gallery == true) ...[
+              ListTile(
+                leading: const Icon(Icons.file_present_rounded),
+                title: Text('Take file from gallery'.t),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.pop(context, SourceType.gallery);
+                },
+              ),
+              if (spacing != null) SizedBox(height: spacing),
+            ],
+            if (file == true) ...[
+              ListTile(
+                leading: const Icon(Icons.snippet_folder_rounded),
+                title: Text('Choose file'.t),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.pop(context, SourceType.file);
+                },
+              ),
+              if (spacing != null) SizedBox(height: spacing),
+            ],
+            SizedBox(height: spacing != null && spacing! >= 8 ? 4 : 16),
             TextButton(
               child: Text('close'.t,
                   style: TextStyle(color: Theme.of(context).primaryColor)),
