@@ -62,6 +62,23 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 value: true,
                 onChanged: (value) {}),
           ),
+
+          ElevatedButton(
+            onPressed: () async {
+              await ChatRoom.create(
+                name: 'name',
+                description: 'description',
+                iconUrl: 'iconUrl',
+                open: true,
+                password: 'password',
+                invitedUsers: ['invitedUsers'],
+                verifiedUserOnly: true,
+                urlForVerifiedUserOnly: true,
+                uploadForVerifiedUserOnly: true,
+              );
+            },
+            child: const Text('CREATE'),
+          ),
         ],
       ),
     );
