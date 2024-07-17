@@ -180,7 +180,25 @@ Service class does
   - `domain` is the feature or category.
   - `code` is the code of exception
   - `message` is the reason(or description/explanation) of the exception.
-  - For instance, `task/auth-required User sign in required to use task feature`.
+  - For instance, `task-create/auth-required User sign in required to create a task`.
+
+- You can handle error message like below.
+  - the `domain` is ignored and not displayed in the code below.
+
+```dart
+if (e.toString().contains('/')) {
+  final title = e.toString().split(' ')[0].split('/')[1];
+  final parts = e.toString().split(' ');
+  String message = '';
+  if (parts.length > 1) {
+    message = parts.sublist(1).join(' ');
+  }
+  error(context: globalContext, title: title, message: message);
+} else {
+  error(context: globalContext, message: e.toString());
+}
+```
+
 
 
 # Widget

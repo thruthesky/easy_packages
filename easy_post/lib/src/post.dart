@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_forum/easy_forum.dart';
-import 'package:easyuser/easyuser.dart';
+import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_post_v2/src/defines.dart';
 
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
@@ -20,12 +20,13 @@ class Post {
   // collectionReference post's collection
 
   final String id;
+  final String category;
   final String title;
   final String content;
   final String uid;
-  final DateTime? createdAt;
-  final DateTime? updateAt;
-  final List<String>? urls;
+  final DateTime createdAt;
+  final DateTime updateAt;
+  final List<String> urls;
 
   CollectionReference col = PostService.instance.col;
 
@@ -33,27 +34,29 @@ class Post {
 
   Post({
     required this.id,
+    required this.category,
     required this.title,
     required this.content,
     required this.uid,
     required this.createdAt,
     required this.updateAt,
-    this.urls,
+    required this.urls,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
     return Post(
       id: id,
+      category: json['category'],
       title: json['title'] ?? '',
       content: json['content'] ?? '',
-      uid: json['uid'] ?? '',
+      uid: json['uid'],
       createdAt: json['createdAt'] is Timestamp
           ? (json['createdAt'] as Timestamp).toDate()
-          : null,
+          : DateTime.now(),
       updateAt: json['updateAt'] is Timestamp
           ? (json['updateAt'] as Timestamp).toDate()
-          : null,
-      urls: json['urls'] != null ? List<String>.from(json['urls']) : null,
+          : DateTime.now(),
+      urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
     );
   }
   Map<String, dynamic> toJson() => {
@@ -96,28 +99,30 @@ class Post {
   // create a new post
   // 1 doc read
   // 1 doc write
-  static Future<Post?> create({
-    required String title,
-    required String content,
+  static Future<DocumentReference> create({
+    required String category,
+    String? title,
+    String? content,
     List<String>? urls,
   }) async {
-    if (iam.user == null) {
-      throw Exception('Post.create: You must login firt to create a post');
+    if (currentUser == null) {
+      throw 'post-create/sign-in-required You must login firt to create a post';
     }
-    final id = PostService.instance.col.doc().id;
+    if (category.isEmpty) {
+      throw 'post-create/category-is-required Category is required';
+    }
+
     final data = {
-      'id': id,
-      'title': title,
-      'content': content,
-      'uid': iam.user!.uid,
+      'category': category,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      'uid': currentUser!.uid,
       if (urls != null) 'urls': urls,
       'createdAt': FieldValue.serverTimestamp(),
     };
-    await PostService.instance.col.doc(id).set(
-          data,
-          SetOptions(merge: true),
-        );
-    return get(id);
+    return await PostService.instance.col.add(
+      data,
+    );
   }
 
   Future<Post?> update({

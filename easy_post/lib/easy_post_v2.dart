@@ -1,7 +1,5 @@
-library easy_post_v2;
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export './src/post.dart';
+export './src/post.service.dart';
+export './src/screens/post.edit.screen.dart';
+export './src/widgets/post.list_tile.dart';
+export './src/widgets/post.list_view.dart';

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_forum/easy_forum.dart';
-import 'package:easy_forum/src/widgets/post.list_tile.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

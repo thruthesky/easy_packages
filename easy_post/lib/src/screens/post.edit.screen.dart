@@ -1,4 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
 class PostEditScreen extends StatefulWidget {
@@ -10,6 +11,7 @@ class PostEditScreen extends StatefulWidget {
 }
 
 class _PostEditScreenState extends State<PostEditScreen> {
+  final categoryController = TextEditingController();
   final titleController = TextEditingController();
   final contentController = TextEditingController();
 
@@ -35,16 +37,27 @@ class _PostEditScreenState extends State<PostEditScreen> {
           child: Column(
             children: [
               TextField(
+                controller: categoryController,
+              ),
+              TextField(
                 controller: titleController,
               ),
               const SizedBox(
                 height: 24,
               ),
               TextField(
-                controller: titleController,
+                controller: contentController,
+                minLines: 5,
+                maxLines: 8,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await Post.create(
+                    category: categoryController.text,
+                    title: titleController.text,
+                    content: contentController.text,
+                  );
+                },
                 child: Text('Created'.t),
               )
             ],
