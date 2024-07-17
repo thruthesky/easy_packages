@@ -5,10 +5,8 @@ This package is a todo like task manage system which allows a user to create gro
 ## Logic
 
 - `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
-- User collection must be set on the `TaskService.instance.init( user:  (collection: 'users', displayName: 'name', photoUrl:'photoURL' ) )`.
-  - The document id of the user collection must be the uid.
-  - And by default, this package uses `displayName` in the document to get the user's name to display on the screen. And `photoUrl` to get the user's photoUrl. If your document uses different fields, you can set it on initialization.
-  - For user search screen(or dislog), it will use the display name in user documents.
+  - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
+
 
 ## Coding convention
 
@@ -60,20 +58,38 @@ Do the widget test as Flutter does.
 This is a special test for house only. This is because it's not easy to test while connection with Firebase.
 
 
-## TODO feature
+## Task feature
 
-### TO DOs
+### Overview of Task Rules
 
-There are more to improve. But these work will be done later.
+- Any body can be a moderator as long as his uid is set to the `moderatorUsers` in the group.
+- Any body can create a task.
+- A task may be (or may not be) assigned to a group.
+- A moderator can create user groups
+  - So, he can quickly add all the users of that group without inviting them indivisually.
+  - Remember, any one can be an moderator. Meaning, any one can create his own user groups even if he does not have any group.
+  - The users must accept invitate to be a member of the group.
+- Anyone can assign to anyone as long as they are in the same group.
+- One cannot assign a task to a user who is not in the same group even if it's moderator or a creator. Meaning,
+  - a task can only be assigned to
+    - the creator himself
+    - anyone in the group
 
-- a moderator should be able to give permission to whom he can create tasks.
-- A moderator can create his own user groups so he can quickly add all his member without inviting them indivisually in each group.
+
+
+
+
+
 
 ### Terms
 
-- A `moderator` is the one who manages the tasks. Usually, the he is the one who creates the group, invites other users, creates tasks and assigns to others. Anyone can be a moderator without any registration.
+- A `moderator` is the one who manages the tasks. Usually, he is the one who creates the group, invites other users, creates tasks and assigns to others. Anyone can be a moderator without any registration.
 
-- A `group` is a separate enity. It is managed by a `moderator`. It can have `members`. A moderator can assign task to a group.
+- A `group` is a separate enity. It is managed by a `moderator`.
+  - It can have `users`.
+  - A moderator can assign task to a group.
+
+
 
 ### Logic of TODO feature
 

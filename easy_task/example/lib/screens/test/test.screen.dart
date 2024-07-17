@@ -44,12 +44,6 @@ class TestScreen extends StatelessWidget {
               },
               child: const Text('Test Assignment to Group'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                testCrudExtraData(includeReport: true);
-              },
-              child: const Text('Test CRUD with Extra Data'),
-            ),
           ],
         ),
       ),

@@ -32,7 +32,6 @@ class Assign {
   final DateTime updatedAt;
   final String assignedBy;
   final String? groupId;
-  final Map<String, dynamic> data;
 
   Assign({
     required this.id,
@@ -43,7 +42,6 @@ class Assign {
     required this.updatedAt,
     required this.assignedBy,
     this.groupId,
-    required this.data,
   });
 
   factory Assign.fromJson(Map<String, dynamic> json, String id) {
@@ -58,7 +56,6 @@ class Assign {
       updatedAt: updatedAt == null ? DateTime.now() : updatedAt.toDate(),
       assignedBy: json['assignedBy'] ?? '',
       groupId: json['groupId'],
-      data: json,
     );
   }
 
@@ -83,10 +80,11 @@ class Assign {
     required String assignTo,
     required Task task,
     String? groupId,
-    Map<String, dynamic>? extraData,
   }) async {
+    if (groupId == null && assignTo != myUid) {
+      throw 'You can only assign to yourself.';
+    }
     final ref = await col.add({
-      ...?extraData,
       'assignTo': assignTo,
       'taskId': task.id,
       'status': AssignStatus.waiting,

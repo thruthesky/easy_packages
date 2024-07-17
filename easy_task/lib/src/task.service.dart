@@ -2,12 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/easy_task.dart';
 
-typedef TaskUserRefSource = ({
-  String collection,
-  String name,
-  String photoUrl,
-});
-
 /// Task service
 ///
 /// This service is the only service for the whole task feature.
@@ -17,19 +11,7 @@ class TaskService {
 
   TaskService._();
 
-  TaskUserRefSource userDocInfo = (
-    collection: 'users',
-    name: 'displayName',
-    photoUrl: 'photoUrl',
-  );
-
-  init(
-    TaskUserRefSource? user,
-  ) {
-    if (user != null) {
-      userDocInfo = user;
-    }
-  }
+  init() {}
 
   /// CollectionReference for Task docs
   CollectionReference taskCol = FirebaseFirestore.instance.collection('task');
