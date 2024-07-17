@@ -61,6 +61,11 @@ void testTaskCrud() async {
 
 Future testTaskAssign() async {
   final task = await createTask();
+
+  // task.assignGroup();
+  // task.assignToUser(assignTo: myUid!);
+  // task.assignToMe
+
   final createdRef = await Assign.create(task: task, assignTo: myUid!);
   final createdAssign = await Assign.get(createdRef.id) as Assign;
   isTrue(createdAssign.taskId == task.id, 'Task id is not correct');

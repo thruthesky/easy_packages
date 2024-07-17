@@ -6,29 +6,31 @@ class TaskUserGroup {
   static final CollectionReference col = TaskService.instance.userGroupCol;
   DocumentReference get ref => col.doc(id);
 
-  String id;
+  final String id;
 
   /// [name] is the name of the group
-  String name;
+  final String name;
 
   /// [users] is the list of
   /// users' uids who are members
-  List<String> users;
+  final List<String> users;
 
   /// [moderatorUsers] is the list of
   /// users' uids who are moderators
-  List<String> moderatorUsers;
+  final List<String> moderatorUsers;
 
   /// [invitedUsers] is the list of
   /// users' uids who invited the group
-  List<String> invitedUsers;
+  final List<String> invitedUsers;
 
   /// [rejectedUsers] is the list of
   /// users' uids who rejecte/declined the
   /// invitation
-  List<String> rejectedUsers;
-  DateTime createdAt;
-  DateTime updatedAt;
+  final List<String> rejectedUsers;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  final Map<String, dynamic> data;
 
   TaskUserGroup({
     required this.id,
@@ -39,6 +41,7 @@ class TaskUserGroup {
     required this.rejectedUsers,
     required this.createdAt,
     required this.updatedAt,
+    required this.data,
   });
 
   factory TaskUserGroup.fromJson(Map<String, dynamic> json, String id) {
@@ -53,6 +56,7 @@ class TaskUserGroup {
       rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
       createdAt: createdAt?.toDate() ?? DateTime.now(),
       updatedAt: updatedAt?.toDate() ?? DateTime.now(),
+      data: json,
     );
   }
 
@@ -61,10 +65,17 @@ class TaskUserGroup {
     return TaskUserGroup.fromJson(json, snapshot.id);
   }
 
+  /// Create TaskUserGroup doc in Firestore
+  ///
+  /// Be warned in creating with [extraData] because it may
+  /// be overriden by other fields if the field is also
+  /// set upon create. Please review the existing fields.
   static Future<DocumentReference> create({
     required String name,
+    Map<String, dynamic>? extraData,
   }) async {
     final ref = await col.add({
+      ...?extraData,
       'name': name,
       'users': [],
       'moderatorUsers': [myUid!],
@@ -83,10 +94,19 @@ class TaskUserGroup {
     return TaskUserGroup.fromSnapshot(snapshot);
   }
 
+  /// Updates the TaskUserGroup doc in Firestore
+  ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the update is also
+  /// updating other task fields (the fields that are originally
+  /// in Task already). Also, it can update any existing
+  /// fields as well.
   Future<void> update({
     String? name,
+    Map<String, dynamic>? extraData,
   }) async {
     final updateData = <String, dynamic>{
+      ...?extraData,
       'updatedAt': FieldValue.serverTimestamp(),
     };
     if (name != null) updateData['name'] = name;
@@ -96,14 +116,14 @@ class TaskUserGroup {
   Future<void> addUser(String uid) async {
     await ref.update({
       'updatedAt': FieldValue.serverTimestamp(),
-      'members': FieldValue.arrayUnion([uid]),
+      'users': FieldValue.arrayUnion([uid]),
     });
   }
 
   Future<void> removeUser(String uid) async {
     await ref.update({
       'updatedAt': FieldValue.serverTimestamp(),
-      'members': FieldValue.arrayRemove([uid]),
+      'users': FieldValue.arrayRemove([uid]),
     });
   }
 

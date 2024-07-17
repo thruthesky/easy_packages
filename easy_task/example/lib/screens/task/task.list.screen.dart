@@ -89,18 +89,23 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   context: context,
                   pageBuilder: (_, __, ___) => TaskDetailScreen(
                     task: task,
-                    assignUids: (context) async {
+                    onAssignUid: (context) async {
                       final uids = await showGeneralDialog<String?>(
                         context: context,
-                        pageBuilder: (_, __, ___) => UserListView(
-                          itemBuilder: (user, index) {
-                            return UserListTile(
-                              user: user,
-                              onTap: () => {
-                                Navigator.of(context).pop([user.uid]),
-                              },
-                            );
-                          },
+                        pageBuilder: (_, __, ___) => Scaffold(
+                          appBar: AppBar(
+                            title: const Text("Assign User"),
+                          ),
+                          body: UserListView(
+                            itemBuilder: (user, index) {
+                              return UserListTile(
+                                user: user,
+                                onTap: () => {
+                                  Navigator.of(context).pop(user.uid),
+                                },
+                              );
+                            },
+                          ),
                         ),
                       );
                       return uids;

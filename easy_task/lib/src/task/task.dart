@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
 import 'package:easy_task/src/task.service.dart';
 
@@ -82,6 +83,9 @@ class Task {
   ///
   /// [title] is the title of the task.
   ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the field is also
+  /// set upon create.
   static Future<DocumentReference> create({
     String? title,
     String? content,
@@ -105,15 +109,30 @@ class Task {
 
   /// Update task
   ///
+  /// The [update] method is used to update fields and is using
+  /// `DocumentReference.update(updateData)` from cloud_functions.
+  /// It means that if fields are existing it will be replaced by
+  /// the values being updated. Therefore fields that are `maps`
+  /// will be replaced by the map value if they are being updated
+  /// here.
+  ///
   /// NOTE: This cannot be used to `nullify` any field. Use
   /// [deleteField] method to delete a field.
+  ///
+  /// Be warned in updating [extraData] because it may
+  /// be overriden by other fields if the update is also
+  /// updating other task fields (the fields that are originally
+  /// in Task already). Also, it can update any existing
+  /// fields as well.
   Future<void> update({
     String? title,
     String? content,
     DateTime? startAt,
     DateTime? endAt,
+    Map<String, dynamic>? extraData,
   }) async {
     final data = <String, dynamic>{
+      ...?extraData,
       'updatedAt': FieldValue.serverTimestamp(),
     };
     if (title != null) data['title'] = title;
@@ -147,4 +166,15 @@ class Task {
     // Delete the task if all the assigns are deleted
     await ref.delete();
   }
+
+  /// ---------------------------- Helper Methods ----------------------------
+  ///
+
+  /// Assign a task to a user
+  Future<DocumentReference> assignToUser({required String assignTo}) async =>
+      await Assign.create(task: this, assignTo: assignTo);
+
+  /// Assign a task to myself
+  Future<DocumentReference> assignToMe() async =>
+      await assignToUser(assignTo: myUid!);
 }
