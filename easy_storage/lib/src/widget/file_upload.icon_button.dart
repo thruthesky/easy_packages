@@ -35,25 +35,22 @@ class FileUploadIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: icon ?? const Icon(Icons.attach_file),
+    return UploadIconButton(
+      onUpload: onUpload,
+      photoCamera: false,
+      photoGallery: false,
+      videoCamera: false,
+      videoGallery: false,
+      gallery: gallery,
+      file: file,
+      progress: progress,
+      complete: complete,
+      icon: icon,
       iconSize: iconSize,
       visualDensity: visualDensity,
+      iconPadding: iconPadding,
       padding: padding,
-      onPressed: () async {
-        final uploadedUrl = await StorageService.instance.upload(
-          context: context,
-          gallery: gallery,
-          file: file,
-          progress: progress,
-          complete: complete,
-          spacing: spacing,
-          padding: padding,
-        );
-        if (uploadedUrl != null) {
-          onUpload.call(uploadedUrl);
-        }
-      },
+      spacing: spacing,
     );
   }
 }

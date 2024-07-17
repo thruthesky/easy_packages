@@ -8,10 +8,10 @@ class UploadIconButton extends StatelessWidget {
   const UploadIconButton({
     super.key,
     required this.onUpload,
-    this.photoGallery = true,
     this.photoCamera = true,
-    this.videoGallery = true,
+    this.photoGallery = true,
     this.videoCamera = true,
+    this.videoGallery = true,
     this.gallery = true,
     this.file = true,
     this.progress,
@@ -30,11 +30,11 @@ class UploadIconButton extends StatelessWidget {
   final Function()? complete;
   final VisualDensity? visualDensity;
 
-  final bool photoGallery;
   final bool photoCamera;
+  final bool photoGallery;
 
-  final bool videoGallery;
   final bool videoCamera;
+  final bool videoGallery;
 
   final bool gallery;
   final bool file;

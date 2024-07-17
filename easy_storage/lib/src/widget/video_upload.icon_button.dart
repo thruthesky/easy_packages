@@ -8,8 +8,8 @@ class VideoUploadIconButton extends StatelessWidget {
   const VideoUploadIconButton({
     super.key,
     required this.onUpload,
-    this.gallery = true,
     this.camera = true,
+    this.gallery = true,
     this.progress,
     this.complete,
     this.icon,
@@ -25,8 +25,8 @@ class VideoUploadIconButton extends StatelessWidget {
   final Function(double)? progress;
   final Function()? complete;
   final VisualDensity? visualDensity;
-  final bool gallery;
   final bool camera;
+  final bool gallery;
 
   final double? iconSize;
   final EdgeInsetsGeometry? iconPadding;
@@ -35,25 +35,22 @@ class VideoUploadIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: icon ?? const Icon(Icons.attach_file),
+    return UploadIconButton(
+      onUpload: onUpload,
+      photoCamera: false,
+      photoGallery: false,
+      videoCamera: camera,
+      videoGallery: gallery,
+      gallery: false,
+      file: false,
+      progress: progress,
+      complete: complete,
+      icon: icon,
       iconSize: iconSize,
       visualDensity: visualDensity,
+      iconPadding: iconPadding,
       padding: padding,
-      onPressed: () async {
-        final uploadedUrl = await StorageService.instance.upload(
-          context: context,
-          videoGallery: gallery,
-          videoCamera: camera,
-          progress: progress,
-          complete: complete,
-          spacing: spacing,
-          padding: padding,
-        );
-        if (uploadedUrl != null) {
-          onUpload.call(uploadedUrl);
-        }
-      },
+      spacing: spacing,
     );
   }
 }
