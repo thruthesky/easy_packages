@@ -9,6 +9,7 @@ class PostListView extends StatelessWidget {
   const PostListView({
     super.key,
     this.category,
+    this.uid,
     this.pageSize = 40,
     this.loadingBuilder,
     this.errorBuilder,
@@ -35,6 +36,7 @@ class PostListView extends StatelessWidget {
     this.emptyBuilder,
   });
   final String? category;
+  final String? uid;
 
   final int pageSize;
   final Widget Function()? loadingBuilder;
@@ -62,6 +64,9 @@ class PostListView extends StatelessWidget {
     Query query = PostService.instance.col;
     if (category != null) {
       query = query.where('category', isEqualTo: category);
+    }
+    if (uid != null) {
+      query = query.where('uid', isEqualTo: uid);
     }
     query = query.orderBy('createdAt', descending: true).limit(pageSize);
 
