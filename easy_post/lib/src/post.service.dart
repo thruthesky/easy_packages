@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_post_v2/src/screens/post.detail.screen.dart';
 import 'package:easy_post_v2/src/screens/post.list.screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +13,15 @@ class PostService {
   bool initialized = false;
   CollectionReference get col => FirebaseFirestore.instance.collection('posts');
 
-  init() {
+  late Map<String, String> categories = {
+    'qna': 'QnA',
+    'discussion': 'Discussion',
+    'news': 'News',
+  };
+
+  init({Map<String, String>? categories}) {
     initialized = true;
+    this.categories = categories ?? this.categories;
   }
 
   Future<DocumentReference?> showPostEditScreen({
@@ -37,6 +45,18 @@ class PostService {
       context: context,
       pageBuilder: (_, __, ___) {
         return const PostListScreen();
+      },
+    );
+  }
+
+  Future showPostDetailScreen({
+    required BuildContext context,
+    required Post post,
+  }) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return PostDetailScreen(post: post);
       },
     );
   }

@@ -13,7 +13,7 @@ class PostEditScreen extends StatefulWidget {
 }
 
 class _PostEditScreenState extends State<PostEditScreen> {
-  final categoryController = TextEditingController();
+  String? category;
   final titleController = TextEditingController();
   final contentController = TextEditingController();
   final youtubeController = TextEditingController();
@@ -22,7 +22,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
   void initState() {
     super.initState();
     if (widget.category != null) {
-      categoryController.text = widget.category!;
+      category = widget.category!;
     }
   }
 
@@ -47,13 +47,30 @@ class _PostEditScreenState extends State<PostEditScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              TextField(
-                controller: categoryController,
-                decoration: InputDecoration(
-                  hintText: 'Category'.t,
-                  labelText: 'Category'.t,
-                ),
-              ),
+              DropdownButton<String?>(
+                  isDense: false,
+                  padding: const EdgeInsets.only(
+                      left: 12, top: 4, right: 4, bottom: 4),
+                  isExpanded: true, // 화살표 아이콘을 오른쪽에 밀어 붙이기
+                  menuMaxHeight: 300, // 높이 조절
+                  items: [
+                    const DropdownMenuItem(
+                      value: null,
+                      child: Text('Select Category'),
+                    ),
+                    ...PostService.instance.categories.entries.map((e) {
+                      return DropdownMenuItem(
+                        value: e.key,
+                        child: Text(e.value),
+                      );
+                    }),
+                  ],
+                  value: category,
+                  onChanged: (value) {
+                    setState(() {
+                      category = value;
+                    });
+                  }),
               const SizedBox(height: 24),
               TextField(
                 controller: titleController,
@@ -76,7 +93,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
               ElevatedButton(
                 onPressed: () async {
                   final ref = await Post.create(
-                    category: categoryController.text,
+                    category: category ?? '',
                     title: titleController.text,
                     content: contentController.text,
                     youtubeUrl: youtubeController.text,

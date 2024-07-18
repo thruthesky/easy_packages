@@ -31,40 +31,14 @@ class _PostListScreenState extends State<PostListScreen> {
             height: 40,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: [
-                TextButton(
-                  onPressed: () => setState(() => category = 'qna'),
-                  child: const Text('QnA'),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => category = 'discussion'),
-                  child: const Text('Discussion'),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => category = 'news'),
-                  child: const Text('News'),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => category = 'news'),
-                  child: const Text('News 2'),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => category = 'news'),
-                  child: const Text('News 3'),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => category = 'news'),
-                  child: const Text('News 4'),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => category = 'news'),
-                  child: const Text('News 5'),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => category = 'news'),
-                  child: const Text('News 6'),
-                ),
-              ],
+              children: PostService.instance.categories.entries
+                  .map(
+                    (e) => TextButton(
+                      onPressed: () => setState(() => category = e.key),
+                      child: Text(e.value),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ),

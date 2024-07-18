@@ -79,10 +79,10 @@ The fields used in the user document are as follows. If your app uses fields oth
 
 
 
-## Widget
+# Widget
 
 
-### User sign-in or sign-out
+## User sign-in or sign-out
 
 You display UI based on the user's login status with `AuthStateChanges` as shown below.
 ```dart
@@ -98,7 +98,44 @@ AuthStateChanges(
   },
 ),
 ```
-### Finding user 
+
+
+## MyDoc
+
+## UserDoc
+
+You can create a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
+
+`uid` is the user's UID. It uses the `MemoryCache` package to cach the data in memory.
+
+There are three different modes for using `UserDoc`
+
+If `cacheOnly` is true, it only uses data cached in memory. If there is cached data in memory, it uses that data. If there is no cached data in memory, it reads data from the server. The default value is true, and once user data is read from the DB, it does not read from the DB again.
+
+If `cacheOnly` is false, it first shows the data cached in memory as the `initialData` and then fetches and shows data from the server. So, it build the widget twice.
+
+Using [sync], it first shows the data cached in memory as the `initialData` and then shows data updated in real-time.
+
+It uses the `initialData` for reducing flickering.
+
+
+Examples:
+
+- If you need to show a user's avatar which requires the user (document) obect but you only have his UID, then use the `UserDoc` to fetch the user's document object. This is a practical way to get the user object when you their uid only.
+
+```dart
+UserDoc(
+  uid: widget.post.uid,
+  builder: (user) => UserAvatar(
+    user: user!,
+  ),
+),
+```
+
+
+
+
+## Finding user 
 
 You can search user from collection by thier display name. use `UserSearchDialog()` or `UserService.instance.showUserSearchDialog` 
 

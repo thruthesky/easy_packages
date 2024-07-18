@@ -10,7 +10,8 @@ class PostListTile extends StatelessWidget {
     return ListTile(
       title: Text(post.title),
       subtitle: Text(post.content),
-      // onTap: ()=> ,
+      onTap: () => PostService.instance
+          .showPostDetailScreen(context: context, post: post),
     );
   }
 }
