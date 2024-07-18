@@ -230,3 +230,20 @@ ImageUploadIconButton(
   complete: () => setState(() => progress = null),
 )
 ```
+
+
+
+# Thumbnails
+
+
+- This package support 3 thumbnails
+  - Small as 200x200
+  - Medium as 600x600
+  - Large as 1200x1200
+
+
+- How to use thumbail
+  - `url.thumbnail` as small
+  - `url.thumbnailMedium` as medium
+  - `url.thumbnailLarge` as large image.
+  - 
