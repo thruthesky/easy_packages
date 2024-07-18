@@ -35,6 +35,9 @@ class Post {
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
 
+  final Map<String, dynamic> data;
+  Map<String, dynamic> get extra => data;
+
   Post({
     required this.id,
     required this.category,
@@ -44,6 +47,7 @@ class Post {
     required this.createdAt,
     required this.updateAt,
     required this.urls,
+    required this.data,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -60,6 +64,7 @@ class Post {
           ? (json['updateAt'] as Timestamp).toDate()
           : DateTime.now(),
       urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
+      data: json,
     );
   }
   Map<String, dynamic> toJson() => {
@@ -107,6 +112,7 @@ class Post {
     String? title,
     String? content,
     List<String>? urls,
+    Map<String, dynamic>? extra,
   }) async {
     if (currentUser == null) {
       throw 'post-create/sign-in-required You must login firt to create a post';
@@ -123,15 +129,17 @@ class Post {
       if (urls != null) 'urls': urls,
       'createdAt': FieldValue.serverTimestamp(),
     };
-    return await PostService.instance.col.add(
-      data,
-    );
+    return await PostService.instance.col.add({
+      ...data,
+      ...?extra,
+    });
   }
 
   Future<Post?> update({
     String? title,
     String? content,
     List<String>? urls,
+    Map<String, dynamic>? extra,
   }) async {
     final data = {
       if (title != null) 'title': title,
@@ -145,6 +153,7 @@ class Post {
       {
         ...data,
         'updateAt': FieldValue.serverTimestamp(),
+        ...?extra,
       },
     );
 

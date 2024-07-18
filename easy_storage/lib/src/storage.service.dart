@@ -245,6 +245,7 @@ class StorageService {
     EdgeInsetsGeometry? padding,
     double maxHeight = 1024,
     double maxWidth = 1024,
+    int imageQuality = 95,
   }) async {
     final source = await chooseUploadSource(
       context: context,
@@ -266,6 +267,7 @@ class StorageService {
         saveAs: saveAs,
         maxHeight: maxHeight,
         maxWidth: maxWidth,
+        imageQuality: imageQuality,
       );
     }
     return null;
@@ -301,6 +303,7 @@ class StorageService {
     bool photoGallery = true,
     double maxHeight = 1024,
     double maxWidth = 1024,
+    int imageQuality = 95,
   }) async {
     String? oldUrl;
     String? url;
@@ -325,6 +328,7 @@ class StorageService {
         photoGallery: photoGallery,
         maxHeight: maxHeight,
         maxWidth: maxWidth,
+        imageQuality: imageQuality,
       );
     }
 
@@ -360,6 +364,7 @@ class StorageService {
     String? type,
     double maxHeight = 1024,
     double maxWidth = 1024,
+    int imageQuality = 95,
   }) async {
     if (source == null) return null;
     String? path = await getFilePathFromPicker(
@@ -383,6 +388,7 @@ class StorageService {
     required SourceType? source,
     double maxHeight = 1024,
     double maxWidth = 1024,
+    int imageQuality = 95,
   }) async {
     if (source == null) return null;
 
@@ -392,6 +398,7 @@ class StorageService {
           source: ImageSource.camera,
           maxHeight: maxHeight,
           maxWidth: maxWidth,
+          imageQuality: imageQuality,
         );
         return image?.path;
       } else if (source == SourceType.photoGallery) {

@@ -41,6 +41,19 @@ Add these entitlements for allowing the app to use Camera and Gallery.
 <string>This app requires access to the camera to share the photo on profile, chat, forum.</string>
 ```
 
+
+# TODO
+
+- Give an option to `init` that if the thumbnails are being used.
+- When the original image is deleted, delete the thumbnails.
+- When the image resizing (thumbnailing) is done, update the document
+  - To do this, there must be a code to know if the upload belongs to post, comment, chat, or user photo, etc and there must be a document id also.
+    - **Can it be saved in the path of file name??**
+  - This way, it is much easier to use the thumbnail since we know that the document(chat, post, comemnt, user, etc) has thumbnail or now.
+
+
+
+
 # Upload
 
 Below is an example of uploading. When you click the button, it calls the `StorageService.instance.upload` function to perform the upload. You just need to call the upload function when necessary. Especially, you can appropriately adjust the size of `maxWidth`, and `maxHeight`.
@@ -235,15 +248,31 @@ ImageUploadIconButton(
 
 # Thumbnails
 
+- To use thumbnails you need to install [Image Resize Extension](https://extensions.dev/extensions/firebase/storage-resize-images).
 
-- This package support 3 thumbnails
+- `easy_storage` package support 3 thumbnails
   - Small as 200x200
   - Medium as 600x600
   - Large as 1200x1200
 
+- You will need to install the image resize extension three times(instances) with the following configs
+  - Size must be 200x200, 600x600, 1200x1200
+  - Deletion of original file: false (No)
+  - Make resize images public: true (Yes)
+  - Convert images to prefered type: webp
+  - Assign new access token: false (No)
+
+- Note that, any of the easy package series must not use thumbnails. Only the app developer can use the thumbnails in their app code.
+  - App developers can use the imageQuality, maxium height and maxium width to reduce the size using the `StorageService.instance.upload()` method.
+
+- Remember, the `Image Resize` extension will not create a square thumbnail. It maintains the ratio.
 
 - How to use thumbail
   - `url.thumbnail` as small
   - `url.thumbnailMedium` as medium
   - `url.thumbnailLarge` as large image.
-  - 
+
+
+
+
+
