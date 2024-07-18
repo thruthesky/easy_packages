@@ -16,14 +16,12 @@ import 'package:easy_locale/easy_locale.dart';
 /// the user registered.
 ///
 class EmailPasswordLogin extends StatefulWidget {
-  const EmailPasswordLogin({
-    super.key,
-    this.onLogin,
-    this.padding,
-  });
+  const EmailPasswordLogin(
+      {super.key, this.onLogin, this.padding, this.runSpacing});
 
   final void Function()? onLogin;
   final EdgeInsets? padding;
+  final double? runSpacing;
 
   @override
   State<EmailPasswordLogin> createState() => _EmailPasswordLoginState();
@@ -50,6 +48,9 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
               ),
               hintText: 'input email'.t,
             ),
+          ),
+          SizedBox(
+            height: widget.runSpacing ?? 16,
           ),
           TextField(
             controller: passwordController,
@@ -114,7 +115,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
                     }
                   }
                 },
-                child: Text('Link Currnet Accout'.t),
+                child: Text('Link Account'.t),
               )
             ],
           ),
