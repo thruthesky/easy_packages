@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 class StorageService {
   static StorageService? _instance;
@@ -140,28 +141,44 @@ class StorageService {
 
   /// 이미지 업로드 소스(갤러리 또는 카메라) 선택창을 보여주고, 선택된 소스를 반환한다.
   ///
-  /// [camera] 는 카메라를 선택할 수 있게 할지 여부이다.
-  /// [gallery] 는 갤러리를 선택할 수 있게 할지 여부이다.
+  /// [photoCamera] default true, 는 카메라를 선택할 수 있게 할지 여부이다.
+  /// [photoGallery] default true, 는 갤러리를 선택할 수 있게 할지 여부이다.
+  ///
+  /// [videoCamera] default false, indicate whether to allow the video camera to be selected
+  /// [videoGallery] default false, indicate whethere to allow the video gallery to be selected
+  ///
+  ///
+  /// [gallery] default false, indicate whether to allow to select file from gallery
+  /// [file] default false, indicate whether to allow to select file from storage
+  ///
+  /// [spacing] default none, spacing between the selection,
+  /// [padding] default EdgeInsets.zero, padding of the bottomsheet
   ///
   /// 사용자에게 사진/파일 업로드를 요청한다.
   ///
   /// 커스텀 디자인은 [customize] 에서 할 수 있다.
-  Future<ImageSource?> chooseUploadSource({
+  Future<SourceType?> chooseUploadSource({
     required BuildContext context,
-    bool camera = true,
-    bool gallery = true,
+    bool? photoGallery,
+    bool? photoCamera,
+    bool? videoGallery,
+    bool? videoCamera,
+    bool? gallery,
+    bool? file,
+    double? spacing,
+    EdgeInsetsGeometry? padding,
   }) async {
     return await showModalBottomSheet(
       context: context,
-      builder: (_) =>
-          // customize.uploadSelectionBottomsheetBuilder?.call(
-          //   context: context,
-          //   camera: camera,
-          //   gallery: gallery,
-          // ) ??
-          StorageUploadSelectionBottomSheet(
-        camera: camera,
+      builder: (_) => StorageUploadSelectionBottomSheet(
+        photoGallery: photoGallery,
+        photoCamera: photoCamera,
+        videoGallery: videoGallery,
+        videoCamera: videoCamera,
         gallery: gallery,
+        file: file,
+        spacing: spacing,
+        padding: padding,
       ),
     );
   }
@@ -188,9 +205,18 @@ class StorageService {
   /// If it's empty, it willl save the file under "/users/$uid/". You can use
   /// this option to save the file under a different path.
   ///
-  /// [camera] is a flag to allow the user to choose the camera as the source.
+  /// [photoCamera] is a flag to allow the user to choose the camera as the image source.
   ///
-  /// [gallery] is a flag to allow the user to choose the gallery as the source.
+  /// [photoGallery] is a flag to allow the user to choose the gallery as the image source.
+  ///
+  /// [videoCamera] is a flag to allow the user to choose the camera as the video source.
+  ///
+  /// [videoGallery] is a flag to allow the user to choose the gallery as the video source.
+  ///
+  ///
+  /// [gallery] is a flag to allow the user to choose the gallery as the file source.
+  ///
+  /// [file] is a flag to allow the user to choose the storage as the file source.
   ///
   /// [maxHeight] is the maximum height of the image to upload.
   ///
@@ -209,15 +235,27 @@ class StorageService {
     Function(double)? progress,
     Function()? complete,
     String? saveAs,
-    bool camera = true,
-    bool gallery = true,
+    bool? photoCamera = true,
+    bool? photoGallery = true,
+    bool? videoCamera = false,
+    bool? videoGallery = false,
+    bool? gallery = false,
+    bool? file = false,
+    double? spacing,
+    EdgeInsetsGeometry? padding,
     double maxHeight = 1024,
     double maxWidth = 1024,
   }) async {
     final source = await chooseUploadSource(
       context: context,
-      camera: camera,
+      photoCamera: photoCamera,
+      photoGallery: photoGallery,
+      videoCamera: videoCamera,
+      videoGallery: videoGallery,
       gallery: gallery,
+      file: file,
+      spacing: spacing,
+      padding: padding,
     );
     if (context.mounted) {
       return await uploadFrom(
@@ -259,8 +297,8 @@ class StorageService {
     Function(double)? progress,
     Function()? complete,
     String? saveAs,
-    bool camera = true,
-    bool gallery = true,
+    bool photoCamera = true,
+    bool photoGallery = true,
     double maxHeight = 1024,
     double maxWidth = 1024,
   }) async {
@@ -283,8 +321,8 @@ class StorageService {
         progress: progress,
         complete: complete,
         saveAs: saveAs,
-        camera: camera,
-        gallery: gallery,
+        photoCamera: photoCamera,
+        photoGallery: photoGallery,
         maxHeight: maxHeight,
         maxWidth: maxWidth,
       );
@@ -315,7 +353,7 @@ class StorageService {
   /// may return null if [source] is invalid.
   Future<String?> uploadFrom({
     required BuildContext context,
-    required ImageSource? source,
+    required SourceType? source,
     Function(double)? progress,
     Function? complete,
     String? saveAs,
@@ -342,24 +380,38 @@ class StorageService {
 
   Future<String?> getFilePathFromPicker({
     required BuildContext context,
-    required ImageSource? source,
+    required SourceType? source,
     double maxHeight = 1024,
     double maxWidth = 1024,
   }) async {
     if (source == null) return null;
 
     try {
-      if (source == ImageSource.camera) {
+      if (source == SourceType.photoCamera) {
         final XFile? image = await ImagePicker().pickImage(
           source: ImageSource.camera,
           maxHeight: maxHeight,
           maxWidth: maxWidth,
         );
         return image?.path;
-      } else if (source == ImageSource.gallery) {
+      } else if (source == SourceType.photoGallery) {
         final XFile? image =
             await ImagePicker().pickImage(source: ImageSource.gallery);
         return image?.path;
+      } else if (source == SourceType.videoCamera) {
+        final XFile? video =
+            await ImagePicker().pickVideo(source: ImageSource.camera);
+        return video?.path;
+      } else if (source == SourceType.videoGallery) {
+        final XFile? video =
+            await ImagePicker().pickVideo(source: ImageSource.gallery);
+        return video?.path;
+      } else if (source == SourceType.gallery) {
+        final XFile? image = await ImagePicker().pickMedia();
+        return image?.path;
+      } else if (source == SourceType.file) {
+        final FilePickerResult? result = await FilePicker.platform.pickFiles();
+        return result?.files.first.path;
       }
       return null;
     } on PlatformException catch (error) {

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:easy_task/src/task_user_group/task_user_group.dart';
-import 'package:easy_task/src/user/user.list.screen.dart';
 import 'package:flutter/material.dart';
 
 class TaskUserGroupInvitationListScreen extends StatefulWidget {
@@ -37,12 +36,13 @@ class _TaskUserGroupInvitationListScreenState
               if (widget.onInviteUids != null) {
                 inviteUids = await widget.onInviteUids!.call(context);
               } else {
-                inviteUids = await showGeneralDialog<List<String>?>(
-                  context: context,
-                  pageBuilder: (context, a1, a2) => UserListScreen(
-                    onTap: (uid) => Navigator.of(context).pop([uid]),
-                  ),
-                );
+                // TODO
+                // inviteUids = await showGeneralDialog<List<String>?>(
+                //   context: context,
+                //   pageBuilder: (context, a1, a2) => UserListScreen(
+                //     onTap: (uid) => Navigator.of(context).pop([uid]),
+                //   ),
+                // );
               }
               if (inviteUids == null) return;
               widget.group.inviteUsers(inviteUids);

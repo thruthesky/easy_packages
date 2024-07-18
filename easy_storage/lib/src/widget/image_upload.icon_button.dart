@@ -8,24 +8,49 @@ class ImageUploadIconButton extends StatelessWidget {
   const ImageUploadIconButton({
     super.key,
     required this.onUpload,
-    this.icon,
+    this.camera = true,
+    this.gallery = true,
+    this.progress,
+    this.complete,
+    this.icon = const Icon(Icons.camera_alt),
+    this.iconSize,
+    this.visualDensity,
+    this.iconPadding,
+    this.padding,
+    this.spacing,
   });
 
   final void Function(String url) onUpload;
-  final Widget? icon;
+  final Widget icon;
+  final Function(double)? progress;
+  final Function()? complete;
+  final VisualDensity? visualDensity;
+  final bool camera;
+  final bool gallery;
+
+  final double? iconSize;
+  final EdgeInsetsGeometry? iconPadding;
+  final EdgeInsetsGeometry? padding;
+  final double? spacing;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: icon ?? const Icon(Icons.camera_alt),
-      onPressed: () async {
-        String? uploadedUrl = await StorageService.instance.upload(
-          context: context,
-        );
-        if (uploadedUrl != null) {
-          onUpload.call(uploadedUrl);
-        }
-      },
+    return UploadIconButton(
+      onUpload: onUpload,
+      photoCamera: camera,
+      photoGallery: gallery,
+      videoCamera: false,
+      videoGallery: false,
+      gallery: false,
+      file: false,
+      progress: progress,
+      complete: complete,
+      icon: icon,
+      iconSize: iconSize,
+      visualDensity: visualDensity,
+      iconPadding: iconPadding,
+      padding: padding,
+      spacing: spacing,
     );
   }
 }

@@ -1,6 +1,6 @@
 name: easy_storage
 description: "Storage package for easy upload into Firebase"
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_storage
 
 environment:
@@ -12,6 +12,7 @@ dependencies:
   cloud_firestore: ^5.0.2
   easy_helpers: ^0.0.3
   easy_locale: ^0.0.3
+  file_picker: ^8.0.6
   firebase_auth: ^5.1.1
   firebase_core: ^3.1.1
   firebase_storage: ^12.1.0
