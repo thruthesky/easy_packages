@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:flutter/material.dart';
 
 class PostEditScreen extends StatefulWidget {
