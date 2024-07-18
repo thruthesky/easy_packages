@@ -41,8 +41,17 @@ zoneErrorHandler(e, stackTrace) {
     error(context: globalContext, title: e.code, message: e.message ?? '');
   } else {
     log("Unknown Error :  $e");
-    log("code: ${e['code']}");
-    error(context: globalContext, message: e.toString());
+    if (e.toString().contains('/')) {
+      final title = e.toString().split(' ')[0].split('/')[1];
+      final parts = e.toString().split(' ');
+      String message = '';
+      if (parts.length > 1) {
+        message = parts.sublist(1).join(' ');
+      }
+      error(context: globalContext, title: title, message: message);
+    } else {
+      error(context: globalContext, message: e.toString());
+    }
   }
   debugPrintStack(stackTrace: stackTrace);
 }

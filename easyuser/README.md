@@ -18,6 +18,11 @@ The `UserService.instance.init()` function is designed to be initialized only on
 ## How to use
 
 
+## Usages
+
+The easy package developers might consider adding the `easyuser` package to their package. However, it's best to only add `easyuser` if necessary. For example, include `easyuser` if you need to search for users, as it offers a user search dialog. But, if you just need to check if a user is signed in or get the user's UID, you don't need to use the `easyuser` package.
+
+
 
 ## Database structure for user
 

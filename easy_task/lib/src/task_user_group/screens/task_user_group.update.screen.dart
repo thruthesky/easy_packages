@@ -52,7 +52,6 @@ class _TaskUserGroupUpdateScreenState extends State<TaskUserGroupUpdateScreen> {
             ElevatedButton(
               onPressed: () async {
                 await widget.group.update(name: nameController.text);
-                widget.group.name = nameController.text;
                 widget.onUpdate?.call();
                 if (!context.mounted) return;
                 Navigator.of(context).pop(nameController.text);

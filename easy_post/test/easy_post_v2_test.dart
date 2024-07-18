@@ -1,6 +1,6 @@
 // import 'package:flutter_test/flutter_test.dart';
 
-// import 'package:easy_forum/easy_forum.dart';
+// import 'package:easy_post_v2/easy_post_v2.dart';
 
 // void main() {
 //   test('adds one to input values', () {

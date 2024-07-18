@@ -72,11 +72,23 @@ class Assign {
   /// [assignTo] is the uid of the user to assign the task to.
   ///
   /// See the README.en.md for details.
+  ///
+  /// Be warned in creating with [extraData] because it may
+  /// be overriden by other fields if the field is also
+  /// set upon create. Please review the existing fields.
   static Future<DocumentReference> create({
     required String assignTo,
     required Task task,
     String? groupId,
   }) async {
+    if (groupId == null && assignTo != myUid) {
+      throw 'task/assign-create-invalid-params To assign a task to another user, you must provide a groupId.';
+    }
+
+    await TaskService.instance.taskCol.doc(task.id).update({
+      'assignTo': FieldValue.arrayUnion([assignTo]),
+    });
+
     final ref = await col.add({
       'assignTo': assignTo,
       'taskId': task.id,
@@ -85,9 +97,6 @@ class Assign {
       'updatedAt': FieldValue.serverTimestamp(),
       'assignedBy': myUid,
       if (groupId != null) 'groupId': groupId,
-    });
-    await TaskService.instance.taskCol.doc(task.id).update({
-      'assignTo': FieldValue.arrayUnion([assignTo]),
     });
     return ref;
   }
