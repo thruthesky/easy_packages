@@ -15,9 +15,9 @@ dependencies:
   cupertino_icons: ^1.0.6
   dio: ^5.4.3+1
   easy_engine:
-  easy_forum: 
   easy_helpers:
   easy_locale:
+  easy_post_v2:
   easy_storage:
   easychat:
   easyuser:
@@ -45,8 +45,8 @@ dependencies:
 dependency_overrides:
   easy_engine:
     path: ../easy_engine
-  easy_forum:
-      path: ../easy_forum
+  easy_post_v2:
+    path: ../easy_post
   easy_helpers:
     path: ../easy_helpers
   easy_locale:
@@ -57,7 +57,6 @@ dependency_overrides:
     path: ../easychat
   easyuser:
     path: ../easyuser
-
 
 dev_dependencies:
   flutter_test:

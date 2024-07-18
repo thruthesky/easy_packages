@@ -1,4 +1,4 @@
-import 'package:easy_forum/easy_forum.dart';
+import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
 class PostListTile extends StatelessWidget {

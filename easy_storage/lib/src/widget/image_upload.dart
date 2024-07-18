@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
-/// UploadImage
+/// ImageUpload
 ///
 /// Displays an icon that can be uploaded.
 ///
@@ -14,8 +14,8 @@ import 'package:flutter/material.dart';
 /// If the [ref] and [field] are provided, the uploaded image will be saved to
 /// the firestore.
 ///
-class UploadImage extends StatefulWidget {
-  const UploadImage({
+class ImageUpload extends StatefulWidget {
+  const ImageUpload({
     super.key,
     this.initialData,
     this.icon,
@@ -34,10 +34,10 @@ class UploadImage extends StatefulWidget {
   final String? field;
 
   @override
-  State<UploadImage> createState() => _UploadImageState();
+  State<ImageUpload> createState() => _UploadImageState();
 }
 
-class _UploadImageState extends State<UploadImage> {
+class _UploadImageState extends State<ImageUpload> {
   String? url;
   double? progress;
 

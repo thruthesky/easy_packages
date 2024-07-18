@@ -1,4 +1,4 @@
-import 'package:easy_forum/unit_test/post_test.dart';
+import 'package:easy_post_v2/unit_test/post_test.dart';
 import 'package:flutter/material.dart';
 
 class PostUniteTestScreen extends StatelessWidget {
@@ -11,15 +11,17 @@ class PostUniteTestScreen extends StatelessWidget {
       body: Column(
         children: [
           ElevatedButton(
-              onPressed: () async {
-                createPost();
-              },
-              child: const Text('Test Create')),
+            onPressed: () async {
+              createPost();
+            },
+            child: const Text('Test Create'),
+          ),
           ElevatedButton(
-              onPressed: () async {
-                updatePost();
-              },
-              child: const Text('Test Update'))
+            onPressed: () async {
+              updatePost();
+            },
+            child: const Text('Test Update'),
+          )
         ],
       ),
     );
