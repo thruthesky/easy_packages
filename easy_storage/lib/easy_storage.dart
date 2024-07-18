@@ -5,4 +5,5 @@ export './src/widget/image_upload.icon_button.dart';
 export './src/widget/file_upload.icon_button.dart';
 export './src/widget/video_upload.icon_button.dart';
 export './src/widget/upload.icon_button.dart';
-export './src/enum/storage.dart';
+export 'src/enum/source_type.dart';
+export './src/storage.extensions.dart';

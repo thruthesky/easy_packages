@@ -1,5 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_storage/src/enum/storage.dart';
+import 'package:easy_storage/src/enum/source_type.dart';
 import 'package:flutter/material.dart';
 
 class StorageUploadSelectionBottomSheet extends StatelessWidget {
