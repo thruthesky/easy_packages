@@ -212,7 +212,7 @@ packages:
       path: "../easy_post"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   easy_storage:
     dependency: "direct main"
     description:
