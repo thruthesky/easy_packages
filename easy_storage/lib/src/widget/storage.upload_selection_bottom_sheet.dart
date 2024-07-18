@@ -33,26 +33,29 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
           shrinkWrap: true,
           children: <Widget>[
             const SizedBox(height: 8),
-            SizedBox(
-              height: 40,
-              child: Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      'Upload from'.t,
-                      style: Theme.of(context).textTheme.labelLarge,
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: padding != null ? 0 : 16),
+              child: SizedBox(
+                height: 48,
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Upload from'.t,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.cancel),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.cancel),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
