@@ -31,6 +31,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           ),
           Text(widget.post.title),
           Text(widget.post.content),
+
+          /// Display comment input box
+          /// TODO from here.
+          // CommentInputBox(post: widget.post),
         ],
       ),
     );
