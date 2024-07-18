@@ -41,7 +41,9 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     UserService.instance.init();
-    PostService.instance.init(collectionName: 'post');
+    PostService.instance.init(
+        collectionName:
+            const String.fromEnvironment('MODE') == 'noe' ? 'post' : 'posts');
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       ChatService.instance.showChatRoomEditScreen(globalContext);
