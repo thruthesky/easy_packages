@@ -4,6 +4,11 @@ A post management library for Firebase and Fltuter.
 
 
 
+# Database Structure
+
+
+- `youtubeUrl` has the youtube url. To get posts that has youtube url, filter the post document using the firestore's `graterThan` filter.
+
 
 # Custom Data
 

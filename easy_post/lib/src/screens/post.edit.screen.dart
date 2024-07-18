@@ -16,6 +16,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
   final categoryController = TextEditingController();
   final titleController = TextEditingController();
   final contentController = TextEditingController();
+  final youtubeController = TextEditingController();
 
   @override
   void initState() {
@@ -48,24 +49,37 @@ class _PostEditScreenState extends State<PostEditScreen> {
             children: [
               TextField(
                 controller: categoryController,
+                decoration: InputDecoration(
+                  hintText: 'Category'.t,
+                  labelText: 'Category'.t,
+                ),
               ),
+              const SizedBox(height: 24),
               TextField(
                 controller: titleController,
               ),
-              const SizedBox(
-                height: 24,
-              ),
+              const SizedBox(height: 24),
               TextField(
                 controller: contentController,
                 minLines: 5,
                 maxLines: 8,
               ),
+              const SizedBox(height: 24),
+              TextField(
+                controller: youtubeController,
+                decoration: InputDecoration(
+                  hintText: 'Youtube'.t,
+                  labelText: 'Youtube'.t,
+                ),
+              ),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
                   final ref = await Post.create(
                     category: categoryController.text,
                     title: titleController.text,
                     content: contentController.text,
+                    youtubeUrl: youtubeController.text,
                   );
                   if (context.mounted) {
                     Navigator.of(context).pop(ref);
