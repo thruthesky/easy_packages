@@ -1,7 +1,6 @@
-library easy_comment;
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export './src/comment.dart';
+export './src/comment.functions.dart';
+export './src/comment.service.dart';
+export 'src/widgets/comment.input_box.dart';
+export 'src/widgets/comment.list_detail.dart';
+export 'src/widgets/comment.list_view.dart';

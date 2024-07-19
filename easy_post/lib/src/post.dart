@@ -28,13 +28,17 @@ class Post {
   final DateTime updateAt;
   final List<String> urls;
 
-  CollectionReference col = PostService.instance.col;
+  static CollectionReference col = PostService.instance.col;
 
   DocumentReference doc(String id) => col.doc(id);
 
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
 
+  /// Youtube URL. Refer README.md for more information
+  final String? youtubeUrl;
+
+  final int commentCount;
   final Map<String, dynamic> data;
   Map<String, dynamic> get extra => data;
 
@@ -47,6 +51,8 @@ class Post {
     required this.createdAt,
     required this.updateAt,
     required this.urls,
+    required this.youtubeUrl,
+    required this.commentCount,
     required this.data,
   });
 
@@ -63,7 +69,9 @@ class Post {
       updateAt: json['updateAt'] is Timestamp
           ? (json['updateAt'] as Timestamp).toDate()
           : DateTime.now(),
+      youtubeUrl: json['youtubeUrl'],
       urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
+      commentCount: json['commentCount'] ?? 0,
       data: json,
     );
   }
@@ -75,6 +83,8 @@ class Post {
         'createdAt': createdAt,
         'updateAt': updateAt,
         'urls': urls,
+        'youtubeUrl': youtubeUrl,
+        'commentCount': commentCount,
       };
 
   @override
@@ -111,7 +121,8 @@ class Post {
     required String category,
     String? title,
     String? content,
-    List<String>? urls,
+    List<String> urls = const [],
+    String youtubeUrl = '',
     Map<String, dynamic>? extra,
   }) async {
     if (currentUser == null) {
@@ -126,8 +137,11 @@ class Post {
       if (title != null) 'title': title,
       if (content != null) 'content': content,
       'uid': currentUser!.uid,
-      if (urls != null) 'urls': urls,
+      'urls': urls,
+      'youtubeUrl': youtubeUrl,
+      'commentCount': 0,
       'createdAt': FieldValue.serverTimestamp(),
+      'updateAt': FieldValue.serverTimestamp(),
     };
     return await PostService.instance.col.add({
       ...data,
@@ -139,12 +153,14 @@ class Post {
     String? title,
     String? content,
     List<String>? urls,
+    String? youtubeUrl,
     Map<String, dynamic>? extra,
   }) async {
     final data = {
       if (title != null) 'title': title,
       if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
+      if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
     };
     if (data.isEmpty) {
       throw Exception('Post.update: No data to update');
