@@ -172,6 +172,12 @@ Service class does
 - initialization, listening, etc.
 
 
+## Database
+
+- Give empty value for the field to help filtering. For instance, if the user didn't choose this gender, then save it as empty string into the database so, it can be used for filtering to get who didn't put their gender. If the field does not exists, it's not easy to filter.
+
+
+
 
 ## Throwing An Exception
 

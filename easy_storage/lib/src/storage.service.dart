@@ -234,6 +234,7 @@ class StorageService {
     required BuildContext context,
     Function(double)? progress,
     Function()? complete,
+    Function(SourceType?)? onUploadSourceSelected,
     String? saveAs,
     bool? photoCamera = true,
     bool? photoGallery = true,
@@ -258,6 +259,7 @@ class StorageService {
       spacing: spacing,
       padding: padding,
     );
+    onUploadSourceSelected?.call(source);
     if (context.mounted) {
       return await uploadFrom(
         context: context,

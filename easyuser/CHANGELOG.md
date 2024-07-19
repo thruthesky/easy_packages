@@ -1,11 +1,12 @@
+## 0.0.9
+* Add. MyDocReady
+
 ## 0.0.8
 * Change. `my` is not nullable.
-
 
 ## 0.0.7
 * Change. anonymous sign in is truned off.
 * Update. document.
-
 
 ## 0.0.6
 * Update. collection name is customizable.

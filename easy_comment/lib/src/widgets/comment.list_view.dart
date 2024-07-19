@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class PostListView extends StatelessWidget {
-  const PostListView({
+class CommentListView extends StatelessWidget {
+  const CommentListView({
     super.key,
-    this.category,
-    this.uid,
-    this.pageSize = 20,
+    required this.documentReference,
+    this.pageSize = 40,
     this.loadingBuilder,
     this.errorBuilder,
     this.separatorBuilder,
@@ -35,9 +34,8 @@ class PostListView extends StatelessWidget {
     this.itemBuilder,
     this.emptyBuilder,
   });
-  final String? category;
-  final String? uid;
 
+  final DocumentReference documentReference;
   final int pageSize;
   final Widget Function()? loadingBuilder;
   final Widget Function(String)? errorBuilder;
@@ -57,18 +55,13 @@ class PostListView extends StatelessWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
-  final Widget Function(Post, int)? itemBuilder;
+  final Widget Function(Comment, int)? itemBuilder;
   final Widget Function()? emptyBuilder;
   @override
   Widget build(BuildContext context) {
-    Query query = PostService.instance.col;
-    if (category != null) {
-      query = query.where('category', isEqualTo: category);
-    }
-    if (uid != null) {
-      query = query.where('uid', isEqualTo: uid);
-    }
-    query = query.orderBy('createdAt', descending: true);
+    Query query =
+        Comment.col.where('documentReference', isEqualTo: documentReference);
+    query = query.orderBy('order');
 
     return FirestoreQueryBuilder(
       query: query,
@@ -118,9 +111,10 @@ class PostListView extends StatelessWidget {
               snapshot.fetchMore();
             }
 
-            final post = Post.fromSnapshot(snapshot.docs[index]);
+            final comment = Comment.fromSnapshot(snapshot.docs[index]);
 
-            return itemBuilder?.call(post, index) ?? PostListTile(post: post);
+            return itemBuilder?.call(comment, index) ??
+                CommentListDetail(comment: comment);
           },
         );
       },
