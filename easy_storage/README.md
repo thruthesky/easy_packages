@@ -248,31 +248,32 @@ ImageUploadIconButton(
 
 # Thumbnails
 
-- To use thumbnails you need to install [Image Resize Extension](https://extensions.dev/extensions/firebase/storage-resize-images).
+To add thumbnail support in `easy_storage`, follow these steps:
+1. Install the [Image Resize Extension](https://extensions.dev/extensions/firebase/storage-resize-images) three times(instances) with the following configurations;
 
-- `easy_storage` package support 3 thumbnails
-  - Small as 200x200
-  - Medium as 600x600
-  - Large as 1200x1200
-
-- You will need to install the image resize extension three times(instances) with the following configs
-  - Size must be 200x200, 600x600, 1200x1200
-  - Deletion of original file: false (No)
-  - Make resize images public: true (Yes)
-  - Convert images to prefered type: webp
-  - Assign new access token: false (No)
-
-- Note that, any of the easy package series must not use thumbnails. Only the app developer can use the thumbnails in their app code.
-  - App developers can use the imageQuality, maxium height and maxium width to reduce the size using the `StorageService.instance.upload()` method.
-
-- Remember, the `Image Resize` extension will not create a square thumbnail. It maintains the ratio.
-
-- How to use thumbail
-  - `url.thumbnail` as small
-  - `url.thumbnailMedium` as medium
-  - `url.thumbnailLarge` as large image.
+2. Install three instances of the image resize extension.
+  - Each size of the instance must be 200x200 (small), 600x600 (medium), 1200x1200 (large)
+  - And with the same settings below
+    - Deletion of original file: false (No)
+    - Make resize images public: true (Yes)
+    - Convert images to prefered type: webp
+    - Assign new access token: false (No)
 
 
+Keep in mind that the easy packages(like easy user, easy post, etc) should not use thumbnails directly. Thumbnails are for app developers to enhance their apps, not for the packages themselves.
+
+App eevelopers can also adjust image quality, and set maximum width and height to reduce the size of images they upload with the `StorageService.instance.upload()` method.
+
+Note: The `Image Resize` extension keeps the original aspect ratio of images. So, thumbnails might be square or rectangular, depending on the original image.
+
+
+To access thumbnail links:
+- Use `url.thumbnail` for a small size.
+- Use `url.thumbnailMedium` for a medium size.
+- Use `url.thumbnailLarge` for a large size.
+
+
+You can also use `ThumbnailImage` widget to display image.
 
 
 
