@@ -69,7 +69,7 @@ class UserService {
 
   bool get signedIn => fa.FirebaseAuth.instance.currentUser != null;
   bool get notSignedIn => !signedIn;
-  bool get isAnonymous =>
+  bool get anonymous =>
       fa.FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
 
   /// Listen to my document
