@@ -25,9 +25,10 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
         title: const Text('CommentTest'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.fromLTRB(24.0, 24, 24, 0),
         child: MyDocReady(
           builder: () => ListView(
+            padding: const EdgeInsets.all(0),
             children: [
               Text('Reference: ${ref.path}'),
               const SizedBox(height: 24),
@@ -39,9 +40,14 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
               ),
+              // const CommentFakeInputBox(),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: CommentFakeInputBox(),
       ),
     );
   }
