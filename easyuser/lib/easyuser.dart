@@ -5,6 +5,7 @@ export './src/widgets/auth_state_change.dart';
 export './src/widgets/display_name.dart';
 export './src/widgets/email_password_login.dart';
 export './src/widgets/my_doc.dart';
+export './src/widgets/my_doc.ready.dart';
 export './src/widgets/user_doc.dart';
 export './src/widgets/user.avatar.dart';
 export './src/widgets/user.list_tile.dart';

@@ -28,7 +28,7 @@ class Post {
   final DateTime updateAt;
   final List<String> urls;
 
-  CollectionReference col = PostService.instance.col;
+  static CollectionReference col = PostService.instance.col;
 
   DocumentReference doc(String id) => col.doc(id);
 
@@ -38,6 +38,7 @@ class Post {
   /// Youtube URL. Refer README.md for more information
   final String? youtubeUrl;
 
+  final int commentCount;
   final Map<String, dynamic> data;
   Map<String, dynamic> get extra => data;
 
@@ -51,6 +52,7 @@ class Post {
     required this.updateAt,
     required this.urls,
     required this.youtubeUrl,
+    required this.commentCount,
     required this.data,
   });
 
@@ -69,6 +71,7 @@ class Post {
           : DateTime.now(),
       youtubeUrl: json['youtubeUrl'],
       urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
+      commentCount: json['commentCount'] ?? 0,
       data: json,
     );
   }
@@ -81,6 +84,7 @@ class Post {
         'updateAt': updateAt,
         'urls': urls,
         'youtubeUrl': youtubeUrl,
+        'commentCount': commentCount,
       };
 
   @override
@@ -117,8 +121,8 @@ class Post {
     required String category,
     String? title,
     String? content,
-    List<String>? urls,
-    String? youtubeUrl,
+    List<String> urls = const [],
+    String youtubeUrl = '',
     Map<String, dynamic>? extra,
   }) async {
     if (currentUser == null) {
@@ -133,9 +137,11 @@ class Post {
       if (title != null) 'title': title,
       if (content != null) 'content': content,
       'uid': currentUser!.uid,
-      if (urls != null) 'urls': urls,
-      if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
+      'urls': urls,
+      'youtubeUrl': youtubeUrl,
+      'commentCount': 0,
       'createdAt': FieldValue.serverTimestamp(),
+      'updateAt': FieldValue.serverTimestamp(),
     };
     return await PostService.instance.col.add({
       ...data,
