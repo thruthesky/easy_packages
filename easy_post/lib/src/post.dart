@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/defines.dart';
+import 'package:youtube/youtube.dart';
+import 'package:youtube_parser/youtube_parser.dart';
 
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
@@ -39,6 +42,7 @@ class Post {
   final String? youtubeUrl;
 
   final Map<String, dynamic> data;
+  final Map<String, dynamic> youtube;
   Map<String, dynamic> get extra => data;
 
   Post({
@@ -52,6 +56,7 @@ class Post {
     required this.urls,
     required this.youtubeUrl,
     required this.data,
+    required this.youtube,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -70,6 +75,7 @@ class Post {
       youtubeUrl: json['youtubeUrl'],
       urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
       data: json,
+      youtube: json['youtube'] ?? {},
     );
   }
   Map<String, dynamic> toJson() => {
@@ -81,6 +87,7 @@ class Post {
         'updateAt': updateAt,
         'urls': urls,
         'youtubeUrl': youtubeUrl,
+        'youtube': youtube
       };
 
   @override
@@ -111,8 +118,6 @@ class Post {
   }
 
   // create a new post
-  // 1 doc read
-  // 1 doc write
   static Future<DocumentReference> create({
     required String category,
     String? title,
@@ -137,6 +142,16 @@ class Post {
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
       'createdAt': FieldValue.serverTimestamp(),
     };
+
+    if (category.toLowerCase() == 'youtube') {
+      final youtube = await prepareYoutubeInfo(youtubeUrl!);
+      if (youtube == null) {
+        throw 'post-create/invalid-youtube-url Invalid Youtube URL';
+      }
+      data['youtube'] = youtube;
+      dog('msg: $youtube');
+    }
+
     return await PostService.instance.col.add({
       ...data,
       ...?extra,
@@ -156,6 +171,12 @@ class Post {
       if (urls != null) 'urls': urls,
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
     };
+
+    if (category.toLowerCase() == 'youtube') {
+      final youtube = prepareYoutubeInfo(youtubeUrl!);
+      data['youtube'] = youtube;
+    }
+
     if (data.isEmpty) {
       throw Exception('Post.update: No data to update');
     }
@@ -168,5 +189,35 @@ class Post {
     );
 
     return get(id);
+  }
+
+//  prepared youtube information
+  static Future<Map<String, dynamic>?> prepareYoutubeInfo(
+      String youtubeUrl) async {
+    // get youtubeId
+    final youtubeId = getIdFromUrl(youtubeUrl);
+
+    if (youtubeId == null) {
+      return null;
+    }
+
+    ///
+    await Youtube.config(videoId: youtubeId);
+    final youtubeVideoDetails = Youtube.videoDetails;
+    final youtubeChannelDetails = Youtube.channelDetails;
+    final youtubeThumbnailDetails = Youtube.thumbnails;
+
+    return {
+      'id': youtubeId,
+      'title': youtubeVideoDetails.title,
+      'name': youtubeChannelDetails.name,
+      'fullHd': youtubeThumbnailDetails.fullhd,
+      'hd': youtubeThumbnailDetails.hd,
+      'sd': youtubeThumbnailDetails.sd,
+      'hq': youtubeThumbnailDetails.hq,
+      'lq': youtubeThumbnailDetails.lq,
+      'duration': youtubeVideoDetails.duration,
+      'viewCount': youtubeVideoDetails.viewCount
+    };
   }
 }

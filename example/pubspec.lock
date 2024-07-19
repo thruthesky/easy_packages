@@ -212,14 +212,14 @@ packages:
       path: "../easy_post"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   easy_storage:
     dependency: "direct main"
     description:
       path: "../easy_storage"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.6"
   easychat:
     dependency: "direct main"
     description:
@@ -1098,6 +1098,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  youtube:
+    dependency: transitive
+    description:
+      name: youtube
+      sha256: "1c414ad17c83eba1ff87399c9f89f7ce85396a714810cffcd8adb8dc453598c7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  youtube_parser:
+    dependency: transitive
+    description:
+      name: youtube_parser
+      sha256: "52ac55275c685ccb51099d5fcf2ab601469ab1667163b47e7f7000ddd226816f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.4"
 sdks:
   dart: ">=3.4.3 <4.0.0"
   flutter: ">=3.22.0"

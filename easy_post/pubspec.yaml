@@ -17,6 +17,8 @@ dependencies:
   firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter
+  youtube: ^2.0.0
+  youtube_parser: ^2.1.4
 
 dev_dependencies:
   flutter_test:
