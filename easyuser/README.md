@@ -102,6 +102,27 @@ AuthStateChanges(
 
 ## MyDoc
 
+
+- To know if my document is ready, so i can use `my` or `UserService.instance.user`, do the following
+```dart
+MyDoc(
+  builder: (my) => my == null
+      ? const SizedBox.shrink()
+      : Column(
+          children: [
+            Text('Reference: ${my.ref.path}'),
+            const SizedBox(height: 24),
+            CommentInputBox(
+              documentReference: my.ref,
+            ),
+            CommentListView(documentReference: my.ref),
+          ],
+        ),
+),
+```
+And to make it short, you can use `MyDocReady`.
+
+
 ## UserDoc
 
 You can create a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
