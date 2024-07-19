@@ -16,15 +16,19 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
   Widget build(BuildContext context) {
     // final ref = my.ref;
     // final ref = Post.col.doc('1zsZ2YMplgZN6D6bdZIn');
-    final ref = Post.col.doc('0-console');
+    // final ref = Post.col.doc('0-console');
+    // final ref = Post.col.doc('0-console-2');
+    // final ref = Post.col.doc('0-con-3');
+    final ref = Post.col.doc('0-a');
     return Scaffold(
       appBar: AppBar(
         title: const Text('CommentTest'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.fromLTRB(24.0, 24, 24, 0),
         child: MyDocReady(
           builder: () => ListView(
+            padding: const EdgeInsets.all(0),
             children: [
               Text('Reference: ${ref.path}'),
               const SizedBox(height: 24),
@@ -36,9 +40,14 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
               ),
+              // const CommentFakeInputBox(),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: CommentFakeInputBox(),
       ),
     );
   }
