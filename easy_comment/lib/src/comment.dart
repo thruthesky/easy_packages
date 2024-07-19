@@ -109,10 +109,8 @@ class Comment {
   }) async {
     final snapshot = await documentReference.get();
     final data = snapshot.data() as Map<String, dynamic>;
-    print('doc: ${data.toString()}');
-    print('parent: $parent');
     final order = getCommentOrderString(
-      depth: parent?.depth ?? 0,
+      depth: (parent?.depth ?? 0),
       noOfComments: data['commentCount'] ?? 0,
       sortString: parent?.order,
     );
@@ -136,7 +134,7 @@ class Comment {
         'updateAt': FieldValue.serverTimestamp(),
         'urls': [],
         'youtubeUrl': '',
-        'depth': 0,
+        'depth': parent == null ? 1 : parent.depth + 1,
         'order': order,
       });
       t.update(documentReference, {

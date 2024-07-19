@@ -16,7 +16,10 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
   Widget build(BuildContext context) {
     // final ref = my.ref;
     // final ref = Post.col.doc('1zsZ2YMplgZN6D6bdZIn');
-    final ref = Post.col.doc('0-console');
+    // final ref = Post.col.doc('0-console');
+    // final ref = Post.col.doc('0-console-2');
+    // final ref = Post.col.doc('0-con-3');
+    final ref = Post.col.doc('0-a');
     return Scaffold(
       appBar: AppBar(
         title: const Text('CommentTest'),
