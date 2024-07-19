@@ -49,8 +49,21 @@ void updatePost() async {
 }
 
 void createYouyubePost() async {
-  await Post.create(
+  testStart('Update Post Test');
+  final ref = await Post.create(
     category: 'youtube',
     youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
   );
+
+  final post = await Post.get(ref.id);
+  isTrue(post.youtubeUrl == 'https://www.youtube.com/watch?v=nM0xDI5R50E',
+      "Posting url");
+
+  await isException(() async {
+    await Post.create(
+      category: 'youtube',
+      youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
+    );
+  });
+  testReport();
 }

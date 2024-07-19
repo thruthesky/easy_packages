@@ -19,6 +19,10 @@ import 'package:youtube_parser/youtube_parser.dart';
 /// `createdAt` is the time when the post is created
 ///
 /// `updateAt` is the time when the post is update
+///
+/// `youtubeUrl` is the youtube url from youtube ex:https://youtube.com/watch=<someID>
+///
+/// `youtube` is the information of the youtube url such as thumbnail
 class Post {
   // collectionReference post's collection
 
@@ -143,7 +147,7 @@ class Post {
       'createdAt': FieldValue.serverTimestamp(),
     };
 
-    if (category.toLowerCase() == 'youtube') {
+    if (category == 'youtube') {
       final youtube = await prepareYoutubeInfo(youtubeUrl!);
       if (youtube == null) {
         throw 'post-create/invalid-youtube-url Invalid Youtube URL';
