@@ -8,6 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  cached_network_image: ^3.3.1
   cloud_firestore: ^5.0.2
   easy_helpers: ^0.0.3
   easy_locale: ^0.0.4
@@ -17,6 +18,9 @@ dependencies:
   firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter
+  youtube: ^2.0.0
+  youtube_parser: ^2.1.4
+  youtube_player_flutter: ^9.0.1
 
 dev_dependencies:
   flutter_test:
