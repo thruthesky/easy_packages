@@ -11,7 +11,7 @@ dependencies:
   cloud_firestore: ^5.0.2
   easy_helpers: ^0.0.3
   easy_storage: ^0.0.6
-  easyuser: ^0.0.8
+  easyuser: ^0.0.10
   firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter

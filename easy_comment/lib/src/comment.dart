@@ -55,6 +55,22 @@ class Comment {
     return Comment.fromJson(docSnapshot, snapshot.id);
   }
 
+  factory Comment.fromDocumentReference(DocumentReference ref) {
+    return Comment(
+      id: ref.id,
+      parentId: '',
+      documentReference: ref,
+      content: '',
+      uid: my.uid,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      urls: [],
+      youtubeUrl: '',
+      depth: 1,
+      order: '',
+    );
+  }
+
   factory Comment.fromJson(Map<String, dynamic> json, String id) {
     return Comment(
       id: id,
@@ -106,6 +122,7 @@ class Comment {
     required DocumentReference documentReference,
     Comment? parent,
     String? content,
+    List<String> urls = const [],
   }) async {
     final snapshot = await documentReference.get();
     final data = snapshot.data() as Map<String, dynamic>;
@@ -144,5 +161,16 @@ class Comment {
     });
 
     return ref;
+  }
+
+  Future<void> update({
+    String? content,
+    List<String>? urls,
+  }) async {
+    await col.doc(id).update({
+      if (content != null) 'content': content,
+      if (urls != null) 'urls': urls,
+      'updateAt': FieldValue.serverTimestamp(),
+    });
   }
 }

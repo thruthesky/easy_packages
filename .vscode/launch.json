@@ -251,11 +251,13 @@
             "type": "dart"
         },
         {
-            "name": "example (profile mode)",
-            "cwd": "easyuser/example",
+            "name": "Easy Stroage - iPhone 15 Pro Max",
+            "cwd": "easy_storage/example",
+            "program": "lib/main.dart",
+            "deviceId": "iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug"
         },
         {
             "name": "example (release mode)",

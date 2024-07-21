@@ -1,3 +1,6 @@
+## 0.0.7
+* Add. Widgets for displaying and editing uploads.
+
 ## 0.0.6
 * Add. image quality
 

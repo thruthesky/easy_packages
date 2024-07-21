@@ -1,6 +1,6 @@
 name: easy_storage
 description: "File upload package for Firebase Storage. Supports photo, video, and other files."
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_storage
 
 environment:
@@ -19,6 +19,7 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker: ^1.1.2
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:
