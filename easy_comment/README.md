@@ -41,3 +41,31 @@ CommentInputBox(
 
 
 
+
+
+
+## Displaying comments
+
+
+The `easy_comment` provides `CommentListView` to display the comments of the document. Note that, it is entirely up to use if you want to build your own comment list for different UI/UX instead of using `CommentListView`. 
+
+
+You can use `CommentListView` like below to display the comments.
+
+```dart
+CommentListView(
+  documentReference: ref,
+  shrinkWrap: true,
+  physics: const NeverScrollableScrollPhysics(),
+  itemBuilder: (comment, index) =>
+      CommentListDetail(comment: comment),
+),
+```
+
+For the `itemBuilder`, you may use one of `CommentDetail`, `CommentListDetail`, `CommentListArrowDetail`, or `CommentListVerticalLineDetail`. Or you can copy the code and build your own.
+
+
+
+
+
+

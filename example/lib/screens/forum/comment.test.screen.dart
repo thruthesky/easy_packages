@@ -49,6 +49,8 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
                 documentReference: ref,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (comment, index) =>
+                    CommentListArrowDetail(comment: comment),
               ),
             ],
           ),

@@ -107,63 +107,13 @@ class CommentListView extends StatelessWidget {
 
             final comment = Comment.fromSnapshot(snapshot.docs[index]);
 
-            return IntrinsicHeight(
-                child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                if (comment.depth > 1)
-                  Row(
-                    children: [
-                      for (int i = 0; i < comment.depth - 1; i++)
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          // color: Colors.grey[300],
-                          child: Center(
-                              child: Text(
-                            // '－', //   '➖', //   '-', //
-                            '•',
-                            style: TextStyle(
-                                fontSize: 18, color: Colors.grey[400]),
-                          )),
-                        ),
-                    ],
-                  ),
+            return itemBuilder?.call(comment, index) ??
+                CommentListDetail(comment: comment);
 
-                if (comment.depth > 1)
-                  Icon(
-                    Icons.subdirectory_arrow_right,
-                    // Icons.arrow_right_rounded,
-                    // Icons.arrow_right_alt_rounded,
-                    // Icons.chevron_right_outlined,
-                    // Icons.keyboard_double_arrow_right_rounded,
-                    color: Colors.grey[700],
-                  ),
+            // return CommentListDetail(comment: comment);
 
-                const SizedBox(
-                  width: 8,
-                ),
-
-                /// Comment
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(comment.content),
-                    Text(comment.createdAt.toString()),
-                    TextButton(
-                      onPressed: () =>
-                          CommentService.instance.showCommentEditDialog(
-                        context: context,
-                        parent: comment,
-                        focusOnContent: true,
-                      ),
-                      child: const Text('Reply'),
-                    ),
-                  ],
-                ),
-              ],
-            ));
+            // return CommentListArrowDetail(comment: comment);
+            // return CommentListVerticalLineDetail(comment: comment);
           },
         );
       },
