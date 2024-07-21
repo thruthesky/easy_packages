@@ -106,19 +106,32 @@ class CommentListView extends StatelessWidget {
             }
 
             final comment = Comment.fromSnapshot(snapshot.docs[index]);
-            final hasChildren = snapshot.docs
-                .any((doc) => Comment.fromSnapshot(doc).parentId == comment.id);
-            final nextCommentDepth = index + 1 < snapshot.docs.length
-                ? Comment.fromSnapshot(snapshot.docs[index + 1]).depth
-                : 0;
 
             return IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if (comment.depth > 1) VerticalLine(comment: comment),
+                  // if (comment.depth > 1) const VerticalDivider(),
+                  Column(
+                    children: [
+                      Container(
+                        width: (comment.depth - 1) * 16,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              color: Colors.grey[800]!,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   if (comment.depth > 1) const CommentCurvedLine(),
+                  if (comment.depth > 1 && comment.hasChild)
+                    VerticalLine(comment: comment),
                   const SizedBox(width: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,10 +170,10 @@ class VerticalLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 24.0 * (comment.depth - 1)),
       width: 2,
       height: double.infinity,
-      color: Colors.grey[800],
+      margin: const EdgeInsets.only(top: 16),
+      color: Colors.blue[800],
     );
   }
 }

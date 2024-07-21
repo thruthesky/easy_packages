@@ -29,6 +29,7 @@ class Comment {
   final String youtubeUrl;
   final int depth;
   final String order;
+  final bool hasChild;
 
   /// Current comment object's reference
   DocumentReference get ref => col.doc(id);
@@ -45,6 +46,7 @@ class Comment {
     required this.youtubeUrl,
     required this.depth,
     required this.order,
+    this.hasChild = false,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -71,6 +73,7 @@ class Comment {
       youtubeUrl: '',
       depth: 1,
       order: '',
+      hasChild: false,
     );
   }
 
@@ -91,6 +94,7 @@ class Comment {
       youtubeUrl: json['youtubeUrl'],
       depth: json['depth'],
       order: json['order'],
+      hasChild: json['hasChild'] ?? false,
     );
   }
 
@@ -107,6 +111,7 @@ class Comment {
       'youtubeUrl': youtubeUrl,
       'depth': depth,
       'order': order,
+      'hasChild': hasChild,
     };
   }
 
@@ -159,15 +164,17 @@ class Comment {
         'youtubeUrl': '',
         'depth': parent == null ? 1 : parent.depth + 1,
         'order': order,
+        'hasChild': false,
       });
       t.update(documentReference, {
         'commentCount': FieldValue.increment(1),
       });
-      // if (parent != null) {
-      //   t.update(parent.ref, {
-      //     'hasChild': true,
-      //   });
-      // }
+      // 부모 코멘트에 hasChild 를 true 로 변경한다.
+      if (parent != null) {
+        t.update(parent.ref, {
+          'hasChild': true,
+        });
+      }
 
       return addedRef;
     });
@@ -175,6 +182,7 @@ class Comment {
     return ref;
   }
 
+  /// Update the comment
   Future<void> update({
     String? content,
     List<String>? urls,
@@ -184,5 +192,29 @@ class Comment {
       if (urls != null) 'urls': urls,
       'updateAt': FieldValue.serverTimestamp(),
     });
+  }
+
+  /// Get all the comments of a post
+  ///
+  ///
+  static Future<List<Comment>> getAll({
+    required DocumentReference documentReference,
+  }) async {
+    final snapshot = await Comment.col
+        .where('documentReference', isEqualTo: documentReference)
+        .orderBy('order')
+        .get();
+    final comments = <Comment>[];
+
+    if (snapshot.docs.isEmpty) {
+      return comments;
+    }
+
+    for (final doc in snapshot.docs) {
+      final comment = Comment.fromSnapshot(doc);
+      comments.add(comment);
+    }
+
+    return comments;
   }
 }

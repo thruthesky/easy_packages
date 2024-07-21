@@ -21,7 +21,8 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
     // final ref = Post.col.doc('0-con-3');
     // final ref = Post.col.doc('0-a');
     // final ref = Post.col.doc('0-b');
-    final ref = Post.col.doc('0-c');
+    // final ref = Post.col.doc('0-c');
+    final ref = Post.col.doc('0-4');
     return Scaffold(
       appBar: AppBar(
         title: const Text('CommentTest'),
