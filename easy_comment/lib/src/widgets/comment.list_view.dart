@@ -123,11 +123,12 @@ class CommentListView extends StatelessWidget {
                         lineWidth: 2,
                         color: Colors.grey[800]!,
                       ),
-                    Container(
-                      width: 2,
-                      height: double.infinity,
-                      color: Colors.grey[800],
-                    ),
+                    if (comment.hasChild && comment.depth > 1)
+                      Container(
+                        width: 2,
+                        height: double.infinity,
+                        color: Colors.grey[800],
+                      ),
                     const SizedBox(width: 8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
