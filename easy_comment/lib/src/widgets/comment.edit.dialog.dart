@@ -43,6 +43,9 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
   Comment? _comment;
   Comment get comment => _comment!;
 
+  DocumentReference get documentReference =>
+      widget.documentReference ?? widget.parent!.documentReference;
+
   final contentController = TextEditingController();
 
   @override
@@ -58,7 +61,7 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
       //
       // DB 에 존재하지 않는 Comment object 를 만들어 사용한다.
       // 글 작성 및 파일 업로드 등의 로직을 통일 할 수 있어서 이렇게 사용한다.
-      _comment = Comment.fromDocumentReference(widget.documentReference!);
+      _comment = Comment.fromDocumentReference(documentReference);
     }
 
     if (widget.showUploadDialog == true) {
@@ -98,17 +101,18 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
             child: Row(
               children: [
                 IconButton(
-                    onPressed: upload,
-                    icon: const Icon(
-                      Icons.camera_alt,
-                      size: 32,
-                    )),
+                  onPressed: upload,
+                  icon: const Icon(
+                    Icons.camera_alt,
+                    size: 32,
+                  ),
+                ),
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () async {
                     if (isCreate) {
                       await Comment.create(
-                        documentReference: widget.documentReference!,
+                        documentReference: documentReference,
                         content: contentController.text,
                         urls: comment.urls,
                         parent: widget.parent,

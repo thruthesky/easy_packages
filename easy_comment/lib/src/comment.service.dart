@@ -16,8 +16,9 @@ class CommentService {
   /// Returns true if comment is created or updated.
   Future<bool?> showCommentEditDialog({
     required BuildContext context,
-    required DocumentReference documentReference,
+    DocumentReference? documentReference,
     Comment? parent,
+    Comment? comment,
     bool? showUploadDialog,
     bool? focusOnContent,
   }) async {
@@ -34,6 +35,7 @@ class CommentService {
         builder: (_) => CommentEditDialog(
           documentReference: documentReference,
           parent: parent,
+          comment: comment,
           showUploadDialog: showUploadDialog,
           focusOnContent: focusOnContent,
         ),

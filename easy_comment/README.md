@@ -22,3 +22,22 @@ Initially, we considered using the Realtime Database for comments. However, sinc
 - To get the `first level comments`, you can use one of the following condition.
   - condition: if `parentId is empty`, then it's the first level comment.
   - condition: if `depth=0`.
+
+
+- `hasChild` is true when the comment has a child or children. This is used to sorting and displaying the commnet in comment list view.
+
+# Widgets
+
+
+## CommentInputBox
+
+This is a simple comment create widget.
+
+```dart
+CommentInputBox(
+  parent: comment,
+),
+```
+
+
+

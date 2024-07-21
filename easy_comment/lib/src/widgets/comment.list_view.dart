@@ -25,8 +25,6 @@ class CommentListView extends StatelessWidget {
     this.addSemanticIndexes = true,
     this.cacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
-
-    /// TODO check if [onDrag] is working.
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior
         .onDrag, // ScrollViewKeyboardDismissBehavior.manual,
     this.restorationId,
@@ -113,11 +111,90 @@ class CommentListView extends StatelessWidget {
 
             final comment = Comment.fromSnapshot(snapshot.docs[index]);
 
-            return itemBuilder?.call(comment, index) ??
-                CommentListDetail(comment: comment);
+            return Container(
+              margin: EdgeInsets.fromLTRB(24.0 * (comment.depth - 1), 0, 0, 0),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (comment.depth > 1)
+                      CommentCurvedLine(
+                        lineWidth: 2,
+                        color: Colors.grey[800]!,
+                      ),
+                    Container(
+                      width: 2,
+                      height: double.infinity,
+                      color: Colors.grey[800],
+                    ),
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(comment.content),
+                        Text(comment.createdAt.toString()),
+                        // Text('depth: ${comment.depth}'),
+                        // Text('order: ${comment.order}'),
+                        TextButton(
+                          onPressed: () =>
+                              CommentService.instance.showCommentEditDialog(
+                            context: context,
+                            parent: comment,
+                            focusOnContent: true,
+                          ),
+                          child: const Text('Reply'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
           },
         );
       },
+    );
+  }
+}
+
+class CommentCurvedLine extends StatelessWidget {
+  const CommentCurvedLine({
+    super.key,
+    required this.lineWidth,
+    required this.color,
+  });
+
+  final double lineWidth;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 16,
+      height: 16,
+      child: Stack(
+        children: [
+          Positioned(
+            left: -lineWidth,
+            child: Container(
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: lineWidth, color: color),
+                  left: BorderSide(width: lineWidth, color: color),
+                ),
+
+                /// For making a curve to its edge
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(32),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

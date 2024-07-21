@@ -22,9 +22,14 @@ class CommentListDetail extends StatelessWidget {
           Text(comment.createdAt.toString()),
           // Text('depth: ${comment.depth}'),
           // Text('order: ${comment.order}'),
-          CommentInputBox(
-            parent: comment,
-          )
+          TextButton(
+            onPressed: () => CommentService.instance.showCommentEditDialog(
+              context: context,
+              parent: comment,
+              focusOnContent: true,
+            ),
+            child: const Text('Reply'),
+          ),
         ],
       ),
     );

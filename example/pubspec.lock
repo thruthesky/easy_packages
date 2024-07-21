@@ -226,7 +226,7 @@ packages:
       path: "../easy_storage"
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.7"
   easychat:
     dependency: "direct main"
     description:
@@ -240,7 +240,7 @@ packages:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.9"
+    version: "0.0.10"
   fake_async:
     dependency: transitive
     description:
@@ -884,6 +884,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.7"
+  photo_view:
+    dependency: transitive
+    description:
+      name: photo_view
+      sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
   platform:
     dependency: transitive
     description:

@@ -29,6 +29,10 @@ class Comment {
   final String youtubeUrl;
   final int depth;
   final String order;
+  final bool hasChild;
+
+  /// Current comment object's reference
+  DocumentReference get ref => col.doc(id);
 
   Comment({
     required this.id,
@@ -42,6 +46,7 @@ class Comment {
     required this.youtubeUrl,
     required this.depth,
     required this.order,
+    required this.hasChild,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -68,6 +73,7 @@ class Comment {
       youtubeUrl: '',
       depth: 1,
       order: '',
+      hasChild: false,
     );
   }
 
@@ -88,6 +94,7 @@ class Comment {
       youtubeUrl: json['youtubeUrl'],
       depth: json['depth'],
       order: json['order'],
+      hasChild: json['hasChild'] ?? false,
     );
   }
 
@@ -104,6 +111,7 @@ class Comment {
       'youtubeUrl': youtubeUrl,
       'depth': depth,
       'order': order,
+      'hasChild': hasChild,
     };
   }
 
@@ -125,6 +133,9 @@ class Comment {
     List<String> urls = const [],
   }) async {
     final snapshot = await documentReference.get();
+    if (snapshot.exists == false) {
+      throw 'comment-create/document-not-exists Document does not exist';
+    }
     final data = snapshot.data() as Map<String, dynamic>;
     final order = getCommentOrderString(
       depth: (parent?.depth ?? 0),
@@ -153,10 +164,17 @@ class Comment {
         'youtubeUrl': '',
         'depth': parent == null ? 1 : parent.depth + 1,
         'order': order,
+        'hasChild': false,
       });
       t.update(documentReference, {
         'commentCount': FieldValue.increment(1),
       });
+      if (parent != null) {
+        t.update(parent.ref, {
+          'hasChild': true,
+        });
+      }
+
       return addedRef;
     });
 

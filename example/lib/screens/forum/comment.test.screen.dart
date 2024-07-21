@@ -19,7 +19,9 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
     // final ref = Post.col.doc('0-console');
     // final ref = Post.col.doc('0-console-2');
     // final ref = Post.col.doc('0-con-3');
-    final ref = Post.col.doc('0-a');
+    // final ref = Post.col.doc('0-a');
+    // final ref = Post.col.doc('0-b');
+    final ref = Post.col.doc('0-c');
     return Scaffold(
       appBar: AppBar(
         title: const Text('CommentTest'),
@@ -33,10 +35,7 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
               Text('Reference: ${ref.path}'),
               const SizedBox(height: 24),
               CommentFakeInputBox(
-                onTap: () =>
-
-                    /// 텍스트 입력 버튼 액션
-                    CommentService.instance.showCommentEditDialog(
+                onTap: () => CommentService.instance.showCommentEditDialog(
                   context: context,
                   documentReference: ref,
                   focusOnContent: true,
@@ -57,7 +56,11 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
       bottomNavigationBar: SafeArea(
         top: false,
         child: CommentFakeInputBox(
-          onTap: () {},
+          onTap: () => CommentService.instance.showCommentEditDialog(
+            context: context,
+            documentReference: ref,
+            focusOnContent: true,
+          ),
         ),
       ),
     );
