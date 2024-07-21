@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easyuser/easyuser.dart';
 
@@ -231,6 +232,9 @@ class Comment {
       parent = comments.firstWhereOrNull(
         (e) => e.id == parent!.parentId,
       );
+      if (parent == null) {
+        break;
+      }
       parents.add(parent);
     }
     return parents.reversed.toList();
