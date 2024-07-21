@@ -111,45 +111,32 @@ class CommentListView extends StatelessWidget {
             final nextCommentDepth = index + 1 < snapshot.docs.length
                 ? Comment.fromSnapshot(snapshot.docs[index + 1]).depth
                 : 0;
-            final isLastInGroup = nextCommentDepth <= comment.depth;
 
-            return Container(
-              margin: EdgeInsets.fromLTRB(24.0 * (comment.depth - 1), 0, 0, 0),
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    if (comment.depth > 1)
-                      CommentCurvedLine(
-                        lineWidth: 2,
-                        color: Colors.grey[800]!,
-                      ),
-                    if (hasChildren && comment.depth > 1 && !isLastInGroup)
-                      Container(
-                        width: 2,
-                        height: double.infinity,
-                        color: Colors.grey[800],
-                      ),
-                    const SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(comment.content),
-                        Text(comment.createdAt.toString()),
-                        TextButton(
-                          onPressed: () =>
-                              CommentService.instance.showCommentEditDialog(
-                            context: context,
-                            parent: comment,
-                            focusOnContent: true,
-                          ),
-                          child: const Text('Reply'),
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  if (comment.depth > 1) VerticalLine(comment: comment),
+                  if (comment.depth > 1) const CommentCurvedLine(),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(comment.content),
+                      Text(comment.createdAt.toString()),
+                      TextButton(
+                        onPressed: () =>
+                            CommentService.instance.showCommentEditDialog(
+                          context: context,
+                          parent: comment,
+                          focusOnContent: true,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                        child: const Text('Reply'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             );
           },
@@ -159,15 +146,30 @@ class CommentListView extends StatelessWidget {
   }
 }
 
-class CommentCurvedLine extends StatelessWidget {
-  const CommentCurvedLine({
+class VerticalLine extends StatelessWidget {
+  const VerticalLine({
     super.key,
-    required this.lineWidth,
-    required this.color,
+    required this.comment,
   });
 
+  final Comment comment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(left: 24.0 * (comment.depth - 1)),
+      width: 2,
+      height: double.infinity,
+      color: Colors.grey[800],
+    );
+  }
+}
+
+class CommentCurvedLine extends StatelessWidget {
+  const CommentCurvedLine({super.key, this.lineWidth = 2, this.color});
+
   final double lineWidth;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -183,8 +185,10 @@ class CommentCurvedLine extends StatelessWidget {
               height: 16,
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(width: lineWidth, color: color),
-                  left: BorderSide(width: lineWidth, color: color),
+                  bottom: BorderSide(
+                      width: lineWidth, color: color ?? Colors.grey[800]!),
+                  left: BorderSide(
+                      width: lineWidth, color: color ?? Colors.grey[800]!),
                 ),
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
