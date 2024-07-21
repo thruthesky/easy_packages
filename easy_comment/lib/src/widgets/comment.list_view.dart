@@ -25,8 +25,7 @@ class CommentListView extends StatelessWidget {
     this.addSemanticIndexes = true,
     this.cacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior
-        .onDrag, // ScrollViewKeyboardDismissBehavior.manual,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.onDrag,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
@@ -55,6 +54,7 @@ class CommentListView extends StatelessWidget {
   final Clip clipBehavior;
   final Widget Function(Comment, int)? itemBuilder;
   final Widget Function()? emptyBuilder;
+
   @override
   Widget build(BuildContext context) {
     Query query =
@@ -101,15 +101,17 @@ class CommentListView extends StatelessWidget {
           restorationId: restorationId,
           clipBehavior: clipBehavior,
           itemBuilder: (context, index) {
-            // if we reached the end of the currently obtained items, we try to
-            // obtain more items
             if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
-              // Tell FirebaseDatabaseQueryBuilder to try to obtain more items.
-              // It is safe to call this function from within the build method.
               snapshot.fetchMore();
             }
 
             final comment = Comment.fromSnapshot(snapshot.docs[index]);
+            final hasChildren = snapshot.docs
+                .any((doc) => Comment.fromSnapshot(doc).parentId == comment.id);
+            final nextCommentDepth = index + 1 < snapshot.docs.length
+                ? Comment.fromSnapshot(snapshot.docs[index + 1]).depth
+                : 0;
+            final isLastInGroup = nextCommentDepth <= comment.depth;
 
             return Container(
               margin: EdgeInsets.fromLTRB(24.0 * (comment.depth - 1), 0, 0, 0),
@@ -123,7 +125,7 @@ class CommentListView extends StatelessWidget {
                         lineWidth: 2,
                         color: Colors.grey[800]!,
                       ),
-                    if (comment.hasChild && comment.depth > 1)
+                    if (hasChildren && comment.depth > 1 && !isLastInGroup)
                       Container(
                         width: 2,
                         height: double.infinity,
@@ -135,8 +137,6 @@ class CommentListView extends StatelessWidget {
                       children: [
                         Text(comment.content),
                         Text(comment.createdAt.toString()),
-                        // Text('depth: ${comment.depth}'),
-                        // Text('order: ${comment.order}'),
                         TextButton(
                           onPressed: () =>
                               CommentService.instance.showCommentEditDialog(
@@ -186,8 +186,6 @@ class CommentCurvedLine extends StatelessWidget {
                   bottom: BorderSide(width: lineWidth, color: color),
                   left: BorderSide(width: lineWidth, color: color),
                 ),
-
-                /// For making a curve to its edge
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
                 ),
