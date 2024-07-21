@@ -16,10 +16,7 @@ class UserService {
 
   bool initialized = false;
 
-  /// Collection name of the user's collection.
-  String collectionName = 'users';
-  CollectionReference get col =>
-      FirebaseFirestore.instance.collection(collectionName);
+  CollectionReference get col => FirebaseFirestore.instance.collection('users');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -45,7 +42,6 @@ class UserService {
   Widget Function()? profileUpdateScreen;
 
   init({
-    String? collectionName,
     bool enableAnonymousSignIn = false,
     Widget Function(User? user)? publicProfileScreen,
     Widget Function()? profileUpdateScreen,
@@ -55,9 +51,6 @@ class UserService {
       return;
     }
     initialized = true;
-    if (collectionName != null) {
-      this.collectionName = collectionName;
-    }
     this.enableAnonymousSignIn = enableAnonymousSignIn;
     listenUserDocumentChanges();
     this.publicProfileScreen = publicProfileScreen ?? this.publicProfileScreen;
@@ -76,6 +69,8 @@ class UserService {
 
   bool get signedIn => fa.FirebaseAuth.instance.currentUser != null;
   bool get notSignedIn => !signedIn;
+  bool get anonymous =>
+      fa.FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
 
   /// Listen to my document
   StreamSubscription<fa.User?>? firebaseAuthSubscription;

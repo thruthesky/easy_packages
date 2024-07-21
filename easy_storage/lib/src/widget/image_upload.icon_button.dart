@@ -8,6 +8,7 @@ class ImageUploadIconButton extends StatelessWidget {
   const ImageUploadIconButton({
     super.key,
     required this.onUpload,
+    this.onUploadSourceSelected,
     this.camera = true,
     this.gallery = true,
     this.progress,
@@ -21,6 +22,8 @@ class ImageUploadIconButton extends StatelessWidget {
   });
 
   final void Function(String url) onUpload;
+  final void Function(SourceType?)? onUploadSourceSelected;
+
   final Widget icon;
   final Function(double)? progress;
   final Function()? complete;
@@ -37,6 +40,7 @@ class ImageUploadIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return UploadIconButton(
       onUpload: onUpload,
+      onUploadSourceSelected: onUploadSourceSelected,
       photoCamera: camera,
       photoGallery: gallery,
       videoCamera: false,

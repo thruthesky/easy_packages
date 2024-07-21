@@ -60,4 +60,15 @@ class PostService {
       },
     );
   }
+
+  Future showYoutubeScreen({
+    required BuildContext context,
+    required Post post,
+  }) {
+    return showGeneralDialog(
+        context: context,
+        pageBuilder: (_, __, ___) {
+          return YoutubeScreen(post: post);
+        });
+  }
 }

@@ -25,9 +25,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         children: [
           UserDoc(
             uid: widget.post.uid,
-            builder: (user) => UserAvatar(
-              user: user!,
-            ),
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : UserAvatar(
+                    user: user,
+                  ),
           ),
           Text(widget.post.title),
           Text(widget.post.content),
