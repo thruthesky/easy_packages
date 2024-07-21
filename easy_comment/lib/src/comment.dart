@@ -217,4 +217,22 @@ class Comment {
 
     return comments;
   }
+
+  /// Get the parents of the comment.
+  ///
+  /// It returns the list of parents in the path to the root from the comment.
+  /// Use this method to get
+  ///   - the parents of the comment. (This case is used by sorting comments and drawing the comment tree)
+  ///   - the users(user uid) in the path to the root. Especially to know who wrote the comment in the path to the post
+  static List<Comment> getParents(Comment comment, List<Comment> comments) {
+    final List<Comment> parents = [];
+    Comment? parent = comment;
+    while (parent != null) {
+      parent = comments.firstWhereOrNull(
+        (e) => e.id == parent!.parentId,
+      );
+      parents.add(parent);
+    }
+    return parents.reversed.toList();
+  }
 }
