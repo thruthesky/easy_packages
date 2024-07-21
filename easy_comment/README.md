@@ -4,13 +4,21 @@ This `comment_package` offers a powerful and simple way to add comment features.
 
 
 
+# Terms
+
+
+- `First level comments` are comments made(created) directly under a post.
+
+
+
 # Database Structure of Comment
 
 
-The first thought of the database structure for comment is to use Realtime Database. But the `easy_comment` is not only used for post, but also anything that the developer wants. And it need to be more flexible. So, Firestore would be the right choice over Realtime database.
+Initially, we considered using the Realtime Database for comments. However, since comments are needed for various parts of the app, not just posts, we require something more flexible. Therefore, Firestore is a better choice than the Realtime Database.
 
 
+- `/comments/{commentId}` is the collection and document to store comments.
 
-
-- To know the first level comment of a document
+- To get the `first level comments`, you can use one of the following condition.
   - condition: if `parentId is empty`, then it's the first level comment.
+  - condition: if `depth=0`.

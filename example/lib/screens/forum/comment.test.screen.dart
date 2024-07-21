@@ -32,6 +32,16 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
             children: [
               Text('Reference: ${ref.path}'),
               const SizedBox(height: 24),
+              CommentFakeInputBox(
+                onTap: () =>
+
+                    /// 텍스트 입력 버튼 액션
+                    CommentService.instance.showCommentEditDialog(
+                  context: context,
+                  documentReference: ref,
+                  focusOnContent: true,
+                ),
+              ),
               CommentInputBox(
                 documentReference: ref,
               ),
@@ -40,14 +50,15 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
               ),
-              // const CommentFakeInputBox(),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: const SafeArea(
+      bottomNavigationBar: SafeArea(
         top: false,
-        child: CommentFakeInputBox(),
+        child: CommentFakeInputBox(
+          onTap: () {},
+        ),
       ),
     );
   }
