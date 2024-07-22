@@ -59,10 +59,10 @@ class MyAppState extends State<MyApp> {
       // PostService.instance.showPostEditScreen(context: globalContext);
       // PostService.instance.showPostListScreen(context: globalContext);
 
-      // showGeneralDialog(
-      //   context: globalContext,
-      //   pageBuilder: (_, __, ___) => const CommentTestScreen(),
-      // );
+      showGeneralDialog(
+        context: globalContext,
+        pageBuilder: (_, __, ___) => const CommentTestScreen(),
+      );
     });
   }
 

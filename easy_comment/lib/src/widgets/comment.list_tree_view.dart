@@ -4,12 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:flutter/material.dart';
 
-/// A list of comments for a post
-///
-/// To lessen the screen flickering (and the number of reads), we do the followings.
-/// 1. get all the comments
-/// 2. listen each comments for update
-/// 3. listen new comments.
+/// CommentListTreeView
 class CommentListTreeView extends StatefulWidget {
   const CommentListTreeView({super.key, required this.documentReference});
 
@@ -38,38 +33,16 @@ class _CommentListTreeViewState extends State<CommentListTreeView> {
       setState(() {});
     }
 
-    // print('path: ${widget.post.commentsRef.path}');
-
-    // Generate a flutter code with firebase realtime database that listens
-    // to newly created data on the path 'comments/${widget.post.id}'
-    // newCommentSubscription = Comment.col
-    //     .limitToLast(1)
-    //     .orderBy('order')
-    //     .
-    //     .listen(
-    //   (event) {
-    //     final comment = Comment.fromJson(
-    //       event.snapshot.value as Map,
-    //       event.snapshot.key!,
-    //       postId: widget.post.id,
-    //     );
-    //     // Check if the comment is already in the list.
-    //     final int index =
-    //         comments!.indexWhere((element) => element.id == comment.id);
-    //     // Exisiting comment. Do nothing. This happens on the first time.
-    //     if (index > -1) return;
-    //     // Add the comment to the list
-    //     comments?.add(comment);
-    //     // Sort the comments
-    //     comments = Comment.sortComments(comments!);
-    //     // This may trigger the screen flickering. It's okay. It's a rare case.
-    //     setState(() {});
-    //   },
-    //   onError: (error) {
-    //     dog('----> CommentListTreeView::initState() -> init() listen new comment: $error, path: ${widget.post.commentsRef.path}');
-    //     throw error;
-    //   },
-    // );
+    // Listens to newly created data on the path 'comments' collection
+    // of the documentReference
+    newCommentSubscription = Comment.col
+        .where('documentReference', isEqualTo: widget.documentReference)
+        .orderBy('order')
+        .snapshots()
+        .listen((event) {
+      comments = CommentService.instance.fromQuerySnapshot(event);
+      setState(() {});
+    });
   }
 
   @override
@@ -94,21 +67,6 @@ class _CommentListTreeViewState extends State<CommentListTreeView> {
         ),
       );
     }
-    // on going work for collapsible comments
-    // return SliverToBoxAdapter(
-    //   child: ExpansionPanelList(
-    //     children: parentComments!
-    //         .map(
-    //           (comment) => ExpansionPanel(
-    //             headerBuilder: (context, expanded) =>
-    //                 CommentView(post: widget.post, comment: comment),
-    //             body: const Column(),
-    //           ),
-    //         )
-    //         .toList(),
-    //   ),
-    // );
-
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -122,11 +80,5 @@ class _CommentListTreeViewState extends State<CommentListTreeView> {
         childCount: comments!.length,
       ),
     );
-    // return SliverToBoxAdapter(
-    //   child: NewCommentView(
-    //     comments: comments!,
-    //     post: widget.post,
-    //   ),
-    // );
   }
 }
