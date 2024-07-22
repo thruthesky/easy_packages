@@ -25,10 +25,7 @@ class CommentListView extends StatelessWidget {
     this.addSemanticIndexes = true,
     this.cacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
-
-    /// TODO check if [onDrag] is working.
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior
-        .onDrag, // ScrollViewKeyboardDismissBehavior.manual,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.onDrag,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,
@@ -57,6 +54,7 @@ class CommentListView extends StatelessWidget {
   final Clip clipBehavior;
   final Widget Function(Comment, int)? itemBuilder;
   final Widget Function()? emptyBuilder;
+
   @override
   Widget build(BuildContext context) {
     Query query =
@@ -103,11 +101,7 @@ class CommentListView extends StatelessWidget {
           restorationId: restorationId,
           clipBehavior: clipBehavior,
           itemBuilder: (context, index) {
-            // if we reached the end of the currently obtained items, we try to
-            // obtain more items
             if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
-              // Tell FirebaseDatabaseQueryBuilder to try to obtain more items.
-              // It is safe to call this function from within the build method.
               snapshot.fetchMore();
             }
 
@@ -115,6 +109,11 @@ class CommentListView extends StatelessWidget {
 
             return itemBuilder?.call(comment, index) ??
                 CommentListDetail(comment: comment);
+
+            // return CommentListDetail(comment: comment);
+
+            // return CommentListArrowDetail(comment: comment);
+            // return CommentListVerticalLineDetail(comment: comment);
           },
         );
       },

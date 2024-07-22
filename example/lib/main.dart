@@ -60,8 +60,9 @@ class MyAppState extends State<MyApp> {
       // PostService.instance.showPostListScreen(context: globalContext);
 
       showGeneralDialog(
-          context: globalContext,
-          pageBuilder: (_, __, ___) => const CommentTestScreen());
+        context: globalContext,
+        pageBuilder: (_, __, ___) => const CommentTestScreen(),
+      );
     });
   }
 

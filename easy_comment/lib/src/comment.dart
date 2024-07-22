@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easyuser/easyuser.dart';
 
@@ -29,6 +30,10 @@ class Comment {
   final String youtubeUrl;
   final int depth;
   final String order;
+  final bool hasChild;
+
+  /// Current comment object's reference
+  DocumentReference get ref => col.doc(id);
 
   Comment({
     required this.id,
@@ -42,6 +47,7 @@ class Comment {
     required this.youtubeUrl,
     required this.depth,
     required this.order,
+    this.hasChild = false,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -53,6 +59,23 @@ class Comment {
 
     final docSnapshot = snapshot.data() as Map<String, dynamic>;
     return Comment.fromJson(docSnapshot, snapshot.id);
+  }
+
+  factory Comment.fromDocumentReference(DocumentReference ref) {
+    return Comment(
+      id: ref.id,
+      parentId: '',
+      documentReference: ref,
+      content: '',
+      uid: my.uid,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      urls: [],
+      youtubeUrl: '',
+      depth: 1,
+      order: '',
+      hasChild: false,
+    );
   }
 
   factory Comment.fromJson(Map<String, dynamic> json, String id) {
@@ -72,6 +95,7 @@ class Comment {
       youtubeUrl: json['youtubeUrl'],
       depth: json['depth'],
       order: json['order'],
+      hasChild: json['hasChild'] ?? false,
     );
   }
 
@@ -88,6 +112,7 @@ class Comment {
       'youtubeUrl': youtubeUrl,
       'depth': depth,
       'order': order,
+      'hasChild': hasChild,
     };
   }
 
@@ -106,8 +131,12 @@ class Comment {
     required DocumentReference documentReference,
     Comment? parent,
     String? content,
+    List<String> urls = const [],
   }) async {
     final snapshot = await documentReference.get();
+    if (snapshot.exists == false) {
+      throw 'comment-create/document-not-exists Document does not exist';
+    }
     final data = snapshot.data() as Map<String, dynamic>;
     final order = getCommentOrderString(
       depth: (parent?.depth ?? 0),
@@ -136,13 +165,78 @@ class Comment {
         'youtubeUrl': '',
         'depth': parent == null ? 1 : parent.depth + 1,
         'order': order,
+        'hasChild': false,
       });
       t.update(documentReference, {
         'commentCount': FieldValue.increment(1),
       });
+      // 부모 코멘트에 hasChild 를 true 로 변경한다.
+      if (parent != null) {
+        t.update(parent.ref, {
+          'hasChild': true,
+        });
+      }
+
       return addedRef;
     });
 
     return ref;
+  }
+
+  /// Update the comment
+  Future<void> update({
+    String? content,
+    List<String>? urls,
+  }) async {
+    await col.doc(id).update({
+      if (content != null) 'content': content,
+      if (urls != null) 'urls': urls,
+      'updateAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Get all the comments of a post
+  ///
+  ///
+  static Future<List<Comment>> getAll({
+    required DocumentReference documentReference,
+  }) async {
+    final snapshot = await Comment.col
+        .where('documentReference', isEqualTo: documentReference)
+        .orderBy('order')
+        .get();
+    final comments = <Comment>[];
+
+    if (snapshot.docs.isEmpty) {
+      return comments;
+    }
+
+    for (final doc in snapshot.docs) {
+      final comment = Comment.fromSnapshot(doc);
+      comments.add(comment);
+    }
+
+    return comments;
+  }
+
+  /// Get the parents of the comment.
+  ///
+  /// It returns the list of parents in the path to the root from the comment.
+  /// Use this method to get
+  ///   - the parents of the comment. (This case is used by sorting comments and drawing the comment tree)
+  ///   - the users(user uid) in the path to the root. Especially to know who wrote the comment in the path to the post
+  static List<Comment> getParents(Comment comment, List<Comment> comments) {
+    final List<Comment> parents = [];
+    Comment? parent = comment;
+    while (parent != null) {
+      parent = comments.firstWhereOrNull(
+        (e) => e.id == parent!.parentId,
+      );
+      if (parent == null) {
+        break;
+      }
+      parents.add(parent);
+    }
+    return parents.reversed.toList();
   }
 }

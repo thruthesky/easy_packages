@@ -28,6 +28,19 @@ The `UserService.instance.init()` function is designed to be initialized only on
   - Therefore, you should show a registration menu or a sign-in button to Anonymous users.
 
 
+Remember the nature of Firebase Auth and account merging especially when the user signed in as anonymous.
+
+- When A opens the app,
+  - Then, A signs in as `A-A` anonymous automatically,
+  - Then, A signs in as `A` as his account and merge his account with `A-A`.
+  - Then, A signs out, then A will automatically signs-in as another Anonymous like `A-N`. Not the same anonymous as `A-A`.
+  - Then, when A sign in again as `A`, then he cannot merge with `A-N`.
+
+This is the nature of Firebase Auth.
+
+
+
+
 # How to use
 
 

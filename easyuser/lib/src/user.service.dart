@@ -67,10 +67,16 @@ class UserService {
     }
   }
 
+  /// Returns true if user is signed in including anonymous login.
   bool get signedIn => fa.FirebaseAuth.instance.currentUser != null;
   bool get notSignedIn => !signedIn;
-  bool get isAnonymous =>
+  bool get anonymous =>
       fa.FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
+
+  /// Returns true if user is registered and not anonymous.
+  ///
+  /// It excludes anonymous users.
+  bool get registered => signedIn && !anonymous;
 
   /// Listen to my document
   StreamSubscription<fa.User?>? firebaseAuthSubscription;

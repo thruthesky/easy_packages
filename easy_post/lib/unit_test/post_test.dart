@@ -8,6 +8,7 @@ void createPost() async {
   testStart('Create Post Test');
   final ref = await Post.create(
       category: 'temp', title: 'hellp', content: 'hellp', urls: [url]);
+  dog('$ref');
   final post = await Post.get(ref.id);
   isTrue(
       post.title == 'hellp' && post.content == 'hellp', 'Created Successfully');
@@ -44,5 +45,25 @@ void updatePost() async {
   //
 
   //
+  testReport();
+}
+
+void createYouyubePost() async {
+  testStart('Update Post Test');
+  final ref = await Post.create(
+    category: 'youtube',
+    youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
+  );
+
+  final post = await Post.get(ref.id);
+  isTrue(post.youtubeUrl == 'https://www.youtube.com/watch?v=nM0xDI5R50E',
+      "Posting url");
+
+  await isException(() async {
+    await Post.create(
+      category: 'youtube',
+      youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
+    );
+  });
   testReport();
 }
