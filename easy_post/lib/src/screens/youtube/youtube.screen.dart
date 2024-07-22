@@ -99,6 +99,7 @@ class _YoutubeScreenState extends State<YoutubeScreen> {
                   // separate the youtube player so it can be reused
                   YoutubePlayer(
                     post: widget.post,
+                    autoPlay: widget.autoPlay,
                   ),
                   const SizedBox(
                     height: 16,
@@ -132,8 +133,11 @@ class _YoutubeScreenState extends State<YoutubeScreen> {
                   ),
                   TextButton(
                       onPressed: () {
+                        setState(() {});
                         PostService.instance.showPostDetailScreen(
-                            context: context, post: widget.post);
+                          context: context,
+                          post: widget.post,
+                        );
                       },
                       child: const Text('See Comments')),
                   const Divider(),

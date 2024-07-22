@@ -10,6 +10,7 @@ environment:
 dependencies:
   cached_network_image: ^3.3.1
   cloud_firestore: ^5.0.2
+  easy_comment: ^0.0.2
   easy_helpers: ^0.0.3
   easy_locale: ^0.0.4
   easy_storage: ^0.0.5
