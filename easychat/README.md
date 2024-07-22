@@ -69,6 +69,9 @@ ChatService.instance.init();
 - `open` if it is set to true, the chat room is open chat. So, it is listed in the open chat rom list and anyone can join the chat room without invitation.
 - `hasPassword` is set to true if the chat room has a password. See [Password](#password)
 
+- `single` - is true when the room is single chat
+- `group` - is true when the room is group chat
+- `open` - is true when the room is open group chat.
 
 
 ### Chat message database struture
@@ -106,14 +109,32 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
 
 
 
-## Logic
+# Logic
 
-### Masters
+## Group Chat and 1:1 Chat
+
+- `1:1 chat` is also called `single chat`.
+- There is only one logic of the chat room and all the chat rooms are considered as a group chat. Even if it's a `1:1 chat`, it is considered as `group chat` and the logic goes same as group chat.
+
+- But why do we need to separate it as a single chat or group chat?
+  - When A chats to B, A wants to chat with B alone in 1:1 chat mode.
+    - Then, the app will create a chat room
+      - And then, some time later, B wants to chat with A in a 1:1 chat mode.
+        - Then, they need to continue the previous chat room.
+        - If there is only group chat, it will create the chat room over and over again and they cannot resume the previous chat room.
+
+
+
+
+## Masters
 
 The one who create chat room automatically becomes a master. And he can add another user as a master.
 
 
-### Chat invitation
+
+
+
+## Chat invitation
 
 It really happened to one of my own projects that someone sent very bad words to many other users that he does not know. And he ruined the app. So, we have a special feature to prevent this. And this feature is optional.
 
@@ -137,7 +158,7 @@ It really happened to one of my own projects that someone sent very bad words to
 
 
 
-### Password
+## Password
 
 The password must kept in secret by the Security rules. Then, how the user can join the chat room without the help of backend? Here is a solution.
 

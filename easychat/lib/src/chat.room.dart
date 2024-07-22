@@ -47,19 +47,27 @@ class ChatRoom {
   final String? url;
 
   /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
+  ///
+  /// Note that, [verifiedUserOnly] is not supported at this time.
   final bool verifiedUserOnly;
 
   /// [urlForVerifiedUserOnly] is true if only the verified users can sent the
   /// url (or include any url in the text).
+  ///
+  /// Note that, [urlForVerifiedUserOnly] is not supported at this time.
   final bool urlForVerifiedUserOnly;
 
   /// [uploadForVerifiedUserOnly] is true if only the verified users can sent the
   /// photo.
+  ///
+  /// Note that, [uploadForVerifiedUserOnly] is not supported at this time.
   final bool uploadForVerifiedUserOnly;
 
   /// [gender] to filter the chat room by user's gender.
   /// If it's M, then only male can enter the chat room. And if it's F,
   /// only female can enter the chat room.
+  ///
+  /// Note that, [gender] is not supported at this time.
   final String? gender;
 
   /// [noOfUsers] is the number of users in the chat room.

@@ -1,6 +1,6 @@
 name: easy_comment
-description: "A comment package for Flutter and Firebase."
-version: 0.0.1
+description: "Provides easy to build comment functionaltiy for Flutter and Firebase."
+version: 0.0.2
 homepage: https://github.com/thruthesky/easy_packages/easy_comment
 
 environment:

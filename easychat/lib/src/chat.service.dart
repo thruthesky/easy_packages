@@ -65,4 +65,15 @@ class ChatService {
           chatRoomEditScreen?.call() ?? const ChatRoomEditScreen(),
     );
   }
+
+  showChatRoomScreen(BuildContext context,
+      {required User user, ChatRoom? room}) {
+    // return showGeneralDialog(
+    //   context: context,
+    //   pageBuilder: (_, __, ___) => ChatRoomScreen(
+    //     user: user,
+    //     room: room,
+    //   ),
+    // );
+  }
 }
