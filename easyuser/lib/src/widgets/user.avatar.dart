@@ -21,37 +21,55 @@ class UserAvatar extends StatelessWidget {
     this.size = 48,
     this.radius = 20,
     this.border,
-    this.$,
   });
   final User user;
   final double size;
   final double radius;
   final Border? border;
-  final String? $;
 
   @override
   Widget build(BuildContext context) {
-    return $ == null
-        ? buildAvatar(context, user)
-        : UserDoc(
-            uid: $!,
-            builder: (user) => user == null
-                ? const SizedBox.shrink()
-                : buildAvatar(context, user),
-          );
+    return BuildUserAvatar(user: user);
   }
 
-  UserAvatar.fromUid(
-    String uid, {
+  static Widget fromUid({
     Key? key,
-  }) : this(
-          key: key,
-          user: User(uid: uid),
-          $: uid,
-        );
+    required String uid,
+    double size = 48,
+    double radius = 20,
+    Border? border,
+  }) {
+    return UserDoc(
+      uid: uid,
+      builder: (user) => user == null
+          ? const SizedBox.shrink()
+          : BuildUserAvatar(
+              user: user,
+              size: size,
+              radius: radius,
+              border: border,
+            ),
+    );
+  }
+}
 
-  Widget buildAvatar(BuildContext context, User userObj) {
-    return userObj.photoUrl == null
+class BuildUserAvatar extends StatelessWidget {
+  const BuildUserAvatar({
+    super.key,
+    required this.user,
+    this.size = 48,
+    this.radius = 20,
+    this.border,
+  });
+
+  final User user;
+  final double size;
+  final double radius;
+  final Border? border;
+
+  @override
+  Widget build(BuildContext context) {
+    return user.photoUrl == null
         ? Container(
             width: size,
             height: size,
@@ -62,9 +80,9 @@ class UserAvatar extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                userObj.displayName.isEmpty
-                    ? userObj.uid[0].toUpperCase()
-                    : userObj.displayName[0].toUpperCase(),
+                user.displayName.isEmpty
+                    ? user.uid[0].toUpperCase()
+                    : user.displayName[0].toUpperCase(),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
@@ -82,7 +100,7 @@ class UserAvatar extends StatelessWidget {
                 border: border,
               ),
               child: CachedNetworkImage(
-                imageUrl: userObj.photoUrl!,
+                imageUrl: user.photoUrl!,
                 fit: BoxFit.cover,
               ),
             ),

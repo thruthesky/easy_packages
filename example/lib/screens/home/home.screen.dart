@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? const EmailPasswordLogin()
                     : Column(
                         children: [
-                          UserAvatar.fromUid(user.uid),
+                          UserAvatar.fromUid(uid: user.uid),
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
                             onPressed: () => UserService.instance
