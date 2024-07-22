@@ -17,7 +17,7 @@
 /// 부모 코멘트의 depth 가 3 이면, 3 로 입력되어야 한다. (3 + 1 로 입력하면 안된다.)
 /// `first level comments` 의 경우, 입력되는 [sortString] 값이 null 또는 빈 문자열이다. 이 경우,
 /// [depth] 값은 무시되고, 첫번재 블록에 noOfComments 값을 입력한다.
-/// DB 에 저장 할 때에는 [depth] 값이 1부터 시작된다. 즉, `first level comemnts` 의 depth 는 1인 것이다.
+/// DB 에 저장 할 때에는 [depth] 값이 0부터 시작된다. 즉, `first level comemnts` 의 depth 는 0인 것이다.
 /// 그리고 저장 할 때에는 부모  depth 에서 1 증가된 값으로 저장하면 된다.
 ///
 ///

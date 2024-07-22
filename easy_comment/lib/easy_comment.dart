@@ -9,3 +9,5 @@ export './src/widgets/comment.list_arrow_detail.dart';
 export './src/widgets/comment.list_detail.dart';
 export './src/widgets/comment.list_vertical_line_detail.dart';
 export './src/widgets/comment.list_view.dart';
+export './src/widgets/comment.list_tree_view.dart';
+export './src/widgets/comment.tree_detail.dart';

@@ -30,7 +30,7 @@ class Comment {
   final String youtubeUrl;
   final int depth;
   final String order;
-  final bool hasChild;
+  bool hasChild = false;
 
   /// Current comment object's reference
   DocumentReference get ref => col.doc(id);
@@ -47,7 +47,7 @@ class Comment {
     required this.youtubeUrl,
     required this.depth,
     required this.order,
-    this.hasChild = false,
+    // this.hasChild = false,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -74,7 +74,7 @@ class Comment {
       youtubeUrl: '',
       depth: 1,
       order: '',
-      hasChild: false,
+      // hasChild: false,
     );
   }
 
@@ -93,9 +93,9 @@ class Comment {
           : DateTime.now(),
       urls: List<String>.from(json['urls']),
       youtubeUrl: json['youtubeUrl'],
-      depth: json['depth'],
+      depth: json['depth'] ?? 0,
       order: json['order'],
-      hasChild: json['hasChild'] ?? false,
+      // hasChild: json['hasChild'] ?? false,
     );
   }
 
@@ -112,7 +112,7 @@ class Comment {
       'youtubeUrl': youtubeUrl,
       'depth': depth,
       'order': order,
-      'hasChild': hasChild,
+      // 'hasChild': hasChild,
     };
   }
 
@@ -139,7 +139,7 @@ class Comment {
     }
     final data = snapshot.data() as Map<String, dynamic>;
     final order = getCommentOrderString(
-      depth: (parent?.depth ?? 0),
+      depth: (parent?.depth ?? 0) + 1,
       noOfComments: data['commentCount'] ?? 0,
       sortString: parent?.order,
     );
@@ -163,7 +163,7 @@ class Comment {
         'updateAt': FieldValue.serverTimestamp(),
         'urls': [],
         'youtubeUrl': '',
-        'depth': parent == null ? 1 : parent.depth + 1,
+        'depth': parent == null ? 0 : parent.depth + 1,
         'order': order,
         'hasChild': false,
       });
@@ -193,50 +193,5 @@ class Comment {
       if (urls != null) 'urls': urls,
       'updateAt': FieldValue.serverTimestamp(),
     });
-  }
-
-  /// Get all the comments of a post
-  ///
-  ///
-  static Future<List<Comment>> getAll({
-    required DocumentReference documentReference,
-  }) async {
-    final snapshot = await Comment.col
-        .where('documentReference', isEqualTo: documentReference)
-        .orderBy('order')
-        .get();
-    final comments = <Comment>[];
-
-    if (snapshot.docs.isEmpty) {
-      return comments;
-    }
-
-    for (final doc in snapshot.docs) {
-      final comment = Comment.fromSnapshot(doc);
-      comments.add(comment);
-    }
-
-    return comments;
-  }
-
-  /// Get the parents of the comment.
-  ///
-  /// It returns the list of parents in the path to the root from the comment.
-  /// Use this method to get
-  ///   - the parents of the comment. (This case is used by sorting comments and drawing the comment tree)
-  ///   - the users(user uid) in the path to the root. Especially to know who wrote the comment in the path to the post
-  static List<Comment> getParents(Comment comment, List<Comment> comments) {
-    final List<Comment> parents = [];
-    Comment? parent = comment;
-    while (parent != null) {
-      parent = comments.firstWhereOrNull(
-        (e) => e.id == parent!.parentId,
-      );
-      if (parent == null) {
-        break;
-      }
-      parents.add(parent);
-    }
-    return parents.reversed.toList();
   }
 }

@@ -122,6 +122,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: const Text('Easy Forum Screen'),
             ),
+            SizedBox(
+                height: 80,
+                child: UserListView(
+                  itemBuilder: (user, p1) => GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      ChatService.instance.showChatRoomScreen(
+                        context,
+                        user: user,
+                        // room: room,
+                      );
+                    },
+                    child: UserAvatar(
+                      user: user,
+                    ),
+                  ),
+                )),
           ],
         ),
       ),
