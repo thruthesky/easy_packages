@@ -51,7 +51,7 @@ ChatService.instance.init();
 ## Chat Database
 
 
-### Chat room database struture
+### Chat room database struture (Firestore)
 
 - `/chat-rooms/{roomId}` is the document of chat room information.
 - `users` field has the list of user's uid who joined the chat room.
@@ -74,7 +74,7 @@ ChatService.instance.init();
 - `open` - is true when the room is open group chat.
 
 
-### Chat message database struture
+### Chat message database struture (RTDB)
 
 For the speed and cost efficiencies, the chat messages are saved under `/chat-messages/{roomId}` in Realtime Database
 
@@ -92,9 +92,7 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
     - `previewImageUrl` - Image
 
 
-
-
-### Chat room settings per each users
+### Chat room settings per each users (RTDB)
 
 - Chat room user setting will be saved under `/chat-room/{uid}/{roomId}` in Realtime Database.
 
@@ -105,9 +103,6 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
     - Subscribing to push notifications for updates.
   - Or the chat package saves the number of new messages in each chat room.
   - And much more.
-
-
-
 
 # Logic
 

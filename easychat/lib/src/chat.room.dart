@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easychat/src/chat.functions.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
 
@@ -8,8 +11,12 @@ class ChatRoom {
   /// [id] is the chat room id.
   final String id;
 
-  /// [ref] is the docuement reference of the chat room.
-  DocumentReference get ref => col.doc(id);
+  /// [messageRef] is the message reference of the chat room.
+  DatabaseReference get messageRef =>
+      FirebaseDatabase.instance.ref("/chat-messages/$id");
+
+  /// [docRef] is the docuement reference of the chat room.
+  DocumentReference get docRef => col.doc(id);
 
   /// [name] is the chat room name. If it does not exist, it is empty.
   final String name;
@@ -22,6 +29,12 @@ class ChatRoom {
 
   /// [open] is true if the chat room is open chat
   final bool open;
+
+  /// [single] is true if the chat room is single chat or 1:1.
+  final bool single;
+
+  /// [group] is true if the chat room is group chat.
+  final bool group;
 
   /// [users] is the uid list of users who are join the room
   final List<String> users;
@@ -89,6 +102,8 @@ class ChatRoom {
     required this.description,
     this.iconUrl,
     this.open = true,
+    this.single = false,
+    this.group = false,
     this.hasPassword = false,
     required this.users,
     required this.masterUsers,
@@ -107,6 +122,7 @@ class ChatRoom {
   });
 
   factory ChatRoom.fromSnapshot(DocumentSnapshot doc) {
+    dog("doc: ${doc.data()}");
     return ChatRoom.fromJson(doc.data() as Map<String, dynamic>, doc.id);
   }
 
@@ -117,6 +133,8 @@ class ChatRoom {
       description: json['description'] ?? '',
       iconUrl: json['iconUrl'],
       open: json['open'] ?? true,
+      single: json['single'] ?? !(json['group'] ?? true),
+      group: json['group'] ?? !(json['single'] ?? false),
       hasPassword: json['hasPassword'] ?? false,
       users: List<String>.from(json['users'] ?? []),
       masterUsers: List<String>.from(json['masterUsers'] ?? []),
@@ -145,6 +163,8 @@ class ChatRoom {
       'description': description,
       'iconUrl': iconUrl,
       'open': open,
+      'single': single,
+      'group': group,
       'hasPassword': hasPassword,
       'users': users,
       'masterUsers': masterUsers,
@@ -173,43 +193,73 @@ class ChatRoom {
   ///
   ///
   /// Returns the document reference of the chat room.
-  static Future<ChatRoom> create({
+  static Future<DocumentReference> create({
+    // If id is null, this will make new room id.
+    String? id,
     String? name,
     String? description,
     String? iconUrl,
     bool open = true,
-    String? password,
+    // Group == false means the chat room is single chat
+    bool group = true,
+    // String? password, (NOT IMPLEMENTED YET)
     List<String>? invitedUsers,
+    List<String>? users,
+    List<String>? masterUsers,
     bool? verifiedUserOnly,
     bool? urlForVerifiedUserOnly,
     bool? uploadForVerifiedUserOnly,
     String? gender,
     String? domain,
   }) async {
-    /// Create a new chat room
-    final ref = await col.add({
+    final newRoom = {
       'users': [my.uid],
       'masterUsers': [my.uid],
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (iconUrl != null) 'iconUrl': iconUrl,
       'open': open,
-      'hasPassword': password != null,
-      'invitedUsers': invitedUsers,
-      'verifiedUserOnly': verifiedUserOnly,
-      'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
-      'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
+      'single': !group,
+      'group': group,
+      // 'hasPassword': password != null, (NOT IMPLEMENTED YET)
+      if (invitedUsers != null) 'invitedUsers': invitedUsers,
+      if (users != null) 'users': users,
+      if (masterUsers != null) 'masterUsers': masterUsers,
+      // if (password != null) 'password': password, (NOT IMPLEMENTED YET)
+      if (verifiedUserOnly != null) 'verifiedUserOnly': verifiedUserOnly,
+      if (urlForVerifiedUserOnly != null)
+        'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
+      if (uploadForVerifiedUserOnly != null)
+        'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
+      'gender': gender,
+      'domain': domain,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
-    });
+    };
 
-    /// Return the chat room from the document reference
-    return ChatRoom.fromJson(
-      {
-        'users': [my.uid],
-        'masterUsers': [my.uid],
-      },
-      ref.id,
+    DocumentReference ref;
+    if (id == null) {
+      ref = await col.add(newRoom);
+    } else {
+      ref = col.doc(id);
+      await ref.set(newRoom);
+    }
+    return ref;
+  }
+
+  static Future<DocumentReference> createSingle(String otherUid) {
+    return create(
+      group: false,
+      id: singleChatRoomId(otherUid),
+      invitedUsers: [otherUid],
+      users: [my.uid],
+      masterUsers: [my.uid, otherUid],
     );
+  }
+
+  static Future<ChatRoom?> get(String id) async {
+    final snapshotDoc = await ChatRoom.col.doc(id).get();
+    if (snapshotDoc.exists == false) return null;
+    return ChatRoom.fromSnapshot(snapshotDoc);
   }
 }

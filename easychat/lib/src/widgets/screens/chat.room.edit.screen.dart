@@ -70,7 +70,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 description: 'description',
                 iconUrl: 'iconUrl',
                 open: true,
-                password: 'password',
+                // password: 'password',
                 invitedUsers: ['invitedUsers'],
                 verifiedUserOnly: true,
                 urlForVerifiedUserOnly: true,
