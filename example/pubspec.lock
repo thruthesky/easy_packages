@@ -191,7 +191,7 @@ packages:
       path: "../easy_comment"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   easy_engine:
     dependency: "direct main"
     description:
