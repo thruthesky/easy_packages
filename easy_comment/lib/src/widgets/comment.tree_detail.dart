@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easyuser/easyuser.dart';
 
 import 'package:flutter/material.dart';
 
@@ -38,8 +39,6 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   bool get isFirstParent => widget.comment.depth == 0;
   bool get isChild => !isFirstParent;
   bool get hasChild => widget.comment.hasChild;
-  // bool get lastChild => widget.comment.isLastChild;
-  // bool get parentLastChild => widget.comment.isParentLastChild;
 
   List<Comment> parents = [];
 
@@ -79,7 +78,15 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
 
             Column(
               children: [
-                const Text('Avatar'),
+                UserDoc(
+                    uid: widget.comment.uid,
+                    builder: (user) {
+                      if (user == null) return const SizedBox.shrink();
+                      return UserAvatar(
+                        user: user,
+                        radius: 20,
+                      );
+                    }),
 
                 /// 자식이 있다면, 아바타 아래에 세로 라인을 그린다. 즉, 아바타 아래의 세로 라인은 여기서 그린다.
                 if (hasChild)

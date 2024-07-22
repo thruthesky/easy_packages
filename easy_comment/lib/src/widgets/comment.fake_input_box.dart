@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:flutter/material.dart';
 
 /// CommentFakeInputBox
@@ -25,14 +26,14 @@ class CommentFakeInputBox extends StatelessWidget {
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Row(
+        child: Row(
           children: [
             /// 사진 버튼
-            Icon(Icons.camera_alt),
-            SizedBox(width: 8),
-            Expanded(child: Text('Write a comment')),
-            Icon(Icons.send),
-            SizedBox(width: 8),
+            const Icon(Icons.camera_alt),
+            const SizedBox(width: 8),
+            Expanded(child: Text('input comment'.t)),
+            const Icon(Icons.send),
+            const SizedBox(width: 8),
           ],
         ),
       ),

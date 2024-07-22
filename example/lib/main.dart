@@ -57,7 +57,7 @@ class MyAppState extends State<MyApp> {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // ChatService.instance.showChatRoomEditScreen(globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
-      PostService.instance.showPostListScreen(context: globalContext);
+      // PostService.instance.showPostListScreen(context: globalContext);
 
       // showGeneralDialog(
       //   context: globalContext,

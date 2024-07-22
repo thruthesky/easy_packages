@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:flutter/material.dart';
 
 /// CommentListTreeView
@@ -58,11 +59,11 @@ class _CommentListTreeViewState extends State<CommentListTreeView> {
           child: Center(child: CircularProgressIndicator()));
     }
     if (comments!.isEmpty) {
-      return const SliverToBoxAdapter(
+      return SliverToBoxAdapter(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Center(
-            child: Text('T.commentEmptyList.tr'),
+            child: Text('comment list is empty'.t),
           ),
         ),
       );

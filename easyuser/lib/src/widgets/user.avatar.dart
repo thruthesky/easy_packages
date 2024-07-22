@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 /// due to displaying the first letter or user display name when the user's
 /// photoUrl is not available.
 ///
+/// [UserAvatar.fromUid] is a constructor that takes a user's uid and
+/// fetches the user's data from the firestore and it will fetch only once. And
+/// it will display the user's avatar.
 ///
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -18,15 +21,37 @@ class UserAvatar extends StatelessWidget {
     this.size = 48,
     this.radius = 20,
     this.border,
+    this.$,
   });
   final User user;
   final double size;
   final double radius;
   final Border? border;
+  final String? $;
 
   @override
   Widget build(BuildContext context) {
-    return user.photoUrl == null
+    return $ == null
+        ? buildAvatar(context, user)
+        : UserDoc(
+            uid: $!,
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : buildAvatar(context, user),
+          );
+  }
+
+  UserAvatar.fromUid(
+    String uid, {
+    Key? key,
+  }) : this(
+          key: key,
+          user: User(uid: uid),
+          $: uid,
+        );
+
+  Widget buildAvatar(BuildContext context, User userObj) {
+    return userObj.photoUrl == null
         ? Container(
             width: size,
             height: size,
@@ -37,9 +62,9 @@ class UserAvatar extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                user.displayName.isEmpty
-                    ? user.uid[0].toUpperCase()
-                    : user.displayName[0].toUpperCase(),
+                userObj.displayName.isEmpty
+                    ? userObj.uid[0].toUpperCase()
+                    : userObj.displayName[0].toUpperCase(),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
@@ -57,7 +82,7 @@ class UserAvatar extends StatelessWidget {
                 border: border,
               ),
               child: CachedNetworkImage(
-                imageUrl: user.photoUrl!,
+                imageUrl: userObj.photoUrl!,
                 fit: BoxFit.cover,
               ),
             ),
