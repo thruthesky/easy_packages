@@ -128,11 +128,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (user, p1) => GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      // ChatService.instance.showChatRoomScreen(
-                      //   context,
-                      //   user: user,
-                      //   room: room,
-                      // );
+                      ChatService.instance.showChatRoomScreen(
+                        context,
+                        user: user,
+                        // room: room,
+                      );
                     },
                     child: UserAvatar(
                       user: user,
