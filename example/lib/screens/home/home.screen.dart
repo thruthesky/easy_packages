@@ -127,10 +127,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: UserListView(
                   itemBuilder: (user, p1) => GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () => UserService.instance.showProfileScreen(
-                      context,
-                      user: user,
-                    ),
+                    onTap: () {
+                      // ChatService.instance.showChatRoomScreen(
+                      //   context,
+                      //   user: user,
+                      //   room: room,
+                      // );
+                    },
                     child: UserAvatar(
                       user: user,
                     ),
