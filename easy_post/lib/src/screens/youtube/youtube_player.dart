@@ -6,17 +6,23 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 // youtube player to display yout youtube video
 /// `autoPlay` if true the player will automatically play or start when initialized
 /// `thumbnail` use this to display thumbnail if the youtube is idle or not playing
+/// `aspectRatio` use to change the aspectRatio of the Youtube player
+/// `width` use to change the width of the youtube player
 class YoutubePlayer extends StatefulWidget {
   const YoutubePlayer({
     super.key,
     required this.post,
     this.autoPlay = false,
     this.thumbnail,
+    this.width,
+    this.aspectRatio = 16 / 9,
   });
 
   final Post post;
   final bool autoPlay;
   final Widget? thumbnail;
+  final double? width;
+  final double aspectRatio;
   @override
   State<YoutubePlayer> createState() => _YoutubePlayerState();
 }
@@ -57,6 +63,8 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
   @override
   Widget build(BuildContext context) {
     return ypf.YoutubePlayer(
+      aspectRatio: widget.aspectRatio,
+      width: widget.width,
       bottomActions: [
         IconButton(
             onPressed: () {

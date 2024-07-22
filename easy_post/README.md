@@ -76,7 +76,7 @@ YoutubeScreen(
 PostService.intsance.showYoutubeScreen(
   post:pos
 ),
-
+gs
 ```
 
 Displaying a Youtube video

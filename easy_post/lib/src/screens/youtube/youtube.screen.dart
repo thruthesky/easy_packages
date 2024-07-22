@@ -39,11 +39,6 @@ class _YoutubeScreenState extends State<YoutubeScreen> {
     if (playerReady && mounted && !youtubeController.value.isFullScreen) {
       setState(() {
         playerState = youtubeController.value.playerState;
-
-        if (youtubeController.value.playerState == ypf.PlayerState.ended) {
-          youtubeController.seekTo(Duration.zero);
-          youtubeController.pause();
-        }
       });
     }
   }
