@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 /// Note, to display the comemnt tree, it gets the whole comments of the post and
 /// do some computation to display the comment tree. It does not look like a heavy compulation
 /// but it needs an attention.
+///
+/// 주의, 코멘트 트리를 표시 할 때, 가로 선과 커브선이 딱 맞물리지 않는 경우가 있다. 특히, 아바타의 크기가
+/// 변경되는 경우, 가로선과 커브선이 잘 안맞는데, 적절히 조정해야 한다.
 class CommentTreeDetail extends StatefulWidget {
   const CommentTreeDetail({
     super.key,
@@ -67,7 +70,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (int i = 0; i < widget.comment.depth; i++)
-              _newIndentedVerticalLine(i),
+              indentedVerticalLine(i),
 
             /// curved line
             if (isChild)
@@ -78,15 +81,11 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
 
             Column(
               children: [
-                UserDoc(
-                    uid: widget.comment.uid,
-                    builder: (user) {
-                      if (user == null) return const SizedBox.shrink();
-                      return UserAvatar(
-                        user: user,
-                        radius: 20,
-                      );
-                    }),
+                UserAvatar.fromUid(
+                  uid: widget.comment.uid,
+                  size: 44,
+                  radius: 20,
+                ),
 
                 /// 자식이 있다면, 아바타 아래에 세로 라인을 그린다. 즉, 아바타 아래의 세로 라인은 여기서 그린다.
                 if (hasChild)
@@ -115,7 +114,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   ///
   /// [depth] 는 코멘트의 깊이를 나타내는 것으로,
   /// 현재 코멘트의 depth 가 3 이라면, 0 부터 1 과 2 총 세번 호출 된다.
-  Widget _newIndentedVerticalLine(int depth) {
+  Widget indentedVerticalLine(int depth) {
     return SizedBox(
       width: depth == 0 ? 23 : 39,
       child: Column(
