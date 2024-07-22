@@ -27,43 +27,32 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
       appBar: AppBar(
         title: const Text('CommentTest'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(24.0, 24, 24, 0),
-        child: MyDocReady(
-          builder: () => ListView(
-            padding: const EdgeInsets.all(0),
-            children: [
-              Text('Reference: ${ref.path}'),
-              const SizedBox(height: 24),
-              CommentFakeInputBox(
+      body: MyDocReady(
+        builder: () => CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
+            SliverToBoxAdapter(
+              child: CommentFakeInputBox(
                 onTap: () => CommentService.instance.showCommentEditDialog(
                   context: context,
                   documentReference: ref,
                   focusOnContent: true,
                 ),
               ),
-              CommentInputBox(
+            ),
+            SliverToBoxAdapter(
+              child: CommentInputBox(
                 documentReference: ref,
               ),
-              CommentListView(
-                documentReference: ref,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (comment, index) =>
-                    CommentListArrowDetail(comment: comment),
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: CommentFakeInputBox(
-          onTap: () => CommentService.instance.showCommentEditDialog(
-            context: context,
-            documentReference: ref,
-            focusOnContent: true,
-          ),
+            ),
+            CommentListTreeView(
+              documentReference: ref,
+              // shrinkWrap: true,
+              // physics: const NeverScrollableScrollPhysics(),
+              // itemBuilder: (comment, index) =>
+              //     CommentListArrowDetail(comment: comment),
+            ),
+          ],
         ),
       ),
     );
