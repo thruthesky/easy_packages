@@ -30,7 +30,7 @@ class Comment {
   final String youtubeUrl;
   final int depth;
   final String order;
-  final bool hasChild;
+  // final bool hasChild;
 
   /// Current comment object's reference
   DocumentReference get ref => col.doc(id);
@@ -47,7 +47,7 @@ class Comment {
     required this.youtubeUrl,
     required this.depth,
     required this.order,
-    this.hasChild = false,
+    // this.hasChild = false,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -74,7 +74,7 @@ class Comment {
       youtubeUrl: '',
       depth: 1,
       order: '',
-      hasChild: false,
+      // hasChild: false,
     );
   }
 
@@ -95,7 +95,7 @@ class Comment {
       youtubeUrl: json['youtubeUrl'],
       depth: json['depth'],
       order: json['order'],
-      hasChild: json['hasChild'] ?? false,
+      // hasChild: json['hasChild'] ?? false,
     );
   }
 
@@ -112,7 +112,7 @@ class Comment {
       'youtubeUrl': youtubeUrl,
       'depth': depth,
       'order': order,
-      'hasChild': hasChild,
+      // 'hasChild': hasChild,
     };
   }
 

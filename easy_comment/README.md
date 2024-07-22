@@ -24,7 +24,13 @@ Initially, we considered using the Realtime Database for comments. However, sinc
   - condition: if `depth=0`.
 
 
-- `hasChild` is true when the comment has a child or children. This is used to sorting and displaying the commnet in comment list view.
+- ~~`hasChild` is true when the comment has a child or children. This is used to sorting and displaying the commnet in comment list view.~~ (This is comment out at Jul 22, 2024)
+
+
+
+
+
+
 
 # Widgets
 
