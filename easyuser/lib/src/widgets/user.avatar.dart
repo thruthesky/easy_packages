@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 /// due to displaying the first letter or user display name when the user's
 /// photoUrl is not available.
 ///
+/// [UserAvatar.fromUid] is a constructor that takes a user's uid and
+/// fetches the user's data from the firestore and it will fetch only once. And
+/// it will display the user's avatar.
 ///
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -19,6 +22,46 @@ class UserAvatar extends StatelessWidget {
     this.radius = 20,
     this.border,
   });
+  final User user;
+  final double size;
+  final double radius;
+  final Border? border;
+
+  @override
+  Widget build(BuildContext context) {
+    return BuildUserAvatar(user: user);
+  }
+
+  static Widget fromUid({
+    Key? key,
+    required String uid,
+    double size = 48,
+    double radius = 20,
+    Border? border,
+  }) {
+    return UserDoc(
+      uid: uid,
+      builder: (user) => user == null
+          ? const SizedBox.shrink()
+          : BuildUserAvatar(
+              user: user,
+              size: size,
+              radius: radius,
+              border: border,
+            ),
+    );
+  }
+}
+
+class BuildUserAvatar extends StatelessWidget {
+  const BuildUserAvatar({
+    super.key,
+    required this.user,
+    this.size = 48,
+    this.radius = 20,
+    this.border,
+  });
+
   final User user;
   final double size;
   final double radius;
