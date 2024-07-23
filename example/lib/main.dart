@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
 import 'package:example/firebase_options.dart';
@@ -61,8 +60,9 @@ class MyAppState extends State<MyApp> {
       // final room = await ChatRoom.get("t5zClWySjgryFf2tK0M8");
       // if (!mounted) return;
       // ChatService.instance.showChatRoomScreen(context, room: room);
+      // PostService.instance.showPostCreateScreen(context: globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
-      // PostService.instance.showPostListScreen(context: globalContext);
+      PostService.instance.showPostListScreen(context: globalContext);
 
       // showGeneralDialog(
       //   context: globalContext,

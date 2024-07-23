@@ -1,6 +1,14 @@
+## 0.0.13
+* Fix. missing paths.
+
+## 0.0.12
+* Change. hide UserBuildAvartar
+
+## 0.0.11
+* Add. `UserAvatar.fromUid`
+
 ## 0.0.10
 * Add. `UserService.instance.registered`
-
 
 ## 0.0.9
 * Add. MyDocReady

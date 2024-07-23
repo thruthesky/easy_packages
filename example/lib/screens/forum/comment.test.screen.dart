@@ -1,6 +1,5 @@
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class CommentTestScreen extends StatefulWidget {
@@ -22,38 +21,18 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
     // final ref = Post.col.doc('0-a');
     // final ref = Post.col.doc('0-b');
     // final ref = Post.col.doc('0-c');
-    final ref = Post.col.doc('0-4');
+    // final ref = Post.col.doc('0-5');
+    final ref = Post.col.doc('0-e');
     return Scaffold(
       appBar: AppBar(
         title: const Text('CommentTest'),
       ),
-      body: MyDocReady(
-        builder: () => CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
-            SliverToBoxAdapter(
-              child: CommentFakeInputBox(
-                onTap: () => CommentService.instance.showCommentEditDialog(
-                  context: context,
-                  documentReference: ref,
-                  focusOnContent: true,
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: CommentInputBox(
-                documentReference: ref,
-              ),
-            ),
-            CommentListTreeView(
-              documentReference: ref,
-              // shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
-              // itemBuilder: (comment, index) =>
-              //     CommentListArrowDetail(comment: comment),
-            ),
-          ],
-        ),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
+          SliverToBoxAdapter(child: CommentInputBox(documentReference: ref)),
+          CommentListTreeView(documentReference: ref),
+        ],
       ),
     );
   }

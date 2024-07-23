@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:easyuser/src/widgets/privates/user.build_avatar.dart';
 import 'package:flutter/material.dart';
 
 /// UserAvatar
@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 /// due to displaying the first letter or user display name when the user's
 /// photoUrl is not available.
 ///
+/// [UserAvatar.fromUid] is a constructor that takes a user's uid and
+/// fetches the user's data from the firestore and it will fetch only once. And
+/// it will display the user's avatar.
 ///
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -26,41 +29,26 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return user.photoUrl == null
-        ? Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(radius),
+    return UserBuildAvatar(user: user);
+  }
+
+  static Widget fromUid({
+    Key? key,
+    required String uid,
+    double size = 48,
+    double radius = 20,
+    Border? border,
+  }) {
+    return UserDoc(
+      uid: uid,
+      builder: (user) => user == null
+          ? const SizedBox.shrink()
+          : UserBuildAvatar(
+              user: user,
+              size: size,
+              radius: radius,
               border: border,
-              color: Theme.of(context).colorScheme.primaryContainer,
             ),
-            child: Center(
-              child: Text(
-                user.displayName.isEmpty
-                    ? user.uid[0].toUpperCase()
-                    : user.displayName[0].toUpperCase(),
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-          )
-        : ClipRRect(
-            borderRadius: BorderRadius.circular(radius),
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(radius),
-                border: border,
-              ),
-              child: CachedNetworkImage(
-                imageUrl: user.photoUrl!,
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
+    );
   }
 }

@@ -93,7 +93,7 @@ class Comment {
           : DateTime.now(),
       urls: List<String>.from(json['urls']),
       youtubeUrl: json['youtubeUrl'],
-      depth: json['depth'],
+      depth: json['depth'] ?? 0,
       order: json['order'],
       // hasChild: json['hasChild'] ?? false,
     );
@@ -139,7 +139,7 @@ class Comment {
     }
     final data = snapshot.data() as Map<String, dynamic>;
     final order = getCommentOrderString(
-      depth: (parent?.depth ?? 0),
+      depth: (parent?.depth ?? 0) + 1,
       noOfComments: data['commentCount'] ?? 0,
       sortString: parent?.order,
     );
@@ -163,7 +163,7 @@ class Comment {
         'updateAt': FieldValue.serverTimestamp(),
         'urls': [],
         'youtubeUrl': '',
-        'depth': parent == null ? 1 : parent.depth + 1,
+        'depth': parent == null ? 0 : parent.depth + 1,
         'order': order,
         'hasChild': false,
       });

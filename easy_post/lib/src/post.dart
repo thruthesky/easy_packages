@@ -37,7 +37,11 @@ class Post {
 
   static CollectionReference col = PostService.instance.col;
 
+  /// The document reference of current post
   DocumentReference doc(String id) => col.doc(id);
+
+  /// The document reference of current post
+  DocumentReference get ref => doc(id);
 
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;

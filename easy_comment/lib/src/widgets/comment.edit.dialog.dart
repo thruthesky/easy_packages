@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -85,9 +86,11 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
             child: TextField(
               autofocus: widget.focusOnContent == true,
               controller: contentController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Comment',
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                labelText: 'Input comment'.t,
               ),
               maxLines: 5,
               minLines: 3,
@@ -127,7 +130,7 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
                     if (context.mounted) Navigator.of(context).pop(true);
                   },
                   child: Text(
-                    isCreate ? 'T.writeComment' : 'T.save',
+                    isCreate ? 'create comment'.t : 'update comment'.t,
                   ),
                 ),
               ],

@@ -1,14 +1,14 @@
 # Easy Comment
 
-This `comment_package` offers a powerful and simple way to add comment features. It's versatile, perfect for things like post comments, product reviews, or photo feedback.
+This `comment_package` offers a powerful and simple way to add comment functionality to your app. It's versatile, perfect for things like post comments, product reviews, or photo feedback.
 
+The `comment_package` offers a complete set of UI/UX widgets and logics for managing comments. This includes widgets for creating, updating, deleting, and listing comments, as well as for upload, likes, and much more.
 
 
 # Terms
 
 
 - `First level comments` are comments made(created) directly under a post.
-
 
 
 # Database Structure of Comment
@@ -19,17 +19,25 @@ Initially, we considered using the Realtime Database for comments. However, sinc
 
 - `/comments/{commentId}` is the collection and document to store comments.
 
+
+
 - To get the `first level comments`, you can use one of the following condition.
   - condition: if `parentId is empty`, then it's the first level comment.
   - condition: if `depth=0`.
 
 
-- ~~`hasChild` is true when the comment has a child or children. This is used to sorting and displaying the commnet in comment list view.~~ (This is comment out at Jul 22, 2024)
-
+- `documentReference` is the document of the comment belongs to.
+  - If it is a reference of a user document. Then the comments that has the same documentReference ar the comments of the user. You may set it as a review feature of user's public profile.
+  - This doucment reference can be any document reference. It can be a online shopping mall's product item document, or any thing.
 
 - `hasChild` field becomes true when the comment has a child.
-  - It is not set in the database,
-  - and it is only available when the comments are loaded by `Comment.getAll` method. Meaning, when you list comments with `FirestoreListView` widget, `hasChild` may not be available.
+  - It is not saved in the database, and is set inside clident side.
+  - it is only available when the comments are transformed with `CommentService.instance.fromQuerySnapshot` method.
+  - `hasChild` is used for sorting and displaying purpose.
+
+
+
+
 
 
 
@@ -53,12 +61,31 @@ CommentInputBox(
 
 
 
-
+```dart
+SliverToBoxAdapter(
+  child: CommentFakeInputBox(
+    onTap: () => CommentService.instance.showCommentEditDialog(
+      context: context,
+      documentReference: ref,
+      focusOnContent: true,
+    ),
+  ),
+),
+```
 
 ## Displaying comments
 
 
-The `easy_comment` provides `CommentListView` to display the comments of the document. Note that, it is entirely up to use if you want to build your own comment list for different UI/UX instead of using `CommentListView`. 
+The `easy_comment` provides two list view widgets for displaying comments.
+
+You can copy the code from `easy_comment` and build your own comment list view widget for different UI/UX,
+
+
+
+
+### CommentListView
+
+The first one is `CommentListView`. This is similar two `ListView`. 
 
 
 You can use `CommentListView` like below to display the comments.
@@ -76,6 +103,19 @@ CommentListView(
 For the `itemBuilder`, you may use one of `CommentDetail`, `CommentListDetail`, `CommentListArrowDetail`, or `CommentListVerticalLineDetail`. Or you can copy the code and build your own.
 
 
+### CommentListTreeView
+
+This list view provides a nice tree style vertical lines on the nested comment list.
+
+```dart
+CustomScrollView(
+  slivers: [
+    SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
+    SliverToBoxAdapter(child: CommentInputBox(documentReference: ref)),
+    CommentListTreeView(documentReference: ref),
+  ],
+),
+```
 
 
 

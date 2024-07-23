@@ -3,6 +3,8 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Version: {v}',
     'ko': '버전: {v}',
   },
+
+  /// --------------------- Common and Basic Texts ---------------------
   'home': {
     'en': 'Home',
     'ko': '홈',
@@ -10,6 +12,10 @@ final Map<String, dynamic> localeTexts = {
   'menu': {
     'en': 'Menu',
     'ko': '메뉴',
+  },
+  'close': {
+    'en': 'Close',
+    'ko': '닫기',
   },
   'name': {
     'en': 'Name',
@@ -79,14 +85,7 @@ final Map<String, dynamic> localeTexts = {
     'en': 'User',
     'ko': '사용자',
   },
-  'Select photo from gallery': {
-    'en': 'Select photo from gallery',
-    'ko': '갤러리에서 사진 선택',
-  },
-  'Take photo from camera': {
-    'en': 'Take photo from camera',
-    'ko': '카메라에서 사진을 찍다',
-  },
+
   'Search User': {
     'en': 'Search User',
     'ko': '사용자 검색',
@@ -138,5 +137,61 @@ final Map<String, dynamic> localeTexts = {
   'no': {
     'en': 'No',
     'ko': '아니요',
+  },
+
+  'title': {
+    'en': 'Title',
+    'ko': '제목',
+  },
+  'input title': {
+    'en': 'Input Title',
+    'ko': '제목을 입력하세요',
+  },
+  'content': {
+    'en': 'Content',
+    'ko': '내용',
+  },
+  'Input Content': {
+    'en': 'Input Content',
+    'ko': '내용을 입력하세요',
+  },
+
+  /// --------------------- Post ---------------------
+
+  'post create': {
+    'en': 'Create',
+    'ko': '글 생성',
+  },
+
+  /// --------------------- Comment ---------------------
+  'comment list is empty': {
+    'en': 'No comment, yet. Be the first to comment.',
+    'ko': '댓글이 없습니다. 첫 번째로 댓글을 남겨보세요.',
+  },
+  'create comment': {
+    'en': 'Create',
+    'ko': '댓글 작성',
+  },
+  'update comment': {
+    'en': 'Update Comment',
+    'ko': '댓글 수정',
+  },
+  'input comment': {
+    'en': 'Input Comment',
+    'ko': '댓글을 입력하세요',
+  },
+
+  /// ----------------------- Upload -----------------------
+  'Select photo from gallery': {
+    'en': 'Select photo from gallery',
+    'ko': '갤러리에서 사진 선택',
+  },
+  'Take photo from camera': {
+    'en': 'Take photo from camera',
+    'ko': '카메라로 사진 찍기',
+  },
+  'Upload from': {
+    'en': 'Upload from',
+    'ko': '업로드 방법 선택',
   },
 };
