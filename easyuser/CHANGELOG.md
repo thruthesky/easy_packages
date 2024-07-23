@@ -1,3 +1,9 @@
+## 0.0.13
+* Fix. missing paths.
+
+## 0.0.12
+* Change. hide UserBuildAvartar
+
 ## 0.0.11
 * Add. `UserAvatar.fromUid`
 

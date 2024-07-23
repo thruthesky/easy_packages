@@ -6,19 +6,20 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 /// easy_post provide a youtube screen
 /// `post`
 /// `autoPlay` if true the current playing youtube video will automatically play
-class YoutubeScreen extends StatefulWidget {
+class YoutubeListScreen extends StatefulWidget {
   static const String routeName = '/YouTube';
 
-  const YoutubeScreen({super.key, required this.post, this.autoPlay = false});
+  const YoutubeListScreen(
+      {super.key, required this.post, this.autoPlay = false});
 
   final Post post;
   final bool autoPlay;
 
   @override
-  State<YoutubeScreen> createState() => _YoutubeScreenState();
+  State<YoutubeListScreen> createState() => _YoutubeListScreenState();
 }
 
-class _YoutubeScreenState extends State<YoutubeScreen> {
+class _YoutubeListScreenState extends State<YoutubeListScreen> {
   late ypf.YoutubePlayerController youtubeController;
   late ypf.PlayerState playerState;
   bool playerReady = false;
@@ -198,7 +199,7 @@ class _YoutubeScreenState extends State<YoutubeScreen> {
                             context,
                             oldRoute: ModalRoute.of(context)!,
                             newRoute: MaterialPageRoute(
-                              builder: (context) => YoutubeScreen(
+                              builder: (context) => YoutubeListScreen(
                                 post: post,
                                 autoPlay: widget.autoPlay,
                               ),
