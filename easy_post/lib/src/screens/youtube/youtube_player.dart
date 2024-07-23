@@ -12,7 +12,8 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 ///
 /// `width` use to change the width of the youtube player
 ///
-///
+/// note: this widget is only for displaying youtube video. this widget does not
+/// provide aditional customization and other control actions
 class YoutubePlayer extends StatefulWidget {
   const YoutubePlayer({
     super.key,
