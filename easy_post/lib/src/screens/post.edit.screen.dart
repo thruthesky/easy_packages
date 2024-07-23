@@ -76,10 +76,18 @@ class _PostEditScreenState extends State<PostEditScreen> {
               const SizedBox(height: 24),
               TextField(
                 controller: titleController,
+                decoration: InputDecoration(
+                  hintText: 'input title'.t,
+                  labelText: 'Title'.t,
+                ),
               ),
               const SizedBox(height: 24),
               TextField(
                 controller: contentController,
+                decoration: InputDecoration(
+                  hintText: 'Input Content'.t,
+                  labelText: 'Content'.t,
+                ),
                 minLines: 5,
                 maxLines: 8,
               ),
@@ -104,7 +112,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                     Navigator.of(context).pop(ref);
                   }
                 },
-                child: Text('Created'.t),
+                child: Text('post Create'.t),
               )
             ],
           ),

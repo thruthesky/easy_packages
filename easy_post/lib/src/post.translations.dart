@@ -1,7 +1,7 @@
 import 'package:easy_locale/easy_locale.dart';
 
 final localeTexts = <String, Map<String, String>>{
-  'youtubu': {
+  'youtube': {
     'en': 'Youtube',
     'ko': '유튜브',
   },

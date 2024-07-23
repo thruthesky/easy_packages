@@ -14,11 +14,23 @@ class PostService {
   bool initialized = false;
   CollectionReference get col => FirebaseFirestore.instance.collection('posts');
 
-  late Map<String, String> categories = {
-    'qna': 'QnA',
-    'discussion': 'Discussion',
-    'news': 'News',
-  };
+  /// Categories of posts. This is used to categorize posts.
+  ///
+  /// The categories can be set using the `init` method. And it's entirely up
+  /// to the developer to decide what categories to use. The developer can
+  /// develop his own post list screen where he can design his own category
+  /// options.
+  ///
+  /// Example:
+  /// ```dart
+  /// PostService.instance.init(categories: {
+  ///  'qna': '질문답변',
+  ///  'discussion': 'Discussion',
+  ///  'news': 'News',
+  ///  'job': '구인구직',
+  /// });
+  /// ```
+  late Map<String, String> categories = {};
 
   init({Map<String, String>? categories}) {
     initialized = true;
@@ -82,14 +94,15 @@ class PostService {
     );
   }
 
-  Future showYoutubeScreen(
-      {required BuildContext context,
-      required Post post,
-      bool autoPlay = false}) {
+  Future showYoutubeListScreen({
+    required BuildContext context,
+    required Post post,
+    bool autoPlay = false,
+  }) {
     return showGeneralDialog(
         context: context,
         pageBuilder: (_, __, ___) {
-          return YoutubeScreen(post: post, autoPlay: autoPlay);
+          return YoutubeListScreen(post: post, autoPlay: autoPlay);
         });
   }
 }

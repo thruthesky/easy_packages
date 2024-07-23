@@ -1,3 +1,6 @@
+## 0.0.13
+* Fix. missing paths.
+
 ## 0.0.12
 * Change. hide UserBuildAvartar
 
