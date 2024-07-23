@@ -53,17 +53,15 @@ class YoutubeTile extends StatelessWidget {
                         post.youtube['name'],
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
-                      // todo fromat view count
                       Text(
-                        '${post.youtube['viewCount']} views',
+                        '${formatViews(post.youtube['viewCount'])} views',
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ],
                   ),
                 ),
-                //todo foramt duration
                 Text(
-                  '${post.youtube['duration']}',
+                  formatDuration(post.youtube['duration']),
                 )
               ],
             ),

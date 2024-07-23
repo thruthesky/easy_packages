@@ -1,4 +1,5 @@
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_post_v2/src/widgets/post.detail.photos.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,11 @@ class PostDetail extends StatelessWidget {
                     );
             }),
         const SizedBox(height: 16),
+
+        // post photo
         PostDetailYoutube(post: post),
+        PostDetailPhotos(post: post),
+        const SizedBox(height: 16),
         Text(post.title),
         Text(post.content),
       ],

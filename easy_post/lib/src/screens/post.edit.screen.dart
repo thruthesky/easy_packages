@@ -1,5 +1,6 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
 class PostEditScreen extends StatefulWidget {
@@ -20,6 +21,8 @@ class _PostEditScreenState extends State<PostEditScreen> {
   final contentController = TextEditingController();
   final youtubeController = TextEditingController();
 
+  List<String> urls = [];
+
   @override
   void initState() {
     super.initState();
@@ -30,9 +33,15 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
   @override
   void dispose() {
-    super.dispose();
+    ///
+    // for (var url in urls) {
+    //   StorageService.instance.delete(url);
+    // }
+
     titleController.dispose();
     contentController.dispose();
+    youtubeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -100,19 +109,35 @@ class _PostEditScreenState extends State<PostEditScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () async {
-                  final ref = await Post.create(
-                    category: category ?? '',
-                    title: titleController.text,
-                    content: contentController.text,
-                    youtubeUrl: youtubeController.text,
-                  );
-                  if (context.mounted) {
-                    Navigator.of(context).pop(ref);
-                  }
-                },
-                child: Text('post Create'.t),
+              DisplayEditableUploads(
+                  urls: urls,
+                  onDelete: (url) {
+                    urls.remove(url);
+                    setState(() {});
+                  }),
+              Row(
+                children: [
+                  UploadIconButton(onUpload: (url) {
+                    urls.add(url);
+                    setState(() {});
+                  }),
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final ref = await Post.create(
+                        category: category ?? '',
+                        title: titleController.text,
+                        content: contentController.text,
+                        youtubeUrl: youtubeController.text,
+                        urls: urls,
+                      );
+                      if (context.mounted) {
+                        Navigator.of(context).pop(ref);
+                      }
+                    },
+                    child: Text('post Create'.t),
+                  ),
+                ],
               )
             ],
           ),
