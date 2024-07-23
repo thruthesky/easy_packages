@@ -6,13 +6,13 @@ export './src/widgets/display_name.dart';
 export './src/widgets/email_password_login.dart';
 export './src/widgets/my_doc.dart';
 export './src/widgets/my_doc.ready.dart';
-export './src/widgets/user_doc.dart';
+export './src/widgets/user.doc.dart';
 export './src/widgets/user.avatar.dart';
 export './src/widgets/user.list_tile.dart';
 export './src/widgets/user.list_view.dart';
 export './src/widgets/user.photo.list_view.dart';
 export './src/widgets/user.update_avatar.dart';
-export './src/widgets/user_search.dialog.dart';
+export './src/widgets/user.search.dialog.dart';
 
 export './src/user.dart';
 export './src/user.defines.dart';

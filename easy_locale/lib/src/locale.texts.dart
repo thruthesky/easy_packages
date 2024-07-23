@@ -139,6 +139,30 @@ final Map<String, dynamic> localeTexts = {
     'ko': '아니요',
   },
 
+  'title': {
+    'en': 'Title',
+    'ko': '제목',
+  },
+  'input title': {
+    'en': 'Input Title',
+    'ko': '제목을 입력하세요',
+  },
+  'content': {
+    'en': 'Content',
+    'ko': '내용',
+  },
+  'Input Content': {
+    'en': 'Input Content',
+    'ko': '내용을 입력하세요',
+  },
+
+  /// --------------------- Post ---------------------
+
+  'post create': {
+    'en': 'Create',
+    'ko': '글 생성',
+  },
+
   /// --------------------- Comment ---------------------
   'comment list is empty': {
     'en': 'No comment, yet. Be the first to comment.',

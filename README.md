@@ -275,3 +275,13 @@ Do the unit test as Flutter does.
 Do the widget test as Flutter does.
 
 
+
+
+# Localization, i18N
+
+- All easy packages must use `easy_locale` for localization.
+- `easy_locale` provides some default(basic) texts from `easy_locale/lib/src/locale.texts.dart`.
+- When you, as an easy package developer, add text translation for your package, you have to options to put the translation
+  - 1. Add it to `easy_locale/lib/src/locale.text.dart` if you think the translation text is one of the basic ones.
+  - 2. Add it to the `init` method of the package service if you think the translation is only applicable to the package.
+
