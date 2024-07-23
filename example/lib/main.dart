@@ -51,13 +51,15 @@ class MyAppState extends State<MyApp> {
       'study': '공부',
       'hobby': '취미',
       'etc': '기타',
+      'youtube': 'youtube',
     });
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // ChatService.instance.showChatRoomEditScreen(globalContext);
       // PostService.instance.showPostCreateScreen(context: globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
-      PostService.instance.showPostListScreen(context: globalContext);
+      // PostService.instance.showPostListScreen(context: globalContext);
+      PostService.instance.showYoutubeListScreen(context: globalContext);
 
       // showGeneralDialog(
       //   context: globalContext,

@@ -157,6 +157,7 @@ class Post {
       'updateAt': FieldValue.serverTimestamp(),
     };
 
+    /// if there is youtube url prepare youtube information
     if (youtubeUrl != '') {
       final youtube = await prepareYoutubeInfo(youtubeUrl);
       if (youtube == null) {
@@ -186,6 +187,7 @@ class Post {
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
     };
 
+    /// if there is youtube url prepare youtube information
     if (youtubeUrl != '') {
       final youtube = prepareYoutubeInfo(youtubeUrl!);
       data['youtube'] = youtube;
