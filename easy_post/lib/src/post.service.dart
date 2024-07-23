@@ -23,8 +23,11 @@ class PostService {
   init({Map<String, String>? categories}) {
     initialized = true;
     this.categories = categories ?? this.categories;
+
+    addPostTranslations();
   }
 
+  @Deprecated('Use showPostCreateScreen or showPostUpdateScreen instead')
   Future<DocumentReference?> showPostEditScreen({
     required BuildContext context,
     required String? category,
@@ -34,6 +37,23 @@ class PostService {
       context: context,
       pageBuilder: (_, __, ___) {
         return PostEditScreen(category: category);
+      },
+    );
+  }
+
+  /// Show a screen to create a new post.
+  Future<DocumentReference?> showPostCreateScreen({
+    required BuildContext context,
+    String? category,
+    bool enableYoutubeUrl = false,
+  }) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return PostEditScreen(
+          category: category,
+          enableYoutubeUrl: enableYoutubeUrl,
+        );
       },
     );
   }

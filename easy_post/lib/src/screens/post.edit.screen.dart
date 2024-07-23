@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 class PostEditScreen extends StatefulWidget {
   static const String routeName = '/PostEdit';
-  const PostEditScreen({super.key, required this.category});
+  const PostEditScreen(
+      {super.key, required this.category, this.enableYoutubeUrl = false});
 
   final String? category;
+  final bool enableYoutubeUrl;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();

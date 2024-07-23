@@ -205,9 +205,46 @@ class _MyHomePageState extends State<MyHomePage> {
 ```
 
 
+# Adding custom translations
+
+- You can use `lo.set()` to add or update your own translations.
+
+- Below is an example of adding custom translations.
+
+```dart
+import 'package:easy_locale/easy_locale.dart';
+
+final localeTexts = <String, Map<String, String>>{
+  'todo': {
+    'en': 'Todo',
+    'ko': '할일',
+  },
+  'game': {
+    'en': 'Games',
+    'ko': '게임',
+  },
+  'Must login first': {
+    'en': 'Must login first',
+    'ko': '로그인이 필요합니다',
+  },
+  'you have reached the upload limit': {
+    'en': 'You have reached the upload limit',
+    'ko': '업로드 제한에 도달했습니다',
+  },
+};
+
+void addLocaleTexts() async {
+  final locale = await currentLocale;
+  if (locale == null) return;
+
+  for (var entry in localeTexts.entries) {
+    lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
+  }
+}
+```
 
 
-## 유닛 테스트
+# 유닛 테스트
 
 
 `test` 폴더에 있는 테스트 코드를 보고, 사용법을 익히셔도 됩니다.
@@ -216,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-## Trouble shooting
+# Trouble shooting
 
 
 - If the translation is not working, then check if the easy_locale package has been initialized.
