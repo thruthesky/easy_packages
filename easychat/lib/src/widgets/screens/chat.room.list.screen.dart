@@ -8,16 +8,26 @@ import 'package:flutter/material.dart';
 
 class ChatRoomListScreen extends StatefulWidget {
   static const String routeName = '/ChatRoomList';
-  const ChatRoomListScreen({super.key});
+  const ChatRoomListScreen({
+    super.key,
+    this.openGroupChatsOnly = false,
+  });
+
+  // For now we are doing boolean to prevent premature optimization
+  final bool openGroupChatsOnly;
 
   @override
   State<ChatRoomListScreen> createState() => _ChatRoomListScreenState();
 }
 
 class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
-  Query get query => ChatService.instance.roomCol
-      .where('users', arrayContains: my.uid)
-      .orderBy('updatedAt', descending: true);
+  Query get query => widget.openGroupChatsOnly
+      ? ChatService.instance.roomCol
+          .where('open', isEqualTo: true)
+          .orderBy('updatedAt', descending: true)
+      : ChatService.instance.roomCol
+          .where('users', arrayContains: my.uid)
+          .orderBy('updatedAt', descending: true);
 
   @override
   Widget build(BuildContext context) {

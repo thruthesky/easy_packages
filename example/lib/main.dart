@@ -42,18 +42,18 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     // UserService.instance.init();
-    PostService.instance.init(categories: {
-      'qna': '질문답변',
-      'discussion': 'Discussion',
-      'news': 'News',
-      'job': '구인구직',
-      'buyandsell': '사고팔기',
-      'travel': '여행',
-      'food': '음식',
-      'study': '공부',
-      'hobby': '취미',
-      'etc': '기타',
-    });
+    // PostService.instance.init(categories: {
+    //   'qna': '질문답변',
+    //   'discussion': 'Discussion',
+    //   'news': 'News',
+    //   'job': '구인구직',
+    //   'buyandsell': '사고팔기',
+    //   'travel': '여행',
+    //   'food': '음식',
+    //   'study': '공부',
+    //   'hobby': '취미',
+    //   'etc': '기타',
+    // });
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
       // ChatService.instance.showChatRoomEditScreen(globalContext);
@@ -62,7 +62,7 @@ class MyAppState extends State<MyApp> {
       // ChatService.instance.showChatRoomScreen(context, room: room);
       // PostService.instance.showPostCreateScreen(context: globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
-      PostService.instance.showPostListScreen(context: globalContext);
+      // PostService.instance.showPostListScreen(context: globalContext);
 
       // showGeneralDialog(
       //   context: globalContext,

@@ -67,13 +67,23 @@ class ChatService {
     );
   }
 
-  /// Show the chat room edit screen. It's for borth create and update.
-  // TODO
-  showChatRoomEditScreen(BuildContext context) {
+  // TODO dry
+  showOpenChatRoomListScreen(BuildContext context) {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) =>
-          chatRoomEditScreen?.call() ?? const ChatRoomEditScreen(),
+          chatRoomListScreen?.call() ??
+          const ChatRoomListScreen(openGroupChatsOnly: true),
+    );
+  }
+
+  /// Show the chat room edit screen. It's for borth create and update.
+  // TODO
+  showChatRoomEditScreen(BuildContext context, {ChatRoom? room}) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) =>
+          chatRoomEditScreen?.call() ?? ChatRoomEditScreen(room: room),
     );
   }
 

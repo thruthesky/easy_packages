@@ -17,7 +17,7 @@ class ChatRoomEditScreen extends StatefulWidget {
 }
 
 class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
-  ChatRoom get room => widget.room!;
+  ChatRoom? get room => widget.room;
   bool get isCreate => widget.room == null;
   bool get isUpdate => widget.room != null;
 
@@ -25,6 +25,15 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
 
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (isCreate) return;
+    nameController.text = room!.name;
+    descriptionController.text = room!.description;
+    open = room!.open;
+  }
 
   @override
   Widget build(BuildContext context) {

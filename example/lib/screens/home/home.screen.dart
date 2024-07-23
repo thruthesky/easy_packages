@@ -81,35 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ElevatedButton(
-                                child: const Text("Chat kXzmb"),
-                                onPressed: () async {
-                                  final user = await User.get(
-                                      "kXzMbcQ9zeawAV2YI2zxy67Fjs92",
-                                      cache: false);
-                                  if (user == null) return;
-                                  if (!context.mounted) return;
-                                  ChatService.instance
-                                      .showChatRoomScreen(context, user: user);
-                                },
-                              ),
-                              ElevatedButton(
-                                child: const Text("Chat m55TDmZ"),
-                                onPressed: () async {
-                                  final user = await User.get(
-                                      "m55TDmZIseNjO4UQzVveFL94zdE3",
-                                      cache: false);
-                                  if (user == null) return;
-                                  if (!context.mounted) return;
-                                  ChatService.instance
-                                      .showChatRoomScreen(context, user: user);
-                                },
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
                                 onPressed: () {
                                   ChatService.instance
                                       .showChatRoomListScreen(context);
@@ -127,7 +98,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: const Text("Chat Invite List"),
                               ),
                             ],
-                          )
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              ChatService.instance
+                                  .showOpenChatRoomListScreen(context);
+                            },
+                            child: const Text("Open Room List"),
+                          ),
                         ],
                       );
               },

@@ -1,4 +1,5 @@
 import 'package:easychat/easychat.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomMenuScreeen extends StatelessWidget {
@@ -29,6 +30,15 @@ class ChatRoomMenuScreeen extends StatelessWidget {
               ChatService.instance.showInviteListScreen(context, room: room);
             },
           ),
+          if (room.group && room.masterUsers.contains(my.uid)) ...[
+            ListTile(
+              title: const Text("Update Chat Room"),
+              onTap: () {
+                ChatService.instance
+                    .showChatRoomEditScreen(context, room: room);
+              },
+            ),
+          ],
         ],
       ),
     );

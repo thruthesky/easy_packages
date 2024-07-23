@@ -223,7 +223,7 @@ class ChatRoom {
     String? name,
     String? description,
     String? iconUrl,
-    bool open = true,
+    bool open = false,
     // Group == false means the chat room is single chat
     bool group = true,
     // String? password, (NOT IMPLEMENTED YET)
