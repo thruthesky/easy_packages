@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easyuser/easyuser.dart';
 
 import 'package:flutter/material.dart';
 
@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 /// Note, to display the comemnt tree, it gets the whole comments of the post and
 /// do some computation to display the comment tree. It does not look like a heavy compulation
 /// but it needs an attention.
+///
+/// 주의, 코멘트 트리를 표시 할 때, 가로 선과 커브선이 딱 맞물리지 않는 경우가 있다. 특히, 아바타의 크기가
+/// 변경되는 경우, 가로선과 커브선이 잘 안맞는데, 적절히 조정해야 한다.
 class CommentTreeDetail extends StatefulWidget {
   const CommentTreeDetail({
     super.key,
@@ -36,12 +39,9 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   double lineWidth = 2;
   Color get verticalLineColor =>
       Theme.of(context).colorScheme.outline.withAlpha(100);
-  bool get isFirstParent =>
-      widget.comment.parentId == null && widget.comment.depth == 0;
+  bool get isFirstParent => widget.comment.depth == 0;
   bool get isChild => !isFirstParent;
   bool get hasChild => widget.comment.hasChild;
-  // bool get lastChild => widget.comment.isLastChild;
-  // bool get parentLastChild => widget.comment.isParentLastChild;
 
   List<Comment> parents = [];
 
@@ -63,9 +63,6 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
 
   @override
   Widget build(BuildContext context) {
-    /// Intrinsic height is a natural height from its child
-    /// Using a combination of [Container] and [Expanded] the line will be automatically drawn
-    // padding: EdgeInsets.only(left: widget.comment.leftMargin, right: 16),
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: IntrinsicHeight(
@@ -73,7 +70,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (int i = 0; i < widget.comment.depth; i++)
-              _newIndentedVerticalLine(i),
+              indentedVerticalLine(i),
 
             /// curved line
             if (isChild)
@@ -84,16 +81,11 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
 
             Column(
               children: [
-                // UserAvatar(
-                //   uid: widget.comment.uid,
-                //   onTap: () => UserService.instance.showPublicProfileScreen(
-                //     context: context,
-                //     uid: widget.comment.uid,
-                //   ),
-                //   size: isFirstParent ? 40 : 26,
-                // ),
-
-                const Text('Avatar'),
+                UserAvatar.fromUid(
+                  uid: widget.comment.uid,
+                  size: 44,
+                  radius: 20,
+                ),
 
                 /// 자식이 있다면, 아바타 아래에 세로 라인을 그린다. 즉, 아바타 아래의 세로 라인은 여기서 그린다.
                 if (hasChild)
@@ -108,252 +100,8 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // UserDisplayName(
-                      //   uid: widget.comment.uid,
-                      //   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      //         fontWeight: FontWeight.bold,
-                      //       ),
-                      // ),
-                      Text("Name"),
-                      SizedBox(width: 8),
-                      // Text(
-                      //   // '${widget.comment.parentId}',
-                      //   widget.comment.createdAt.toShortDate,
-                      //   style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      //         color: Theme.of(context).colorScheme.outline,
-                      //         fontSize: 10,
-                      //       ),
-                      // ),
-                      Text('Date  '),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(widget.comment.content),
-                  // CommentContent(comment: widget.comment),
-                  // Blocked(
-                  //   otherUserUid: widget.comment.uid,
-                  //   yes: () => SizedBox.fromSize(),
-                  //   no: () => Wrap(
-                  //     spacing: 14,
-                  //     runSpacing: 14,
-
-                  //     /// Converts to Map<int,string> first to reveal the item's index
-                  //     /// this is for the PhotoViewer so it will immediately open the image
-                  //     /// that the user pressed
-                  //     children: widget.comment.urls
-                  //         .asMap()
-                  //         .map(
-                  //           (index, url) => MapEntry(
-                  //             index,
-                  //             GestureDetector(
-                  //               onTap: () => showGeneralDialog(
-                  //                 context: context,
-                  //                 pageBuilder: (_, __, ___) =>
-                  //                     PhotoViewerScreen(
-                  //                   urls: widget.comment.urls,
-                  //                   selectedIndex: index,
-                  //                 ),
-                  //               ),
-                  //               child: ClipRRect(
-                  //                 borderRadius: BorderRadius.circular(8),
-                  //                 child: CachedNetworkImage(
-                  //                   imageUrl: url,
-                  //                   fit: BoxFit.cover,
-                  //                   width: widget.comment.urls.length == 1
-                  //                       ? 200
-                  //                       : 100,
-                  //                   height: 200,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         )
-                  //         .values
-                  //         .toList(),
-                  //   ),
-                  // ),
-                  // Theme(
-                  //   data: Theme.of(context).copyWith(
-                  //     textButtonTheme: TextButtonThemeData(
-                  //       style: TextButton.styleFrom(
-                  //         textStyle:
-                  //             Theme.of(context).textTheme.labelSmall!.copyWith(
-                  //                   fontWeight: FontWeight.w400,
-                  //                 ),
-                  //         visualDensity: const VisualDensity(
-                  //           horizontal: -4,
-                  //           vertical: -1,
-                  //         ),
-                  //         foregroundColor: Theme.of(context)
-                  //             .colorScheme
-                  //             .primary
-                  //             .withAlpha(200),
-                  //       ),
-                  //     ),
-                  //   ),
-                  //   child: Row(
-                  //     children: [
-                  //       TextButton(
-                  //         onPressed: () async {
-                  //           final re = await ForumService.instance
-                  //               .showCommentCreateScreen(
-                  //             context: context,
-                  //             post: widget.post,
-                  //             parent: widget.comment,
-                  //           );
-                  //           if (re == true) {
-                  //             widget.onCreate?.call();
-                  //           }
-                  //         },
-                  //         child: Text(T.reply.tr),
-                  //       ),
-                  //       TextButton(
-                  //         onPressed: () =>
-                  //             widget.comment.like(context: context),
-                  //         child: Value(
-                  //           ref: widget.comment.likesRef,
-                  //           builder: (likes) {
-                  //             previousNoOfLikes =
-                  //                 (likes as Map? ?? {}).keys.length;
-                  //             return Text(
-                  //                 '${T.like.tr}${likeText(previousNoOfLikes)}');
-                  //           },
-                  //           onLoading: Text(
-                  //               '${T.like.tr}${likeText(previousNoOfLikes)}'),
-                  //         ),
-                  //       ),
-                  //       TextButton(
-                  //         onPressed: () {
-                  //           ChatService.instance.showChatRoomScreen(
-                  //             context: context,
-                  //             otherUid: widget.comment.uid,
-                  //           );
-                  //         },
-                  //         child: Text(T.chat.tr),
-                  //       ),
-                  //       // Prevents the overflow from small devices
-                  //       Expanded(
-                  //         child: Align(
-                  //           alignment: Alignment.centerRight,
-                  //           child: PopupMenuButton(itemBuilder: (context) {
-                  //             return [
-                  //               PopupMenuItem(
-                  //                 value: 'bookmark',
-                  //                 child: Login(
-                  //                   yes: (uid) => Value(
-                  //                     ref: Bookmark.commentRef(
-                  //                         widget.comment.id),
-                  //                     builder: (v) {
-                  //                       return Text(
-                  //                         v == null
-                  //                             ? T.bookmark.tr
-                  //                             : T.unbookmark.tr,
-                  //                       );
-                  //                     },
-                  //                   ),
-                  //                   no: () => Text(T.bookmark.tr),
-                  //                 ),
-                  //               ),
-                  //               if (widget.comment.uid != myUid)
-                  //                 PopupMenuItem(
-                  //                   value: 'block',
-                  //                   child: Blocked(
-                  //                     otherUserUid: widget.comment.uid,
-                  //                     no: () => Text(T.block.tr),
-                  //                     yes: () => Text(T.unblock.tr),
-                  //                   ),
-                  //                 ),
-                  //               PopupMenuItem(
-                  //                 value: 'report',
-                  //                 child: Text(T.report.tr),
-                  //               ),
-                  //               if (widget.comment.isMine)
-                  //                 PopupMenuItem(
-                  //                   value: 'edit',
-                  //                   child: Text(T.edit.tr),
-                  //                 ),
-                  //               if (widget.comment.isMine)
-                  //                 PopupMenuItem(
-                  //                   value: 'delete',
-                  //                   child: Text(T.delete.tr),
-                  //                 ),
-                  //             ];
-                  //           }, onSelected: (value) async {
-                  //             if (value == 'report') {
-                  //               final re = await input(
-                  //                 context: context,
-                  //                 title: T.reportInputTitle.tr,
-                  //                 subtitle: T.reportInputMessage.tr,
-                  //                 hintText: T.reportInputHint.tr,
-                  //               );
-                  //               if (re == null || re == '') return;
-                  //               await Report.create(
-                  //                 context: context,
-                  //                 postId: widget.comment.postId,
-                  //                 commentId: widget.comment.id,
-                  //                 reason: re,
-                  //               );
-                  //             } else if (value == 'block') {
-                  //               await UserService.instance.block(
-                  //                 context: context,
-                  //                 otherUserUid: widget.comment.uid,
-                  //                 ask: true,
-                  //                 notify: true,
-                  //               );
-                  //             } else if (value == 'edit') {
-                  //               if (widget.comment.isMine == false) {
-                  //                 return error(
-                  //                   context: context,
-                  //                   message: T.notYourComment.tr,
-                  //                 );
-                  //               }
-                  //               await ForumService.instance
-                  //                   .showCommentUpdateScreen(
-                  //                 context: context,
-                  //                 comment: widget.comment,
-                  //               );
-                  //               widget.post.reload();
-                  //             } else if (value == 'delete') {
-                  //               if (widget.comment.isMine == false) {
-                  //                 return error(
-                  //                   context: context,
-                  //                   message: T.notYourComment.tr,
-                  //                 );
-                  //               }
-                  //               await widget.comment
-                  //                   .delete(context: context, ask: true);
-                  //             } else if (value == 'bookmark') {
-                  //               final re = await Bookmark.toggle(
-                  //                 context: context,
-                  //                 postId: widget.comment.postId,
-                  //                 commentId: widget.comment.id,
-                  //               );
-                  //               if (re != null && context.mounted) {
-                  //                 toast(
-                  //                   context: context,
-                  //                   title: re == true
-                  //                       ? T.bookmark.tr
-                  //                       : T.unbookmark.tr,
-                  //                   message: re == true
-                  //                       ? T.bookmarkMessage.tr
-                  //                       : T.unbookmarkMessage.tr,
-                  //                 );
-                  //               }
-                  //             }
-                  //           }),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  const SizedBox(height: 16),
-                ],
+              child: CommentDetail(
+                comment: widget.comment,
               ),
             ),
           ],
@@ -366,9 +114,9 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   ///
   /// [depth] 는 코멘트의 깊이를 나타내는 것으로,
   /// 현재 코멘트의 depth 가 3 이라면, 0 부터 1 과 2 총 세번 호출 된다.
-  Widget _newIndentedVerticalLine(int depth) {
+  Widget indentedVerticalLine(int depth) {
     return SizedBox(
-      width: depth == 0 ? 21 : 30,
+      width: depth == 0 ? 23 : 39,
       child: Column(
         /// 세로 라인을 오른쪽으로 붙인다. 그래서 커브 라인이 세로 라인에 붙게 한다.
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -422,7 +170,6 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   ///   - 나의 단계 2. 루프 단계 2. 3 단계에 하위 자식이 있는 2단계에 긋는다.
   ///   - 나의 단계 3. 루프 단계 2. 3 단계에 하위 자식이 있으면, 2 단계에 긋는다.
   bool maybeDrawVerticalLine(int depth) {
-    // depth--;//
     final currComment = widget.comment;
     final parents =
         CommentService.instance.getParents(currComment, widget.comments);

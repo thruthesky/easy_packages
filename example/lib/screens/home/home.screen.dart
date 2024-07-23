@@ -3,6 +3,7 @@ import 'package:easy_engine/easy_engine.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:example/screens/locale/locale.screen.dart';
 import 'package:example/screens/forum/forum.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
@@ -25,17 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'age'.t,
-            ),
+            Text('age'.t),
             AuthStateChanges(
               builder: (user) {
                 return user == null
                     ? const EmailPasswordLogin()
                     : Column(
                         children: [
+                          UserAvatar.fromUid(uid: user.uid),
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
                             onPressed: () => UserService.instance
@@ -121,6 +120,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 pageBuilder: (_, __, ___) => const ForumScreen(),
               ),
               child: const Text('Easy Forum Screen'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (_, __, ___) => const CommentTestScreen(),
+                );
+              },
+              child: const Text('Easy Comment Screen'),
             ),
             SizedBox(
                 height: 80,

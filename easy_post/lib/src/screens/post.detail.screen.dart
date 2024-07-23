@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -22,69 +22,40 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       appBar: AppBar(
         title: const Text('PostDetail'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            UserDoc.sync(
-                uid: widget.post.uid,
-                builder: (user) {
-                  return Row(
-                    children: [
-                      UserAvatar(
-                        user: user!,
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user.displayName,
-                            style: Theme.of(context).textTheme.titleMedium,
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UserDoc(
+                    uid: widget.post.uid,
+                    builder: (user) => user == null
+                        ? const SizedBox.shrink()
+                        : UserAvatar(
+                            user: user,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${widget.post.createdAt}',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          )
-                        ],
-                      ),
-                    ],
-                  );
-                }),
-            const SizedBox(height: 8),
-            Text(
-              widget.post.title,
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                    fontWeight: FontWeight.w700,
                   ),
-            ),
-            Text(widget.post.content),
-            if (widget.post.category == 'youtube' &&
-                widget.post.youtubeUrl != '') ...{
-              YoutubePlayer(
-                post: widget.post,
-                thumbnail: CachedNetworkImage(
-                  imageUrl: widget.post.youtube['hd'],
-                ),
+                  Text(widget.post.title),
+                  Text(widget.post.content),
+                ],
               ),
-            },
-            // ElevatedButton(
-            //     onPressed: () {
-            //       CommentService.instance.showCommentEditDialog(
-            //           context: context,
-            //           documentReference: Post.col.doc(widget.post.id));
-            //     },
-            //     child: const Text('comment')),
-            // Expanded(
-            //     child: CommentListView(
-            //   documentReference: Post.col.doc(
-            //     widget.post.id,
-            //   ),
-            // ))
-          ],
-        ),
+            ),
+          ),
+          CommentListTreeView(
+            documentReference: widget.post.ref,
+          ),
+        ],
+      ),
+      bottomNavigationBar: SafeArea(
+        child: CommentFakeInputBox(onTap: () {
+          CommentService.instance.showCommentEditDialog(
+            context: context,
+            documentReference: widget.post.ref,
+          );
+        }),
       ),
     );
   }

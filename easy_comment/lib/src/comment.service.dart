@@ -55,6 +55,18 @@ class CommentService {
         .where('documentReference', isEqualTo: documentReference)
         .orderBy('order')
         .get();
+
+    return fromQuerySnapshot(snapshot);
+  }
+
+  /// Get comments from the query snapshot.
+  ///
+  /// Use this method to get comments of a documentReference.
+  ///
+  /// This method gets the comments from the query snapshot and adds
+  /// the [hasChild] property to the comment.
+  ///
+  fromQuerySnapshot(QuerySnapshot snapshot) {
     final comments = <Comment>[];
 
     if (snapshot.docs.isEmpty) {

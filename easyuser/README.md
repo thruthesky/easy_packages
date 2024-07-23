@@ -667,6 +667,15 @@ The `UserAvatar` widget can be used like this:
 UserAvatar(uid: uid, size: 100, radius: 40),
 ```
 
+
+#### UserAvatar.fromUid
+
+If you have only the uid of a user, then you can use this widget to display user avatar
+
+```dart
+UserAvatar.fromUid(uid: user.uid),
+```
+
 ## Block and unblock
 
 You can block or unblock other user like below.
