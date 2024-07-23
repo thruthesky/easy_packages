@@ -18,26 +18,28 @@ class ChatRoomMenuScreeen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          ListTile(
-            title: const Text("Members"),
-            onTap: () {
-              ChatService.instance.showMemberListScreen(context, room);
-            },
-          ),
-          ListTile(
-            title: const Text("Invites"),
-            onTap: () {
-              ChatService.instance.showInviteListScreen(context, room: room);
-            },
-          ),
-          if (room.group && room.masterUsers.contains(my.uid)) ...[
+          if (room.group) ...[
             ListTile(
-              title: const Text("Update Chat Room"),
+              title: const Text("Members"),
               onTap: () {
-                ChatService.instance
-                    .showChatRoomEditScreen(context, room: room);
+                ChatService.instance.showMemberListScreen(context, room);
               },
             ),
+            ListTile(
+              title: const Text("Invites"),
+              onTap: () {
+                ChatService.instance.showInviteListScreen(context, room: room);
+              },
+            ),
+            if (room.masterUsers.contains(my.uid)) ...[
+              ListTile(
+                title: const Text("Update Chat Room"),
+                onTap: () {
+                  ChatService.instance
+                      .showChatRoomEditScreen(context, room: room);
+                },
+              ),
+            ],
           ],
         ],
       ),

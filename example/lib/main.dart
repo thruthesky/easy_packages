@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_post_v2/easy_post_v2.dart';
+// import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
 import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
-import 'package:example/screens/forum/comment.test.screen.dart';
+// import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -43,21 +43,21 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     UserService.instance.init();
-    PostService.instance.init(
-      categories: {
-        'qna': '질문답변',
-        'discussion': 'Discussion',
-        'news': 'News',
-        'job': '구인구직',
-        'buyandsell': '사고팔기',
-        'travel': '여행',
-        'food': '음식',
-        'study': '공부',
-        'hobby': '취미',
-        'etc': '기타',
-        'youtube': 'youtube',
-      },
-    );
+    // PostService.instance.init(
+    //   categories: {
+    //     'qna': '질문답변',
+    //     'discussion': 'Discussion',
+    //     'news': 'News',
+    //     'job': '구인구직',
+    //     'buyandsell': '사고팔기',
+    //     'travel': '여행',
+    //     'food': '음식',
+    //     'study': '공부',
+    //     'hobby': '취미',
+    //     'etc': '기타',
+    //     'youtube': 'youtube',
+    //   },
+    // );
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
       // ChatService.instance.showChatRoomEditScreen(globalContext);
@@ -67,8 +67,8 @@ class MyAppState extends State<MyApp> {
       // PostService.instance.showPostCreateScreen(context: globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
       // PostService.instance.showPostListScreen(context: globalContext);
-      PostService.instance
-          .showYoutubeListScreen(context: globalContext, category: 'youtube');
+      // PostService.instance
+      //     .showYoutubeListScreen(context: globalContext, category: 'youtube');
 
       // showGeneralDialog(
       //   context: globalContext,

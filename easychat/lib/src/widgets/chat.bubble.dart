@@ -86,16 +86,16 @@ class ChatBubble extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (message.url != null) ...[
-                          CachedNetworkImage(
-                            imageUrl: message.url!,
-                            placeholder: (context, url) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            },
-                            errorWidget: (context, url, error) {
-                              return const Icon(Icons.error);
-                            },
+                          SizedBox(
+                            height: 200,
+                            width: 200,
+                            child: CachedNetworkImage(
+                              fadeInDuration: Duration.zero,
+                              fadeOutDuration: Duration.zero,
+                              fit: BoxFit.cover,
+                              imageUrl: message.url!,
+                              cacheKey: message.url,
+                            ),
                           ),
                         ],
                         if (message.text != null &&

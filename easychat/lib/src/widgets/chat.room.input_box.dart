@@ -87,7 +87,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
         text: controller.text,
         url: photoUrl,
       ),
-      // TODO revise for photo url
       widget.room!.update(
         lastMessageText: controller.text,
         lastMessageAt: FieldValue.serverTimestamp(),

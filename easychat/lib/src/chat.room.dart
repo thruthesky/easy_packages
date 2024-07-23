@@ -320,7 +320,6 @@ class ChatRoom {
     });
   }
 
-  // TODO do not show again if rejected
   Future<void> rejectInvitation() async {
     await ChatRoom.col.doc(id).update({
       'invitedUsers': FieldValue.arrayRemove([my.uid]),

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easyuser/easyuser.dart';
 
