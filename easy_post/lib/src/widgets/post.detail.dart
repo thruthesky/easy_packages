@@ -49,6 +49,34 @@ class PostDetail extends StatelessWidget {
         const SizedBox(height: 16),
         Text(post.title),
         Text(post.content),
+
+        Row(
+          children: [
+            TextButton(
+              onPressed: () {},
+              child: const Text('Reply'),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: const Text('Like'),
+            ),
+            const Spacer(),
+            PopupMenuButton<String>(
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'edit',
+                  child: Text('Edit'),
+                ),
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Text('Delete'),
+                ),
+              ],
+              child: const Icon(Icons.more_vert),
+              onSelected: (value) {},
+            ),
+          ],
+        ),
       ],
     );
   }

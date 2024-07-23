@@ -39,7 +39,7 @@ class _YoutubeListScreenState extends State<YoutubeListScreen> {
           height: 16,
         ),
         itemBuilder: (post, index) {
-          if (post.youtubeUrl.isEmpty) {
+          if (post.youtubeUrl.isEmpty || post.youtube.isEmpty) {
             return PostListTile(post: post);
           } else {
             return YoutubeTile(post: post);

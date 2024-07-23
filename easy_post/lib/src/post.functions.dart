@@ -9,7 +9,7 @@ Future<Map<String, dynamic>?> getYoutubeConfig(String? youtubeUrl) async {
   final youtubeId = getIdFromUrl(youtubeUrl);
 
   if (youtubeId == null) {
-    return null;
+    throw 'youtube/cannot-find-id Check if the youtubeUrl is valid: $youtubeUrl';
   }
 
   /// check if the youtube url is a valid

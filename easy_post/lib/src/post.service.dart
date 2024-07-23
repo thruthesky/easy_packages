@@ -33,10 +33,15 @@ class PostService {
   @Deprecated('Remove categories and pass the options where it needs.')
   late Map<String, String> categories = {};
 
+  Future Function(BuildContext, Post)? $showPostDetailScreen;
+
   init({
     Map<String, String>? categories,
+    Future Function(BuildContext, Post)? showPostDetailScreen,
   }) {
     initialized = true;
+    $showPostDetailScreen = showPostDetailScreen;
+
     this.categories = categories ?? this.categories;
 
     addPostTranslations();
@@ -89,12 +94,13 @@ class PostService {
     required BuildContext context,
     required Post post,
   }) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) {
-        return PostDetailScreen(post: post);
-      },
-    );
+    return $showPostDetailScreen?.call(context, post) ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (_, __, ___) {
+            return PostDetailScreen(post: post);
+          },
+        );
   }
 
   /// Show a screen to list youtube videos.
