@@ -3,14 +3,32 @@ import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
 
+// youtube player to display yout youtube video
+/// `autoPlay` if true the player will automatically play or start when initialized
+///
+/// `thumbnail` use this to display thumbnail if the youtube is idle or not playing
+///
+/// `aspectRatio` use to change the aspectRatio of the Youtube player
+///
+/// `width` use to change the width of the youtube player
+///
+/// note: this widget is only for displaying youtube video. this widget does not
+/// provide aditional customization and other control actions
 class YoutubePlayer extends StatefulWidget {
   const YoutubePlayer({
     super.key,
     required this.post,
+    this.autoPlay = false,
+    this.thumbnail,
+    this.width,
+    this.aspectRatio = 16 / 9,
   });
 
   final Post post;
-
+  final bool autoPlay;
+  final Widget? thumbnail;
+  final double? width;
+  final double aspectRatio;
   @override
   State<YoutubePlayer> createState() => _YoutubePlayerState();
 }
@@ -25,10 +43,10 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
     super.initState();
     youtubeController = ypf.YoutubePlayerController(
       initialVideoId: widget.post.youtube['id'],
-      flags: const ypf.YoutubePlayerFlags(
-        autoPlay: false,
+      flags: ypf.YoutubePlayerFlags(
+        autoPlay: widget.autoPlay,
         mute: false,
-        controlsVisibleAtStart: true,
+        controlsVisibleAtStart: false,
       ),
     )..addListener(listener);
   }
@@ -51,10 +69,46 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
   @override
   Widget build(BuildContext context) {
     return ypf.YoutubePlayer(
-      bottomActions: const [],
+      aspectRatio: widget.aspectRatio,
+      width: widget.width,
+      bottomActions: [
+        IconButton(
+            onPressed: () {
+              youtubeController.value.isPlaying
+                  ? youtubeController.pause()
+                  : youtubeController.play();
+            },
+            icon: Icon(
+              youtubeController.value.isPlaying
+                  ? Icons.pause
+                  : Icons.play_arrow,
+              color: Colors.white,
+            )),
+        ypf.CurrentPosition(),
+        ypf.ProgressBar(
+          colors: const ypf.ProgressBarColors(
+              playedColor: Colors.white,
+              handleColor: Colors.white,
+              backgroundColor: Colors.grey),
+          isExpanded: true,
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        ypf.RemainingDuration(),
+        ypf.FullScreenButton(),
+      ],
       topActions: const [],
       controller: youtubeController,
-      thumbnail: CachedNetworkImage(imageUrl: widget.post.youtube['hd']),
+      // when thumbnail is not provideo it will try to get from the provided post
+      // when it is also not exist in the post it will show a  default arrow
+      thumbnail: widget.thumbnail ??
+          CachedNetworkImage(
+            imageUrl: widget.post.youtube['hd'],
+            errorWidget: (context, error, _) => const Center(
+              child: Icon(Icons.play_arrow),
+            ),
+          ),
       onReady: () {
         // log('Player is ready.');
         playerReady = true;
