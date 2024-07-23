@@ -96,13 +96,12 @@ class PostService {
 
   Future showYoutubeListScreen({
     required BuildContext context,
-    required Post post,
     bool autoPlay = false,
   }) {
     return showGeneralDialog(
         context: context,
         pageBuilder: (_, __, ___) {
-          return YoutubeListScreen(post: post, autoPlay: autoPlay);
+          return YoutubeListScreen(autoPlay: autoPlay);
         });
   }
 }

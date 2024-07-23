@@ -68,50 +68,55 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return ypf.YoutubePlayer(
-      aspectRatio: widget.aspectRatio,
-      width: widget.width,
-      bottomActions: [
-        IconButton(
-            onPressed: () {
-              youtubeController.value.isPlaying
-                  ? youtubeController.pause()
-                  : youtubeController.play();
-            },
-            icon: Icon(
-              youtubeController.value.isPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow,
-              color: Colors.white,
-            )),
-        ypf.CurrentPosition(),
-        ypf.ProgressBar(
-          colors: const ypf.ProgressBarColors(
-              playedColor: Colors.white,
-              handleColor: Colors.white,
-              backgroundColor: Colors.grey),
-          isExpanded: true,
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        ypf.RemainingDuration(),
-        ypf.FullScreenButton(),
-      ],
-      topActions: const [],
-      controller: youtubeController,
-      // when thumbnail is not provideo it will try to get from the provided post
-      // when it is also not exist in the post it will show a  default arrow
-      thumbnail: widget.thumbnail ??
-          CachedNetworkImage(
-            imageUrl: widget.post.youtube['hd'],
-            errorWidget: (context, error, _) => const Center(
-              child: Icon(Icons.play_arrow),
-            ),
+    return ypf.YoutubePlayerBuilder(
+      player: ypf.YoutubePlayer(
+        aspectRatio: widget.aspectRatio,
+        width: widget.width,
+        bottomActions: [
+          IconButton(
+              onPressed: () {
+                youtubeController.value.isPlaying
+                    ? youtubeController.pause()
+                    : youtubeController.play();
+              },
+              icon: Icon(
+                youtubeController.value.isPlaying
+                    ? Icons.pause
+                    : Icons.play_arrow,
+                color: Colors.white,
+              )),
+          ypf.CurrentPosition(),
+          ypf.ProgressBar(
+            colors: const ypf.ProgressBarColors(
+                playedColor: Colors.white,
+                handleColor: Colors.white,
+                backgroundColor: Colors.grey),
+            isExpanded: true,
           ),
-      onReady: () {
-        // log('Player is ready.');
-        playerReady = true;
+          const SizedBox(
+            width: 8,
+          ),
+          ypf.RemainingDuration(),
+          ypf.FullScreenButton(),
+        ],
+        topActions: const [],
+        controller: youtubeController,
+        // when thumbnail is not provideo it will try to get from the provided post
+        // when it is also not exist in the post it will show a  default arrow
+        thumbnail: widget.thumbnail ??
+            CachedNetworkImage(
+              imageUrl: widget.post.youtube['hd'],
+              errorWidget: (context, error, _) => const Center(
+                child: Icon(Icons.play_arrow),
+              ),
+            ),
+        onReady: () {
+          // log('Player is ready.');
+          playerReady = true;
+        },
+      ),
+      builder: (context, widget) {
+        return widget;
       },
     );
   }

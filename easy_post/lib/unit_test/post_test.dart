@@ -65,5 +65,10 @@ void createYouyubePost() async {
       youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
     );
   });
+
+  await Post.create(
+    category: 'youtube',
+    youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
+  );
   testReport();
 }
