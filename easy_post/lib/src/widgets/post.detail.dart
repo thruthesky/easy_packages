@@ -33,6 +33,7 @@ class PostDetail extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(user.displayName),
+                              Text('${user.createdAt}'),
                             ],
                           ),
                         )

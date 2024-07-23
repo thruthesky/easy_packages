@@ -119,11 +119,11 @@ class Post {
 // get a post
   static Future<Post> get(String? id) async {
     if (id == null) {
-      throw Exception('Post id is null');
+      throw 'post-get/post-id-null Post id is null';
     }
     final documentSnapshot = await PostService.instance.col.doc(id).get();
     if (documentSnapshot.exists == false) {
-      throw Exception('Post.get: Post not found');
+      throw 'post-get/post-not-found Post not found';
     }
 
     return Post.fromSnapshot(documentSnapshot);
@@ -194,7 +194,7 @@ class Post {
     }
 
     if (data.isEmpty) {
-      throw Exception('Post.update: No data to update');
+      throw 'post-update/no-data-update No data to update';
     }
     await doc(id).update(
       {
@@ -217,8 +217,13 @@ class Post {
       return null;
     }
 
-    ///
-    await Youtube.config(videoId: youtubeId);
+    /// check if the youtube url is a valid
+    try {
+      await Youtube.config(videoId: youtubeId);
+    } catch (e) {
+      throw 'post-prepare-youtube-info/no-data-update preparing youtube info field. check if the youtubeUrl is valid';
+    }
+
     final youtubeVideoDetails = Youtube.videoDetails;
     final youtubeChannelDetails = Youtube.channelDetails;
     final youtubeThumbnailDetails = Youtube.thumbnails;
