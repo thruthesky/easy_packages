@@ -1,5 +1,6 @@
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 /// Chat Room Edit Screen
@@ -19,6 +20,9 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   ChatRoom get room => widget.room!;
   bool get isCreate => widget.room == null;
   bool get isUpdate => widget.room != null;
+
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +55,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           ),
 
           /// Chat room icon upload
+          // TODO Not implemented yet
           const ImageUpload(),
 
           ///
@@ -63,19 +68,24 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 onChanged: (value) {}),
           ),
 
+          // TODO
           ElevatedButton(
             onPressed: () async {
-              await ChatRoom.create(
-                name: 'name',
-                description: 'description',
+              final newRoomRef = await ChatRoom.create(
+                name: nameController.text,
+                description: descriptionController.text,
                 iconUrl: 'iconUrl',
                 open: true,
                 // password: 'password',
-                invitedUsers: ['invitedUsers'],
+                users: [my.uid],
                 verifiedUserOnly: true,
                 urlForVerifiedUserOnly: true,
                 uploadForVerifiedUserOnly: true,
               );
+              final chatRoom = await ChatRoom.get(newRoomRef.id);
+              if (!context.mounted) return;
+              Navigator.of(context).pop();
+              ChatService.instance.showChatRoomScreen(context, room: chatRoom);
             },
             child: const Text('CREATE'),
           ),

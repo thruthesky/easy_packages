@@ -1,14 +1,17 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomInputBox extends StatefulWidget {
   const ChatRoomInputBox({
     super.key,
     this.room,
+    this.afterAccept,
   });
 
   final ChatRoom? room;
+  final Function()? afterAccept;
 
   @override
   State<ChatRoomInputBox> createState() => _ChatRoomInputBoxState();
@@ -61,17 +64,32 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     );
   }
 
-  sendMessage() {
+  sendMessage() async {
     dog("sending message");
     if (controller.text.isEmpty) return;
 
+    await shouldAcceptInvitation();
+
     // TODO revise
-    ChatMessage.create(
+    await ChatMessage.create(
       roomId: widget.room!.id,
       text: controller.text,
     );
 
     controller.clear();
     setState(() => submitable = false);
+  }
+
+  shouldAcceptInvitation() async {
+    if (widget.room == null) return;
+    if (widget.room!.users.contains(my.uid)) return;
+    if (widget.room!.invitedUsers.contains(my.uid)) {
+      await widget.room!.acceptInvitation();
+      widget.room!.users.add(my.uid);
+      widget.room!.invitedUsers.remove(my.uid);
+      widget.afterAccept?.call();
+      return;
+    }
+    throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 }

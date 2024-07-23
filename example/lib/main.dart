@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
 import 'package:example/firebase_options.dart';
@@ -19,6 +20,8 @@ void main() async {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
+
+      UserService.instance.init();
       runApp(const MyApp());
 
       FlutterError.onError = (FlutterErrorDetails details) {
@@ -39,7 +42,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    UserService.instance.init();
+    // UserService.instance.init();
     PostService.instance.init(categories: {
       'qna': '질문답변',
       'discussion': 'Discussion',
@@ -53,8 +56,11 @@ class MyAppState extends State<MyApp> {
       'etc': '기타',
     });
 
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
       // ChatService.instance.showChatRoomEditScreen(globalContext);
+      // final room = await ChatRoom.get("t5zClWySjgryFf2tK0M8");
+      // if (!mounted) return;
+      // ChatService.instance.showChatRoomScreen(context, room: room);
       // PostService.instance.showPostEditScreen(context: globalContext);
       // PostService.instance.showPostListScreen(context: globalContext);
 

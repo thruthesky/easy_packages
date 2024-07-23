@@ -1,6 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/screens/chat.room.invite_list.screen.dart';
+import 'package:easychat/src/widgets/screens/chat.room.member_list.screen.dart';
+import 'package:easychat/src/widgets/screens/chat.room.menu.screeen.dart';
+import 'package:easychat/src/widgets/screens/received.chat.room.invite_list.screen.dart';
+import 'package:easychat/src/widgets/screens/rejected.chat.room.invite_list.screen.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +68,7 @@ class ChatService {
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
+  // TODO
   showChatRoomEditScreen(BuildContext context) {
     return showGeneralDialog(
       context: context,
@@ -71,8 +77,7 @@ class ChatService {
     );
   }
 
-  showChatRoomScreen(BuildContext context,
-      {required User? user, ChatRoom? room}) {
+  showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
     dog("Called showChatRoomScreen user: $user room: $room");
     return showGeneralDialog(
       context: context,
@@ -80,6 +85,48 @@ class ChatService {
         user: user,
         room: room,
       ),
+    );
+  }
+
+  showChatRoomMenuScreen(BuildContext context, ChatRoom room) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => ChatRoomMenuScreeen(
+        room: room,
+      ),
+    );
+  }
+
+  showMemberListScreen(BuildContext context, ChatRoom room) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => ChatRoomMemberListScreen(
+        room: room,
+      ),
+    );
+  }
+
+  showInviteListScreen(BuildContext context, {ChatRoom? room}) {
+    if (room == null) {
+      return showGeneralDialog(
+        context: context,
+        pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
+      );
+    }
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => ChatRoomInviteListScreen(
+        room: room,
+      ),
+    );
+  }
+
+  showRejectListScreen(
+    BuildContext context,
+  ) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => const RejectedChatRoomInviteListScreen(),
     );
   }
 }

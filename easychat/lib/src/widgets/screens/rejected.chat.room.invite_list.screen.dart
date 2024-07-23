@@ -4,31 +4,26 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ChatRoomListScreen extends StatefulWidget {
-  static const String routeName = '/ChatRoomList';
-  const ChatRoomListScreen({super.key});
+class RejectedChatRoomInviteListScreen extends StatefulWidget {
+  const RejectedChatRoomInviteListScreen({super.key});
 
   @override
-  State<ChatRoomListScreen> createState() => _ChatRoomListScreenState();
+  State<RejectedChatRoomInviteListScreen> createState() =>
+      _RejectedChatRoomInviteListScreenState();
 }
 
-class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
-  Query get query =>
-      ChatService.instance.roomCol.where('users', arrayContains: my.uid);
+class _RejectedChatRoomInviteListScreenState
+    extends State<RejectedChatRoomInviteListScreen> {
+  Query get query => ChatService.instance.roomCol.where(
+        'rejectedUsers',
+        arrayContains: my.uid,
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat Room List'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              ChatService.instance.showChatRoomEditScreen(context);
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
+        title: const Text("Rejected Chat Room Invite List"),
       ),
       body: FirestoreListView(
         query: query,

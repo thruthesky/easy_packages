@@ -193,8 +193,10 @@ class ChatRoom {
   ///
   ///
   /// Returns the document reference of the chat room.
+  ///
+  /// If [id] is null, this will make new room id (preferred for
+  /// group chat)
   static Future<DocumentReference> create({
-    // If id is null, this will make new room id.
     String? id,
     String? name,
     String? description,
@@ -261,5 +263,54 @@ class ChatRoom {
     final snapshotDoc = await ChatRoom.col.doc(id).get();
     if (snapshotDoc.exists == false) return null;
     return ChatRoom.fromSnapshot(snapshotDoc);
+  }
+
+  Future<void> update({
+    String? name,
+    String? description,
+    String? iconUrl,
+    bool? open,
+    bool? single,
+    bool? group,
+  }) async {
+    final updateData = {
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (iconUrl != null) 'iconUrl': iconUrl,
+      if (open != null) 'open': open,
+      if (single != null) 'single': single,
+      if (group != null) 'group': group,
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    await ChatRoom.col.doc(id).update(updateData);
+  }
+
+  Future<void> inviteUser(String uid) async {
+    await ChatRoom.col.doc(id).update({
+      'invitedUsers': FieldValue.arrayUnion([uid]),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> acceptInvitation() async {
+    await ChatRoom.col.doc(id).update({
+      'invitedUsers': FieldValue.arrayRemove([my.uid]),
+      'users': FieldValue.arrayUnion([my.uid]),
+      // In case, the user rejected the invitation
+      // but actually wants to accept it, then we should
+      // also remove the uid from rejeceted users.
+      'rejectedUsers': FieldValue.arrayRemove([my.uid]),
+    });
+  }
+
+  Future<void> rejectInvitation() async {
+    await ChatRoom.col.doc(id).update({
+      // We will not remove the user from invited,
+      // we don't have to show that the invitation has
+      // been rejected.
+      // 'invitedUsers': FieldValue.arrayRemove([my.uid]),
+      'rejectedUsers': FieldValue.arrayUnion([my.uid]),
+    });
   }
 }

@@ -16,6 +16,7 @@ dependencies:
   firebase_auth: ^5.1.1
   firebase_database: ^11.0.2
   firebase_ui_database: ^1.4.4
+  firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter
 
