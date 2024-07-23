@@ -36,3 +36,32 @@ Future<Map<String, dynamic>?> getYoutubeConfig(String? youtubeUrl) async {
     'viewCount': youtubeVideoDetails.viewCount
   };
 }
+
+/// format duration in secods to a this foramt "1:02:00" if hour long
+/// if 3 mins long "03:01"
+String formatDuration(int duration) {
+  final durationInSeconds = Duration(seconds: duration);
+
+  /// helper function to check if the the parameter is 2 digit if the parameter
+  /// is 1 digit it will concat '0'
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String twoDigitMinutes = twoDigits(durationInSeconds.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(durationInSeconds.inSeconds.remainder(60));
+
+  if (durationInSeconds.inHours > 0) {
+    return "${durationInSeconds.inHours}:$twoDigitMinutes:$twoDigitSeconds";
+  } else {
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+}
+
+/// format views from 120304050 millions views 1M views
+String formatViews(int views) {
+  if (views >= 1000000) {
+    return '${(views / 1000000).toStringAsFixed(1)}M';
+  } else if (views >= 1000) {
+    return '${(views / 1000).toStringAsFixed(1)}K';
+  } else {
+    return views.toString();
+  }
+}

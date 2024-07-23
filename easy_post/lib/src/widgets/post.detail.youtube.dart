@@ -9,30 +9,34 @@ class PostDetailYoutube extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (post.youtubeUrl.isEmpty) return const SizedBox.shrink();
-
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         YoutubePlayer(
           post: post,
           // autoPlay: PostService.instance.youtubeAutoPlay,
         ),
-        const SizedBox(height: 16),
-        Text(
-          post.youtube['title'],
-          style: Theme.of(context).textTheme.titleMedium,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Text(
-          post.youtube['name'],
-          style: Theme.of(context).textTheme.labelMedium,
-        ),
-        // todo fromat view count
-        Text(
-          '${post.youtube['viewCount']} views',
-          style: Theme.of(context).textTheme.labelMedium,
-        ),
+        if (post.urls.isEmpty) ...{
+          const SizedBox(height: 16),
+          Text(
+            post.youtube['title'],
+            style: Theme.of(context).textTheme.titleMedium,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            post.youtube['name'],
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          Text(
+            '${formatViews(post.youtube['viewCount'])} views',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+        }
       ],
     );
   }
