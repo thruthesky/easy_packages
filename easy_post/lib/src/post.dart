@@ -157,7 +157,7 @@ class Post {
       'updateAt': FieldValue.serverTimestamp(),
     };
 
-    if (category == 'youtube') {
+    if (youtubeUrl != '') {
       final youtube = await prepareYoutubeInfo(youtubeUrl);
       if (youtube == null) {
         throw 'post-create/invalid-youtube-url Invalid Youtube URL';
@@ -186,7 +186,7 @@ class Post {
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
     };
 
-    if (category.toLowerCase() == 'youtube') {
+    if (youtubeUrl != '') {
       final youtube = prepareYoutubeInfo(youtubeUrl!);
       data['youtube'] = youtube;
     }
