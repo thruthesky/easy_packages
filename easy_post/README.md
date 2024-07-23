@@ -56,11 +56,16 @@ PostService.instance.init(categories: {
 
 
 # Youtube
-- if you crate a post with a category of `youtube` the post will generate a youtube information base on the `youtubeUrl` field .
+
+
+- The `PostService.instance.showEditScreen()` has an option of `youtubeUrl`. 
+
+- If you create a post with a category of `youtube` the post will generate a youtube information base on the `youtubeUrl` field .
 
 ```dart
 PostService.instance.showEditScreen(category: 'youtube');
 ```
+
 displaying youtube screen
 
 - you can display a youtube screen via `YoutubeScreen()` or `PostService.instance.showYoutubeScren()`

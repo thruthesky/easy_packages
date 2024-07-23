@@ -4,6 +4,7 @@ import 'package:easy_post_v2/src/screens/post.detail.screen.dart';
 import 'package:easy_post_v2/src/screens/post.list.screen.dart';
 import 'package:flutter/material.dart';
 
+/// PostService is a service class that provides a set of methods to interact with the post collection in Firestore.
 class PostService {
   static PostService? _instance;
 
@@ -61,11 +62,10 @@ class PostService {
     );
   }
 
-  Future showYoutubeScreen({
-    required BuildContext context,
-    required Post post,
-    bool autoPlay = false
-  }) {
+  Future showYoutubeScreen(
+      {required BuildContext context,
+      required Post post,
+      bool autoPlay = false}) {
     return showGeneralDialog(
         context: context,
         pageBuilder: (_, __, ___) {
