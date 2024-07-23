@@ -415,7 +415,7 @@ class StorageService {
         final XFile? video =
             await ImagePicker().pickVideo(source: ImageSource.gallery);
         return video?.path;
-      } else if (source == SourceType.gallery) {
+      } else if (source == SourceType.mediaGallery) {
         final XFile? image = await ImagePicker().pickMedia();
         return image?.path;
       } else if (source == SourceType.file) {

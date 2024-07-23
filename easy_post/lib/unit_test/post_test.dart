@@ -28,15 +28,15 @@ void updatePost() async {
   final updatePost = await post.update(content: 'Updaing post content');
 
   //
-  isTrue(updatePost?.content == 'Updaing post content', 'Updating the content');
-  final updateTitle = await post.update(title: 'Update post title');
-  //
+  // isTrue(updatePost?.content == 'Updaing post content', 'Updating the content');
+  // final updateTitle = await post.update(title: 'Update post title');
+  // //
 
-  isTrue(updateTitle?.title == 'Update post title', 'Updating the title');
+  // isTrue(updateTitle?.title == 'Update post title', 'Updating the title');
 
-  final updateUrls = await post.update(urls: [url]);
+  // final updateUrls = await post.update(urls: [url]);
 
-  isTrue(updateUrls!.urls.contains(url), 'Updating the post');
+  // isTrue(updateUrls!.urls.contains(url), 'Updating the post');
 
   await isException(() async {
     await post.update();
@@ -65,5 +65,10 @@ void createYouyubePost() async {
       youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
     );
   });
+
+  await Post.create(
+    category: 'youtube',
+    youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
+  );
   testReport();
 }

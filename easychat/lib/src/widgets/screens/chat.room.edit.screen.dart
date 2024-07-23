@@ -68,8 +68,19 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           ),
 
           /// Chat room icon upload
-          // TODO Not implemented yet
-          const ImageUpload(),
+          // Passing the ref is needed to upload.
+          // However, there may be a problem in setting up the rules
+          // since this may save the url first without the other info.
+          // For now, using isUpdate to ensure that the doc is already
+          // set up before uploading image.
+          if (isUpdate) ...[
+            const SizedBox(height: 24),
+            ImageUpload(
+              initialData: room?.iconUrl,
+              ref: room!.docRef,
+              field: "iconUrl",
+            ),
+          ],
 
           ///
           Padding(
@@ -88,26 +99,50 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           ),
 
           // TODO
-          ElevatedButton(
-            onPressed: () async {
-              final newRoomRef = await ChatRoom.create(
-                name: nameController.text,
-                description: descriptionController.text,
-                iconUrl: 'iconUrl',
-                open: open,
-                // password: 'password',
-                users: [my.uid],
-                verifiedUserOnly: true,
-                urlForVerifiedUserOnly: true,
-                uploadForVerifiedUserOnly: true,
-              );
-              final chatRoom = await ChatRoom.get(newRoomRef.id);
-              if (!context.mounted) return;
-              Navigator.of(context).pop();
-              ChatService.instance.showChatRoomScreen(context, room: chatRoom);
-            },
-            child: const Text('CREATE'),
-          ),
+          if (isCreate)
+            ElevatedButton(
+              onPressed: () async {
+                final newRoomRef = await ChatRoom.create(
+                  name: nameController.text,
+                  description: descriptionController.text,
+                  iconUrl: 'iconUrl',
+                  open: open,
+                  // password: 'password',
+                  users: [my.uid],
+                  verifiedUserOnly: true,
+                  urlForVerifiedUserOnly: true,
+                  uploadForVerifiedUserOnly: true,
+                );
+                final chatRoom = await ChatRoom.get(newRoomRef.id);
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+                ChatService.instance
+                    .showChatRoomScreen(context, room: chatRoom);
+              },
+              child: const Text('CREATE'),
+            )
+          else if (isUpdate)
+            ElevatedButton(
+              onPressed: () async {
+                final newRoomRef = await ChatRoom.create(
+                  name: nameController.text,
+                  description: descriptionController.text,
+                  iconUrl: 'iconUrl',
+                  open: open,
+                  // password: 'password',
+                  users: [my.uid],
+                  verifiedUserOnly: true,
+                  urlForVerifiedUserOnly: true,
+                  uploadForVerifiedUserOnly: true,
+                );
+                final chatRoom = await ChatRoom.get(newRoomRef.id);
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+                ChatService.instance
+                    .showChatRoomScreen(context, room: chatRoom);
+              },
+              child: const Text('UPDATE'),
+            ),
         ],
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomInputBox extends StatefulWidget {
@@ -23,6 +23,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   final TextEditingController controller = TextEditingController();
 
   bool submitable = false;
+  double? uploadProgress;
 
   @override
   void dispose() {
@@ -34,41 +35,49 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 8, 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const IconButton(
-            onPressed: null,
-            icon: Icon(Icons.camera_alt),
-          ),
-          Expanded(
-            child: TextField(
-              enabled: widget.room != null,
-              controller: controller,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ImageUploadIconButton(
+                onUpload: (url) async {
+                  uploadProgress = 0;
+                  setState(() {});
+                  await sendMessage(photoUrl: url);
+                },
               ),
-              onChanged: (value) {
-                if (submitable == value.isNotEmpty) return;
-                setState(() => submitable = value.isNotEmpty);
-              },
-              onSubmitted: (value) {
-                sendMessage();
-              },
-            ),
-          ),
-          IconButton(
-            onPressed: submitable ? sendMessage : null,
-            icon: const Icon(Icons.send),
+              Expanded(
+                child: TextField(
+                  enabled: widget.room != null,
+                  controller: controller,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    if (submitable == value.isNotEmpty) return;
+                    setState(() => submitable = value.isNotEmpty);
+                  },
+                  onSubmitted: (value) {
+                    sendMessage();
+                  },
+                ),
+              ),
+              IconButton(
+                onPressed: submitable ? sendMessage : null,
+                icon: const Icon(Icons.send),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  sendMessage() async {
+  Future sendMessage({String? photoUrl}) async {
     dog("sending message");
-    if (controller.text.isEmpty) return;
+    if (controller.text.isEmpty && photoUrl == null) return;
 
     await shouldAcceptInvitation();
 
@@ -76,12 +85,14 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
       ChatMessage.create(
         roomId: widget.room!.id,
         text: controller.text,
+        url: photoUrl,
       ),
       // TODO revise for photo url
       widget.room!.update(
         lastMessageText: controller.text,
         lastMessageAt: FieldValue.serverTimestamp(),
         lastMessageUid: my.uid,
+        lastMessageUrl: photoUrl,
       ),
     ];
 

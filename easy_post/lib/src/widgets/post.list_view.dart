@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
@@ -84,7 +85,7 @@ class PostListView extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
           return emptyBuilder?.call() ??
-              const Center(child: Text('empty list'));
+              Center(child: Text('post list is empty'.t));
         }
 
         return ListView.separated(

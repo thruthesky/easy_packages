@@ -33,7 +33,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   getRoom() async {
-    if (room != null) return;
+    if (room != null) {
+      if (room!.group) return;
+      await getOtherUser();
+      if (mounted) setState(() {});
+      return;
+    }
     final roomId = singleChatRoomId(user!.uid);
     room = await ChatRoom.get(roomId);
     if (room == null) {

@@ -32,6 +32,11 @@ class ForumScreen extends StatelessWidget {
               ),
               child: const Text('Post List Screen'),
             ),
+            ElevatedButton(
+              onPressed: () => PostService.instance
+                  .showYoutubeListScreen(context: context, category: 'youtube'),
+              child: const Text('Post List Screen'),
+            ),
           ],
         ));
   }

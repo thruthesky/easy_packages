@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,6 @@ class ChatBubble extends StatelessWidget {
                     const SizedBox(width: 8),
                   ],
                   Container(
-                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: message.uid == my.uid
                           ? Theme.of(context).colorScheme.primaryContainer
@@ -81,7 +81,32 @@ class ChatBubble extends StatelessWidget {
                         bottomRight: const Radius.circular(12),
                       ),
                     ),
-                    child: Text(message.text!),
+                    clipBehavior: Clip.hardEdge,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (message.url != null) ...[
+                          CachedNetworkImage(
+                            imageUrl: message.url!,
+                            placeholder: (context, url) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return const Icon(Icons.error);
+                            },
+                          ),
+                        ],
+                        if (message.text != null &&
+                            message.text!.isNotEmpty) ...[
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Text(message.text!),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ],
               ),

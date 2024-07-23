@@ -72,8 +72,8 @@ class ChatMessage {
   }) async {
     final newMessageData = {
       'roomId': roomId,
-      'text': text,
-      'url': url,
+      if (text != null) 'text': text,
+      if (url != null) 'url': url,
       'uid': FirebaseAuth.instance.currentUser!.uid,
       'createdAt': ServerValue.timestamp,
       'order': DateTime.now().millisecondsSinceEpoch * -1,

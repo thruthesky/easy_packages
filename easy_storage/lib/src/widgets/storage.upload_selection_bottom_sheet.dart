@@ -109,7 +109,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                 title: Text('Take file from gallery'.t),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  Navigator.pop(context, SourceType.gallery);
+                  Navigator.pop(context, SourceType.mediaGallery);
                 },
               ),
               if (spacing != null) SizedBox(height: spacing),

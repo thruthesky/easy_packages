@@ -42,14 +42,6 @@ class ChatRoom {
   /// Note, this is not implemented yet.
   final bool hasPassword;
 
-  /// [text] is the last message text in the chat room.
-  ///
-  /// This is nullable to know if the last message has text or not.
-  final String? text;
-
-  /// [url] is the last message url in the chat room.
-  final String? url;
-
   /// [open] is true if the chat room is open chat
   final bool open;
 
@@ -120,8 +112,6 @@ class ChatRoom {
     this.rejectedUsers = const [],
     required this.createdAt,
     required this.updatedAt,
-    this.text,
-    this.url,
     this.lastMessageText,
     this.lastMessageAt,
     this.lastMessageUid,
@@ -159,8 +149,6 @@ class ChatRoom {
       updatedAt: json['updatedAt'] is Timestamp
           ? (json['updatedAt'] as Timestamp).toDate()
           : DateTime.now(),
-      text: json['text'],
-      url: json['url'],
       lastMessageText: json['lastMessageText'],
       lastMessageAt: json['lastMessageAt'] is Timestamp
           ? (json['createdAt'] as Timestamp).toDate()
@@ -191,8 +179,6 @@ class ChatRoom {
       'rejectedUsers': rejectedUsers,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
-      'text': text,
-      'url': url,
       'lastMessageText': lastMessageText,
       'lastMessageAt': lastMessageAt,
       'lastMessageUid': lastMessageUid,

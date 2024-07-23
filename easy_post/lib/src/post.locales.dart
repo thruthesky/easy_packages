@@ -5,6 +5,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Youtube',
     'ko': '유튜브',
   },
+  'post list is empty': {
+    'en': 'Post list is empty. Please add a new post.',
+    'ko': '글이 없습니다. 새 글을 추가해 주세요.',
+  },
 };
 
 void addPostTranslations() async {
