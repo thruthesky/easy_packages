@@ -18,9 +18,10 @@ class _PostListScreenState extends State<PostListScreen> {
         title: const Text('PostList'),
         actions: [
           IconButton(
-            onPressed: () => PostService.instance.showPostEditScreen(
+            onPressed: () => PostService.instance.showPostCreateScreen(
               context: context,
               category: category,
+              enableYoutubeUrl: true,
             ),
             icon: const Icon(Icons.add),
           ),
@@ -43,7 +44,9 @@ class _PostListScreenState extends State<PostListScreen> {
           ),
         ),
       ),
-      body: PostListView(category: category),
+      body: PostListView(
+        category: category,
+      ),
     );
   }
 }

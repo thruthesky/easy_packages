@@ -6,7 +6,6 @@ import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
-import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -56,8 +55,9 @@ class MyAppState extends State<MyApp> {
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // ChatService.instance.showChatRoomEditScreen(globalContext);
+      // PostService.instance.showPostCreateScreen(context: globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
-      // PostService.instance.showPostListScreen(context: globalContext);
+      PostService.instance.showPostListScreen(context: globalContext);
 
       // showGeneralDialog(
       //   context: globalContext,

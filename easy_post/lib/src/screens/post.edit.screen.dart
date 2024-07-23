@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 class PostEditScreen extends StatefulWidget {
   static const String routeName = '/PostEdit';
-  const PostEditScreen({super.key, required this.category});
+  const PostEditScreen(
+      {super.key, required this.category, this.enableYoutubeUrl = false});
 
   final String? category;
+  final bool enableYoutubeUrl;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();
@@ -74,10 +76,18 @@ class _PostEditScreenState extends State<PostEditScreen> {
               const SizedBox(height: 24),
               TextField(
                 controller: titleController,
+                decoration: InputDecoration(
+                  hintText: 'input title'.t,
+                  labelText: 'Title'.t,
+                ),
               ),
               const SizedBox(height: 24),
               TextField(
                 controller: contentController,
+                decoration: InputDecoration(
+                  hintText: 'Input Content'.t,
+                  labelText: 'Content'.t,
+                ),
                 minLines: 5,
                 maxLines: 8,
               ),
@@ -102,7 +112,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                     Navigator.of(context).pop(ref);
                   }
                 },
-                child: Text('Created'.t),
+                child: Text('post Create'.t),
               )
             ],
           ),
