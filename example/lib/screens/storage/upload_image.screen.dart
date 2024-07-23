@@ -45,6 +45,16 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               title: const Text('Profile Photo'),
               subtitle: const Text('Please upload profile photo'),
             ),
+            const Text("Upload Icon Button"),
+            UploadIconButton(
+              icon: const Icon(
+                Icons.image,
+                size: 80,
+              ),
+              onUpload: (url) {
+                debugPrint('Uploaded: $url');
+              },
+            ),
           ],
         ),
       ),

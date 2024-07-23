@@ -1,3 +1,6 @@
+## 0.0.8
+* change. SourceType.gallery is now SourceType.mediaGallery
+
 ## 0.0.7
 * Add. Widgets for displaying and editing uploads.
 
