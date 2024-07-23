@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomInputBox extends StatefulWidget {
@@ -70,14 +72,22 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
 
     await shouldAcceptInvitation();
 
-    // TODO revise
-    await ChatMessage.create(
-      roomId: widget.room!.id,
-      text: controller.text,
-    );
+    List<Future> futures = [
+      ChatMessage.create(
+        roomId: widget.room!.id,
+        text: controller.text,
+      ),
+      // TODO revise for photo url
+      widget.room!.update(
+        lastMessageText: controller.text,
+        lastMessageAt: FieldValue.serverTimestamp(),
+        lastMessageUid: my.uid,
+      ),
+    ];
 
     controller.clear();
     setState(() => submitable = false);
+    await Future.wait(futures);
   }
 
   shouldAcceptInvitation() async {

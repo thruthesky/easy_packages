@@ -27,21 +27,12 @@ class ChatRoom {
   /// The icon url of the chat room. optinal.
   final String? iconUrl;
 
-  /// [open] is true if the chat room is open chat
-  final bool open;
-
-  /// [single] is true if the chat room is single chat or 1:1.
-  final bool single;
-
-  /// [group] is true if the chat room is group chat.
-  final bool group;
-
   /// [users] is the uid list of users who are join the room
   final List<String> users;
-  final List<String> masterUsers;
   final List<String> invitedUsers;
-  final List<String> blockedUsers;
   final List<String> rejectedUsers;
+  final List<String> blockedUsers;
+  final List<String> masterUsers;
 
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -58,6 +49,23 @@ class ChatRoom {
 
   /// [url] is the last message url in the chat room.
   final String? url;
+
+  /// [open] is true if the chat room is open chat
+  final bool open;
+
+  /// [single] is true if the chat room is single chat or 1:1.
+  final bool single;
+
+  /// [group] is true if the chat room is group chat.
+  final bool group;
+
+  final String? lastMessageText;
+
+  final DateTime? lastMessageAt;
+
+  final String? lastMessageUid;
+
+  final String? lastMessageUrl;
 
   /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
   ///
@@ -114,6 +122,10 @@ class ChatRoom {
     required this.updatedAt,
     this.text,
     this.url,
+    this.lastMessageText,
+    this.lastMessageAt,
+    this.lastMessageUid,
+    this.lastMessageUrl,
     this.verifiedUserOnly = false,
     this.urlForVerifiedUserOnly = false,
     this.uploadForVerifiedUserOnly = false,
@@ -149,6 +161,12 @@ class ChatRoom {
           : DateTime.now(),
       text: json['text'],
       url: json['url'],
+      lastMessageText: json['lastMessageText'],
+      lastMessageAt: json['lastMessageAt'] is Timestamp
+          ? (json['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      lastMessageUid: json['lastMessageUid'],
+      lastMessageUrl: json['lastMessageUrl'],
       verifiedUserOnly: json['verifiedUserOnly'] ?? false,
       urlForVerifiedUserOnly: json['urlForVerifiedUserOnly'] ?? false,
       uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'] ?? false,
@@ -175,6 +193,10 @@ class ChatRoom {
       'updatedAt': updatedAt,
       'text': text,
       'url': url,
+      'lastMessageText': lastMessageText,
+      'lastMessageAt': lastMessageAt,
+      'lastMessageUid': lastMessageUid,
+      'lastMessageUrl': lastMessageUrl,
       'verifiedUserOnly': verifiedUserOnly,
       'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
       'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
@@ -272,6 +294,10 @@ class ChatRoom {
     bool? open,
     bool? single,
     bool? group,
+    String? lastMessageText,
+    Object? lastMessageAt,
+    String? lastMessageUid,
+    String? lastMessageUrl,
   }) async {
     final updateData = {
       if (name != null) 'name': name,
@@ -280,6 +306,10 @@ class ChatRoom {
       if (open != null) 'open': open,
       if (single != null) 'single': single,
       if (group != null) 'group': group,
+      if (lastMessageText != null) 'lastMessageText': lastMessageText,
+      if (lastMessageAt != null) 'lastMessageAt': lastMessageAt,
+      if (lastMessageUid != null) 'lastMessageUid': lastMessageUid,
+      if (lastMessageUrl != null) 'lastMessageUrl': lastMessageUrl,
       'updatedAt': FieldValue.serverTimestamp(),
     };
 
@@ -304,12 +334,10 @@ class ChatRoom {
     });
   }
 
+  // TODO do not show again if rejected
   Future<void> rejectInvitation() async {
     await ChatRoom.col.doc(id).update({
-      // We will not remove the user from invited,
-      // we don't have to show that the invitation has
-      // been rejected.
-      // 'invitedUsers': FieldValue.arrayRemove([my.uid]),
+      'invitedUsers': FieldValue.arrayRemove([my.uid]),
       'rejectedUsers': FieldValue.arrayUnion([my.uid]),
     });
   }

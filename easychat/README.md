@@ -2,7 +2,6 @@
 
 EasyChat offers everything you need to build a chat app. With the EasyChat package, you can easily add a full-featured, attractive chat function to your existing app.
 
-
 For your information, EasyChat:
 
 - Uses Firestore for chat room management for efficiency,
@@ -14,10 +13,7 @@ For your information, EasyChat:
 - Comes with a beautiful UI/UX by default,
 - Is optimized for use in large-scale chat applications.
 
-
-
 ## Install
-
 
 Add `easychat` into your `pubspec.yaml`
 
@@ -30,7 +26,6 @@ Add `easychat` into your `pubspec.yaml`
 ```dart
 ChatService.instance.init();
 ```
-
 
 ## User database
 
@@ -50,7 +45,6 @@ ChatService.instance.init();
 
 ## Chat Database
 
-
 ### Chat room database struture (Firestore)
 
 - `/chat-rooms/{roomId}` is the document of chat room information.
@@ -62,7 +56,7 @@ ChatService.instance.init();
 - `masterUsers` is the uid list of master user. See [Masters](#masters)
 - `createdAt` is the Firestore Timestamp when the chat room created.
 - `updatedAt` is the Timestamp when the chat room information updated.
-- `lastMassage` is the last message. It may not exist.
+- `lastMessageText` is the last message. It may not exist.
 - `lastMessageAt` is the Timestamp of the last message sent.
 - `lastMessageUid` is the user's uid who sent the last message
 - `lastMessageUrl` is the photo or file url of the last message. It may not exist.
@@ -118,16 +112,9 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
         - Then, they need to continue the previous chat room.
         - If there is only group chat, it will create the chat room over and over again and they cannot resume the previous chat room.
 
-
-
-
 ## Masters
 
 The one who create chat room automatically becomes a master. And he can add another user as a master.
-
-
-
-
 
 ## Chat invitation
 
@@ -137,7 +124,6 @@ It really happened to one of my own projects that someone sent very bad words to
   - It can be disabled by default with the option that allows each user to enable it.
   - Or it can be enabled by default with the option that each user to disable it.
 
-
 - If it is enabled, then the user must accept the invitation to enter the chat room.
   - For instance,
     - A sends a chat message to B for the first time while creating the chat room,
@@ -146,12 +132,6 @@ It really happened to one of my own projects that someone sent very bad words to
       - and the chat message is normally saved in the chat room.
     - On B's screen, all the chat room that has B's uid in `invitedUsers` will be displayed on top of the chat list. And B will notice that he is invited.
       - If B accepts the invitation, B's uid will be moved from `invitedUsers` to `users` and normal chat continues.
-
-
-
-
-
-
 
 ## Password
 

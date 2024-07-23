@@ -67,13 +67,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       appBar: AppBar(
         title: Text(title),
         actions: [
-          IconButton(
-            onPressed: () {
-              if (room == null) return;
-              ChatService.instance.showChatRoomMenuScreen(context, room!);
-            },
-            icon: const Icon(Icons.more_vert),
-          ),
+          if (room?.users.contains(my.uid) ?? false)
+            IconButton(
+              onPressed: () {
+                if (room == null) return;
+                ChatService.instance.showChatRoomMenuScreen(context, room!);
+              },
+              icon: const Icon(Icons.more_vert),
+            ),
         ],
       ),
       body: Column(
@@ -100,18 +101,22 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           Expanded(
             child: room?.messageRef != null
-                ? ChatMessagesListView(
-                    room: room,
-                    user: user,
-                    itemBuilder: (context, message) {
-                      return ChatBubble(
-                        message: message,
-                      );
-                    },
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ChatMessagesListView(
+                      room: room,
+                      user: user,
+                      itemBuilder: (context, message) {
+                        return ChatBubble(
+                          message: message,
+                        );
+                      },
+                    ),
                   )
                 : const Center(child: CircularProgressIndicator()),
           ),
           SafeArea(
+            top: false,
             child: ChatRoomInputBox(
               room: room,
               afterAccept: () {

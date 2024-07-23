@@ -21,6 +21,8 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   bool get isCreate => widget.room == null;
   bool get isUpdate => widget.room != null;
 
+  bool open = false;
+
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
 
@@ -32,25 +34,27 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
             child: TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Input room name',
                 helperText:
                     'This is the chat room name. You can change it later.',
                 label: Text('Name'),
               ),
+              controller: nameController,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
             child: TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Input description',
                 label: Text('Description'),
                 helperText: 'This is the chat room description.',
               ),
+              controller: descriptionController,
             ),
           ),
 
@@ -62,10 +66,16 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 24, 0, 0),
             child: CheckboxListTile(
-                title: const Text('Open Chat'),
-                subtitle: const Text('Anyone can join this chat room.'),
-                value: true,
-                onChanged: (value) {}),
+              title: const Text('Open Chat'),
+              subtitle: const Text('Anyone can join this chat room.'),
+              value: open,
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() {
+                  open = value;
+                });
+              },
+            ),
           ),
 
           // TODO
@@ -75,7 +85,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 name: nameController.text,
                 description: descriptionController.text,
                 iconUrl: 'iconUrl',
-                open: true,
+                open: open,
                 // password: 'password',
                 users: [my.uid],
                 verifiedUserOnly: true,
