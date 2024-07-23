@@ -103,6 +103,21 @@ CommentListView(
 For the `itemBuilder`, you may use one of `CommentDetail`, `CommentListDetail`, `CommentListArrowDetail`, or `CommentListVerticalLineDetail`. Or you can copy the code and build your own.
 
 
+```dart
+CommentListView(
+  documentReference: ref,
+  shrinkWrap: true,
+  physics: const NeverScrollableScrollPhysics(),
+  itemBuilder: (comment, index) {
+    return CommentListDetail(comment: comment); // default
+    return CommentListArrowDetail(comment: comment); //
+    return CommentListVerticalLineDetail(comment: comment); //
+  },
+),
+```
+
+
+
 ### CommentListTreeView
 
 This list view provides a nice tree style vertical lines on the nested comment list.

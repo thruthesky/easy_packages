@@ -109,11 +109,6 @@ class CommentListView extends StatelessWidget {
 
             return itemBuilder?.call(comment, index) ??
                 CommentListDetail(comment: comment);
-
-            // return CommentListDetail(comment: comment);
-
-            // return CommentListArrowDetail(comment: comment);
-            // return CommentListVerticalLineDetail(comment: comment);
           },
         );
       },

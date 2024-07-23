@@ -81,6 +81,9 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
 
             Column(
               children: [
+                /// 코멘트 목록을 tree 형태로 세로 라인을 그릴 때에는
+                /// 아바타 밑에서 부터 세로 라인을 그려야 자연 스럽다.
+                /// 즉, CommentDetail 위젯에는 사진을 표시하지 않도록 옵션을 주어야 한다.
                 UserAvatar.fromUid(
                   uid: widget.comment.uid,
                   size: 44,
@@ -102,6 +105,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
             Expanded(
               child: CommentDetail(
                 comment: widget.comment,
+                displayAvatar: false,
               ),
             ),
           ],
