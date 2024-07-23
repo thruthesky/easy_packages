@@ -34,15 +34,15 @@ class YoutubeTile extends StatelessWidget {
               children: [
                 Text(
                   post.youtube['title'],
-                  style: Theme.of(context).textTheme.labelMedium,
+                  style: Theme.of(context).textTheme.titleMedium,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 16),
                 Text(
                   post.youtube['name'],
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
+                // todo fromat view count
                 Text(
                   '${post.youtube['viewCount']} views',
                   style: Theme.of(context).textTheme.labelMedium,
@@ -50,6 +50,10 @@ class YoutubeTile extends StatelessWidget {
               ],
             ),
           ),
+          //todo foramt duration
+          Text(
+            '${post.youtube['duration']}',
+          )
         ],
       ),
     ]);

@@ -36,8 +36,11 @@ class _YoutubeListScreenState extends State<YoutubeListScreen> {
       ),
       body: PostListView(
         physics: const NeverScrollableScrollPhysics(),
+        // change query
         category: 'youtube',
-        separatorBuilder: (context, index) => const SizedBox.shrink(),
+        separatorBuilder: (context, index) => const SizedBox(
+          height: 16,
+        ),
         itemBuilder: (post, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(
