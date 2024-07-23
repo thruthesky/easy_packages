@@ -47,7 +47,7 @@ class Post {
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
 
   /// Youtube URL. Refer README.md for more information
-  final String? youtubeUrl;
+  final String youtubeUrl;
 
   final int commentCount;
   final Map<String, dynamic> data;
@@ -82,7 +82,9 @@ class Post {
       updateAt: json['updateAt'] is Timestamp
           ? (json['updateAt'] as Timestamp).toDate()
           : DateTime.now(),
-      youtubeUrl: json['youtubeUrl'],
+
+      /// youtubeUrl never be null. But just in case, it put empty string as default.
+      youtubeUrl: json['youtubeUrl'] ?? '',
       urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
       commentCount: json['commentCount'] ?? 0,
       data: json,
@@ -157,23 +159,17 @@ class Post {
       'updateAt': FieldValue.serverTimestamp(),
     };
 
-    /// if there is youtube url prepare youtube information
-    if (youtubeUrl != '') {
-      final youtube = await prepareYoutubeInfo(youtubeUrl);
-      if (youtube == null) {
-        throw 'post-create/invalid-youtube-url Invalid Youtube URL';
-      }
-      data['youtube'] = youtube;
-      dog('msg: $youtube');
-    }
+    final youtube = await getYoutubeConfig(youtubeUrl);
 
     return await PostService.instance.col.add({
       ...data,
+      if (youtube != null) 'youtube': youtube,
       ...?extra,
     });
   }
 
-  Future<Post?> update({
+  /// update a post
+  Future<void> update({
     String? title,
     String? content,
     List<String>? urls,
@@ -187,58 +183,14 @@ class Post {
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
     };
 
-    /// if there is youtube url prepare youtube information
-    if (youtubeUrl != '') {
-      final youtube = prepareYoutubeInfo(youtubeUrl!);
-      data['youtube'] = youtube;
-    }
-
-    if (data.isEmpty) {
-      throw 'post-update/no-data-update No data to update';
-    }
     await doc(id).update(
       {
         ...data,
+        if (this.youtubeUrl != youtubeUrl)
+          'youtube': await getYoutubeConfig(youtubeUrl),
         'updateAt': FieldValue.serverTimestamp(),
         ...?extra,
       },
     );
-
-    return get(id);
-  }
-
-//  prepared youtube information
-  static Future<Map<String, dynamic>?> prepareYoutubeInfo(
-      String youtubeUrl) async {
-    // get youtubeId
-    final youtubeId = getIdFromUrl(youtubeUrl);
-
-    if (youtubeId == null) {
-      return null;
-    }
-
-    /// check if the youtube url is a valid
-    try {
-      await Youtube.config(videoId: youtubeId);
-    } catch (e) {
-      throw 'post-prepare-youtube-info/no-data-update preparing youtube info field. check if the youtubeUrl is valid';
-    }
-
-    final youtubeVideoDetails = Youtube.videoDetails;
-    final youtubeChannelDetails = Youtube.channelDetails;
-    final youtubeThumbnailDetails = Youtube.thumbnails;
-
-    return {
-      'id': youtubeId,
-      'title': youtubeVideoDetails.title,
-      'name': youtubeChannelDetails.name,
-      'fullHd': youtubeThumbnailDetails.fullhd,
-      'hd': youtubeThumbnailDetails.hd,
-      'sd': youtubeThumbnailDetails.sd,
-      'hq': youtubeThumbnailDetails.hq,
-      'lq': youtubeThumbnailDetails.lq,
-      'duration': youtubeVideoDetails.duration,
-      'viewCount': youtubeVideoDetails.viewCount
-    };
   }
 }

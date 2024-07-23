@@ -40,30 +40,8 @@ class PostDetail extends StatelessWidget {
                       ],
                     );
             }),
-        const SizedBox(
-          height: 16,
-        ),
-        if (post.youtubeUrl != '') ...{
-          YoutubePlayer(post: post),
-          const SizedBox(
-            height: 16,
-          ),
-          Text(
-            post.youtube['title'],
-            style: Theme.of(context).textTheme.titleMedium,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Text(
-            post.youtube['name'],
-            style: Theme.of(context).textTheme.labelMedium,
-          ),
-          // todo fromat view count
-          Text(
-            '${post.youtube['viewCount']} views',
-            style: Theme.of(context).textTheme.labelMedium,
-          ),
-        },
+        const SizedBox(height: 16),
+        PostDetailYoutube(post: post),
         Text(post.title),
         Text(post.content),
       ],

@@ -40,26 +40,29 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     UserService.instance.init();
-    PostService.instance.init(categories: {
-      'qna': '질문답변',
-      'discussion': 'Discussion',
-      'news': 'News',
-      'job': '구인구직',
-      'buyandsell': '사고팔기',
-      'travel': '여행',
-      'food': '음식',
-      'study': '공부',
-      'hobby': '취미',
-      'etc': '기타',
-      'youtube': 'youtube',
-    });
+    PostService.instance.init(
+      categories: {
+        'qna': '질문답변',
+        'discussion': 'Discussion',
+        'news': 'News',
+        'job': '구인구직',
+        'buyandsell': '사고팔기',
+        'travel': '여행',
+        'food': '음식',
+        'study': '공부',
+        'hobby': '취미',
+        'etc': '기타',
+        'youtube': 'youtube',
+      },
+    );
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // ChatService.instance.showChatRoomEditScreen(globalContext);
       // PostService.instance.showPostCreateScreen(context: globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
       // PostService.instance.showPostListScreen(context: globalContext);
-      PostService.instance.showYoutubeListScreen(context: globalContext);
+      PostService.instance
+          .showYoutubeListScreen(context: globalContext, category: 'youtube');
 
       // showGeneralDialog(
       //   context: globalContext,

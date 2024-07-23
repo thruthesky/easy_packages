@@ -30,9 +30,12 @@ class PostService {
   ///  'job': '구인구직',
   /// });
   /// ```
+  @Deprecated('Remove categories and pass the options where it needs.')
   late Map<String, String> categories = {};
 
-  init({Map<String, String>? categories}) {
+  init({
+    Map<String, String>? categories,
+  }) {
     initialized = true;
     this.categories = categories ?? this.categories;
 
@@ -94,14 +97,17 @@ class PostService {
     );
   }
 
+  /// Show a screen to list youtube videos.
   Future showYoutubeListScreen({
     required BuildContext context,
-    bool autoPlay = false,
+    required String category,
   }) {
     return showGeneralDialog(
         context: context,
         pageBuilder: (_, __, ___) {
-          return YoutubeListScreen(autoPlay: autoPlay);
+          return YoutubeListScreen(
+            category: category,
+          );
         });
   }
 }

@@ -10,52 +10,66 @@ class YoutubeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      SizedBox(
-        width: double.infinity,
-        height: 200,
-        child: CachedNetworkImage(
-          imageUrl: post.youtube['hd'],
-          fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () async {
+        await PostService.instance
+            .showPostDetailScreen(context: context, post: post);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
         ),
-      ),
-      const SizedBox(height: 16),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          UserDoc(
-            builder: (user) => UserAvatar(user: user!),
-            uid: post.uid,
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
+        child: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: 200,
+              child: CachedNetworkImage(
+                imageUrl: post.youtube['hd'],
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  post.youtube['title'],
-                  style: Theme.of(context).textTheme.titleMedium,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                UserDoc(
+                  builder: (user) => UserAvatar(user: user!),
+                  uid: post.uid,
                 ),
-                Text(
-                  post.youtube['name'],
-                  style: Theme.of(context).textTheme.labelMedium,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        post.youtube['title'],
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        post.youtube['name'],
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      // todo fromat view count
+                      Text(
+                        '${post.youtube['viewCount']} views',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ],
+                  ),
                 ),
-                // todo fromat view count
+                //todo foramt duration
                 Text(
-                  '${post.youtube['viewCount']} views',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
+                  '${post.youtube['duration']}',
+                )
               ],
             ),
-          ),
-          //todo foramt duration
-          Text(
-            '${post.youtube['duration']}',
-          )
-        ],
+          ],
+        ),
       ),
-    ]);
+    );
   }
 }
