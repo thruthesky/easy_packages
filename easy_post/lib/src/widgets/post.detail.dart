@@ -114,6 +114,8 @@ class _PostDetailState extends State<PostDetail> {
                 if (value == 'edit') {
                   PostService.instance
                       .showPostUpdateScreen(context: context, post: post);
+                } else if (value == 'delete') {
+                  post.delete();
                 }
               },
             ),

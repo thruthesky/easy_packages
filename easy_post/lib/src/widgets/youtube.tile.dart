@@ -35,7 +35,9 @@ class YoutubeTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 UserDoc(
-                  builder: (user) => UserAvatar(user: user!),
+                  builder: (user) => user == null
+                      ? const SizedBox.shrink()
+                      : UserAvatar(user: user),
                   uid: post.uid,
                 ),
                 const SizedBox(width: 16),

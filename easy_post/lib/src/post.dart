@@ -31,6 +31,7 @@ class Post {
   final DateTime createdAt;
   final DateTime updateAt;
   final List<String> urls;
+  final bool deleted;
 
   static CollectionReference col = PostService.instance.col;
 
@@ -64,6 +65,7 @@ class Post {
     required this.commentCount,
     required this.data,
     required this.youtube,
+    required this.deleted,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -86,6 +88,7 @@ class Post {
       commentCount: json['commentCount'] ?? 0,
       data: json,
       youtube: json['youtube'] ?? {},
+      deleted: json['deleted'] ?? false,
     );
   }
   Map<String, dynamic> toJson() => {
@@ -98,7 +101,8 @@ class Post {
         'urls': urls,
         'youtubeUrl': youtubeUrl,
         'commentCount': commentCount,
-        'youtube': youtube
+        'youtube': youtube,
+        'deleted': deleted,
       };
 
   @override
@@ -171,6 +175,7 @@ class Post {
     String? content,
     List<String>? urls,
     String? youtubeUrl,
+    bool? deleted,
     Map<String, dynamic>? extra,
   }) async {
     final data = {
@@ -178,6 +183,7 @@ class Post {
       if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
+      if (deleted != null) 'deleted': deleted,
     };
 
     await doc(id).update(
@@ -188,6 +194,17 @@ class Post {
         'updateAt': FieldValue.serverTimestamp(),
         ...?extra,
       },
+    );
+  }
+
+  /// delete post, this will not delete the document but instead mark the the
+  /// document as deleted
+  Future<void> delete() async {
+    if (deleted == true) {
+      throw 'post-delete/post-already-deleted Post is already deleted';
+    }
+    await update(
+      deleted: true,
     );
   }
 }

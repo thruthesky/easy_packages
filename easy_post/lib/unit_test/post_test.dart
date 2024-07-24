@@ -25,7 +25,7 @@ void updatePost() async {
       'Creating Post');
 
   dog('post ${post.id}');
-  final updatePost = await post.update(content: 'Updaing post content');
+  // final updatePost = await post.update(content: 'Updaing post content');
 
   //
   // isTrue(updatePost?.content == 'Updaing post content', 'Updating the content');
@@ -70,5 +70,24 @@ void createYouyubePost() async {
     category: 'youtube',
     youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
   );
+  testReport();
+}
+
+void deletePost() async {
+  testStart('Delete post');
+  final ref = await Post.create(
+      category: 'temp', title: 'deleting post', content: 'deleting post ');
+
+  final post = await Post.get(ref.id);
+
+  await post.delete();
+
+  final deletedPost = await Post.get(ref.id);
+  isTrue(deletedPost.deleted == true, "Deleting post");
+
+  await isException(() async {
+    await deletedPost.delete();
+  });
+
   testReport();
 }
