@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
+/// Shows an alert dialog with a title and a message.
 Future<void> alert({
   required BuildContext context,
   required String title,
   required String message,
 }) async {
   return
-      // HouseService.instance.alertDialog?.call(
-      //       context: context,
-      //       title: title,
-      //       message: message,
-      //     ) ??
+      // TODO: let it be customizable by HelperService.instance.init(alert: ...)
       showDialog<void>(
     context: context,
     builder: (BuildContext context) {

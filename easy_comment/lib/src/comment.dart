@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easyuser/easyuser.dart';
 
@@ -27,7 +26,6 @@ class Comment {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<String> urls;
-  final String youtubeUrl;
   final int depth;
   final String order;
   bool hasChild = false;
@@ -44,10 +42,8 @@ class Comment {
     required this.createdAt,
     required this.updatedAt,
     required this.urls,
-    required this.youtubeUrl,
     required this.depth,
     required this.order,
-    // this.hasChild = false,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -71,10 +67,8 @@ class Comment {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       urls: [],
-      youtubeUrl: '',
       depth: 1,
       order: '',
-      // hasChild: false,
     );
   }
 
@@ -92,10 +86,8 @@ class Comment {
           ? (json['updateAt'] as Timestamp).toDate()
           : DateTime.now(),
       urls: List<String>.from(json['urls']),
-      youtubeUrl: json['youtubeUrl'],
       depth: json['depth'] ?? 0,
       order: json['order'],
-      // hasChild: json['hasChild'] ?? false,
     );
   }
 
@@ -109,10 +101,8 @@ class Comment {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'urls': urls,
-      'youtubeUrl': youtubeUrl,
       'depth': depth,
       'order': order,
-      // 'hasChild': hasChild,
     };
   }
 
@@ -161,21 +151,19 @@ class Comment {
         'uid': my.uid,
         'createdAt': FieldValue.serverTimestamp(),
         'updateAt': FieldValue.serverTimestamp(),
-        'urls': [],
-        'youtubeUrl': '',
+        'urls': urls,
         'depth': parent == null ? 0 : parent.depth + 1,
         'order': order,
-        'hasChild': false,
       });
       t.update(documentReference, {
         'commentCount': FieldValue.increment(1),
       });
       // 부모 코멘트에 hasChild 를 true 로 변경한다.
-      if (parent != null) {
-        t.update(parent.ref, {
-          'hasChild': true,
-        });
-      }
+      // if (parent != null) {
+      //   t.update(parent.ref, {
+      //     'hasChild': true,
+      //   });
+      // }
 
       return addedRef;
     });
