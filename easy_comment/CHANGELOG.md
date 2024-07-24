@@ -1,3 +1,6 @@
+## 0.0.4
+* Add. edit, delete.
+
 ## 0.0.3
 * Add. CommentListTreeView for tree style vertical line comment listing.
 
