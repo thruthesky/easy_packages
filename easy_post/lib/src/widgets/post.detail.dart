@@ -103,41 +103,50 @@ class _PostDetailState extends State<PostDetail> {
                   focusOnContent: false,
                 );
               },
-              child: const Text('Reply'),
+              child: Text('Reply'.t),
             ),
             TextButton(
               onPressed: () {},
-              child: const Text('Like'),
+              child: Text('Like'.tr(args: {'n': 3}, form: 3)),
             ),
             const Spacer(),
-            if (post.uid == my.uid)
-              PopupMenuButton<String>(
-                itemBuilder: (_) => [
-                  const PopupMenuItem(
+            PopupMenuButton<String>(
+              itemBuilder: (_) => [
+                if (post.isMine)
+                  PopupMenuItem(
                     value: 'edit',
-                    child: Text('Edit'),
+                    child: Text('Edit'.t),
                   ),
-                  const PopupMenuItem(
+                if (post.isMine)
+                  PopupMenuItem(
                     value: 'delete',
-                    child: Text('Delete'),
+                    child: Text('Delete'.t),
                   ),
-                ],
-                child: const Icon(Icons.more_vert),
-                onSelected: (value) async {
-                  if (value == 'edit') {
-                    PostService.instance
-                        .showPostUpdateScreen(context: context, post: post);
-                  } else if (value == 'delete') {
-                    final re = await confirm(
-                      context: context,
-                      title: 'Delete'.t,
-                      message: 'Are you sure you wanted to delete this post?'.t,
-                    );
-                    if (re == false) return;
-                    await post.delete();
-                  }
-                },
-              ),
+                PopupMenuItem(
+                  value: 'report',
+                  child: Text('Report'.t),
+                ),
+                PopupMenuItem(
+                  value: 'block',
+                  child: Text('Block'.t),
+                ),
+              ],
+              child: const Icon(Icons.more_vert),
+              onSelected: (value) async {
+                if (value == 'edit') {
+                  PostService.instance
+                      .showPostUpdateScreen(context: context, post: post);
+                } else if (value == 'delete') {
+                  final re = await confirm(
+                    context: context,
+                    title: 'Delete'.t,
+                    message: 'Are you sure you wanted to delete this post?'.t,
+                  );
+                  if (re == false) return;
+                  await post.delete();
+                }
+              },
+            ),
           ],
         ),
       ],

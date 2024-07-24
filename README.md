@@ -174,7 +174,9 @@ Service class does
 
 ## Database
 
-- Give empty value for the field to help filtering. For instance, if the user didn't choose this gender, then save it as empty string into the database so, it can be used for filtering to get who didn't put their gender. If the field does not exists, it's not easy to filter.
+- Give default value for the field to help filtering. For instance,
+  - if the user didn't choose his gender, then save it as empty string into the database so, it can be used for filtering to know who didn't choose for their gender. If the field does not exists, it's not easy to filter.
+  - if the post is not deleted, then save fales to `deleted` field. With this, you can easily filter posts that are not deleted. Without the default value, you cannot filter.
 
 
 

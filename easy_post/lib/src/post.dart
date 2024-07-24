@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/defines.dart';
+import 'package:easy_storage/easy_storage.dart';
 
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
@@ -52,6 +53,9 @@ class Post {
   final Map<String, dynamic> youtube;
   Map<String, dynamic> get extra => data;
 
+  /// Return true if the post is created by the current user
+  bool get isMine => currentUser?.uid == uid;
+
   Post({
     required this.id,
     required this.category,
@@ -88,7 +92,7 @@ class Post {
       commentCount: json['commentCount'] ?? 0,
       data: json,
       youtube: json['youtube'] ?? {},
-      deleted: json['deleted'] ?? false,
+      deleted: json['deleted'],
     );
   }
   Map<String, dynamic> toJson() => {
@@ -158,6 +162,7 @@ class Post {
       'commentCount': 0,
       'createdAt': FieldValue.serverTimestamp(),
       'updateAt': FieldValue.serverTimestamp(),
+      'deleted': false,
     };
 
     final youtube = await getYoutubeConfig(youtubeUrl);
@@ -170,12 +175,14 @@ class Post {
   }
 
   /// update a post
+  ///
+  /// TODO: display loader while updating
+  /// TODO: display loader and percentage while image uploading
   Future<void> update({
     String? title,
     String? content,
     List<String>? urls,
     String? youtubeUrl,
-    bool? deleted,
     Map<String, dynamic>? extra,
   }) async {
     final data = {
@@ -183,7 +190,6 @@ class Post {
       if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
-      if (deleted != null) 'deleted': deleted,
     };
 
     await doc(id).update(
@@ -199,12 +205,19 @@ class Post {
 
   /// delete post, this will not delete the document but instead mark the the
   /// document as deleted
+  ///
+  /// TODO: display loader while deleting
   Future<void> delete() async {
     if (deleted == true) {
       throw 'post-delete/post-already-deleted Post is already deleted';
     }
-    await update(
-      deleted: true,
-    );
+
+    for (String url in urls) {
+      await StorageService.instance.delete(url);
+    }
+
+    await ref.update({
+      'deleted': true,
+    });
   }
 }
