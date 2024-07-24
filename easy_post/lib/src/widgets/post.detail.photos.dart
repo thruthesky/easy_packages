@@ -10,11 +10,14 @@ class PostDetailPhotos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Column(
-        children: [
-          Row(
+    if (post.urls.isEmpty) return const SizedBox.shrink();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
             children: [
               ...post.urls.asMap().entries.map((entry) {
                 return SizedBox(
@@ -39,9 +42,28 @@ class PostDetailPhotos extends StatelessWidget {
               }),
             ],
           ),
-          if (post.youtubeUrl.isNotEmpty) ...{},
-        ],
-      ),
+        ),
+        if (post.youtubeUrl.isNotEmpty) ...{
+          const SizedBox(height: 16),
+          Text(
+            post.youtube['title'],
+            style: Theme.of(context).textTheme.titleMedium,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            post.youtube['name'],
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          Text(
+            '${formatViews(post.youtube['viewCount'])} views',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+        },
+      ],
     );
   }
 }

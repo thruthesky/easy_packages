@@ -34,7 +34,7 @@ class _YoutubeListScreenState extends State<YoutubeListScreen> {
         ],
       ),
       body: PostListView(
-        category: 'youtube',
+        category: widget.category,
         separatorBuilder: (context, index) => const SizedBox(
           height: 16,
         ),
