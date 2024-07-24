@@ -10,6 +10,7 @@ class PostDetailPhotos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (post.urls.isEmpty) return const SizedBox.shrink();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

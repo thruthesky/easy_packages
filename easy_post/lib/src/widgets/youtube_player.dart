@@ -53,9 +53,9 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
 
   @override
   void dispose() {
-    super.dispose();
     youtubeController.pause();
     youtubeController.dispose();
+    super.dispose();
   }
 
   void listener() {
@@ -63,6 +63,17 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
       setState(() {
         playerState = youtubeController.value.playerState;
       });
+    }
+  }
+
+  /// load the new post youtube id if the post youtube url change
+  /// or the user update the post youtube url
+  @override
+  void didUpdateWidget(covariant YoutubePlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.post.youtube['id'] != widget.post.youtube['']) {
+      youtubeController.load(widget.post.youtube['id']);
+      widget.autoPlay ? youtubeController.play() : youtubeController.pause();
     }
   }
 

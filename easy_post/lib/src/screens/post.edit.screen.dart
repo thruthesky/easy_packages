@@ -51,11 +51,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
   @override
   void dispose() {
-    ///
-    // for (var url in urls) {
-    //   StorageService.instance.delete(url);
-    // }
-
     titleController.dispose();
     contentController.dispose();
     youtubeController.dispose();
@@ -160,12 +155,13 @@ class _PostEditScreenState extends State<PostEditScreen> {
                           youtubeUrl: youtubeController.text,
                           urls: urls,
                         );
+
                         if (context.mounted) {
-                          Navigator.of(context).pop;
+                          Navigator.of(context).pop();
                         }
                       }
                     },
-                    child: Text('post Create'.t),
+                    child: Text(isCreate ? 'post Create'.t : 'Update'.t),
                   ),
                 ],
               )

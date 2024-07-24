@@ -28,13 +28,14 @@ class _YoutubeListScreenState extends State<YoutubeListScreen> {
               await PostService.instance.showPostCreateScreen(
                 context: context,
                 category: 'youtube',
+                enableYoutubeUrl: true,
               );
             },
           ),
         ],
       ),
       body: PostListView(
-        category: 'youtube',
+        category: widget.category,
         separatorBuilder: (context, index) => const SizedBox(
           height: 16,
         ),

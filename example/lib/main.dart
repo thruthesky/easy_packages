@@ -42,17 +42,17 @@ class MyAppState extends State<MyApp> {
     UserService.instance.init();
     PostService.instance.init(
       categories: {
-        // 'qna': '질문답변',
-        // 'discussion': 'Discussion',
-        // 'news': 'News',
-        // 'job': '구인구직',
-        // 'buyandsell': '사고팔기',
-        // 'travel': '여행',
-        // 'food': '음식',
-        // 'study': '공부',
-        // 'hobby': '취미',
-        // 'etc': '기타',
-        // 'youtube': 'youtube',
+        'qna': '질문답변',
+        'discussion': 'Discussion',
+        'news': 'News',
+        'job': '구인구직',
+        'buyandsell': '사고팔기',
+        'travel': '여행',
+        'food': '음식',
+        'study': '공부',
+        'hobby': '취미',
+        'etc': '기타',
+        'youtube': 'youtube',
       },
     );
 
