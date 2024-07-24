@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 
 /// String extension methods
+///
+///
 extension EasyHelperStringExtension on String {
   /// Converts a string to an integer
   ///
