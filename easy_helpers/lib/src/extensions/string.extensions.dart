@@ -75,24 +75,6 @@ extension EasyHelperStringExtension on String {
   bool get hasUrl =>
       contains('http://') || contains('https://') || contains('www.');
 
-  // /// 해당 문자열이 빈 문자열이면, 익명 프로필 사진 URL 을 반환한다.
-  // String get orAnonymousUrl => isEmpty ? anonymousUrl : this;
-
-  // /// 해당 문자열이 빈 문자열이면, 검은색 사진 URL 을 반환한다.
-  // String get orBlackUrl => isEmpty ? blackUrl : this;
-
-  // /// 해당 문자열이 빈 문자열이면, 흰색 사진 URL 을 반환한다.
-  // String get orWhiteUrl => isEmpty ? whiteUrl : this;
-
-  // /// 각종 특수 문자를 없앤다.
-  // String get sanitize => trim().replaceAll(RegExp(r'[\r\n\t]'), " ");
-
-  // /// 내가 [uid] 사용자를 차단했으면, [message] 를 리턴한다. 아니면, 현재 문자열을 리턴한다.
-  // String orBlocked(String uid, String message) {
-  //   if (notLoggedIn) return this;
-  //   return iHave.blocked(uid) ? message : this;
-  // }
-
   /// Converts a string to a DateTime object. If the string is not in a valid date format and cannot be parsed,
   /// it returns the current time instead of null.
   ///
@@ -105,8 +87,13 @@ extension EasyHelperStringExtension on String {
     }
   }
 
+  /// Returns the year of the DateTime object.
   int get year => dateTime.year;
+
+  /// Returns the month of the DateTime object.
   int get month => dateTime.month;
+
+  /// Returns the day of the DateTime object.
   int get day => dateTime.day;
 
   bool get isToday {

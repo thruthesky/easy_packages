@@ -1,3 +1,7 @@
+## 0.0.5
+* Add. `chunk` and more methods.
+* Add. Unit tests.
+
 ## 0.0.4
 * **Breaking Chnages** Refine the package. Some function name changed.
 * Add. Unit tests.
