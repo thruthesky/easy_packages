@@ -31,7 +31,7 @@ class CommentDetail extends StatelessWidget {
               ),
               const SizedBox(width: 8),
             ],
-            Text(comment.createdAt.toShort),
+            Text(comment.createdAt.short),
           ],
         ),
         Text(comment.content),
