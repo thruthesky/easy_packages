@@ -26,7 +26,7 @@ class UserListTile extends StatelessWidget {
         user.displayName,
       ),
       subtitle: Text(
-        user.createdAt?.toShort ?? '',
+        user.createdAt?.short ?? '',
       ),
       onTap: () {
         if (onTap != null) {
