@@ -151,7 +151,7 @@ packages:
       path: "../../easy_locale"
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   easy_storage:
     dependency: transitive
     description:

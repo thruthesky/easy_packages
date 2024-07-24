@@ -89,6 +89,10 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
                   size: 44,
                   radius: 20,
                 ),
+                UserDoc(
+                  uid: widget.comment.uid,
+                  builder: (user) => Text(user?.displayName ?? 'x'),
+                ),
 
                 /// 자식이 있다면, 아바타 아래에 세로 라인을 그린다. 즉, 아바타 아래의 세로 라인은 여기서 그린다.
                 if (hasChild)
