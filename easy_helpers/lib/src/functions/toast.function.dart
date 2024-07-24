@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_locale/easy_locale.dart';
 
 /// Display a snackbar
 ///
@@ -76,7 +77,10 @@ ScaffoldFeatureController toast({
           if (hideCloseButton == false)
             TextButton(
               onPressed: () {
-                if (!context.mounted) return;
+                if (!context.mounted) {
+                  dog('toast(): context is not mouned!');
+                  return;
+                }
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
               child: Text(
