@@ -5,17 +5,12 @@ import 'package:intl/intl.dart';
 ///
 extension EasyExtensionDateTimeExtension on DateTime {
   /// Returns a string of "yyyy-MM-dd"
-  String get short {
-    final dt = this;
+  String get short => shortDateTime;
 
-    /// Returns a string of "yyyy-MM-dd" or "HH:mm:ss"
-    final now = DateTime.now();
-
-    if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
-      return DateFormat.jm().format(dt);
-    } else {
-      return DateFormat('yy.MM.dd').format(dt);
-    }
+  /// Returns date if the date is today, otherwise returns time
+  ///
+  String get shortDateTime {
+    return isToday ? jm : md;
   }
 
   /// Returns a string of "yyyy-MM-dd"
@@ -23,9 +18,30 @@ extension EasyExtensionDateTimeExtension on DateTime {
     return DateFormat.yMd().format(this);
   }
 
+  /// Converts a string to a DateTime object and returns it in YYYY-MM-DD HH:mm:ss format.
+  ///
+  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
+  String get yMdjm {
+    return DateFormat.yM().add_jm().format(this);
+  }
+
+  /// Converts a string to a DateTime object and returns it in MM-DD format.
+  ///
+  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
+  String get md {
+    return DateFormat.Md().format(this);
+  }
+
   /// Returns a string of "yyyy-MM-dd HH:mm:ss"
   String get jm {
     return DateFormat.jm().format(this);
+  }
+
+  /// Returns in the format of 'jms' (e.g. 5:08:37 PM)
+  ///
+  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
+  String get jms {
+    return DateFormat.jms().format(this);
   }
 
   /// Returns a string of "yy-MM-dd"

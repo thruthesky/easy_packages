@@ -22,28 +22,13 @@ extension EasyHelperStringExtension on String {
   bool get isEmail =>
       RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(this);
 
-  /// Return value if the current string is empty.
-  ///
-  /// example
-  /// ```dart
-  /// ''.ifEmpty('This is empty!') // result: 'This is empty!'
-  /// String? uid; uid?.ifEmpty('UID is empty!') // result: null
-  ///
-  /// ```
-  String ifEmpty(String value) => isEmpty ? value : this;
-
-  /// If the string is empty, return the value.
+  /// If the string is empty, return the newString.
   ///
   /// example
   /// ```dart
   /// String gender = user.gender.or(null);
   /// ```
-  String or(String value) => isEmpty ? value : this;
-
-  /// If the string is empty, return tnull
-  dynamic get orNull => isEmpty ? null : this;
-
-  String upTo(int len) => length <= len ? this : substring(0, len);
+  String or(String newString) => isEmpty ? newString : this;
 
   /// Cut the string
   ///
@@ -71,77 +56,24 @@ extension EasyHelperStringExtension on String {
     return s;
   }
 
-  /// Return true if the string contains the url.
-  bool get hasUrl =>
-      contains('http://') || contains('https://') || contains('www.');
+  /// Check if string is a valid date
+  bool get isValidDateTime => DateTime.tryParse(this) != null;
 
-  /// Converts a string to a DateTime object. If the string is not in a valid date format and cannot be parsed,
-  /// it returns the current time instead of null.
+  /// Converts a string to a DateTime object.
+  ///
+  /// If the string is not in a valid date format and cannot be parsed,
+  /// it returns the begining date time of unix time stamp which is 1970.
   ///
   /// 예) '2021-01-01' -> 2021-01-01 00:00:00.000
+  ///
+  ///
   DateTime get dateTime {
     try {
       return DateTime.parse(this);
     } catch (e) {
-      return DateTime.now();
+      return DateTime(1970);
     }
   }
-
-  /// Returns the year of the DateTime object.
-  int get year => dateTime.year;
-
-  /// Returns the month of the DateTime object.
-  int get month => dateTime.month;
-
-  /// Returns the day of the DateTime object.
-  int get day => dateTime.day;
-
-  bool get isToday {
-    final nowDate = DateTime.now();
-    return year == nowDate.year && month == nowDate.month && day == nowDate.day;
-  }
-
-  /// Converts a string to a DateTime object and returns it in YYYY-MM-DD format.
-  /// If the string is not in a valid date format and cannot be parsed, it returns the current date.
-  ///
-  ///
-  String get yMd {
-    return DateFormat.yMd().format(dateTime);
-  }
-
-  /// Converts a string to a DateTime object and returns it in YYYY-MM-DD HH:mm:ss format.
-  ///
-  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
-  String get yMdjm {
-    return DateFormat.yM().add_jm().format(dateTime);
-  }
-
-  /// Converts a string to a DateTime object and returns it in MM-DD format.
-  ///
-  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
-  String get md {
-    return DateFormat.Md().format(dateTime);
-  }
-
-  String get jm {
-    return DateFormat.jm().format(dateTime);
-  }
-
-  /// Returns in the format of 'jms' (e.g. 5:08:37 PM)
-  ///
-  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
-  String get jms {
-    return DateFormat.jms().format(dateTime);
-  }
-
-  /// Returns date if the date is today, otherwise returns time
-  ///
-  String get shortDateTime {
-    return isToday ? jm : md;
-  }
-
-  /// Alias of [shortDateTime]
-  String get short => shortDateTime;
 
   /// Returns string with capitalized first letter
   ///
@@ -156,11 +88,45 @@ extension EasyHelperStringExtension on String {
 
   /// Alias of [capitalizeFirstLetter]
   String get ucFirst => capitalizeFirstLetter();
+
+  /// Check if this string matches a regular expression (regex)
+  ///
+  ///
+  bool hasMatch(String pattern) => RegExp(pattern).hasMatch(this);
+
+  /// Checks if string consist only Alphabet. (No Whitespace)
+  bool get isAlphabet => hasMatch(r'^[a-zA-Z]+$');
+
+  /// Check if string is Alphanumeric
+  bool get isAlphanumeric => hasMatch(r'^[a-zA-Z0-9]+$');
+
+  /// Check if string is a boolean
+  bool get isBool => this == 'true' || this == 'false';
+
+  /// Check if string is an integer
+  bool get isInt => int.tryParse(this) != null;
+
+  /// Check if string is numeric
+  bool get isNumeric => double.tryParse(this) != null;
+
+  /// Return true if the string contains the url.
+  bool get hasUrl =>
+      contains('http://') || contains('https://') || contains('www.');
+
+  /// Check if string is URL
+  bool get isURL => hasMatch(r'^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?$');
 }
 
 /// String Extension to check if a string is null or empty
 ///
 /// Checks if a String? is null or not in the extends clause.
 extension EasyHelperNullableStringExtension on String? {
+  /// Returns true if the string is null or empty
   bool get isNullOrEmpty => this == null || this!.isEmpty;
+
+  /// Alias of [isNullOrEmpty]
+  bool get isEmpty => isNullOrEmpty;
+
+  /// If the string is null or empty, then it will return the newString
+  String or(String newString) => isNullOrEmpty ? newString : this!;
 }

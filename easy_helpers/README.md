@@ -1,19 +1,14 @@
 # Easy Helpers
 
+* `easy_helpers` is a library tool that helps developers to quickly start their app.
+* It provides many helpful functions, extensions, classes that you will love to use in your daily flutter coding.
 
-* Helper classes, functions, and extensions for FireFlutter
-
-# TODO
-
-Collect all the extensions from the open source code and make it available from this package;
-
-- https://pub.dev/packages/awesome_extensions
-- https://pub.dev/packages/awesome_flutter_extensions
 
 
 
 # DateTime Extensions
 
+This package provides some DateTime related handy extension method.
 
 ## Usage
 
@@ -30,8 +25,8 @@ print(now.isSameWeek(now.add(Duration(days: 2))));  // Checks if two dates are i
 
 ### Formatting Methods
 - `short`: Returns a string in "HH:mm" format for today's date, or "yy.MM.dd" for other dates.
-- `yMd`: Returns the date in a localized month/day/year format.
-- `jm`: Returns the time in a localized hour/minute format.
+- `yMd`: Returns the date in a localized month/day/year format. It is merely a short for `DateTime.yMd().format(this)`.
+- `jm`: Returns the time in a localized hour/minute format. It is merely a short for `DateTime.jm().format(this)`.
 
 ### Date Comparison Methods
 - `isToday`: Returns true if the date is today.
@@ -196,14 +191,35 @@ void main() {
 ### Validation Methods
 
 - `isEmail`: Returns true if the string is a valid email address.
+- `isAlphabet`: Checks if string consist only Alphabet. (No Whitespace)
+- `isAlphanumeric`: Check if string is Alphanumeric
+- `isBool`: Check if string is a boolean
+- `isInt`: Check if string is an integer
+- `isNumeric`: Check if string is numeric
+- `hasUrl`: Return true if the string contains the url.
+- `isURL`: Check if string is URL
 
 ### String Manipulation Methods
 
-- `ifEmpty(String value)`: Returns the given value if the string is empty.
+- `isEmpty`: Returns true if the String is null or empty.
+Example:
+```dart
+String? test;
+expect(test.isEmpty, equals(true));
+expect('test'.isEmpty, equals(false));
+```
 - `or(String value)`: Returns the given value if the string is empty.
-- `orNull`: Returns null if the string is empty.
-- `upTo(int len)`: Cuts the string to the specified length.
-- `cut(int length, {String suffix = ''})`: Cuts the string and adds a suffix.
+Example:
+```dart
+String? test;
+expect(test.or('default'), equals('default'));
+expect(''.or('default'), equals('default'));
+expect('test'.or('default'), equals('test'));
+```
+
+
+- `cut(int length, {String suffix = ''})`: Remove `\r\n\t` and cuts the string into the length. Optionally adds a suffix.
+
 - `replace(Map<String, String> map)`: Replaces all occurrences of keys with their corresponding values.
 
 ### URL Related Method
@@ -212,18 +228,8 @@ void main() {
 
 ### Date and Time Methods
 
+- `isValidDateTime`: Returns true if the string can be parsed as DateTime. Or if the string is in date time format.
 - `dateTime`: Converts the string to a DateTime object.
-- `year`: Returns the year of the date string.
-- `month`: Returns the month of the date string.
-- `day`: Returns the day of the date string.
-- `isToday`: Returns true if the date string represents today's date.
-- `yMd`: Returns the date in YYYY-MM-DD format.
-- `yMdjm`: Returns the date and time in YYYY-MM-DD HH:mm:ss format.
-- `md`: Returns the date in MM-DD format.
-- `jm`: Returns the time in HH:mm format.
-- `jms`: Returns the time in HH:mm:ss format.
-- `shortDateTime`: Returns date if it's not today, otherwise returns time.
-- `short`: Alias for `shortDateTime`.
 
 ### Text Formatting Method
 
@@ -234,37 +240,43 @@ void main() {
 
 An additional extension is provided for nullable strings:
 
-- `isNullOrEmpty`: Returns true if the string is null or empty.
+- `isEmpty`: Returns true if the string is null or empty.
+- `or(newString)`: Returns the newString if the string is null or empty.
 
-Usage:
+
+## Regular Expression
+
+
+### hasMatch
+
+Check if this string matches a regular expression (regex)
 
 ```dart
-String? nullableString;
-print(nullableString.isNullOrEmpty);  // true
-
-nullableString = '';
-print(nullableString.isNullOrEmpty);  // true
-
-nullableString = 'Not empty';
-print(nullableString.isNullOrEmpty);  // false
+void main() {
+  // Define a string containing "hello" and "world"
+  const input = 'hello world';
+  
+  // Check if the string contains the word "world"
+  final hasWorld = input.hasMatch('world');
+  print(hasWorld); // prints: true
+  
+  // Check if the string contains the word "universe"
+  final hasUniverse = input.hasMatch('universe');
+  print(hasUniverse); // prints: false
+}
 ```
-
-
 
 
 # Dart Extensions for Iterable and List
 
-This README provides documentation and examples for the custom Dart extensions on `Iterable` and `List`. These extensions include methods for splitting collections into chunks.
+This package offers several extension methods for `Iterable` to help speed up Flutter app development.
 
-## Extensions
 
-### `IterableExtension<T>`
-
-#### `Iterable<List<T>> chunks(int chunkSize)`
+## `Iterable<List<T>> chunks(int chunkSize)`
 
 This method splits a large iterable into smaller sublists of a specified size.
 
-#### Example:
+### Example:
 ```dart
 import 'your_extension_file.dart';
 
@@ -275,13 +287,11 @@ void main() {
 }
 ```
 
-### `ListExtension<T>`
-
-#### `List<List<T>> chunks(int chunkSize)`
+## `List<List<T>> chunks(int chunkSize)`
 
 This method splits a large list into smaller sublists of a specified size.
 
-#### Example:
+### Example:
 ```dart
 import 'your_extension_file.dart';
 
@@ -380,24 +390,11 @@ These extensions provide a convenient way to handle large collections by breakin
 
 This package contains a collection of utility functions for Flutter development. These functions provide helpful utilities for displaying dialogs, logging, handling strings, and more.
 
-## Files
-
-1. [Alert](#alert)
-2. [confirm_dialog.function.dart](#confirm_dialogfunctiondart)
-3. [error_dialog.function.dart](#error_dialogfunctiondart)
-4. [input_dialog.function.dart](#input_dialogfunctiondart)
-5. [log.functions.dart](#logfunctionsdart)
-6. [platform.functions.dart](#platformfunctionsdart)
-7. [string.functions.dart](#stringfunctionsdart)
-8. [toast.function.dart](#toastfunctiondart)
-
-## Functions
-
-### Alert
+## Alert
 
 Provides functions to display alert dialogs.
 
-#### Example:
+### Example:
 ```dart
 alert(
     context,
@@ -409,130 +406,166 @@ alert(
 );
 ```
 
-### confirm_dialog.function.dart
+## Confirm
 
 Provides functions to display confirmation dialogs.
 
 #### Example:
 ```dart
-import 'confirm_dialog.function.dart';
-
-void showConfirm(BuildContext context) {
-  showConfirmDialog(
-    context,
-    title: 'Confirm',
-    content: 'Are you sure?',
-    onConfirmed: () {
-      print('Confirmed');
-    },
-  );
-}
+final re = await confirm(
+  context: context,
+  title: 'Delete'.t,
+  message: 'Are you sure you wanted to delete this post?'.t,
+);
+if (re == false) return;
 ```
 
-### error_dialog.function.dart
+## Error
 
 Provides functions to display error dialogs.
 
-#### Example:
+### Example:
 ```dart
-import 'error_dialog.function.dart';
-
-void showError(BuildContext context) {
-  showErrorDialog(
-    context,
-    title: 'Error',
-    content: 'An error has occurred',
-  );
-}
+error(context: context, title: 'title', message: 'message');
 ```
 
-### input_dialog.function.dart
+## Input
 
 Provides functions to display input dialogs.
 
-#### Example:
+### Example:
 ```dart
-import 'input_dialog.function.dart';
 
-void showInput(BuildContext context) {
-  showInputDialog(
-    context,
-    title: 'Input',
-    labelText: 'Enter something',
-    onSubmitted: (value) {
-      print('Input: $value');
-    },
-  );
-}
 ```
 
-### log.functions.dart
+## log
 
 Provides logging functions.
 
-#### Example:
-```dart
-import 'log.functions.dart';
 
-void logExample() {
-  logInfo('This is an info message');
-  logWarning('This is a warning message');
-  logError('This is an error message');
-}
+```dart
+log('This is an info message');
 ```
 
-### platform.functions.dart
+## platform
 
 Provides functions to handle platform-specific code.
 
-#### Example:
-```dart
-import 'platform.functions.dart';
 
-void checkPlatform() {
-  if (isAndroid) {
-    print('Running on Android');
-  } else if (isIOS) {
-    print('Running on iOS');
+Here are some examples of how you can use the code:
+
+Example 1: Printing the platform name
+```dart
+print(platformName()); // prints "web" if running on web, otherwise prints "android" or "ios"
+```
+
+Example 2: Using platform-specific logic
+```dart
+void main() {
+  if (platformName() == 'ios') {
+    print('This is an iOS device');
+  } else if (platformName() == 'android') {
+    print('This is an Android device');
   }
 }
 ```
 
-### string.functions.dart
-
-Provides string utility functions.
-
-#### Example:
+Example 3: Checking for specific platforms
 ```dart
-import 'string.functions.dart';
+void main() {
+  if (isIos) {
+    print('This is an iOS device');
+  }
 
-void stringExample() {
-  String text = 'hello world';
-  print(text.capitalize()); // Output: Hello world
+  if (isAndroid) {
+    print('This is an Android device');
+  }
 }
 ```
 
-### toast.function.dart
+
+
+## Toast
 
 Provides functions to display toast messages.
 
-#### Example:
 ```dart
-import 'toast.function.dart';
-
-void showToast(BuildContext context) {
-  showToastMessage(context, 'This is a toast message');
-}
+final re = await my?.block(chat.room.otherUserUid!);
+toast(
+  context: context,
+  title: re == true ? 'Blocked' : 'Unblocked',
+  message: re == true ? 'You have blocked this user' : 'You have unblocked this user',
+);
 ```
 
-## Usage
 
-To use these functions, include the respective Dart files in your Flutter project and import them where needed. You can then call the functions as demonstrated in the examples above.
+
+# String Funcntion
+
+
+## sanitizeFilename
+
+A utility function to sanitize filenames by replacing illegal characters and reserved names.
+
+This function takes an input string and replaces characters that are not safe for use in filenames. It also removes reserved names on Unix-based systems and Windows.
 
 ```dart
-import 'package:your_project/functions/Alert';
-import 'package:your_project/functions/confirm_dialog.function.dart';
-// Import other functions as needed
+const unsafeUserInput = "~/.\u0000ssh/authorized_keys";
+
+// "~.sshauthorized_keys"
+sanitizeFilename(unsafeUserInput);
+
+// "~-.-ssh-authorized_keys"
+sanitizeFilename(unsafeUserInput, replacement: "-");
 ```
 
-These utility functions can help streamline your Flutter development by providing ready-to-use solutions for common tasks.
+Parameters:
+
+`input`: The input string to be sanitized.
+
+`replacement`: An optional parameter that specifies the character or string to replace illegal characters with. Defaults to an empty string.
+
+# Platform
+
+To detect in which platform the app is running:
+
+```dart
+final isMacOS = context.platform.isMacOS
+```
+
+All the parameters available are:
+
+- isAndroid
+- isWeb
+- isMacOS
+- isWindows
+- isFuchsia
+- isIOS
+- isLinux
+
+To detect the target platform (e.g. the app is running on Web but from an iOS device):
+
+```dart
+final isIOS = context.targetPlatform.isIOS;
+```
+
+- isAndroid
+- isFuchsia
+- isIOS
+- isLinux
+- isMacOS
+- isWindows
+
+
+
+# Log
+
+- `dog`: Prints debug log message.
+```dart
+dog('this is a log message with dog emoji 🐶');
+```
+
+- `.dog()`: Prints debug log message on any Object
+```dart
+({'a': 'apple', 'b': 'banana'} as Map).dog();
+```
