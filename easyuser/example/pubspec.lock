@@ -141,10 +141,10 @@ packages:
     dependency: transitive
     description:
       name: easy_helpers
-      sha256: "6387cb4b2327f1d23e5759022471c23a31e850d90ab108524bc7f9333546be90"
+      sha256: d3df12f28dd532f2ebaec2685ce0bdc8f02d132683ef3081ddc0c842104476f4
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.5"
   easy_locale:
     dependency: "direct main"
     description:
@@ -166,7 +166,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.8"
+    version: "0.0.13"
   fake_async:
     dependency: transitive
     description:
