@@ -27,6 +27,12 @@ class PostUniteTestScreen extends StatelessWidget {
               createYouyubePost();
             },
             child: const Text('Youtube Post Test'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              deletePost();
+            },
+            child: const Text('Delete Post Test'),
           )
         ],
       ),
