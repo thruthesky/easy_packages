@@ -438,14 +438,6 @@ Provides functions to display input dialogs.
 
 ```
 
-## log
-
-Provides logging functions.
-
-
-```dart
-log('This is an info message');
-```
 
 ## platform
 
