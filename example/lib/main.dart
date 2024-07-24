@@ -6,7 +6,6 @@ import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
-import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -43,17 +42,17 @@ class MyAppState extends State<MyApp> {
     UserService.instance.init();
     PostService.instance.init(
       categories: {
-        'qna': '질문답변',
-        'discussion': 'Discussion',
-        'news': 'News',
-        'job': '구인구직',
-        'buyandsell': '사고팔기',
-        'travel': '여행',
-        'food': '음식',
-        'study': '공부',
-        'hobby': '취미',
-        'etc': '기타',
-        'youtube': 'youtube',
+        // 'qna': '질문답변',
+        // 'discussion': 'Discussion',
+        // 'news': 'News',
+        // 'job': '구인구직',
+        // 'buyandsell': '사고팔기',
+        // 'travel': '여행',
+        // 'food': '음식',
+        // 'study': '공부',
+        // 'hobby': '취미',
+        // 'etc': '기타',
+        // 'youtube': 'youtube',
       },
     );
 

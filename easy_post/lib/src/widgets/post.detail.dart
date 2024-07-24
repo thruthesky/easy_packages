@@ -73,7 +73,12 @@ class PostDetail extends StatelessWidget {
                 ),
               ],
               child: const Icon(Icons.more_vert),
-              onSelected: (value) {},
+              onSelected: (value) {
+                if (value == 'edit') {
+                  PostService.instance
+                      .showPostUpdateScreen(context: context, post: post);
+                }
+              },
             ),
           ],
         ),

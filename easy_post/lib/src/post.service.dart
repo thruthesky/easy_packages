@@ -78,6 +78,24 @@ class PostService {
     );
   }
 
+  ///
+  Future<DocumentReference?> showPostUpdateScreen({
+    required BuildContext context,
+    required Post post,
+    bool enableYoutubeUrl = false,
+  }) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return PostEditScreen(
+          category: post.category,
+          post: post,
+          enableYoutubeUrl: enableYoutubeUrl,
+        );
+      },
+    );
+  }
+
   Future showPostListScreen({
     required BuildContext context,
     Post? post,
