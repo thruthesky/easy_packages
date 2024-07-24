@@ -84,14 +84,12 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
                 /// 코멘트 목록을 tree 형태로 세로 라인을 그릴 때에는
                 /// 아바타 밑에서 부터 세로 라인을 그려야 자연 스럽다.
                 /// 즉, CommentDetail 위젯에는 사진을 표시하지 않도록 옵션을 주어야 한다.
+                ///
+                /// 주의; 아바타의 크기에 따라 가로 라인의 정렬이 달라진다.
                 UserAvatar.fromUid(
                   uid: widget.comment.uid,
-                  size: 44,
-                  radius: 20,
-                ),
-                UserDoc(
-                  uid: widget.comment.uid,
-                  builder: (user) => Text(user?.displayName ?? 'x'),
+                  size: widget.comment.depth == 0 ? 40 : 32,
+                  radius: widget.comment.depth == 0 ? 18 : 14,
                 ),
 
                 /// 자식이 있다면, 아바타 아래에 세로 라인을 그린다. 즉, 아바타 아래의 세로 라인은 여기서 그린다.
@@ -110,6 +108,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
               child: CommentDetail(
                 comment: widget.comment,
                 displayAvatar: false,
+                displayReplyButton: widget.comment.depth < 5 ? true : false,
               ),
             ),
           ],
@@ -124,7 +123,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   /// 현재 코멘트의 depth 가 3 이라면, 0 부터 1 과 2 총 세번 호출 된다.
   Widget indentedVerticalLine(int depth) {
     return SizedBox(
-      width: depth == 0 ? 23 : 39,
+      width: depth == 0 ? 21 : 33,
       child: Column(
         /// 세로 라인을 오른쪽으로 붙인다. 그래서 커브 라인이 세로 라인에 붙게 한다.
         crossAxisAlignment: CrossAxisAlignment.end,

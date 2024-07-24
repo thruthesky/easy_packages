@@ -37,6 +37,22 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Reply',
     'ko': '댓글',
   },
+  'block': {
+    'en': 'Block',
+    'ko': '차단',
+  },
+  'report': {
+    'en': 'Report',
+    'ko': '신고',
+  },
+  'like': {
+    'en': {
+      'zero': 'Like',
+      'one': 'Like {n}',
+      'many': 'Likes {n}',
+    },
+    'ko': '좋아요 {n}',
+  },
   'name': {
     'en': 'Name',
     'ko': '이름',

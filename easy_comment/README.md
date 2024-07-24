@@ -36,6 +36,8 @@ Initially, we considered using the Realtime Database for comments. However, sinc
   - `hasChild` is used for sorting and displaying purpose.
 
 
+- `deleted` is set to true if the comment is deleted. It is false by default. So, you can filter comments that are not deleted.
+
 
 
 

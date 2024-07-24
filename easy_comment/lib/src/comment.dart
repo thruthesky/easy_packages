@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easyuser/easyuser.dart';
 
 /// Comment model
@@ -17,6 +18,9 @@ import 'package:easyuser/easyuser.dart';
 /// [uid] is the user id of the user who posted the comment.
 ///
 /// [content] is the content of the comment.
+///
+/// [deleted] is a boolean that must exists in the database even if it's not deleted.
+/// The default value must be false. See README for details
 class Comment {
   final String id;
   final String? parentId;
@@ -28,10 +32,16 @@ class Comment {
   final List<String> urls;
   final int depth;
   final String order;
+  final bool deleted;
+
+  ///
   bool hasChild = false;
 
   /// Current comment object's reference
   DocumentReference get ref => col.doc(id);
+
+  /// Returns true if the comment belongs to the current user.
+  bool get isMine => uid == my.uid;
 
   Comment({
     required this.id,
@@ -44,6 +54,7 @@ class Comment {
     required this.urls,
     required this.depth,
     required this.order,
+    required this.deleted,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -57,6 +68,9 @@ class Comment {
     return Comment.fromJson(docSnapshot, snapshot.id);
   }
 
+  /// Create a comment from the given document reference.
+  ///
+  /// This is used to use the method of the comment model class.
   factory Comment.fromDocumentReference(DocumentReference ref) {
     return Comment(
       id: ref.id,
@@ -69,6 +83,7 @@ class Comment {
       urls: [],
       depth: 1,
       order: '',
+      deleted: false,
     );
   }
 
@@ -88,6 +103,7 @@ class Comment {
       urls: List<String>.from(json['urls']),
       depth: json['depth'] ?? 0,
       order: json['order'],
+      deleted: json['deleted'],
     );
   }
 
@@ -154,6 +170,7 @@ class Comment {
         'urls': urls,
         'depth': parent == null ? 0 : parent.depth + 1,
         'order': order,
+        'deleted': false,
       });
       t.update(documentReference, {
         'commentCount': FieldValue.increment(1),
@@ -176,10 +193,25 @@ class Comment {
     String? content,
     List<String>? urls,
   }) async {
-    await col.doc(id).update({
+    await ref.update({
       if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
       'updateAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Delete the comment
+  ///
+  /// It does not actually delete the document. But it will delete
+  /// the content, urls, and etc.
+  Future<void> delete() async {
+    for (String url in urls) {
+      await StorageService.instance.delete(url);
+    }
+    await ref.update({
+      'deleted': true,
+      'urls': [],
+      'content': '',
     });
   }
 }

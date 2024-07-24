@@ -5,15 +5,28 @@ import 'package:easy_storage/easy_storage.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
+/// CommentDetail
+///
+/// This comment detail widget is used by many other widgets.
+///
+/// [displayAvatar] some of the parent widgets do not want to display the
+/// user avatar. Like the [CommentWidgetDetail] widget that displays the
+/// the user avatar by itself.
+///
+/// [displayReplyButton] some of the parent widgets do not want to display the
+/// reply button. Like the [CommentWidgetDetail] widget that limits the
+/// depth of the comment.
 class CommentDetail extends StatelessWidget {
   const CommentDetail({
     super.key,
     required this.comment,
     this.displayAvatar = true,
+    this.displayReplyButton = true,
   });
 
   final Comment comment;
   final bool displayAvatar;
+  final bool displayReplyButton;
 
   @override
   Widget build(BuildContext context) {
@@ -34,32 +47,51 @@ class CommentDetail extends StatelessWidget {
             Text(comment.createdAt.short),
           ],
         ),
-        Text(comment.content),
+        Text(comment.deleted ? 'comment deleted'.t : comment.content),
         DisplayPhotos(urls: comment.urls),
         Row(
           children: [
+            if (displayReplyButton)
+              TextButton(
+                onPressed: () => CommentService.instance.showCommentEditDialog(
+                  context: context,
+                  parent: comment,
+                  focusOnContent: true,
+                ),
+                child: Text('Reply'.t),
+              ),
             TextButton(
               onPressed: () => CommentService.instance.showCommentEditDialog(
                 context: context,
                 parent: comment,
                 focusOnContent: true,
               ),
-              child: Text('Reply'.t),
+              child: Text('Like'.tr(args: {'n': 3}, form: 3)),
             ),
             const Spacer(),
             PopupMenuButton<String>(
               itemBuilder: (_) => [
+                if (comment.isMine)
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Text('Edit'.t),
+                  ),
+                if (comment.isMine)
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text('Delete'.t),
+                  ),
                 PopupMenuItem(
-                  value: 'edit',
-                  child: Text('Edit'.t),
+                  value: 'report',
+                  child: Text('Report'.t),
                 ),
                 PopupMenuItem(
-                  value: 'delete',
-                  child: Text('Delete'.t),
+                  value: 'block',
+                  child: Text('Block'.t),
                 ),
               ],
               child: const Icon(Icons.more_vert),
-              onSelected: (value) {
+              onSelected: (value) async {
                 if (value == 'edit') {
                   CommentService.instance.showCommentEditDialog(
                     context: context,
@@ -67,7 +99,14 @@ class CommentDetail extends StatelessWidget {
                     focusOnContent: true,
                   );
                 } else if (value == 'delete') {
-                  // CommentService.instance.deleteComment(comment);
+                  final re = await confirm(
+                    context: context,
+                    title: 'delete comment title'.t,
+                    message: 'delete comment message'.t,
+                  );
+                  if (re != true) return;
+
+                  await comment.delete();
                 }
               },
             ),
