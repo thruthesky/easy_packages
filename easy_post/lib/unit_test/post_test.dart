@@ -25,7 +25,7 @@ void updatePost() async {
       'Creating Post');
 
   dog('post ${post.id}');
-  final updatePost = await post.update(content: 'Updaing post content');
+  // final updatePost = await post.update(content: 'Updaing post content');
 
   //
   // isTrue(updatePost?.content == 'Updaing post content', 'Updating the content');

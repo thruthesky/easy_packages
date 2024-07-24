@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/defines.dart';
-import 'package:youtube/youtube.dart';
-import 'package:youtube_parser/youtube_parser.dart';
 
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
