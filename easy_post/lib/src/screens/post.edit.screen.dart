@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 
 class PostEditScreen extends StatefulWidget {
   static const String routeName = '/PostEdit';
-  const PostEditScreen(
-      {super.key,
-      required this.category,
-      this.enableYoutubeUrl = false,
-      this.post});
+  const PostEditScreen({
+    super.key,
+    required this.category,
+    this.enableYoutubeUrl = false,
+    this.post,
+  });
 
   final String? category;
   final bool enableYoutubeUrl;
@@ -40,6 +41,8 @@ class _PostEditScreenState extends State<PostEditScreen> {
     }
   }
 
+  /// prepare data if the event is update a post to display in the screen if its create
+  /// display
   prepareData() {
     if (isCreate) return;
     if (widget.post == null) return;

@@ -28,7 +28,6 @@ class _YoutubeListScreenState extends State<YoutubeListScreen> {
               await PostService.instance.showPostCreateScreen(
                 context: context,
                 category: 'youtube',
-                enableYoutubeUrl: true,
               );
             },
           ),
