@@ -14,12 +14,12 @@ extension FireshipDateTimeExtension on DateTime {
     }
   }
 
-  String get toYmd {
-    return DateFormat('yyyy-MM-dd').format(this);
+  String get yMd {
+    return DateFormat.yMd().format(this);
   }
 
-  String get toHis {
-    return DateFormat('HH:mm:ss').format(this);
+  String get jm {
+    return DateFormat.jm().format(this);
   }
 
   /// Returns a string of "yy-MM-dd"

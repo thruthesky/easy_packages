@@ -1,17 +1,22 @@
 import 'package:intl/intl.dart';
 
-extension FireFlutterStringExtension on String {
-  /// 문자를 정수로 변환
+/// String extension methods
+extension EasyHelperStringExtension on String {
+  /// Converts a string to an integer
   ///
-  /// 만약 변환할 수 없다면 0을 리턴.
+  /// Returns 0 if the conversion fails.
   int tryInt() {
     return int.tryParse(this) ?? 0;
   }
 
+  /// Converts a string to a double
+  ///
+  /// Returns 0.0 if the conversion fails.
   double? tryDouble() {
     return double.parse(this);
   }
 
+  /// Returns true if the string is an email address
   bool get isEmail =>
       RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(this);
 
@@ -86,8 +91,8 @@ extension FireFlutterStringExtension on String {
   //   return iHave.blocked(uid) ? message : this;
   // }
 
-  /// 문자열을 DateTime 으로 변경한다. 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, null 을 리턴하지 않고
-  /// 현재 시간을 리턴한다.
+  /// Converts a string to a DateTime object. If the string is not in a valid date format and cannot be parsed,
+  /// it returns the current time instead of null.
   ///
   /// 예) '2021-01-01' -> 2021-01-01 00:00:00.000
   DateTime get dateTime {
@@ -98,62 +103,75 @@ extension FireFlutterStringExtension on String {
     }
   }
 
-  /// 문자열을 DateTime 으로 변경한 다음, YYYY-MM-DD 형태로 리턴한다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
+  int get year => dateTime.year;
+  int get month => dateTime.month;
+  int get day => dateTime.day;
+
+  bool get isToday {
+    final nowDate = DateTime.now();
+    return year == nowDate.year && month == nowDate.month && day == nowDate.day;
+  }
+
+  /// Converts a string to a DateTime object and returns it in YYYY-MM-DD format.
+  /// If the string is not in a valid date format and cannot be parsed, it returns the current date.
   ///
-  /// 예) 20210101 -> 2021-01-01
-  // ignore: non_constant_identifier_names
-  String get Ymd {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+  ///
+  String get yMd {
+    return DateFormat.yMd().format(dateTime);
   }
 
-  /// 문자열을 DateTime 으로 변경한 다음, YY-MM-DD 형태로 리턴한다. 앞에 년도가 두 자리 수 이다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
-  String get ymd {
-    return '${dateTime.year.toString().substring(2)}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+  /// Converts a string to a DateTime object and returns it in YYYY-MM-DD HH:mm:ss format.
+  ///
+  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
+  String get yMdjm {
+    return DateFormat.yM().add_jm().format(dateTime);
   }
 
-  /// 문자열을 DateTime 으로 변경한 다음, YYYY-MM-DD HH:MM:SS 형태로 리턴한다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
-  // ignore: non_constant_identifier_names
-  String get YmdHms {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
-  }
-
-  // ignore: non_constant_identifier_names
-  String get YmdHm {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-  }
-
-  /// 문자열을 DateTime 으로 변경한 다음, MM-DD 형태로 리턴한다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
-  /// 예) 2021-01-01 -> 01-01
+  /// Converts a string to a DateTime object and returns it in MM-DD format.
+  ///
+  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
   String get md {
-    return '${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+    return DateFormat.Md().format(dateTime);
   }
 
-  /// Returns in the format of "HH:mm:ss" from dateTime
-  String get his {
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+  String get jm {
+    return DateFormat.jm().format(dateTime);
   }
 
-  /// 문자열을 DateTime 으로 변경한 다음,
-  /// - 오늘 날짜이면, HH:MM AM 로 리턴하고
-  /// - 오늘 날짜가 아니면, YYYY-MM-DD 형태로 리턴한다.
+  /// Returns in the format of 'jms' (e.g. 5:08:37 PM)
+  ///
+  /// See also: https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
+  String get jms {
+    return DateFormat.jms().format(dateTime);
+  }
+
+  /// Returns date if the date is today, otherwise returns time
+  ///
   String get shortDateTime {
-    final dt = dateTime;
-    final now = DateTime.now();
-    if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
-      return DateFormat.jm().format(dt);
-    } else {
-      return DateFormat('yy.MM.dd').format(dt);
-    }
+    return isToday ? jm : md;
   }
+
+  /// Alias of [shortDateTime]
+  String get short => shortDateTime;
+
+  /// Returns string with capitalized first letter
+  ///
+  /// Example:
+  /// ```dart
+  /// assert('test'.capitalizeFirstLetter(), 'Test');
+  /// ```
+  ///
+  /// From: https://github.com/ScerIO/packages.dart/tree/master/packages
+  String capitalizeFirstLetter() =>
+      isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : this;
+
+  /// Alias of [capitalizeFirstLetter]
+  String get ucFirst => capitalizeFirstLetter();
 }
 
-/// 문자열이 null 이거나 빈 문자열인지 확인하는 확장 함수
+/// String Extension to check if a string is null or empty
 ///
-/// String? 을 extends 에서 null 인지 아닌지를 검사한다.
-extension FireFlutterNullableStringExtension on String? {
+/// Checks if a String? is null or not in the extends clause.
+extension EasyHelperNullableStringExtension on String? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 }
