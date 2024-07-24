@@ -17,6 +17,10 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Close',
     'ko': '닫기',
   },
+  'dismiss': {
+    'en': 'Dismiss',
+    'ko': '닫기',
+  },
   'edit': {
     'en': 'Edit',
     'ko': '수정',
@@ -59,7 +63,7 @@ final Map<String, dynamic> localeTexts = {
   },
   'displayName': {
     'en': 'Display Name',
-    'ko': '이름 표시',
+    'ko': '닉네임',
   },
   'year': {
     'en': 'Year',

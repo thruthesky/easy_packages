@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 
 /// Display a snackbar
 ///
@@ -79,7 +80,7 @@ ScaffoldFeatureController toast({
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
               child: Text(
-                'dismiss',
+                'dismiss'.t,
                 style: TextStyle(color: foregroundColor),
               ),
             )
