@@ -1,3 +1,6 @@
+## 0.0.6
+* Add. More features
+
 ## 0.0.5
 * Add. `chunk` and more methods.
 * Add. Unit tests.
