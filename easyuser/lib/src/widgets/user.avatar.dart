@@ -29,7 +29,12 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UserBuildAvatar(user: user);
+    return UserBuildAvatar(
+      user: user,
+      size: size,
+      radius: radius,
+      border: border,
+    );
   }
 
   static Widget fromUid({
