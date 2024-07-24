@@ -17,6 +17,22 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Close',
     'ko': '닫기',
   },
+  'edit': {
+    'en': 'Edit',
+    'ko': '수정',
+  },
+  'delete': {
+    'en': 'Delete',
+    'ko': '삭제',
+  },
+  'cancel': {
+    'en': 'Cancel',
+    'ko': '취소',
+  },
+  'reply': {
+    'en': 'Reply',
+    'ko': '댓글',
+  },
   'name': {
     'en': 'Name',
     'ko': '이름',

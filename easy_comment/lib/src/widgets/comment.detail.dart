@@ -1,5 +1,7 @@
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +35,7 @@ class CommentDetail extends StatelessWidget {
           ],
         ),
         Text(comment.content),
+        DisplayPhotos(urls: comment.urls),
         Row(
           children: [
             TextButton(
@@ -41,22 +44,32 @@ class CommentDetail extends StatelessWidget {
                 parent: comment,
                 focusOnContent: true,
               ),
-              child: const Text('Reply'),
+              child: Text('Reply'.t),
             ),
             const Spacer(),
             PopupMenuButton<String>(
               itemBuilder: (_) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
-                  child: Text('Edit'),
+                  child: Text('Edit'.t),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
-                  child: Text('Delete'),
+                  child: Text('Delete'.t),
                 ),
               ],
               child: const Icon(Icons.more_vert),
-              onSelected: (value) {},
+              onSelected: (value) {
+                if (value == 'edit') {
+                  CommentService.instance.showCommentEditDialog(
+                    context: context,
+                    comment: comment,
+                    focusOnContent: true,
+                  );
+                } else if (value == 'delete') {
+                  // CommentService.instance.deleteComment(comment);
+                }
+              },
             ),
           ],
         ),
