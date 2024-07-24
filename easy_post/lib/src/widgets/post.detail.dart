@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/post.detail.photos.dart';
 import 'package:easyuser/easyuser.dart';
@@ -74,12 +76,22 @@ class _PostDetailState extends State<PostDetail> {
             }),
         const SizedBox(height: 16),
 
+        if (post.deleted) ...{
+          const SizedBox(
+            width: double.infinity,
+            height: 200,
+            child: Center(
+              child: Text('This Post has been deleted.'),
+            ),
+          ),
+        } else ...{
+          PostDetailYoutube(post: post),
+          PostDetailPhotos(post: post),
+          const SizedBox(height: 16),
+          Text(post.title),
+          Text(post.content),
+        },
         // post photo
-        PostDetailYoutube(post: post),
-        PostDetailPhotos(post: post),
-        const SizedBox(height: 16),
-        Text(post.title),
-        Text(post.content),
 
         Row(
           children: [
@@ -98,27 +110,34 @@ class _PostDetailState extends State<PostDetail> {
               child: const Text('Like'),
             ),
             const Spacer(),
-            PopupMenuButton<String>(
-              itemBuilder: (_) => [
-                const PopupMenuItem(
-                  value: 'edit',
-                  child: Text('Edit'),
-                ),
-                const PopupMenuItem(
-                  value: 'delete',
-                  child: Text('Delete'),
-                ),
-              ],
-              child: const Icon(Icons.more_vert),
-              onSelected: (value) {
-                if (value == 'edit') {
-                  PostService.instance
-                      .showPostUpdateScreen(context: context, post: post);
-                } else if (value == 'delete') {
-                  post.delete();
-                }
-              },
-            ),
+            if (post.uid == my.uid)
+              PopupMenuButton<String>(
+                itemBuilder: (_) => [
+                  const PopupMenuItem(
+                    value: 'edit',
+                    child: Text('Edit'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'delete',
+                    child: Text('Delete'),
+                  ),
+                ],
+                child: const Icon(Icons.more_vert),
+                onSelected: (value) async {
+                  if (value == 'edit') {
+                    PostService.instance
+                        .showPostUpdateScreen(context: context, post: post);
+                  } else if (value == 'delete') {
+                    final re = await confirm(
+                      context: context,
+                      title: 'Delete'.t,
+                      message: 'Are you sure you wanted to delete this post?'.t,
+                    );
+                    if (re == false) return;
+                    await post.delete();
+                  }
+                },
+              ),
           ],
         ),
       ],

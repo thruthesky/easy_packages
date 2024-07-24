@@ -189,7 +189,7 @@ class Post {
     await doc(id).update(
       {
         ...data,
-        if (this.youtubeUrl != youtubeUrl)
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
           'youtube': await getYoutubeConfig(youtubeUrl),
         'updateAt': FieldValue.serverTimestamp(),
         ...?extra,

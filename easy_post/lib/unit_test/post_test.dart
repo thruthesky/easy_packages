@@ -76,7 +76,11 @@ void createYouyubePost() async {
 void deletePost() async {
   testStart('Delete post');
   final ref = await Post.create(
-      category: 'temp', title: 'deleting post', content: 'deleting post ');
+    category: 'temp',
+    title: 'deleting post',
+    content: 'deleting post ',
+    youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
+  );
 
   final post = await Post.get(ref.id);
 
@@ -89,5 +93,20 @@ void deletePost() async {
     await deletedPost.delete();
   });
 
+  // final ref2 = await Post.create(
+  //   category: 'temp',
+  //   title: 'youtube',
+  //   youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
+  // );
+  // final post2 = await Post.get(ref2.id);
+
+  // await post2.delete();
+
+  // final deletedPost2 = await Post.get(ref2.id);
+  // isTrue(deletedPost2.deleted == true, "Deleting post");
+
+  // await isException(() async {
+  //   await deletedPost2.delete();
+  // });
   testReport();
 }
