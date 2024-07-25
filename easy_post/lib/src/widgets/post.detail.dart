@@ -15,11 +15,10 @@ class PostDetail extends StatefulWidget {
   /// `youtube` for youtube player,this use to pass the youtube player comming from the
   /// `YoutubeFullscreenBuilder` to be reused if this widget is not provide it will
   /// use a new youtube player
-  const PostDetail(
-      {super.key, required this.post, this.youtubeSmallVideoWidget});
+  const PostDetail({super.key, required this.post, this.youtubePlayer});
 
   final Post post;
-  final Widget? youtubeSmallVideoWidget;
+  final Widget? youtubePlayer;
 
   @override
   State<PostDetail> createState() => _PostDetailState();
@@ -66,8 +65,8 @@ class _PostDetailState extends State<PostDetail> {
             ),
           ),
         } else ...{
-          if (widget.post.hasYoutube && widget.youtubeSmallVideoWidget != null)
-            widget.youtubeSmallVideoWidget!,
+          if (widget.post.hasYoutube && widget.youtubePlayer != null)
+            widget.youtubePlayer!,
           PostDetailYoutubeMeta(post: widget.post),
           PostDetailPhotos(post: widget.post),
           const SizedBox(height: 16),

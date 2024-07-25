@@ -16,23 +16,24 @@ class PostDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return PostDoc(
         post: post,
+        sync: true,
         builder: (post) {
           /// If the post has no youtube video, return the normal scallfold.
           if (post.hasYoutube == false) {
-            // return buildScaffold(context);
+            return buildScaffold(context);
           }
 
           /// If the post has youtube video, return the youtube fullscreen
           /// builder.
           return YoutubeFullscreenBuilder(
               post: post,
-              builder: (context, youtubeSmallVideoWidget) {
-                return buildScaffold(context, youtubeSmallVideoWidget);
+              builder: (context, player) {
+                return buildScaffold(context, player);
               });
         });
   }
 
-  buildScaffold(BuildContext context, [Widget? youtubeSmallVideoWidget]) {
+  buildScaffold(BuildContext context, [Widget? player]) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('PostDetail'),
@@ -44,7 +45,7 @@ class PostDetailScreen extends StatelessWidget {
             sliver: SliverToBoxAdapter(
               child: PostDetail(
                 post: post,
-                youtubeSmallVideoWidget: youtubeSmallVideoWidget,
+                youtubePlayer: player,
               ),
             ),
           ),
