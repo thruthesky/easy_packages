@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/defines.dart';
-import 'package:easy_task/src/task.service.dart';
 
 /// A task entity class of Todo feature
 ///

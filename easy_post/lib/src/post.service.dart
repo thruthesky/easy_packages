@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easy_post_v2/src/screens/post.detail.screen.dart';
 import 'package:easy_post_v2/src/screens/post.list.screen.dart';
 import 'package:flutter/material.dart';
 
