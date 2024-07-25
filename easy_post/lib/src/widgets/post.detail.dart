@@ -10,6 +10,11 @@ import 'package:flutter/material.dart';
 /// This widget that contains the overall details of the post
 /// contains youtube video, youtube meta data, post title, post content , post photos
 class PostDetail extends StatefulWidget {
+  /// `post` this contains the post inforamtion
+  ///
+  /// `youtube` for youtube player,this use to pass the youtube player comming from the
+  /// `YoutubeFullscreenBuilder` to be reused if this widget is not provide it will
+  /// use a new youtube player
   const PostDetail({super.key, required this.post, this.youtube});
 
   final Post post;
@@ -51,7 +56,6 @@ class _PostDetailState extends State<PostDetail> {
                     );
             }),
         const SizedBox(height: 16),
-
         if (widget.post.deleted) ...{
           const SizedBox(
             width: double.infinity,
@@ -72,8 +76,6 @@ class _PostDetailState extends State<PostDetail> {
           Text(widget.post.title),
           Text(widget.post.content),
         },
-        // post photo
-
         Row(
           children: [
             TextButton(
