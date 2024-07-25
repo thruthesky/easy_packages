@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // youtube player to display yout youtube video
 
-class YoutubePlayer extends StatefulWidget {
+class EasyYoutubePlayer extends StatefulWidget {
   /// `autoPlay` if true the player will automatically play or start when initialized
   ///
   /// `thumbnail` use this to display thumbnail if the youtube is idle or not playing
@@ -16,7 +16,7 @@ class YoutubePlayer extends StatefulWidget {
   ///
   /// note: this widget is only for displaying youtube video. this widget does not
   /// provide aditional customization and other control actions
-  const YoutubePlayer({
+  const EasyYoutubePlayer({
     super.key,
     required this.post,
     this.autoPlay = false,
@@ -31,18 +31,18 @@ class YoutubePlayer extends StatefulWidget {
   final double? width;
   final double aspectRatio;
   @override
-  State<YoutubePlayer> createState() => _YoutubePlayerState();
+  State<EasyYoutubePlayer> createState() => _EasyYoutubePlayerState();
 }
 
-class _YoutubePlayerState extends State<YoutubePlayer> {
-  late ypf.YoutubePlayerController youtubeController;
+class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
+  late YoutubePlayerController youtubeController;
 
   @override
   void initState() {
     super.initState();
-    youtubeController = ypf.YoutubePlayerController(
+    youtubeController = YoutubePlayerController(
       initialVideoId: widget.post.youtube['id'],
-      flags: ypf.YoutubePlayerFlags(
+      flags: YoutubePlayerFlags(
         autoPlay: widget.autoPlay,
         mute: false,
         controlsVisibleAtStart: false,
@@ -60,7 +60,7 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
   /// load the new post youtube id if the post youtube url change
   /// or the user update the post youtube url
   @override
-  void didUpdateWidget(covariant YoutubePlayer oldWidget) {
+  void didUpdateWidget(covariant EasyYoutubePlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.post.youtube['id'] != widget.post.youtube['']) {
       youtubeController.load(widget.post.youtube['id']);
@@ -70,7 +70,7 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return ypf.YoutubePlayer(
+    return YoutubePlayer(
       aspectRatio: widget.aspectRatio,
       width: widget.width,
       bottomActions: [
@@ -86,9 +86,9 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
                   : Icons.play_arrow,
               color: Colors.white,
             )),
-        ypf.CurrentPosition(),
-        ypf.ProgressBar(
-          colors: const ypf.ProgressBarColors(
+        CurrentPosition(),
+        ProgressBar(
+          colors: const ProgressBarColors(
               playedColor: Colors.white,
               handleColor: Colors.white,
               backgroundColor: Colors.grey),
@@ -97,8 +97,8 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
         const SizedBox(
           width: 8,
         ),
-        ypf.RemainingDuration(),
-        // ypf.FullScreenButton(),
+        RemainingDuration(),
+        // FullScreenButton(),
       ],
       topActions: const [],
       controller: youtubeController,

@@ -47,10 +47,14 @@ class Post {
 
   /// Youtube URL. Refer README.md for more information
   final String youtubeUrl;
+  final Map<String, dynamic> youtube;
+
+  /// Returns true if the current post has youtube.
+  bool get hasYoutube => youtubeUrl.isNotEmpty && youtube.isNotEmpty;
 
   final int commentCount;
   final Map<String, dynamic> data;
-  final Map<String, dynamic> youtube;
+
   Map<String, dynamic> get extra => data;
 
   /// Return true if the post is created by the current user

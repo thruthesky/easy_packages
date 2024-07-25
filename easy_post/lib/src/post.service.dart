@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_category/easy_category.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/screens/post.list.screen.dart';
 import 'package:flutter/material.dart';
@@ -75,12 +76,15 @@ class PostService {
 
   Future showPostListScreen({
     required BuildContext context,
+    required List<Category> categories,
     Post? post,
   }) {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) {
-        return const PostListScreen();
+        return PostListScreen(
+          categories: categories,
+        );
       },
     );
   }

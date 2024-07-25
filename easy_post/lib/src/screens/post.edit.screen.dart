@@ -41,6 +41,8 @@ class _PostEditScreenState extends State<PostEditScreen> {
   bool get isCreate => widget.post == null;
   bool get isUpdate => !isCreate;
 
+  bool inProgress = false;
+
   List<String> urls = [];
 
   @override
@@ -126,34 +128,37 @@ class _PostEditScreenState extends State<PostEditScreen> {
                     setState(() {});
                   }),
                   const Spacer(),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (isCreate) {
-                        final ref = await Post.create(
-                          category: category ?? '',
-                          title: titleController.text,
-                          content: contentController.text,
-                          youtubeUrl: youtubeController.text,
-                          urls: urls,
-                        );
-                        if (context.mounted) {
-                          Navigator.of(context).pop(ref);
-                        }
-                      } else if (isUpdate) {
-                        await widget.post!.update(
-                          title: titleController.text,
-                          content: contentController.text,
-                          youtubeUrl: youtubeController.text,
-                          urls: urls,
-                        );
+                  inProgress
+                      ? const CircularProgressIndicator.adaptive()
+                      : ElevatedButton(
+                          onPressed: () async {
+                            setState(() => inProgress = true);
+                            if (isCreate) {
+                              final ref = await Post.create(
+                                category: category ?? '',
+                                title: titleController.text,
+                                content: contentController.text,
+                                youtubeUrl: youtubeController.text,
+                                urls: urls,
+                              );
+                              if (context.mounted) {
+                                Navigator.of(context).pop(ref);
+                              }
+                            } else if (isUpdate) {
+                              await widget.post!.update(
+                                title: titleController.text,
+                                content: contentController.text,
+                                youtubeUrl: youtubeController.text,
+                                urls: urls,
+                              );
 
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      }
-                    },
-                    child: Text(isCreate ? 'post Create'.t : 'Update'.t),
-                  ),
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                              }
+                            }
+                          },
+                          child: Text(isCreate ? 'post Create'.t : 'Update'.t),
+                        ),
                 ],
               )
             ],

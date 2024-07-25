@@ -16,7 +16,7 @@ class PostDetailYoutube extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         youtube ??
-            YoutubePlayer(
+            EasyYoutubePlayer(
               post: post,
               // autoPlay: PostService.instance.youtubeAutoPlay,
             ),

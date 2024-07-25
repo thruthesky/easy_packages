@@ -8,6 +8,7 @@ class PostDetailYoutubeMeta extends StatelessWidget {
   final Post post;
   @override
   Widget build(BuildContext context) {
+    if (post.hasYoutube == false) return const SizedBox.shrink();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

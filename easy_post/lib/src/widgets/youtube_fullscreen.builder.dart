@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart' as ypf;
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 /// To support fullscreen on youtube video you need to wrap your whole scaffold
 /// with the `YoutubeFullscreenBuilder` this widget will create a youtube player
@@ -29,15 +29,15 @@ class YoutubeFullscreenBuilder extends StatefulWidget {
 }
 
 class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
-  ypf.YoutubePlayerController? youtubeController;
+  YoutubePlayerController? youtubeController;
 
   @override
   void initState() {
     super.initState();
     if (widget.post.youtube['id'] == null) return;
-    youtubeController = ypf.YoutubePlayerController(
+    youtubeController = YoutubePlayerController(
       initialVideoId: widget.post.youtube['id']!,
-      flags: const ypf.YoutubePlayerFlags(
+      flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
         controlsVisibleAtStart: false,
@@ -68,11 +68,8 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.post.youtube.isEmpty || youtubeController == null) {
-      return widget.builder(context, const SizedBox.shrink());
-    }
-    return ypf.YoutubePlayerBuilder(
-      player: ypf.YoutubePlayer(
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
         bottomActions: [
           IconButton(
             onPressed: () {
@@ -89,9 +86,9 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
               color: Colors.white,
             ),
           ),
-          ypf.CurrentPosition(),
-          ypf.ProgressBar(
-            colors: const ypf.ProgressBarColors(
+          CurrentPosition(),
+          ProgressBar(
+            colors: const ProgressBarColors(
                 playedColor: Colors.white,
                 handleColor: Colors.white,
                 backgroundColor: Colors.grey),
@@ -100,8 +97,8 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
           const SizedBox(
             width: 8,
           ),
-          ypf.RemainingDuration(),
-          ypf.FullScreenButton(),
+          RemainingDuration(),
+          FullScreenButton(),
         ],
         topActions: const [],
         controller: youtubeController!,
@@ -114,7 +111,10 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
           ),
         ),
       ),
-      builder: widget.builder,
+      builder: (context, smallWidget) {
+        print('smallWdiget: $smallWidget');
+        return widget.builder(context, smallWidget);
+      },
     );
   }
 }
