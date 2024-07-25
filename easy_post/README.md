@@ -51,9 +51,9 @@ You can develop your own post list screen where you can design your own category
 # Youtube
 
 
-- The `PostService.instance.showEditScreen()` has an option of `youtubeUrl`. 
+- The `PostService.instance.showPostCreateScreen()` has an option of `youtubeUrl`. 
 
-- If you create a post with a category of `youtube` the post will generate a youtube information base on the `youtubeUrl` field .
+- If you create a post with a `youtubeUrl`  the post will generate a youtube information base on the `youtubeUrl`.
 
 ```dart
 PostService.instance.showEditScreen(category: 'youtube');
@@ -87,4 +87,23 @@ YoutubePlayer(
 )
 ```
 
+# Post Details 
+To display display the details of post you can use `PostServices.instance.showPostDetailScreen()` or `PostDetailScreen()`
 
+
+```dart
+IconButton(
+  icon: const Icon(Icons.add),
+  onPressed: () async {
+    await PostService.instance.showPostDetailScreen(
+      context: context,
+      post: post,
+    );
+  },
+),
+
+/// or 
+
+PostDetailScreen(post: post);
+
+```

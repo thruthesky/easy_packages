@@ -133,18 +133,18 @@ packages:
     dependency: "direct main"
     description:
       name: easy_helpers
-      sha256: "6387cb4b2327f1d23e5759022471c23a31e850d90ab108524bc7f9333546be90"
+      sha256: "0babe4eff211d1a3ecaa1145136c5743d583aab3c40eda603e09026e6489478b"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.6"
   easy_locale:
     dependency: "direct main"
     description:
       name: easy_locale
-      sha256: b8a76fe12150b21c2080afb7d12183b2fd0cf0430d8ec3abca2a2526e0571a51
+      sha256: "6f834cf17f3aff1b22769d4703cc7882d79dbc56269b8b7c7f2a7a9cbb264a5f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.5"
   easy_storage:
     dependency: "direct main"
     description:

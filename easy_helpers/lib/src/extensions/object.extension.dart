@@ -1,0 +1,1 @@
+extension EasyHelperDogExtension on Object {}

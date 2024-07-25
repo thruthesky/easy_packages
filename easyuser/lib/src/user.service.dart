@@ -38,13 +38,13 @@ class UserService {
   ///   }
   /// );
   /// ```
-  Widget Function(User? user)? publicProfileScreen;
-  Widget Function()? profileUpdateScreen;
+  Widget Function(BuildContext, User?)? $showPublicProfileScreen;
+  Widget Function()? $showProfileUpdateScreen;
 
   init({
     bool enableAnonymousSignIn = false,
-    Widget Function(User? user)? publicProfileScreen,
-    Widget Function()? profileUpdateScreen,
+    Widget Function(BuildContext, User?)? showPublicProfileScreen,
+    Widget Function()? showProfileUpdateScreen,
   }) {
     if (initialized) {
       dog('UserService is already initialized; It will not initialize again.');
@@ -53,8 +53,8 @@ class UserService {
     initialized = true;
     this.enableAnonymousSignIn = enableAnonymousSignIn;
     listenUserDocumentChanges();
-    this.publicProfileScreen = publicProfileScreen ?? this.publicProfileScreen;
-    this.profileUpdateScreen = profileUpdateScreen ?? this.profileUpdateScreen;
+    $showPublicProfileScreen = showPublicProfileScreen;
+    $showProfileUpdateScreen = showProfileUpdateScreen;
   }
 
   initAnonymousSignIn() async {
@@ -157,25 +157,22 @@ class UserService {
 
   // to display public profile user `UserService.intance.showPublicProfile`
   // this will display publicProfile from fireflutter
-  showPublicProfile(BuildContext context) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (context, _, __) {
-        return UserService.instance.publicProfileScreen == null
-            ? UserPublicProfileScreen(user: user!)
-            : UserService.instance.publicProfileScreen!.call(user);
-      },
-    );
+  showPublicProfileScreen(BuildContext context) {
+    return $showPublicProfileScreen?.call(context, user) ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (context, _, __) {
+            return UserPublicProfileScreen(user: user!);
+          },
+        );
   }
 
   showProfileUpdaeScreen(BuildContext context) {
-    return showGeneralDialog(
-        context: context,
-        pageBuilder: (context, _, __) {
-          return UserService.instance.profileUpdateScreen == null
-              ? const UserProfileUpdateScreen()
-              : UserService.instance.profileUpdateScreen!.call();
-        });
+    return $showProfileUpdateScreen?.call() ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (context, _, __) => const UserProfileUpdateScreen(),
+        );
   }
 
 // to easily display userSearchDialog you can use

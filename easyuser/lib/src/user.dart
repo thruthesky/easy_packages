@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:memory_cache/memory_cache.dart';
@@ -137,6 +139,11 @@ class User {
     return data;
   }
 
+  @override
+  toString() {
+    return 'User(${toJson()})';
+  }
+
   /// Get a user with the given [uid].
   ///
   /// This is a static method that will be used to get a user with the given [uid].
@@ -152,19 +159,25 @@ class User {
     User? user;
     if (cache) {
       user = MemoryCache.instance.read<User?>(uid);
-      return user;
+      if (user != null) {
+        return user;
+      }
     }
+
+    /// Get the user data from the server
     final DocumentSnapshot snapshot =
         await UserService.instance.col.doc(uid).get();
+
+    /// If the snapshot exists, save in memory and return.
     if (snapshot.exists) {
       user = User.fromSnapshot(snapshot);
       MemoryCache.instance.create(uid, user);
       return user;
     }
 
-    /// It overrides the exisiting cache
-    MemoryCache.instance.create<User?>(uid, user);
-    return user;
+    /// If the snapshot does not exist, return null.
+    MemoryCache.instance.create<User?>(uid, null);
+    return null;
   }
 
   /// Deprecated

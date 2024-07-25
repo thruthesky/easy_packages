@@ -108,6 +108,27 @@ Please refer to the [Task Management System Package - easy_task](https://pub.dev
 - easy_locale - A multilingual translation package. There are many translation packages on pub.dev, but we use the simpler easy_locale package. There's no need for you to use this package in your app, but you can if you want.
 
 
+## Like and Dislike
+
+The `like` and `dislike` functionality can be applied to various entities in the app, such as user profiles, uploaded photos, posts, and comments.
+
+A simple way to handle this is by saving a list of user IDs who liked or disliked an item. However, if the document becomes too large, it can slow down the app and increase costs for network usage on Firebase. Additionally, Firestore documents have a 1MB size limit, which can cause issues if too many users like or dislike an item.
+
+The `easy_like` package provides an easy and efficient way to manage the `like` and `dislike` functionality.
+
+
+
+
+
+## Block
+
+
+## Report
+
+
+
+
+
 ## Engine
 
 - `easy_engine` package is the counter part of the [easy-engin](https://github.com/thruthesky/easy-engine) backend.
@@ -174,7 +195,9 @@ Service class does
 
 ## Database
 
-- Give empty value for the field to help filtering. For instance, if the user didn't choose this gender, then save it as empty string into the database so, it can be used for filtering to get who didn't put their gender. If the field does not exists, it's not easy to filter.
+- Give default value for the field to help filtering. For instance,
+  - if the user didn't choose his gender, then save it as empty string into the database so, it can be used for filtering to know who didn't choose for their gender. If the field does not exists, it's not easy to filter.
+  - if the post is not deleted, then save fales to `deleted` field. With this, you can easily filter posts that are not deleted. Without the default value, you cannot filter.
 
 
 

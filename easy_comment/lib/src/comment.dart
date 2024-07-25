@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easyuser/easyuser.dart';
 
 /// Comment model
@@ -17,6 +18,9 @@ import 'package:easyuser/easyuser.dart';
 /// [uid] is the user id of the user who posted the comment.
 ///
 /// [content] is the content of the comment.
+///
+/// [deleted] is a boolean that must exists in the database even if it's not deleted.
+/// The default value must be false. See README for details
 class Comment {
   final String id;
   final String? parentId;
@@ -26,13 +30,18 @@ class Comment {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<String> urls;
-  final String youtubeUrl;
   final int depth;
   final String order;
+  final bool deleted;
+
+  ///
   bool hasChild = false;
 
   /// Current comment object's reference
   DocumentReference get ref => col.doc(id);
+
+  /// Returns true if the comment belongs to the current user.
+  bool get isMine => uid == my.uid;
 
   Comment({
     required this.id,
@@ -43,10 +52,9 @@ class Comment {
     required this.createdAt,
     required this.updatedAt,
     required this.urls,
-    required this.youtubeUrl,
     required this.depth,
     required this.order,
-    // this.hasChild = false,
+    required this.deleted,
   });
 
   static CollectionReference get col => CommentService.instance.col;
@@ -60,6 +68,9 @@ class Comment {
     return Comment.fromJson(docSnapshot, snapshot.id);
   }
 
+  /// Create a comment from the given document reference.
+  ///
+  /// This is used to use the method of the comment model class.
   factory Comment.fromDocumentReference(DocumentReference ref) {
     return Comment(
       id: ref.id,
@@ -70,10 +81,9 @@ class Comment {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       urls: [],
-      youtubeUrl: '',
       depth: 1,
       order: '',
-      // hasChild: false,
+      deleted: false,
     );
   }
 
@@ -91,10 +101,9 @@ class Comment {
           ? (json['updateAt'] as Timestamp).toDate()
           : DateTime.now(),
       urls: List<String>.from(json['urls']),
-      youtubeUrl: json['youtubeUrl'],
       depth: json['depth'] ?? 0,
       order: json['order'],
-      // hasChild: json['hasChild'] ?? false,
+      deleted: json['deleted'],
     );
   }
 
@@ -108,10 +117,8 @@ class Comment {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'urls': urls,
-      'youtubeUrl': youtubeUrl,
       'depth': depth,
       'order': order,
-      // 'hasChild': hasChild,
     };
   }
 
@@ -160,21 +167,20 @@ class Comment {
         'uid': my.uid,
         'createdAt': FieldValue.serverTimestamp(),
         'updateAt': FieldValue.serverTimestamp(),
-        'urls': [],
-        'youtubeUrl': '',
+        'urls': urls,
         'depth': parent == null ? 0 : parent.depth + 1,
         'order': order,
-        'hasChild': false,
+        'deleted': false,
       });
       t.update(documentReference, {
         'commentCount': FieldValue.increment(1),
       });
       // 부모 코멘트에 hasChild 를 true 로 변경한다.
-      if (parent != null) {
-        t.update(parent.ref, {
-          'hasChild': true,
-        });
-      }
+      // if (parent != null) {
+      //   t.update(parent.ref, {
+      //     'hasChild': true,
+      //   });
+      // }
 
       return addedRef;
     });
@@ -187,10 +193,25 @@ class Comment {
     String? content,
     List<String>? urls,
   }) async {
-    await col.doc(id).update({
+    await ref.update({
       if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
       'updateAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Delete the comment
+  ///
+  /// It does not actually delete the document. But it will delete
+  /// the content, urls, and etc.
+  Future<void> delete() async {
+    for (String url in urls) {
+      await StorageService.instance.delete(url);
+    }
+    await ref.update({
+      'deleted': true,
+      'urls': [],
+      'content': '',
     });
   }
 }

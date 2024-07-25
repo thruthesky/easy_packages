@@ -131,7 +131,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                     birthDay = day;
                     setState(() {});
                   },
-                  labelYear: '   ${'year'.t}',
+                  labelYear: ' ${'year'.t}',
                   labelMonth: ' ${'month'.t}',
                   labelDay: ' ${'day'.t}',
                 ),

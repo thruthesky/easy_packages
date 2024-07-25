@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/defines.dart';
+import 'package:easy_storage/easy_storage.dart';
 
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
@@ -31,6 +32,7 @@ class Post {
   final DateTime createdAt;
   final DateTime updateAt;
   final List<String> urls;
+  final bool deleted;
 
   static CollectionReference col = PostService.instance.col;
 
@@ -51,6 +53,9 @@ class Post {
   final Map<String, dynamic> youtube;
   Map<String, dynamic> get extra => data;
 
+  /// Return true if the post is created by the current user
+  bool get isMine => currentUser?.uid == uid;
+
   Post({
     required this.id,
     required this.category,
@@ -64,6 +69,7 @@ class Post {
     required this.commentCount,
     required this.data,
     required this.youtube,
+    required this.deleted,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -86,6 +92,7 @@ class Post {
       commentCount: json['commentCount'] ?? 0,
       data: json,
       youtube: json['youtube'] ?? {},
+      deleted: json['deleted'],
     );
   }
   Map<String, dynamic> toJson() => {
@@ -98,7 +105,8 @@ class Post {
         'urls': urls,
         'youtubeUrl': youtubeUrl,
         'commentCount': commentCount,
-        'youtube': youtube
+        'youtube': youtube,
+        'deleted': deleted,
       };
 
   @override
@@ -154,6 +162,7 @@ class Post {
       'commentCount': 0,
       'createdAt': FieldValue.serverTimestamp(),
       'updateAt': FieldValue.serverTimestamp(),
+      'deleted': false,
     };
 
     final youtube = await getYoutubeConfig(youtubeUrl);
@@ -166,6 +175,9 @@ class Post {
   }
 
   /// update a post
+  ///
+  /// TODO: display loader while updating
+  /// TODO: display loader and percentage while image uploading
   Future<void> update({
     String? title,
     String? content,
@@ -183,11 +195,29 @@ class Post {
     await doc(id).update(
       {
         ...data,
-        if (this.youtubeUrl != youtubeUrl)
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
           'youtube': await getYoutubeConfig(youtubeUrl),
         'updateAt': FieldValue.serverTimestamp(),
         ...?extra,
       },
     );
+  }
+
+  /// delete post, this will not delete the document but instead mark the the
+  /// document as deleted
+  ///
+  /// TODO: display loader while deleting
+  Future<void> delete() async {
+    if (deleted == true) {
+      throw 'post-delete/post-already-deleted Post is already deleted';
+    }
+
+    for (String url in urls) {
+      await StorageService.instance.delete(url);
+    }
+
+    await ref.update({
+      'deleted': true,
+    });
   }
 }

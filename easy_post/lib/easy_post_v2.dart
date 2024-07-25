@@ -1,6 +1,7 @@
 export './src/post.dart';
 export './src/post.locales.dart';
 export './src/post.service.dart';
+export './src/screens/post.detail.screen.dart';
 export './src/screens/post.edit.screen.dart';
 export './src/widgets/post.detail.dart';
 export './src/widgets/post.detail.youtube.dart';

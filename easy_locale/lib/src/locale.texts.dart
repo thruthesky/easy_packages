@@ -17,6 +17,42 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Close',
     'ko': '닫기',
   },
+  'dismiss': {
+    'en': 'Dismiss',
+    'ko': '닫기',
+  },
+  'edit': {
+    'en': 'Edit',
+    'ko': '수정',
+  },
+  'delete': {
+    'en': 'Delete',
+    'ko': '삭제',
+  },
+  'cancel': {
+    'en': 'Cancel',
+    'ko': '취소',
+  },
+  'reply': {
+    'en': 'Reply',
+    'ko': '댓글',
+  },
+  'block': {
+    'en': 'Block',
+    'ko': '차단',
+  },
+  'report': {
+    'en': 'Report',
+    'ko': '신고',
+  },
+  'like': {
+    'en': {
+      'zero': 'Like',
+      'one': 'Like {n}',
+      'many': 'Likes {n}',
+    },
+    'ko': '좋아요 {n}',
+  },
   'name': {
     'en': 'Name',
     'ko': '이름',
@@ -43,7 +79,7 @@ final Map<String, dynamic> localeTexts = {
   },
   'displayName': {
     'en': 'Display Name',
-    'ko': '이름 표시',
+    'ko': '닉네임',
   },
   'year': {
     'en': 'Year',
