@@ -19,7 +19,7 @@ class PostDetailScreen extends StatelessWidget {
         builder: (post) {
           /// If the post has no youtube video, return the normal scallfold.
           if (post.hasYoutube == false) {
-            return buildScaffold(context);
+            // return buildScaffold(context);
           }
 
           /// If the post has youtube video, return the youtube fullscreen
@@ -33,7 +33,7 @@ class PostDetailScreen extends StatelessWidget {
   }
 
   buildScaffold(BuildContext context, [Widget? youtubeSmallVideoWidget]) {
-    Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('PostDetail'),
       ),
