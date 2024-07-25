@@ -1,6 +1,6 @@
 name: easy_category
 description: "Easy to use the category management package. Category can be used for any type of data."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/thruthesky/easy-packages/main/tree/easy_category
 
 environment:
