@@ -28,6 +28,8 @@ class _ChatRoomInviteListScreenState extends State<ChatRoomInviteListScreen> {
               final invitedUser = await showGeneralDialog<User?>(
                 context: context,
                 pageBuilder: (context, a1, a2) {
+                  /// TODO: Must not list users. Use UserSearchScreen.
+                  /// Must find user by complete name.
                   return Scaffold(
                     appBar: AppBar(
                       title: const Text("Invite User"),

@@ -308,3 +308,20 @@ Do the widget test as Flutter does.
   - 1. Add it to `easy_locale/lib/src/locale.text.dart` if you think the translation text is one of the basic ones.
   - 2. Add it to the `init` method of the package service if you think the translation is only applicable to the package.
 
+
+
+
+# Customization
+
+- You can customize the screen by providing the `showXxxxScreen` callback on the service.
+  - This callback function can be everywhere but should be provided by the service class.
+
+Example:
+```dart
+UserService.instance.init(
+  showPublicProfileScreen: (user) => CustomizedPublicProfileScreen(context: context, user: user);
+);
+```
+
+
+- Note that, the callback **must pass** the BuildContext.

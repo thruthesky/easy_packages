@@ -19,26 +19,31 @@ class ChatService {
 
   ChatService._();
 
+  /// Whether the service is initialized or not.
+  ///
+  /// Note that, chat service can be initialized multiple times.
   bool initialized = false;
 
-  Widget Function()? chatRoomListScreen;
-  Widget Function()? chatRoomEditScreen;
+  /// Callback function
+  Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
+      $showChatRoomListScreen;
+  Future<DocumentReference> Function({BuildContext context})?
+      $showChatRoomEditScreen;
 
   init({
-    String? collectionName,
-    bool enableAnonymousSignIn = false,
-    Widget Function()? chatRoomListScreen,
-    Widget Function()? chatRoomEditScreen,
+    Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
+        $showChatRoomListScreen,
+    Future<DocumentReference> Function({BuildContext context})?
+        $showChatRoomEditScreen,
   }) {
     UserService.instance.init();
-    if (initialized) {
-      dog('UserService is already initialized; It will not initialize again.');
-      return;
-    }
+
     initialized = true;
 
-    this.chatRoomListScreen = chatRoomListScreen ?? this.chatRoomListScreen;
-    this.chatRoomEditScreen = chatRoomEditScreen ?? this.chatRoomEditScreen;
+    this.$showChatRoomListScreen =
+        $showChatRoomListScreen ?? this.$showChatRoomListScreen;
+    this.$showChatRoomEditScreen =
+        $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
   }
 
   /// Firebase CollectionReference for Chat Room docs
@@ -59,32 +64,36 @@ class ChatService {
       FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
 
   /// Show the chat room list screen.
-  showChatRoomListScreen(BuildContext context) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) =>
-          chatRoomListScreen?.call() ?? const ChatRoomListScreen(),
-    );
+  Future showChatRoomListScreen(BuildContext context) {
+    return $showChatRoomListScreen?.call() ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (_, __, ___) => const ChatRoomListScreen(),
+        );
   }
 
   // TODO dry
-  showOpenChatRoomListScreen(BuildContext context) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) =>
-          chatRoomListScreen?.call() ??
-          const ChatRoomListScreen(openGroupChatsOnly: true),
-    );
+  Future showOpenChatRoomListScreen(BuildContext context) {
+    return $showChatRoomListScreen?.call(
+          context: context,
+          openGroupChatsOnly: true,
+        ) ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (_, __, ___) =>
+              const ChatRoomListScreen(openGroupChatsOnly: true),
+        );
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
   // TODO
-  showChatRoomEditScreen(BuildContext context, {ChatRoom? room}) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) =>
-          chatRoomEditScreen?.call() ?? ChatRoomEditScreen(room: room),
-    );
+  Future<DocumentReference?> showChatRoomEditScreen(BuildContext context,
+      {ChatRoom? room}) {
+    return $showChatRoomEditScreen?.call(context: context) ??
+        showGeneralDialog<DocumentReference>(
+          context: context,
+          pageBuilder: (_, __, ___) => ChatRoomEditScreen(room: room),
+        );
   }
 
   showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {

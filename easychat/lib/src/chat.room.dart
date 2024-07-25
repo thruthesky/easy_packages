@@ -15,8 +15,8 @@ class ChatRoom {
   DatabaseReference get messageRef =>
       FirebaseDatabase.instance.ref("/chat-messages/$id");
 
-  /// [docRef] is the docuement reference of the chat room.
-  DocumentReference get docRef => col.doc(id);
+  /// [ref] is the docuement reference of the chat room.
+  DocumentReference get ref => col.doc(id);
 
   /// [name] is the chat room name. If it does not exist, it is empty.
   final String name;
