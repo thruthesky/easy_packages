@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_category/easy_category.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
@@ -67,13 +68,26 @@ class MyAppState extends State<MyApp> {
       // PostService.instance.showPostCreateScreen(context: globalContext);
       // PostService.instance.showPostEditScreen(context: globalContext);
       // PostService.instance.showPostListScreen(context: globalContext);
-      PostService.instance
-          .showYoutubeListScreen(context: globalContext, category: 'youtube');
+      // PostService.instance
+      //     .showYoutubeListScreen(context: globalContext, category: 'youtube');
 
       // showGeneralDialog(
       //   context: globalContext,
       //   pageBuilder: (_, __, ___) => const CommentTestScreen(),
       // );
+
+      // Open post list screen
+      PostService.instance.showPostListScreen(
+        context: globalContext,
+        categories: [
+          Category(id: 'qna', name: 'QnA'),
+          Category(id: 'discussion', name: 'Discussion'),
+          Category(id: 'youtube', name: 'Youtube'),
+          Category(id: 'buyandsell', name: 'Buy and Sell'),
+          Category(id: 'job', name: 'Jobs'),
+          Category(id: 'news', name: 'News'),
+        ],
+      );
     });
   }
 
