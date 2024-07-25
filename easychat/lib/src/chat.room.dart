@@ -81,7 +81,7 @@ class ChatRoom {
   /// only female can enter the chat room.
   ///
   /// Note that, [gender] is not supported at this time.
-  final String? gender;
+  final String gender;
 
   /// [noOfUsers] is the number of users in the chat room.
   final noOfUsers = 0;
@@ -94,7 +94,7 @@ class ChatRoom {
   /// In the other way, that some apps want to share the same chat rooms and
   /// some other apps don't want to share the chat rooms. In this case, the
   /// domain can be used to filter the chat rooms by the app.
-  final String? domain;
+  final String domain;
 
   ChatRoom({
     required this.id,
@@ -119,8 +119,8 @@ class ChatRoom {
     this.verifiedUserOnly = false,
     this.urlForVerifiedUserOnly = false,
     this.uploadForVerifiedUserOnly = false,
-    this.gender,
-    this.domain,
+    required this.gender,
+    required this.domain,
   });
 
   factory ChatRoom.fromSnapshot(DocumentSnapshot doc) {
@@ -134,12 +134,12 @@ class ChatRoom {
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       iconUrl: json['iconUrl'],
-      open: json['open'] ?? true,
-      single: json['single'] ?? !(json['group'] ?? true),
-      group: json['group'] ?? !(json['single'] ?? false),
-      hasPassword: json['hasPassword'] ?? false,
-      users: List<String>.from(json['users'] ?? []),
-      masterUsers: List<String>.from(json['masterUsers'] ?? []),
+      open: json['open'],
+      single: json['single'],
+      group: json['group'],
+      hasPassword: json['hasPassword'],
+      users: List<String>.from(json['users']),
+      masterUsers: List<String>.from(json['masterUsers']),
       invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
       blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
       rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
@@ -155,11 +155,11 @@ class ChatRoom {
           : DateTime.now(),
       lastMessageUid: json['lastMessageUid'],
       lastMessageUrl: json['lastMessageUrl'],
-      verifiedUserOnly: json['verifiedUserOnly'] ?? false,
-      urlForVerifiedUserOnly: json['urlForVerifiedUserOnly'] ?? false,
-      uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'] ?? false,
+      verifiedUserOnly: json['verifiedUserOnly'],
+      urlForVerifiedUserOnly: json['urlForVerifiedUserOnly'],
+      uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'],
       gender: json['gender'],
-      domain: json['domain'] ?? '',
+      domain: json['domain'],
     );
   }
 
@@ -212,6 +212,7 @@ class ChatRoom {
     bool open = false,
     // Group == false means the chat room is single chat
     bool group = true,
+    bool single = false,
     // String? password, (NOT IMPLEMENTED YET)
     List<String>? invitedUsers,
     List<String>? users,
@@ -219,9 +220,15 @@ class ChatRoom {
     bool? verifiedUserOnly,
     bool? urlForVerifiedUserOnly,
     bool? uploadForVerifiedUserOnly,
-    String? gender,
-    String? domain,
+    String gender = '',
+    String domain = '',
   }) async {
+    if (single == true && (group == true || open == true)) {
+      throw 'chat-room-create/single-cannot-be-group-or-open Single chat room cannot be group or open';
+    }
+    if (single == false && group == false) {
+      throw 'chat-room-create/single-or-group Single or group chat room must be selected';
+    }
     final newRoom = {
       'users': [my.uid],
       'masterUsers': [my.uid],
@@ -229,7 +236,7 @@ class ChatRoom {
       if (description != null) 'description': description,
       if (iconUrl != null) 'iconUrl': iconUrl,
       'open': open,
-      'single': !group,
+      'single': single,
       'group': group,
       // 'hasPassword': password != null, (NOT IMPLEMENTED YET)
       if (invitedUsers != null) 'invitedUsers': invitedUsers,
@@ -257,22 +264,25 @@ class ChatRoom {
     return ref;
   }
 
+  /// [createSingle] creates a new single chat room.
   static Future<DocumentReference> createSingle(String otherUid) {
     return create(
       group: false,
       id: singleChatRoomId(otherUid),
       invitedUsers: [otherUid],
       users: [my.uid],
-      masterUsers: [my.uid, otherUid],
+      masterUsers: [my.uid],
     );
   }
 
+  /// [get] gets the chat room by id.
   static Future<ChatRoom?> get(String id) async {
     final snapshotDoc = await ChatRoom.col.doc(id).get();
     if (snapshotDoc.exists == false) return null;
     return ChatRoom.fromSnapshot(snapshotDoc);
   }
 
+  /// [update] updates the chat room.
   Future<void> update({
     String? name,
     String? description,
@@ -285,6 +295,12 @@ class ChatRoom {
     String? lastMessageUid,
     String? lastMessageUrl,
   }) async {
+    if (single == true && (group == true || open == true)) {
+      throw 'chat-room-update/single-cannot-be-group-or-open Single chat room cannot be group or open';
+    }
+    if (single == false && group == false) {
+      throw 'chat-room-update/single-or-group Single or group chat room must be selected';
+    }
     final updateData = {
       if (name != null) 'name': name,
       if (description != null) 'description': description,
