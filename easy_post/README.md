@@ -133,3 +133,39 @@ IconButton(
 PostDetailScreen(post: post);
 
 ```
+
+
+
+# Widgets
+
+## PostDoc
+
+`PostDoc` is a widget that displays a post document.
+
+- `post`: The post document to display. It will be also used for initialData for the StreamBuilder of FutureBuilder to reduce the flickering.
+- `sync`: If true, it will use `StreamBuilder` to fetch the post and rebuild the widget whenever the post is updated. If false, it will use `FutureBuilder` to fetch the post only once. The default is false.
+
+Example:
+```dart
+@override
+Widget build(BuildContext context) {
+  return PostDoc(
+      post: post,
+      sync: true,
+      builder: (post) {
+        /// If the post has no youtube video, return the normal scallfold.
+        if (post.hasYoutube == false) {
+          return NormalPostScaffold(context);
+        }
+
+        /// If the post has youtube video, return the youtube fullscreen
+        /// builder.
+        return YoutubeFullscreenBuilder(
+            post: post,
+            builder: (context, player) {
+              return YoutubePostScaffold(context, player);
+            });
+      });
+}
+```
+

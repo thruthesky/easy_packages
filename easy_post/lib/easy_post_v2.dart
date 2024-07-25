@@ -4,7 +4,6 @@ export './src/post.service.dart';
 export './src/screens/post.detail.screen.dart';
 export './src/screens/post.edit.screen.dart';
 export './src/widgets/post.detail.dart';
-export './src/widgets/post.detail.youtube.dart';
 export './src/widgets/post.list_tile.dart';
 export './src/widgets/post.list_view.dart';
 
