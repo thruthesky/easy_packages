@@ -82,6 +82,9 @@ class UserDoc extends StatelessWidget {
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
+        if (snapshot.data != null) {
+          MemoryCache.instance.create(uid, snapshot.data);
+        }
         return builder(snapshot.data);
       },
     );
