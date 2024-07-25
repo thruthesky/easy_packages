@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class UserBuildAvatar extends StatelessWidget {
@@ -40,7 +41,7 @@ class UserBuildAvatar extends StatelessWidget {
               ),
             ),
           )
-        : UserBuildCircleAvatar(
+        : UserCircleAvatar(
             size: size,
             radius: radius,
             border: border,
@@ -49,52 +50,5 @@ class UserBuildAvatar extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           );
-    // ClipRRect(
-    //     borderRadius: BorderRadius.circular(radius),
-    //     child: Container(
-    //       width: size,
-    //       height: size,
-    //       decoration: BoxDecoration(
-    //         borderRadius: BorderRadius.circular(radius),
-    //         border: border,
-    //       ),
-    //       child: CachedNetworkImage(
-    //         imageUrl: user.photoUrl!,
-    //         fit: BoxFit.cover,
-    //       ),
-    //     ),
-    //   );
-  }
-}
-
-class UserBuildCircleAvatar extends StatelessWidget {
-  const UserBuildCircleAvatar({
-    super.key,
-    required this.child,
-    this.size = 48,
-    this.radius = 20,
-    this.border,
-  });
-
-  final Widget child;
-  final double size;
-  final double radius;
-  final Border? border;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(radius),
-          border: border,
-        ),
-        child: child,
-      ),
-    );
   }
 }

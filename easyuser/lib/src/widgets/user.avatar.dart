@@ -1,5 +1,6 @@
 import 'package:easyuser/easyuser.dart';
 import 'package:easyuser/src/widgets/privates/user.build_avatar.dart';
+import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 /// UserAvatar
@@ -37,29 +38,25 @@ class UserAvatar extends StatelessWidget {
     );
   }
 
+  /// Display user's avatar from the user's uid.
   static Widget fromUid({
     Key? key,
-    required String? uid,
+    required String uid,
     double size = 48,
     double radius = 20,
     Border? border,
     bool sync = false,
   }) {
-    return AuthStateChanges(
+    return UserDoc(
+      uid: uid,
+      sync: sync,
       builder: (user) => user == null
           ? buildAnonymouseAvatar(size: size, radius: radius, border: border)
-          : UserDoc(
-              uid: user.uid,
-              sync: sync,
-              builder: (user) => user == null
-                  ? buildAnonymouseAvatar(
-                      size: size, radius: radius, border: border)
-                  : UserBuildAvatar(
-                      user: user,
-                      size: size,
-                      radius: radius,
-                      border: border,
-                    ),
+          : UserBuildAvatar(
+              user: user,
+              size: size,
+              radius: radius,
+              border: border,
             ),
     );
   }
@@ -69,7 +66,7 @@ class UserAvatar extends StatelessWidget {
     double radius = 20,
     Border? border,
   }) {
-    return UserBuildCircleAvatar(
+    return UserCircleAvatar(
       size: size,
       radius: radius,
       border: border,

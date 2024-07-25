@@ -32,7 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Home'),
         actions: [
           InkWell(
-            child: UserAvatar.fromUid(uid: myUid, sync: true),
+            child: MyDoc(
+              builder: (user) => user == null
+                  ? const AnonymousAvatar()
+                  : UserAvatar(user: user),
+            ),
             onTap: () => i.signedIn
                 ? UserService.instance.showProfileUpdaeScreen(context)
                 : context.push(SignInScreen.routeName),
@@ -98,14 +102,20 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text('User Search Dialog: exact search'),
             ),
             ElevatedButton(
-              onPressed: () {
-                UserService.instance.showUserSearchDialog(
+              onPressed: () async {
+                final user = await UserService.instance.showUserSearchDialog(
                   context,
                   exactSearch: false,
+                  itemBuilder: (user, index) => ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(user),
+                    child: Text(user.displayName),
+                  ),
                 );
+                print('user; $user');
               },
               child: const Text('User Search Dialog: partial search search'),
             ),
+            //
             ElevatedButton(
               onPressed: () {
                 ChatService.instance.showChatRoomListScreen(context);
