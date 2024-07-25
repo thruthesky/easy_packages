@@ -1,4 +1,5 @@
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 
 /// [iam] and [i] are the simple aliases of UserService.instance
 UserService get iam => UserService.instance;
@@ -24,3 +25,6 @@ User get my {
   }
   return iam.user as User;
 }
+
+/// [myUid] returns the current user's uid. It can be null.
+String? get myUid => FirebaseAuth.instance.currentUser?.uid;

@@ -39,21 +39,44 @@ class UserAvatar extends StatelessWidget {
 
   static Widget fromUid({
     Key? key,
-    required String uid,
+    required String? uid,
     double size = 48,
     double radius = 20,
     Border? border,
+    bool sync = false,
   }) {
-    return UserDoc(
-      uid: uid,
+    return AuthStateChanges(
       builder: (user) => user == null
-          ? const SizedBox.shrink()
-          : UserBuildAvatar(
-              user: user,
-              size: size,
-              radius: radius,
-              border: border,
+          ? buildAnonymouseAvatar(size: size, radius: radius, border: border)
+          : UserDoc(
+              uid: user.uid,
+              sync: sync,
+              builder: (user) => user == null
+                  ? buildAnonymouseAvatar(
+                      size: size, radius: radius, border: border)
+                  : UserBuildAvatar(
+                      user: user,
+                      size: size,
+                      radius: radius,
+                      border: border,
+                    ),
             ),
+    );
+  }
+
+  static buildAnonymouseAvatar({
+    required double size,
+    double radius = 20,
+    Border? border,
+  }) {
+    return UserBuildCircleAvatar(
+      size: size,
+      radius: radius,
+      border: border,
+      child: Icon(
+        Icons.person,
+        size: size / 1.5,
+      ),
     );
   }
 }
