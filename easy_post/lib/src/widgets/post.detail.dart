@@ -68,6 +68,8 @@ class _PostDetailState extends State<PostDetail> {
         } else ...{
           if (widget.post.hasYoutube && widget.youtubeSmallVideoWidget != null)
             widget.youtubeSmallVideoWidget!,
+
+          //
           // PostDetailYoutube(
           //   post: widget.post,
           //   youtube: widget.youtubeSmallVideoWidget,

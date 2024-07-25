@@ -57,7 +57,7 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   @override
   void didUpdateWidget(covariant YoutubeFullscreenBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.post.youtube.isEmpty || widget.post.youtube['id'] == null) {
+    if (widget.post.hasYoutube == false) {
       return;
     }
     if (oldWidget.post.youtube['id'] != widget.post.youtube['id']) {
@@ -112,7 +112,6 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
         ),
       ),
       builder: (context, smallWidget) {
-        print('smallWdiget: $smallWidget');
         return widget.builder(context, smallWidget);
       },
     );

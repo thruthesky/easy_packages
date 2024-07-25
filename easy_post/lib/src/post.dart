@@ -50,7 +50,8 @@ class Post {
   final Map<String, dynamic> youtube;
 
   /// Returns true if the current post has youtube.
-  bool get hasYoutube => youtubeUrl.isNotEmpty && youtube.isNotEmpty;
+  bool get hasYoutube =>
+      (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
 
   final int commentCount;
   final Map<String, dynamic> data;
