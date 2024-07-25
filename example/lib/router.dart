@@ -8,6 +8,7 @@ BuildContext get globalContext => globalNavigatorKey.currentContext!;
 
 /// GoRouter
 final router = GoRouter(
+  // initialLocation: "/chatRoomScreen",
   navigatorKey: globalNavigatorKey,
   routes: [
     GoRoute(

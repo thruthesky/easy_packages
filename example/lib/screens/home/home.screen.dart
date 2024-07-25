@@ -19,12 +19,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Text('age'.t),
@@ -71,6 +76,35 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                             },
                             child: const Text('Delete Account'),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  ChatService.instance
+                                      .showChatRoomListScreen(context);
+                                },
+                                child: const Text("Chat Room List"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // ChatService.instance
+                                  //     .showChatRoomListScreen(context);
+
+                                  ChatService.instance
+                                      .showInviteListScreen(context);
+                                },
+                                child: const Text("Chat Invite List"),
+                              ),
+                            ],
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              ChatService.instance
+                                  .showOpenChatRoomListScreen(context);
+                            },
+                            child: const Text("Open Room List"),
                           ),
                         ],
                       );
@@ -131,22 +165,23 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text('Easy Comment Screen'),
             ),
             SizedBox(
-                height: 80,
-                child: UserListView(
-                  itemBuilder: (user, p1) => GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      ChatService.instance.showChatRoomScreen(
-                        context,
-                        user: user,
-                        // room: room,
-                      );
-                    },
-                    child: UserAvatar(
+              height: 80,
+              child: UserListView(
+                itemBuilder: (user, p1) => GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    ChatService.instance.showChatRoomScreen(
+                      context,
                       user: user,
-                    ),
+                      // room: room,
+                    );
+                  },
+                  child: UserAvatar(
+                    user: user,
                   ),
-                )),
+                ),
+              ),
+            ),
           ],
         ),
       ),
