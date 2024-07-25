@@ -72,7 +72,6 @@ class ChatService {
         );
   }
 
-  // TODO dry
   Future showOpenChatRoomListScreen(BuildContext context) {
     return $showChatRoomListScreen?.call(
           context: context,
@@ -86,7 +85,6 @@ class ChatService {
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
-  // TODO
   Future<DocumentReference?> showChatRoomEditScreen(BuildContext context,
       {ChatRoom? room}) {
     return $showChatRoomEditScreen?.call(context: context) ??

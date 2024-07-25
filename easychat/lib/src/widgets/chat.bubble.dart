@@ -83,6 +83,7 @@ class ChatBubble extends StatelessWidget {
                     ),
                     clipBehavior: Clip.hardEdge,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (message.url != null) ...[

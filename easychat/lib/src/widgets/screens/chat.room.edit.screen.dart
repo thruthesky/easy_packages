@@ -11,11 +11,9 @@ class ChatRoomEditScreen extends StatefulWidget {
   const ChatRoomEditScreen({
     super.key,
     this.room,
-    this.afterUpdate,
   });
 
   final ChatRoom? room;
-  final void Function(BuildContext context, ChatRoom room)? afterUpdate;
 
   @override
   State<ChatRoomEditScreen> createState() => _ChatRoomEditScreenState();
@@ -133,7 +131,6 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 );
                 if (!context.mounted) return;
                 Navigator.of(context).pop(room!.ref);
-                widget.afterUpdate?.call(context, room!);
               },
               child: const Text('UPDATE'),
             ),

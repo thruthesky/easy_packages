@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -60,12 +59,13 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                     setState(() => submitable = value.isNotEmpty);
                   },
                   onSubmitted: (value) {
-                    sendMessage();
+                    sendMessage(text: value);
                   },
                 ),
               ),
               IconButton(
-                onPressed: submitable ? sendMessage : null,
+                onPressed: () =>
+                    submitable ? sendMessage(text: controller.text) : null,
                 icon: const Icon(Icons.send),
               ),
             ],
@@ -75,23 +75,23 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     );
   }
 
-  Future sendMessage({String? photoUrl}) async {
-    if (controller.text.isEmpty && photoUrl == null) return;
+  Future sendMessage({String? photoUrl, String? text}) async {
+    if ((text ?? "").isEmpty && photoUrl == null) return;
     await shouldAcceptInvitation();
     List<Future> futures = [
       ChatMessage.create(
         roomId: widget.room!.id,
-        text: controller.text,
+        text: text,
         url: photoUrl,
       ),
       widget.room!.update(
-        lastMessageText: controller.text,
+        lastMessageText: text,
         lastMessageAt: FieldValue.serverTimestamp(),
         lastMessageUid: my.uid,
         lastMessageUrl: photoUrl,
       ),
     ];
-    controller.clear();
+    if (text != null) controller.clear();
     setState(() => submitable = false);
     await Future.wait(futures);
   }

@@ -85,25 +85,46 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (!(room?.users.contains(my.uid) ?? true))
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
-                      style: Theme.of(context).textTheme.labelSmall,
+          if (!(room?.users.contains(my.uid) ?? true)) ...[
+            if (!(room?.invitedUsers.contains(my.uid) ?? true))
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              )
+            else if (room?.group ?? false)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "This is an open group. Once you sent a message, you will join the group.",
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+          ],
           Expanded(
             child: room?.messageRef != null
                 ? Align(
