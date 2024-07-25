@@ -151,19 +151,18 @@ And to make it short, you can use `MyDocReady`.
 
 ## UserDoc
 
-You can create a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
+- You can display a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
 
-`uid` is the user's UID. It uses the `MemoryCache` package to cach the data in memory.
+- `uid` is the user's UID. It uses the `MemoryCache` package to cach the data in memory.
 
-There are three different modes for using `UserDoc`
+- There are three different usage for using `UserDoc`
+  - If `sync` is passed as true, then it will rebuild the widget whenever the database changes. It first shows the data cached in memory as the `initialData` (this will help reducing flickering).  And then shows(re-builds) data from database. The default value is false.
+  - If `cache` is true, it uses data cached in memory. If there is no cached data in memory, it reads data from the server. The default value is true, and once user data is read(loaded) from the database, it does not access the database again.
+  - If the both of `sync` and `cache` are set to false, it will get the data from database always.
 
-If `cacheOnly` is true, it only uses data cached in memory. If there is cached data in memory, it uses that data. If there is no cached data in memory, it reads data from the server. The default value is true, and once user data is read from the DB, it does not read from the DB again.
+  If `sync` is passed as true, the `cache` option will be ignore.it first shows the data cached in memory as the `initialData` and then fetches and shows data from the server. So, it build the widget twice.
 
-If `cacheOnly` is false, it first shows the data cached in memory as the `initialData` and then fetches and shows data from the server. So, it build the widget twice.
-
-Using [sync], it first shows the data cached in memory as the `initialData` and then shows data updated in real-time.
-
-It uses the `initialData` for reducing flickering.
+- It uses the `initialData` for reducing flickering.
 
 
 Examples:
@@ -179,6 +178,10 @@ UserDoc(
 ),
 ```
 
+
+- There is a handy hlper method for `UserAvatar` which you can put 
+
+UserAvatar.fromUid(uid: myUid, sync: true),
 
 
 

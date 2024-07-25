@@ -79,8 +79,7 @@ class ChatService {
         ) ??
         showGeneralDialog(
           context: context,
-          pageBuilder: (_, __, ___) =>
-              const ChatRoomListScreen(openGroupChatsOnly: true),
+          pageBuilder: (_, __, ___) => const ChatRoomListScreen(open: true),
         );
   }
 

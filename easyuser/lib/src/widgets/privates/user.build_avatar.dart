@@ -35,24 +35,66 @@ class UserBuildAvatar extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
+                      fontSize: size / 1.5,
                     ),
               ),
             ),
           )
-        : ClipRRect(
-            borderRadius: BorderRadius.circular(radius),
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(radius),
-                border: border,
-              ),
-              child: CachedNetworkImage(
-                imageUrl: user.photoUrl!,
-                fit: BoxFit.cover,
-              ),
+        : UserBuildCircleAvatar(
+            size: size,
+            radius: radius,
+            border: border,
+            child: CachedNetworkImage(
+              imageUrl: user.photoUrl!,
+              fit: BoxFit.cover,
             ),
           );
+    // ClipRRect(
+    //     borderRadius: BorderRadius.circular(radius),
+    //     child: Container(
+    //       width: size,
+    //       height: size,
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(radius),
+    //         border: border,
+    //       ),
+    //       child: CachedNetworkImage(
+    //         imageUrl: user.photoUrl!,
+    //         fit: BoxFit.cover,
+    //       ),
+    //     ),
+    //   );
+  }
+}
+
+class UserBuildCircleAvatar extends StatelessWidget {
+  const UserBuildCircleAvatar({
+    super.key,
+    required this.child,
+    this.size = 48,
+    this.radius = 20,
+    this.border,
+  });
+
+  final Widget child;
+  final double size;
+  final double radius;
+  final Border? border;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(radius),
+          border: border,
+        ),
+        child: child,
+      ),
+    );
   }
 }
