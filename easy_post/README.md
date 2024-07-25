@@ -31,8 +31,9 @@ You can access the custom value like `post.extra['size']`. Note that, the `post.
 
 # Category
 
+`easy_post_v2` uses category from `easy_category`.
 
-The categories can be set using the `init` method. And it's entirely up to you to decide what categories to use.
+And it's entirely up to you to decide what categories to use.
 
 Example:
 ```dart

@@ -148,9 +148,9 @@ class Post {
     if (currentUser == null) {
       throw 'post-create/sign-in-required You must login firt to create a post';
     }
-    if (category.isEmpty) {
-      throw 'post-create/category-is-required Category is required';
-    }
+    // if (category.isEmpty) {
+    //   throw 'post-create/category-is-required Category is required';
+    // }
 
     final data = {
       'category': category,

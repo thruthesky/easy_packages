@@ -26,23 +26,23 @@ class _PostListScreenState extends State<PostListScreen> {
             icon: const Icon(Icons.add),
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(40),
-          child: SizedBox(
-            height: 40,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: PostService.instance.categories.entries
-                  .map(
-                    (e) => TextButton(
-                      onPressed: () => setState(() => category = e.key),
-                      child: Text(e.value),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ),
+        // bottom: PreferredSize(
+        //   preferredSize: const Size.fromHeight(40),
+        //   child: SizedBox(
+        //     height: 40,
+        //     child: ListView(
+        //       scrollDirection: Axis.horizontal,
+        //       children: PostService.instance.categories.entries
+        //           .map(
+        //             (e) => TextButton(
+        //               onPressed: () => setState(() => category = e.key),
+        //               child: Text(e.value),
+        //             ),
+        //           )
+        //           .toList(),
+        //     ),
+        //   ),
+        // ),
       ),
       body: PostListView(
         category: category,
