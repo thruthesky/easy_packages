@@ -76,11 +76,8 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   }
 
   Future sendMessage({String? photoUrl}) async {
-    dog("sending message");
     if (controller.text.isEmpty && photoUrl == null) return;
-
     await shouldAcceptInvitation();
-
     List<Future> futures = [
       ChatMessage.create(
         roomId: widget.room!.id,
@@ -94,7 +91,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
         lastMessageUrl: photoUrl,
       ),
     ];
-
     controller.clear();
     setState(() => submitable = false);
     await Future.wait(futures);

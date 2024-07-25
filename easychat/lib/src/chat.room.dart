@@ -101,9 +101,9 @@ class ChatRoom {
     required this.name,
     required this.description,
     this.iconUrl,
-    this.open = true,
+    this.open = false,
     this.single = false,
-    this.group = false,
+    this.group = true,
     this.hasPassword = false,
     required this.users,
     required this.masterUsers,
@@ -134,10 +134,10 @@ class ChatRoom {
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       iconUrl: json['iconUrl'],
-      open: json['open'],
+      open: json['open'] ?? false, // TODO remove "?? false"
       single: json['single'],
       group: json['group'],
-      hasPassword: json['hasPassword'],
+      hasPassword: json['hasPassword'] ?? false, // TODO remove "?? false"
       users: List<String>.from(json['users']),
       masterUsers: List<String>.from(json['masterUsers']),
       invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
@@ -155,9 +155,12 @@ class ChatRoom {
           : DateTime.now(),
       lastMessageUid: json['lastMessageUid'],
       lastMessageUrl: json['lastMessageUrl'],
-      verifiedUserOnly: json['verifiedUserOnly'],
-      urlForVerifiedUserOnly: json['urlForVerifiedUserOnly'],
-      uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'],
+      verifiedUserOnly:
+          json['verifiedUserOnly'] ?? false, // TODO remove "?? false"
+      urlForVerifiedUserOnly:
+          json['urlForVerifiedUserOnly'] ?? false, // TODO remove "?? false"
+      uploadForVerifiedUserOnly:
+          json['uploadForVerifiedUserOnly'] ?? false, // TODO remove "?? false"
       gender: json['gender'],
       domain: json['domain'],
     );
@@ -217,9 +220,9 @@ class ChatRoom {
     List<String>? invitedUsers,
     List<String>? users,
     List<String>? masterUsers,
-    bool? verifiedUserOnly,
-    bool? urlForVerifiedUserOnly,
-    bool? uploadForVerifiedUserOnly,
+    bool verifiedUserOnly = false,
+    bool urlForVerifiedUserOnly = false,
+    bool uploadForVerifiedUserOnly = false,
     String gender = '',
     String domain = '',
   }) async {
@@ -238,16 +241,17 @@ class ChatRoom {
       'open': open,
       'single': single,
       'group': group,
+      'hasPassword': false,
       // 'hasPassword': password != null, (NOT IMPLEMENTED YET)
       if (invitedUsers != null) 'invitedUsers': invitedUsers,
       if (users != null) 'users': users,
       if (masterUsers != null) 'masterUsers': masterUsers,
       // if (password != null) 'password': password, (NOT IMPLEMENTED YET)
-      if (verifiedUserOnly != null) 'verifiedUserOnly': verifiedUserOnly,
-      if (urlForVerifiedUserOnly != null)
-        'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
-      if (uploadForVerifiedUserOnly != null)
-        'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
+      'verifiedUserOnly': verifiedUserOnly,
+
+      'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
+
+      'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
       'gender': gender,
       'domain': domain,
       'createdAt': FieldValue.serverTimestamp(),
@@ -268,6 +272,7 @@ class ChatRoom {
   static Future<DocumentReference> createSingle(String otherUid) {
     return create(
       group: false,
+      single: true,
       id: singleChatRoomId(otherUid),
       invitedUsers: [otherUid],
       users: [my.uid],
