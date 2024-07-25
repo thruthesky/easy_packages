@@ -77,7 +77,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             const SizedBox(height: 24),
             ImageUpload(
               initialData: room?.iconUrl,
-              ref: room!.docRef,
+              ref: room!.ref,
               field: "iconUrl",
             ),
           ],
@@ -115,7 +115,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 );
                 final chatRoom = await ChatRoom.get(newRoomRef.id);
                 if (!context.mounted) return;
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(chatRoom!.ref);
                 ChatService.instance
                     .showChatRoomScreen(context, room: chatRoom);
               },
@@ -137,7 +137,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 );
                 final chatRoom = await ChatRoom.get(newRoomRef.id);
                 if (!context.mounted) return;
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(chatRoom!.ref);
                 ChatService.instance
                     .showChatRoomScreen(context, room: chatRoom);
               },
