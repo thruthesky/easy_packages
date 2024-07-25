@@ -112,7 +112,7 @@ class PostListView extends StatelessWidget {
             // obtain more items
             if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
               // Tell FirebaseDatabaseQueryBuilder to try to obtain more items.
-              // It is safe to call this function from within the build method.
+              // It is safe to call this  function from within the build method.
               snapshot.fetchMore();
             }
 

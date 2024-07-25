@@ -3,8 +3,20 @@ import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
+/// `PostEditScreen` Screen for creating or updating the post
+/// if the post is provided the screen is for updating where the post information
+/// is display and can be edited
+///
+/// if the post is not provided the screen is for creating where you can create new post
+///
 class PostEditScreen extends StatefulWidget {
+  /// `routeName` so it can be use it other router ex: go_router packages
   static const String routeName = '/PostEdit';
+
+  /// `category` is category of the post ex: 'youtube', 'feed, 'forum'
+  ///
+  /// `post` is the post information, if the post is provided the screen is
+  /// updating the post and if not provided the screen for creating a post
   const PostEditScreen({
     super.key,
     required this.category,
@@ -41,14 +53,14 @@ class _PostEditScreenState extends State<PostEditScreen> {
     }
   }
 
-  /// prepare data if the event is update a post to display in the screen if its create
-  /// display
+  /// prepare data if the event is updating the post
   prepareData() {
     if (isCreate) return;
     if (widget.post == null) return;
     titleController.text = widget.post!.title;
     contentController.text = widget.post!.content;
     youtubeController.text = widget.post!.youtubeUrl;
+    urls = widget.post!.urls;
     setState(() {});
   }
 

@@ -8,6 +8,7 @@ export './src/widgets/post.detail.youtube.dart';
 export './src/widgets/post.list_tile.dart';
 export './src/widgets/post.list_view.dart';
 
+export './src/widgets/youtube_fullscreen.builder.dart';
 export './src/widgets/youtube_player.dart';
 export './src/screens/youtube.list.screen.dart';
 export './src/widgets/youtube.tile.dart';

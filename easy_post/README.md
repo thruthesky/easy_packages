@@ -86,6 +86,18 @@ YoutubePlayer(
   post:post,
 )
 ```
+- youtube with fullscreen you need to wrap your scaffold with `YoutubeFullscreenBuilder`
+this widget allows your youtube video to be fullscreen 
+
+``` dart
+YoutubeFullscreenBuilder(
+  post: post,
+  builder: (context, youtube){
+    return youtube;
+  }
+)
+```
+
 
 # Post Details 
 To display display the details of post you can use `PostServices.instance.showPostDetailScreen()` or `PostDetailScreen()`
