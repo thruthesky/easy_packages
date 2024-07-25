@@ -69,10 +69,10 @@ packages:
     dependency: transitive
     description:
       name: cloud_firestore
-      sha256: "1232370ad04c21c699d0e73b2dc2e1c3b49258f89a16f0119036fd3c6e8aa2f5"
+      sha256: "240c1c3598e62ad58ee665b6df9c65172d2fbe4742770c21ed060e013cb8e037"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "5.1.0"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
@@ -141,18 +141,18 @@ packages:
     dependency: transitive
     description:
       name: easy_helpers
-      sha256: d3df12f28dd532f2ebaec2685ce0bdc8f02d132683ef3081ddc0c842104476f4
+      sha256: "0babe4eff211d1a3ecaa1145136c5743d583aab3c40eda603e09026e6489478b"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   easy_locale:
     dependency: "direct main"
     description:
       name: easy_locale
-      sha256: b8a76fe12150b21c2080afb7d12183b2fd0cf0430d8ec3abca2a2526e0571a51
+      sha256: "6f834cf17f3aff1b22769d4703cc7882d79dbc56269b8b7c7f2a7a9cbb264a5f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.5"
   easy_storage:
     dependency: transitive
     description:
@@ -172,10 +172,10 @@ packages:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "36941d3b3890fdc0f487e7ae05875038463eb8a441d731d4a7408e7393858359"
+      sha256: f4bd295d9bbf8a8847b974341e4adfa95f4eee052179404cee0814b7d79f9062
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.8"
+    version: "0.0.13"
   fake_async:
     dependency: transitive
     description:
@@ -244,10 +244,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_auth
-      sha256: "087fdcb54b0af6f4c5c756e1db4f90e9b65871b9b3a75fabaa0e0ee578301669"
+      sha256: a41b56878fa6aef3ea52962329b47eee333672d4b0ecc406e071b9fc729f242c
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.1"
+    version: "5.1.2"
   firebase_auth_platform_interface:
     dependency: transitive
     description:
@@ -292,10 +292,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_database
-      sha256: "992e2cbff5f76c55fdef9be77fd4874bb1e7845411cc0bba35a5e9bfdeaa220a"
+      sha256: "0a823695cf651cda7aba5665d94e83d515227a7cf8e1328649e6b4052d34cf24"
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.2"
+    version: "11.0.3"
   firebase_database_platform_interface:
     dependency: transitive
     description:
@@ -336,6 +336,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.9.11"
+  firebase_ui_database:
+    dependency: transitive
+    description:
+      name: firebase_ui_database
+      sha256: bbe6a6b03ecb89aed9ccd182c0258935e2d26440e3bfab1bb48e0bb404e91282
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.4"
   firebase_ui_firestore:
     dependency: transitive
     description:

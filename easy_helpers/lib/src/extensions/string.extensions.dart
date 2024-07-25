@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 /// String extension methods
 ///
 ///

@@ -108,6 +108,28 @@ Please refer to the [Task Management System Package - easy_task](https://pub.dev
 - easy_locale - A multilingual translation package. There are many translation packages on pub.dev, but we use the simpler easy_locale package. There's no need for you to use this package in your app, but you can if you want.
 
 
+## Like and Dislike
+
+The `like` and `dislike` functionality can be applied to various entities in the app, such as user profiles, uploaded photos, posts, and comments.
+
+A simple way to handle this is by saving a list of user IDs who liked or disliked an item. However, if the document becomes too large, it can slow down the app and increase costs for network usage on Firebase. Additionally, Firestore documents have a 1MB size limit, which can cause issues if too many users like or dislike an item.
+
+The `easy_like` package provides an easy and efficient way to manage the `like` and `dislike` functionality.
+
+
+## Category
+
+
+
+## Block
+
+
+## Report
+
+
+
+
+
 ## Engine
 
 - `easy_engine` package is the counter part of the [easy-engin](https://github.com/thruthesky/easy-engine) backend.
@@ -287,3 +309,20 @@ Do the widget test as Flutter does.
   - 1. Add it to `easy_locale/lib/src/locale.text.dart` if you think the translation text is one of the basic ones.
   - 2. Add it to the `init` method of the package service if you think the translation is only applicable to the package.
 
+
+
+
+# Customization
+
+- You can customize the screen by providing the `showXxxxScreen` callback on the service.
+  - This callback function can be everywhere but should be provided by the service class.
+
+Example:
+```dart
+UserService.instance.init(
+  showPublicProfileScreen: (user) => CustomizedPublicProfileScreen(context: context, user: user);
+);
+```
+
+
+- Note that, the callback **must pass** the BuildContext.

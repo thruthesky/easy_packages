@@ -23,6 +23,19 @@ Future<Map<String, dynamic>?> getYoutubeConfig(String? youtubeUrl) async {
   final youtubeChannelDetails = Youtube.channelDetails;
   final youtubeThumbnailDetails = Youtube.thumbnails;
 
+  /// This really happened that the youtube video details is empty
+  /// - title is empty
+  /// - name is empty
+  /// - viewCount is 0
+  /// - duration is 0
+  /// - and the image are marked as "Not+Found"
+  ///
+  if (youtubeVideoDetails.title.isEmpty ||
+      youtubeChannelDetails.name.isEmpty ||
+      youtubeVideoDetails.duration == 0) {
+    throw 'youtube/get-config-failed failed to get youtube config';
+  }
+
   return {
     'id': youtubeId,
     'title': youtubeVideoDetails.title,

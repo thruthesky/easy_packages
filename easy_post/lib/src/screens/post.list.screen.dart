@@ -1,9 +1,12 @@
+import 'package:easy_category/easy_category.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
 class PostListScreen extends StatefulWidget {
   static const String routeName = '/PostList';
-  const PostListScreen({super.key});
+  const PostListScreen({super.key, required this.categories});
+
+  final List<Category> categories;
 
   @override
   State<PostListScreen> createState() => _PostListScreenState();
@@ -32,11 +35,11 @@ class _PostListScreenState extends State<PostListScreen> {
             height: 40,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: PostService.instance.categories.entries
+              children: widget.categories
                   .map(
                     (e) => TextButton(
-                      onPressed: () => setState(() => category = e.key),
-                      child: Text(e.value),
+                      onPressed: () => setState(() => category = e.id),
+                      child: Text(e.name),
                     ),
                   )
                   .toList(),
