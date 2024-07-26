@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class UserBuildAvatar extends StatelessWidget {
@@ -35,23 +36,18 @@ class UserBuildAvatar extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
+                      fontSize: size / 1.5,
                     ),
               ),
             ),
           )
-        : ClipRRect(
-            borderRadius: BorderRadius.circular(radius),
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(radius),
-                border: border,
-              ),
-              child: CachedNetworkImage(
-                imageUrl: user.photoUrl!,
-                fit: BoxFit.cover,
-              ),
+        : UserCircleAvatar(
+            size: size,
+            radius: radius,
+            border: border,
+            child: CachedNetworkImage(
+              imageUrl: user.photoUrl!,
+              fit: BoxFit.cover,
             ),
           );
   }

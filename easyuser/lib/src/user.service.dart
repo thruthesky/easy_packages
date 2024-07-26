@@ -175,15 +175,18 @@ class UserService {
         );
   }
 
-// to easily display userSearchDialog you can use
-// `UserService.intance.cshowUserSearchDialog`
-  showUserSearchDialog(BuildContext context,
-      {Widget Function(bool)? emptyBuilder,
-      EdgeInsetsGeometry? padding,
-      Widget Function(User, int)? itemBuilder,
-      bool exactSearch = true,
-      bool searchName = true}) {
-    return showDialog(
+  /// To easily display userSearchDialog you can use
+  /// `UserService.intance.showUserSearchDialog`
+  Future<User?> showUserSearchDialog(
+    BuildContext context, {
+    Widget Function(bool)? emptyBuilder,
+    EdgeInsetsGeometry? padding,
+    Widget Function(User, int)? itemBuilder,
+    bool exactSearch = true,
+    bool searchName = false,
+    bool searchNickname = false,
+  }) {
+    return showDialog<User?>(
       context: context,
       builder: (context) => UserSearchDialog(
         emptyBuilder: emptyBuilder,
@@ -191,6 +194,7 @@ class UserService {
         itemBuilder: itemBuilder,
         exactSearch: exactSearch,
         searchName: searchName,
+        searchNickname: searchNickname,
       ),
     );
   }

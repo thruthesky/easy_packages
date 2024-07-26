@@ -47,10 +47,15 @@ class Post {
 
   /// Youtube URL. Refer README.md for more information
   final String youtubeUrl;
+  final Map<String, dynamic> youtube;
+
+  /// Returns true if the current post has youtube.
+  bool get hasYoutube =>
+      (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
 
   final int commentCount;
   final Map<String, dynamic> data;
-  final Map<String, dynamic> youtube;
+
   Map<String, dynamic> get extra => data;
 
   /// Return true if the post is created by the current user
@@ -148,9 +153,9 @@ class Post {
     if (currentUser == null) {
       throw 'post-create/sign-in-required You must login firt to create a post';
     }
-    if (category.isEmpty) {
-      throw 'post-create/category-is-required Category is required';
-    }
+    // if (category.isEmpty) {
+    //   throw 'post-create/category-is-required Category is required';
+    // }
 
     final data = {
       'category': category,

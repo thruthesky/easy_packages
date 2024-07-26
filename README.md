@@ -117,6 +117,7 @@ A simple way to handle this is by saving a list of user IDs who liked or dislike
 The `easy_like` package provides an easy and efficient way to manage the `like` and `dislike` functionality.
 
 
+## Category
 
 
 

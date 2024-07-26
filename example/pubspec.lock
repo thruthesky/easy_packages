@@ -185,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  easy_category:
+    dependency: "direct main"
+    description:
+      name: easy_category
+      sha256: "830e9d31fc60e336eaa0cc4cb1daf8f8cc87824c9ad973bf88fb7196ff67ccfe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   easy_comment:
     dependency: "direct main"
     description:
@@ -1210,5 +1218,5 @@ packages:
     source: hosted
     version: "9.0.1"
 sdks:
-  dart: ">=3.4.3 <4.0.0"
+  dart: ">=3.4.4 <4.0.0"
   flutter: ">=3.22.0"
