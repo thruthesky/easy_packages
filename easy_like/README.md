@@ -35,7 +35,7 @@ It does not support `dislike` since most of the community don't provide `dislike
 ## Logic
 
 - It uses transaction to increase and decrease.
-- Whenever there is a changes on `vote`, the number of `likes` must be updated in the original document.
+- Whenever there is a changes on `vote`, the number of `likeCount` must be updated in the original document.
 - When the user unlike(or the like again), then the no of like will be decrease.
 
 
@@ -43,9 +43,9 @@ It does not support `dislike` since most of the community don't provide `dislike
 ## Displaying the no of likes
 
 
-- Since the `likes` field is saved on the document, it can simply display with the document. so, the `easy_like` package does not provide andy widgets.
+- Since the `likeCount` field is saved on the document, it can simply display with the document. so, the `easy_like` package does not provide andy widgets.
 
-- Below is how to diplay likes on a post detail screen. Note the the post detail screen should listen to the database update.
+- Below is how to diplay `likeCount` on a post detail screen. Note the the post detail screen should listen to the database update.
 
 Example:
 ```dart
@@ -55,7 +55,7 @@ TextButton(
     await like.like();
   },
   child: Text(
-    'Like'.tr( args: {'n': widget.post.likes}, form: widget.post.likes),
+    'Like'.tr( args: {'n': widget.post.likeCount}, form: widget.post.likeCount),
   ),
 ),
 ```

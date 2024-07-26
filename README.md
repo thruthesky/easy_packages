@@ -230,6 +230,7 @@ Service class does
   - if the post is not deleted, then save fales to `deleted` field. With this, you can easily filter posts that are not deleted. Without the default value, you cannot filter.
 
 
+- Add `Count` at the end of the field name that records no of counts. Like `commentCount`, `likeCount`, etc.
 
 
 ## Throwing An Exception

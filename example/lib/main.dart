@@ -104,15 +104,15 @@ class MyAppState extends State<MyApp> {
       // });
 
       /// Open a post detail screen after creating a post.
-      (() async {
-        final ref = await Post.create(
-            category: 'yo',
-            title: 'title-${DateTime.now().jm}',
-            content: 'content');
-        final post = await Post.get(ref.id);
-        PostService.instance
-            .showPostDetailScreen(context: globalContext, post: post);
-      })();
+      // (() async {
+      //   final ref = await Post.create(
+      //       category: 'yo',
+      //       title: 'title-${DateTime.now().jm}',
+      //       content: 'content');
+      //   final post = await Post.get(ref.id);
+      //   PostService.instance
+      //       .showPostDetailScreen(context: globalContext, post: post);
+      // })();
       // LikeTestService.instance.runTests();
     });
   }

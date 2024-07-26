@@ -20,8 +20,7 @@ User get my {
     throw Exception('UserService is not initialized');
   }
   if (UserService.instance.user == null) {
-    throw Exception(
-        'user-document-not-loaded. The user may be in the middle of login process. This may happens when the app booting or hot restarted. Or the user may not logged in. Or the user document does not exist.');
+    throw 'user/not-logged-in UserService.instance.user is null. The user may be in the middle of login process. This may happens when the app booting or hot restarted. Or the user may not logged in. Or the user document does not exist.';
   }
   return iam.user as User;
 }

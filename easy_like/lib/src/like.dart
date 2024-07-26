@@ -48,22 +48,22 @@ class Like {
         likedBy = List<String>.from(data['likedBy'] ?? []);
       }
 
-      int $likes = likedBy.length;
+      int $likeCount = likedBy.length;
 
       /// If liked already then, unlike it;
       if (likedBy.contains(uid)) {
         $likedBy = FieldValue.arrayRemove([uid]);
-        $likes--;
+        $likeCount--;
       } else {
         $likedBy = FieldValue.arrayUnion([uid]);
-        $likes++;
+        $likeCount++;
       }
 
       ///
       transaction.set(
           documentReference,
           {
-            'likes': $likes,
+            'likeCount': $likeCount,
           },
           SetOptions(
             merge: true,
@@ -72,7 +72,7 @@ class Like {
       transaction.set(
           ref,
           {
-            'likes': $likes,
+            'likeCount': $likeCount,
             'likedBy': $likedBy,
           },
           SetOptions(
