@@ -65,19 +65,15 @@ class _PostDetailState extends State<PostDetail> {
             ),
           ),
         } else ...{
+          PostDetailPhotos(post: widget.post),
           if (widget.post.hasYoutube && widget.youtubePlayer != null)
             widget.youtubePlayer!,
           PostDetailYoutubeMeta(post: widget.post),
           const SizedBox(
             height: 16,
           ),
-          PostDetailPhotos(post: widget.post),
-          const SizedBox(
-            height: 16,
-            width: 16,
-          ),
-          Text(widget.post.title),
-          Text(widget.post.content),
+          if (widget.post.title.isNotEmpty) Text(widget.post.title),
+          if (widget.post.content.isNotEmpty) Text(widget.post.content),
         },
         Row(
           children: [
