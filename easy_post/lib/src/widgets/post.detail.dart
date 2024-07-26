@@ -94,7 +94,10 @@ class _PostDetailState extends State<PostDetail> {
                     Like(uid: my.uid, documentReference: widget.post.ref);
                 await like.like();
               },
-              child: Text('Like'.tr(args: {'n': widget.post.likes}, form: 3)),
+              child: Text(
+                'Like'.tr(
+                    args: {'n': widget.post.likes}, form: widget.post.likes),
+              ),
             ),
             const Spacer(),
             PopupMenuButton<String>(

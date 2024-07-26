@@ -45,4 +45,17 @@ It does not support `dislike` since most of the community don't provide `dislike
 
 - Since the `likes` field is saved on the document, it can simply display with the document. so, the `easy_like` package does not provide andy widgets.
 
+- Below is how to diplay likes on a post detail screen. Note the the post detail screen should listen to the database update.
 
+Example:
+```dart
+TextButton(
+  onPressed: () async {
+    final like = Like(uid: my.uid, documentReference: widget.post.ref);
+    await like.like();
+  },
+  child: Text(
+    'Like'.tr( args: {'n': widget.post.likes}, form: widget.post.likes),
+  ),
+),
+```

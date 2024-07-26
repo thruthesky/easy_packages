@@ -37,27 +37,28 @@ class Like {
     //   'likedBy': FieldValue.arrayUnion([uid]),
     // });
 
-    FieldValue $likedBy;
-
-    List<String> likedBy = [];
-    final snapshot = await ref.get();
-    if (snapshot.exists) {
-      final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-      likedBy = List<String>.from(data['likedBy'] ?? []);
-    }
-
-    int $likes = likedBy.length;
-
-    /// If liked already then, unlike it;
-    if (likedBy.contains(uid)) {
-      $likedBy = FieldValue.arrayRemove([uid]);
-      $likes--;
-    } else {
-      $likedBy = FieldValue.arrayUnion([uid]);
-      $likes++;
-    }
-
     await FirebaseFirestore.instance.runTransaction((transaction) async {
+      FieldValue $likedBy;
+
+      List<String> likedBy = [];
+      final snapshot = await ref.get();
+      if (snapshot.exists) {
+        final Map<String, dynamic> data =
+            snapshot.data() as Map<String, dynamic>;
+        likedBy = List<String>.from(data['likedBy'] ?? []);
+      }
+
+      int $likes = likedBy.length;
+
+      /// If liked already then, unlike it;
+      if (likedBy.contains(uid)) {
+        $likedBy = FieldValue.arrayRemove([uid]);
+        $likes--;
+      } else {
+        $likedBy = FieldValue.arrayUnion([uid]);
+        $likes++;
+      }
+
       ///
       transaction.set(
           documentReference,
