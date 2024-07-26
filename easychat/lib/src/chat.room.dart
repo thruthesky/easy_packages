@@ -7,8 +7,6 @@ import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
 
 class ChatRoom {
-  static CollectionReference col = ChatService.instance.roomCol;
-
   /// Field names used for the Firestore document
   static const field = (
     name: 'name',
@@ -21,7 +19,7 @@ class ChatRoom {
     masterUsers: 'masterUsers',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    hasPassword: 'hasPassword', // --> Not Implemented Yet
+    hasPassword: 'hasPassword',
     open: 'open',
     single: 'single',
     group: 'group',
@@ -38,6 +36,8 @@ class ChatRoom {
 
   /// [id] is the chat room id.
   final String id;
+
+  static CollectionReference col = ChatService.instance.roomCol;
 
   /// [messageRef] is the message reference of the chat room.
   DatabaseReference get messageRef =>
@@ -56,7 +56,10 @@ class ChatRoom {
   final String? iconUrl;
 
   /// [users] is the uid list of users who are join the room
-  final List<ChatRoomUser> users;
+  final Map<String, ChatRoomUser> users;
+
+  List<String> get userUids => users.keys.toList();
+
   final List<String> invitedUsers;
   final List<String> rejectedUsers;
   final List<String> blockedUsers;
@@ -157,11 +160,10 @@ class ChatRoom {
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
-    final usersMap =
-        Map<String, dynamic>.from((json[field.users] ?? {}) as Map);
-    final users = usersMap.entries.map((entry) {
-      return ChatRoomUser.fromJson(json: entry.value, uid: entry.key);
-    }).toList();
+    final usersMap = Map<String, dynamic>.from((json['users'] ?? {}) as Map);
+    final users = Map<String, ChatRoomUser>.fromEntries(usersMap.entries.map(
+        (entry) =>
+            MapEntry(entry.key, ChatRoomUser.fromJson(json: entry.value))));
     return ChatRoom(
       id: id,
       name: json[field.name] ?? '',
@@ -205,7 +207,9 @@ class ChatRoom {
       field.single: single,
       field.group: group,
       field.hasPassword: hasPassword,
-      field.users: Map.fromEntries(users.map((user) => user.toMapEntry)),
+      field.users: Map<String, dynamic>.fromEntries(
+        users.map((uid, user) => MapEntry(uid, user.toJson())).entries,
+      ),
       field.masterUsers: masterUsers,
       field.invitedUsers: invitedUsers,
       field.blockedUsers: blockedUsers,
@@ -267,12 +271,16 @@ class ChatRoom {
     if (users != null && users.isNotEmpty) {
       usersMap = Map.fromEntries(
         users.map(
-          (uid) => ChatRoomUser.newMapEntry(
-            uid,
-            singleOrder: FieldValue.serverTimestamp(),
-            groupOrder: FieldValue.serverTimestamp(),
-            newMessageCounter: 0,
-          ),
+          (uid) => MapEntry(uid, {
+            single
+                ? ChatRoomUser.field.singleOrder
+                : FieldValue.serverTimestamp(): null,
+            group
+                ? ChatRoomUser.field.groupOrder
+                : FieldValue.serverTimestamp(): null,
+            ChatRoomUser.field.order: FieldValue.serverTimestamp(),
+            ChatRoomUser.field.newMessageCounter: 0,
+          }),
         ),
       );
     }
@@ -358,32 +366,91 @@ class ChatRoom {
       field.updatedAt: FieldValue.serverTimestamp(),
     };
 
-    await ChatRoom.col.doc(id).update(updateData);
+    await ref.update(updateData);
   }
 
   Future<void> inviteUser(String uid) async {
-    await ChatRoom.col.doc(id).update({
+    await ref.update({
       field.invitedUsers: FieldValue.arrayUnion([uid]),
       field.updatedAt: FieldValue.serverTimestamp(),
     });
   }
 
   Future<void> acceptInvitation() async {
-    await ChatRoom.col.doc(id).update({
-      field.invitedUsers: FieldValue.arrayRemove([my.uid]),
-      // TODO must be map
-      // 'users': FieldValue.arrayUnion([my.uid]),
-      // In case, the user rejected the invitation
-      // but actually wants to accept it, then we should
-      // also remove the uid from rejeceted users.
-      field.rejectedUsers: FieldValue.arrayRemove([my.uid]),
-    });
+    await ref.set(
+      {
+        field.invitedUsers: FieldValue.arrayRemove([my.uid]),
+        field.users: {
+          my.uid: {
+            if (single)
+              ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
+            if (group)
+              ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+            ChatRoomUser.field.order: FieldValue.serverTimestamp(),
+            ChatRoomUser.field.newMessageCounter: 0,
+          },
+        },
+        // In case, the user rejected the invitation
+        // but actually wants to accept it, then we should
+        // also remove the uid from rejeceted users.
+        field.rejectedUsers: FieldValue.arrayRemove([my.uid]),
+      },
+      SetOptions(merge: true),
+    );
   }
 
   Future<void> rejectInvitation() async {
-    await ChatRoom.col.doc(id).update({
+    await ref.update({
       field.invitedUsers: FieldValue.arrayRemove([my.uid]),
       field.rejectedUsers: FieldValue.arrayUnion([my.uid]),
     });
+  }
+
+  /// [updateUnreadUsers] is used to update all unread data for all
+  /// users inside the chat room.
+  Future<void> updateUnreadUsers(
+      {String? lastMessageText, String? lastMessageUrl}) async {
+    final updateUserData = users.map(
+      (uid, value) => MapEntry(uid, {
+        if (single)
+          ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
+        if (group) ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+        ChatRoomUser.field.order: FieldValue.serverTimestamp(),
+        ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
+      }),
+    );
+    await ref.set({
+      field.lastMessageText: lastMessageText ?? FieldValue.delete(),
+      field.lastMessageAt: FieldValue.serverTimestamp(),
+      field.lastMessageUid: my.uid,
+      field.lastMessageUrl: lastMessageUrl ?? FieldValue.delete(),
+      field.users: {
+        ...updateUserData,
+      }
+    }, SetOptions(merge: true));
+  }
+
+  // TODO review
+  /// [read] is used to set as read by the current user.
+  /// It means, turning newMessageCounter into zero
+  /// and updating the order
+  Future<void> read() async {
+    if (!userUids.contains(my.uid)) return;
+
+    await ref.set({
+      field.lastMessageText: lastMessageText ?? FieldValue.delete(),
+      field.lastMessageAt: FieldValue.serverTimestamp(),
+      field.lastMessageUid: my.uid,
+      field.lastMessageUrl: lastMessageUrl ?? FieldValue.delete(),
+      field.users: {
+        my.uid: {
+          if (single)
+            ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
+          if (group)
+            ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+          ChatRoomUser.field.newMessageCounter: 0,
+        }
+      }
+    }, SetOptions(merge: true));
   }
 }

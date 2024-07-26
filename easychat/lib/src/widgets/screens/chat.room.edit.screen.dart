@@ -108,6 +108,8 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                   description: descriptionController.text,
                   iconUrl: '',
                   open: open,
+                  group: true,
+                  single: false,
                   // password: 'password',
                   users: [my.uid],
                 );

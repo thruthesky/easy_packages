@@ -22,25 +22,8 @@ class ChatRoomListScreen extends StatelessWidget {
 
   Query get query {
     Query q = ChatService.instance.roomCol;
-    if (single == true) {
-      q = q
-          .where('single', isEqualTo: true)
-          .where('users', arrayContains: my.uid);
-    }
-    if (group == true) {
-      q = q
-          .where('group', isEqualTo: true)
-          .where('users', arrayContains: my.uid);
-    }
-
-    if (open == true) {
-      q = q.where('open', isEqualTo: true);
-    }
-
-    /// TODO: Issue: Chat rooms with new message must be put on the top. So, order by `updatedAt` will not work.
-    /// To make it work, each user must maintain their own list of chat join relation which is good for rtdb.
-    q = q.orderBy('updatedAt', descending: true);
-
+    // TODO add the other sortations
+    q = q.orderBy('users.${my.uid}.o', descending: true);
     return q;
   }
 

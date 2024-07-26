@@ -5,36 +5,38 @@ class ChatRoomUser {
   static const field = (
     singleOrder: 'sO',
     groupOrder: 'gO',
+    order: 'o',
     newMessageCounter: 'nMC',
   );
 
   // Fields ==============================
-  final String uid;
   // Ordering is based on DateTime because we
   // have to use Server Time
   // to order it consistently.
   final DateTime? singleOrder;
   final DateTime? groupOrder;
+  final DateTime? order;
   final int? newMessageCounter;
 
   ChatRoomUser({
-    required this.uid,
     this.singleOrder,
     this.groupOrder,
+    this.order,
     this.newMessageCounter,
   });
 
   factory ChatRoomUser.fromJson({
     required Map<String, dynamic> json,
-    required String uid,
   }) {
     return ChatRoomUser(
-      uid: uid,
       singleOrder: json[field.singleOrder] is Timestamp
           ? (json[field.singleOrder] as Timestamp).toDate()
           : null,
       groupOrder: json[field.groupOrder] is Timestamp
           ? (json[field.groupOrder] as Timestamp).toDate()
+          : null,
+      order: json[field.order] is Timestamp
+          ? (json[field.order] as Timestamp).toDate()
           : null,
       newMessageCounter: json[field.newMessageCounter],
     );
@@ -44,27 +46,13 @@ class ChatRoomUser {
     return {
       field.singleOrder: singleOrder,
       field.groupOrder: groupOrder,
+      field.order: order,
       field.newMessageCounter: newMessageCounter,
     };
   }
 
-  MapEntry get toMapEntry => MapEntry(uid, toJson());
-
-  static MapEntry<String, dynamic> newMapEntry(
-    String uid, {
-    dynamic singleOrder,
-    dynamic groupOrder,
-    dynamic newMessageCounter,
-  }) {
-    return MapEntry(uid, {
-      if (singleOrder != null) field.singleOrder: singleOrder,
-      if (groupOrder != null) field.groupOrder: groupOrder,
-      if (newMessageCounter != null) field.newMessageCounter: newMessageCounter,
-    });
-  }
-
   @override
   String toString() {
-    return 'ChatRoomUser($uid:{${toJson()}})';
+    return 'ChatRoomUser({${toJson()}})';
   }
 }

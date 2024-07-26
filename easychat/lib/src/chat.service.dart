@@ -94,7 +94,6 @@ class ChatService {
   }
 
   showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
-    dog("Called showChatRoomScreen user: $user room: $room");
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) => ChatRoomScreen(

@@ -49,6 +49,11 @@ class ChatRoomListTile extends StatelessWidget {
           : Text(room.name.trim().isNotEmpty ? room.name : room.id),
       subtitle:
           room.lastMessageText != null ? Text(room.lastMessageText!) : null,
+      trailing: room.users[my.uid] != null
+          ? Badge(
+              label: Text("${room.users[my.uid]!.newMessageCounter}"),
+            )
+          : null,
       onTap: () => onTap != null
           ? onTap!.call(room)
           : ChatService.instance.showChatRoomScreen(

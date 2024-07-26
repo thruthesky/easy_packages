@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:easychat/src/widgets/chat.bubble.dart';
@@ -29,29 +30,26 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.initState();
     room = widget.room;
     user = widget.user;
-    getRoom();
+    init();
+  }
+
+  // TODO must revise
+  init() async {
+    await getRoom();
+    await getUser();
   }
 
   getRoom() async {
-    if (room != null) {
-      if (room!.group) return;
-      await getOtherUser();
-      if (mounted) setState(() {});
-      return;
-    }
-    final roomId = singleChatRoomId(user!.uid);
-    room = await ChatRoom.get(roomId);
-    if (room == null) {
-      final roomRef = await ChatRoom.createSingle(user!.uid);
-      room = await ChatRoom.get(roomRef.id);
-    }
-    await getOtherUser();
-    if (mounted) setState(() {});
+    if (room != null) return;
+    room = await ChatRoom.get(room!.id);
+    setState(() {});
   }
 
-  getOtherUser() async {
-    if (user != null || room!.group) return;
-    user ??= await User.get(getOtherUserUidFromRoomId(room!.id)!, cache: false);
+  getUser() async {
+    if (user != null) return;
+    if (room!.group) return;
+    user = await User.get(user!.uid);
+    setState(() {});
   }
 
   String get title {
@@ -68,11 +66,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    dog("room.messageRef: ${room?.messageRef}");
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
-          if (room?.users.contains(my.uid) ?? false)
+          if (room?.userUids.contains(my.uid) ?? false)
             IconButton(
               onPressed: () {
                 if (room == null) return;
@@ -85,46 +84,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (!(room?.users.contains(my.uid) ?? true)) ...[
-            if (!(room?.invitedUsers.contains(my.uid) ?? true))
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            else if (room?.group ?? false)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "This is an open group. Once you sent a message, you will join the group.",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
           Expanded(
             child: room?.messageRef != null
                 ? Align(
