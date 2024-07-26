@@ -100,8 +100,6 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
               },
             ),
           ),
-
-          // TODO
           if (isCreate)
             ElevatedButton(
               onPressed: () async {

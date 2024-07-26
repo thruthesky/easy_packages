@@ -25,25 +25,18 @@ class _ChatRoomInviteListScreenState extends State<ChatRoomInviteListScreen> {
           IconButton(
             icon: const Icon(Icons.add_circle),
             onPressed: () async {
-              final invitedUser = await showGeneralDialog<User?>(
-                context: context,
-                pageBuilder: (context, a1, a2) {
-                  /// TODO: Must not list users. Use UserSearchScreen.
-                  /// Must find user by complete name.
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text("Invite User"),
-                    ),
-                    body: UserListView(
-                      itemBuilder: (user, index) => UserListTile(
-                        user: user,
-                        onTap: () {
-                          Navigator.of(context).pop(user);
-                        },
-                      ),
-                    ),
+              final invitedUser =
+                  await UserService.instance.showUserSearchDialog(
+                context,
+                itemBuilder: (user, index) {
+                  return UserListTile(
+                    user: user,
+                    onTap: () {
+                      Navigator.of(context).pop(user);
+                    },
                   );
                 },
+                exactSearch: false,
               );
               if (invitedUser == null) return;
               widget.room.inviteUser(invitedUser.uid);

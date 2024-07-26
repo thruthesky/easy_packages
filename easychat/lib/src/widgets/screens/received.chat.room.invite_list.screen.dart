@@ -43,18 +43,10 @@ class _ReceivedChatRoomInviteListScreenState
             return const Center(child: CircularProgressIndicator());
           }
 
-          // TODO review if correct
-          List<QueryDocumentSnapshot> filteredInvitation =
-              snapshot.docs.where((doc) {
-            List<dynamic>? arrayField = (doc.data() as Map)['rejectedUsers'];
-            if (arrayField == null) return true;
-            return !arrayField.contains(my.uid);
-          }).toList();
-
           return ListView.builder(
-            itemCount: filteredInvitation.length,
+            itemCount: snapshot.docs.length,
             itemBuilder: (context, index) {
-              final doc = filteredInvitation[index];
+              final doc = snapshot.docs[index];
               final room = ChatRoom.fromSnapshot(doc);
 
               return ListTile(

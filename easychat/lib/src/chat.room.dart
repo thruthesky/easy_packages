@@ -130,40 +130,37 @@ class ChatRoom {
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
     return ChatRoom(
-        id: id,
-        name: json['name'] ?? '',
-        description: json['description'] ?? '',
-        iconUrl: json['iconUrl'],
-        open: json['open'] ?? false, // TODO remove "?? false"
-        single: json['single'],
-        group: json['group'],
-        hasPassword: json['hasPassword'] ?? false, // TODO remove "?? false"
-        users: List<String>.from(json['users']),
-        masterUsers: List<String>.from(json['masterUsers']),
-        invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
-        blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
-        rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
-        createdAt: json['createdAt'] is Timestamp
-            ? (json['createdAt'] as Timestamp).toDate()
-            : DateTime.now(),
-        updatedAt: json['updatedAt'] is Timestamp
-            ? (json['updatedAt'] as Timestamp).toDate()
-            : DateTime.now(),
-        lastMessageText: json['lastMessageText'],
-        lastMessageAt: json['lastMessageAt'] is Timestamp
-            ? (json['createdAt'] as Timestamp).toDate()
-            : DateTime.now(),
-        lastMessageUid: json['lastMessageUid'],
-        lastMessageUrl: json['lastMessageUrl'],
-        verifiedUserOnly:
-            json['verifiedUserOnly'] ?? false, // TODO remove "?? false"
-        urlForVerifiedUserOnly:
-            json['urlForVerifiedUserOnly'] ?? false, // TODO remove "?? false"
-        uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'] ??
-            false, // TODO remove "?? false"
-        gender: json['gender'] ?? '', // TODO remove "?? ''"
-        domain: json['domain'] ?? '' // TODO remove "?? ''",
-        );
+      id: id,
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      iconUrl: json['iconUrl'],
+      open: json['open'],
+      single: json['single'],
+      group: json['group'],
+      hasPassword: json['hasPassword'],
+      users: List<String>.from(json['users']),
+      masterUsers: List<String>.from(json['masterUsers']),
+      invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
+      blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
+      rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
+      createdAt: json['createdAt'] is Timestamp
+          ? (json['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] is Timestamp
+          ? (json['updatedAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      lastMessageText: json['lastMessageText'],
+      lastMessageAt: json['lastMessageAt'] is Timestamp
+          ? (json['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      lastMessageUid: json['lastMessageUid'],
+      lastMessageUrl: json['lastMessageUrl'],
+      verifiedUserOnly: json['verifiedUserOnly'],
+      urlForVerifiedUserOnly: json['urlForVerifiedUserOnly'],
+      uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'],
+      gender: json['gender'],
+      domain: json['domain'],
+    );
   }
 
   Map<String, dynamic> toJson() {
