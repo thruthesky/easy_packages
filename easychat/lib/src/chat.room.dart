@@ -272,12 +272,10 @@ class ChatRoom {
       usersMap = Map.fromEntries(
         users.map(
           (uid) => MapEntry(uid, {
-            single
-                ? ChatRoomUser.field.singleOrder
-                : FieldValue.serverTimestamp(): null,
-            group
-                ? ChatRoomUser.field.groupOrder
-                : FieldValue.serverTimestamp(): null,
+            if (single)
+              ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
+            if (group)
+              ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
             ChatRoomUser.field.order: FieldValue.serverTimestamp(),
             ChatRoomUser.field.newMessageCounter: 0,
           }),
@@ -416,7 +414,8 @@ class ChatRoom {
           ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
         if (group) ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
         ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-        ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
+        ChatRoomUser.field.newMessageCounter:
+            uid == my.uid ? 0 : FieldValue.increment(1),
       }),
     );
     await ref.set({
@@ -436,6 +435,9 @@ class ChatRoom {
   /// and updating the order
   Future<void> read() async {
     if (!userUids.contains(my.uid)) return;
+    if (users[my.uid]!.newMessageCounter == 0) return;
+    final myReadOrder = users[my.uid]!.order;
+    final updatedOrder = myReadOrder!.subtract(const Duration(days: 40000));
 
     await ref.set({
       field.lastMessageText: lastMessageText ?? FieldValue.delete(),
@@ -444,10 +446,9 @@ class ChatRoom {
       field.lastMessageUrl: lastMessageUrl ?? FieldValue.delete(),
       field.users: {
         my.uid: {
-          if (single)
-            ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-          if (group)
-            ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+          if (single) ChatRoomUser.field.singleOrder: updatedOrder,
+          if (group) ChatRoomUser.field.groupOrder: updatedOrder,
+          ChatRoomUser.field.order: updatedOrder,
           ChatRoomUser.field.newMessageCounter: 0,
         }
       }

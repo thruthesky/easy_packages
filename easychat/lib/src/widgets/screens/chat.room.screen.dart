@@ -33,23 +33,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     init();
   }
 
-  // TODO must revise
   init() async {
-    await getRoom();
-    await getUser();
+    if (room == null) await getRoomFromOtherUser();
+    if (room!.single && user == null) await getOtherUser();
+    if (!mounted) return;
+    room!.read();
+    setState(() {});
   }
 
-  getRoom() async {
+  getRoomFromOtherUser() async {
+    room = await ChatRoom.get(singleChatRoomId(user!.uid));
     if (room != null) return;
-    room = await ChatRoom.get(room!.id);
-    setState(() {});
+    final newRoomRef = await ChatRoom.createSingle(user!.uid);
+    room = await ChatRoom.get(newRoomRef.id);
   }
 
-  getUser() async {
-    if (user != null) return;
-    if (room!.group) return;
-    user = await User.get(user!.uid);
-    setState(() {});
+  getOtherUser() async {
+    user = await User.get(getOtherUserUidFromRoomId(room!.id)!, cache: false);
   }
 
   String get title {
