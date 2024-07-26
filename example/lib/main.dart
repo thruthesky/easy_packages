@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_category/easy_category.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_like/easy_like.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
@@ -77,17 +80,40 @@ class MyAppState extends State<MyApp> {
       // );
 
       // Open post list screen
-      PostService.instance.showPostListScreen(
-        context: globalContext,
-        categories: [
-          Category(id: 'qna', name: 'QnA'),
-          Category(id: 'discussion', name: 'Discussion'),
-          Category(id: 'youtube', name: 'Youtube'),
-          Category(id: 'buyandsell', name: 'Buy and Sell'),
-          Category(id: 'job', name: 'Jobs'),
-          Category(id: 'news', name: 'News'),
-        ],
-      );
+      // PostService.instance.showPostListScreen(
+      //   context: globalContext,
+      //   categories: [
+      //     Category(id: 'qna', name: 'QnA'),
+      //     Category(id: 'discussion', name: 'Discussion'),
+      //     Category(id: 'youtube', name: 'Youtube'),
+      //     Category(id: 'buyandsell', name: 'Buy and Sell'),
+      //     Category(id: 'job', name: 'Jobs'),
+      //     Category(id: 'news', name: 'News'),
+      //   ],
+      // );
+
+      // FirebaseFirestore.instance
+      //     .collection('chat-rooms')
+      //     .orderBy('users.uidA.nMC', descending: true)
+      //     .snapshots()
+      //     .listen((event) {
+      //   print('chat-room: ${event.docs.length}');
+      //   event.docs.map((e) {
+      //     print('chat-room: ${e.id}:');
+      //   }).toList();
+      // });
+
+      /// Open a post detail screen after creating a post.
+      (() async {
+        final ref = await Post.create(
+            category: 'yo',
+            title: 'title-${DateTime.now().jm}',
+            content: 'content');
+        final post = await Post.get(ref.id);
+        PostService.instance
+            .showPostDetailScreen(context: globalContext, post: post);
+      })();
+      // LikeTestService.instance.runTests();
     });
   }
 

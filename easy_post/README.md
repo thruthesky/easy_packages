@@ -169,3 +169,22 @@ Widget build(BuildContext context) {
 }
 ```
 
+
+
+# Developer's Tips
+
+## Show a post screen with random post creation
+
+Sometimes, you would want to see the post view screen for testing or designing. You can do the following.
+
+```dart
+initState() {
+  (() async {
+    final ref = await Post.create(
+        category: 'yo', title: 'title', content: 'content');
+    final post = await Post.get(ref.id);
+    PostService.instance
+        .showPostDetailScreen(context: globalContext, post: post);
+  })();
+}
+```

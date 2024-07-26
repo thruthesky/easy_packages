@@ -18,6 +18,7 @@ dependencies:
   easy_comment:
   easy_engine:
   easy_helpers:
+  easy_like:
   easy_locale:
   easy_post_v2:
   easy_storage:
@@ -53,6 +54,8 @@ dependency_overrides:
     path: ../easy_post
   easy_helpers:
     path: ../easy_helpers
+  easy_like:
+    path: ../easy_like
   easy_locale:
     path: ../easy_locale
   easy_storage:
