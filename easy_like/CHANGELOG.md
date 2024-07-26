@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Refactor. transaction rewrite.
+
 ## 0.0.3
 
 * Fix. Firestore dependency.

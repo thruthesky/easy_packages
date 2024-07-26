@@ -1,6 +1,6 @@
 name: easy_like
-description: "An esay way to handle the like and dislike feature."
-version: 0.0.3
+description: "An esay way to handle the like functionality for every use case"
+version: 0.0.4
 homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_like
 
 environment:
