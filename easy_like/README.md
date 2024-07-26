@@ -27,7 +27,7 @@ It does not support `dislike` since most of the community don't provide `dislike
 
 ## Database structure for Like and Dislike
 
-- `/likes/{documentId}`: is the document for holding like.
+- `/likes/{documentId}`: is the like document for holding like information.
     - The fields are
       - `documentReference`: to access the document that this like belong to.
       - `likedBy`: is the list of user uid who did like. If the user unlikes, then the uid will be removed.
@@ -40,11 +40,9 @@ It does not support `dislike` since most of the community don't provide `dislike
 
 
 
+## Displaying the no of likes
 
 
-## Widgets
-
-- `Like.sync(builder: (like) => Text(like.likes.toString()))`
-
+- Since the `likes` field is saved on the document, it can simply display with the document. so, the `easy_like` package does not provide andy widgets.
 
 

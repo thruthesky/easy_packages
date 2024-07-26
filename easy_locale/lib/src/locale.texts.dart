@@ -51,7 +51,11 @@ final Map<String, dynamic> localeTexts = {
       'one': 'Like {n}',
       'many': 'Likes {n}',
     },
-    'ko': '좋아요 {n}',
+    'ko': {
+      'zero': '좋아요',
+      'one': '좋아요 {n}',
+      'many': '좋아요 {n}',
+    },
   },
   'name': {
     'en': 'Name',

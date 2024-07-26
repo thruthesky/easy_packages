@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 
 /// This widget that contains the overall details of the post
 /// contains youtube video, youtube meta data, post title, post content , post photos
+///
+/// [post] is the post model(document) object and it is updated in realtime.
 class PostDetail extends StatefulWidget {
   /// `post` this contains the post inforamtion
   ///
@@ -92,7 +94,7 @@ class _PostDetailState extends State<PostDetail> {
                     Like(uid: my.uid, documentReference: widget.post.ref);
                 await like.like();
               },
-              child: Text('Like'.tr(args: {'n': 3}, form: 3)),
+              child: Text('Like'.tr(args: {'n': widget.post.likes}, form: 3)),
             ),
             const Spacer(),
             PopupMenuButton<String>(

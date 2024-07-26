@@ -53,7 +53,9 @@ class Post {
   bool get hasYoutube =>
       (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
 
+  final int likes;
   final int commentCount;
+
   final Map<String, dynamic> data;
 
   Map<String, dynamic> get extra => data;
@@ -75,6 +77,7 @@ class Post {
     required this.data,
     required this.youtube,
     required this.deleted,
+    required this.likes,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -98,6 +101,7 @@ class Post {
       data: json,
       youtube: json['youtube'] ?? {},
       deleted: json['deleted'],
+      likes: json['likes'] ?? 0,
     );
   }
   Map<String, dynamic> toJson() => {
@@ -112,6 +116,7 @@ class Post {
         'commentCount': commentCount,
         'youtube': youtube,
         'deleted': deleted,
+        'likes': likes,
       };
 
   @override
