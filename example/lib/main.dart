@@ -77,17 +77,17 @@ class MyAppState extends State<MyApp> {
       // );
 
       // Open post list screen
-      PostService.instance.showPostListScreen(
-        context: globalContext,
-        categories: [
-          Category(id: 'qna', name: 'QnA'),
-          Category(id: 'discussion', name: 'Discussion'),
-          Category(id: 'youtube', name: 'Youtube'),
-          Category(id: 'buyandsell', name: 'Buy and Sell'),
-          Category(id: 'job', name: 'Jobs'),
-          Category(id: 'news', name: 'News'),
-        ],
-      );
+      // PostService.instance.showPostListScreen(
+      //   context: globalContext,
+      //   categories: [
+      //     Category(id: 'qna', name: 'QnA'),
+      //     Category(id: 'discussion', name: 'Discussion'),
+      //     Category(id: 'youtube', name: 'Youtube'),
+      //     Category(id: 'buyandsell', name: 'Buy and Sell'),
+      //     Category(id: 'job', name: 'Jobs'),
+      //     Category(id: 'news', name: 'News'),
+      //   ],
+      // );
     });
   }
 

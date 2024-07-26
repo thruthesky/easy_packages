@@ -100,20 +100,14 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text('User Search Dialog: exact search'),
             ),
             ElevatedButton(
-              onPressed: () async {
-                final user = await UserService.instance.showUserSearchDialog(
+              onPressed: () {
+                UserService.instance.showUserSearchDialog(
                   context,
                   exactSearch: false,
-                  itemBuilder: (user, index) => ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(user),
-                    child: Text(user.displayName),
-                  ),
                 );
-                print('user; $user');
               },
               child: const Text('User Search Dialog: partial search search'),
             ),
-            //
             ElevatedButton(
               onPressed: () {
                 ChatService.instance.showChatRoomListScreen(context);
@@ -153,8 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 80,
               child: UserListView(
-                itemBuilder: (user, p1) => GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                itemBuilder: (user, index) => ListTile(
+                  leading: UserAvatar(
+                    user: user,
+                  ),
+                  title: Text(user.displayName),
                   onTap: () {
                     ChatService.instance.showChatRoomScreen(
                       context,
@@ -162,9 +159,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       // room: room,
                     );
                   },
-                  child: UserAvatar(
-                    user: user,
-                  ),
                 ),
               ),
             ),
