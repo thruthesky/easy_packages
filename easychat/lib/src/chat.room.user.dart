@@ -50,6 +50,19 @@ class ChatRoomUser {
 
   MapEntry get toMapEntry => MapEntry(uid, toJson());
 
+  static MapEntry<String, dynamic> newMapEntry(
+    String uid, {
+    dynamic singleOrder,
+    dynamic groupOrder,
+    dynamic newMessageCounter,
+  }) {
+    return MapEntry(uid, {
+      if (singleOrder != null) field.singleOrder: singleOrder,
+      if (groupOrder != null) field.groupOrder: groupOrder,
+      if (newMessageCounter != null) field.newMessageCounter: newMessageCounter,
+    });
+  }
+
   @override
   String toString() {
     return 'ChatRoomUser($uid:{${toJson()}})';

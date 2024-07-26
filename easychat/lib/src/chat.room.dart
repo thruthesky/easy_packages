@@ -9,6 +9,33 @@ import 'package:easyuser/easyuser.dart';
 class ChatRoom {
   static CollectionReference col = ChatService.instance.roomCol;
 
+  /// Field names used for the Firestore document
+  static const field = (
+    name: 'name',
+    description: 'description',
+    iconUrl: 'iconUrl',
+    users: 'users',
+    invitedUsers: 'invitedUsers',
+    rejectedUsers: 'rejectedUsers',
+    blockedUsers: 'blockedUsers',
+    masterUsers: 'masterUsers',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    hasPassword: 'hasPassword', // --> Not Implemented Yet
+    open: 'open',
+    single: 'single',
+    group: 'group',
+    lastMessageText: 'lastMessageText',
+    lastMessageAt: 'lastMessageAt',
+    lastMessageUid: 'lastMessageUid',
+    lastMessageUrl: 'lastMessageUrl',
+    verifiedUserOnly: 'verifiedUserOnly',
+    urlForVerifiedUserOnly: 'urlForVerifiedUserOnly',
+    uploadForVerifiedUserOnly: 'uploadForVerifiedUserOnly',
+    gender: 'gender',
+    domain: 'domain',
+  );
+
   /// [id] is the chat room id.
   final String id;
 
@@ -131,69 +158,70 @@ class ChatRoom {
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
-    final usersMap = Map<String, dynamic>.from((json['users'] ?? {}) as Map);
+    final usersMap =
+        Map<String, dynamic>.from((json[field.users] ?? {}) as Map);
     final users = usersMap.entries.map((entry) {
       return ChatRoomUser.fromJson(json: entry.value, uid: entry.key);
     }).toList();
     return ChatRoom(
       id: id,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      iconUrl: json['iconUrl'],
-      open: json['open'],
-      single: json['single'],
-      group: json['group'],
-      hasPassword: json['hasPassword'],
+      name: json[field.name] ?? '',
+      description: json[field.description] ?? '',
+      iconUrl: json[field.iconUrl],
+      open: json[field.open],
+      single: json[field.single],
+      group: json[field.group],
+      hasPassword: json[field.hasPassword],
       users: users,
-      masterUsers: List<String>.from(json['masterUsers']),
-      invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
-      blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
-      rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
-      createdAt: json['createdAt'] is Timestamp
-          ? (json['createdAt'] as Timestamp).toDate()
+      masterUsers: List<String>.from(json[field.masterUsers]),
+      invitedUsers: List<String>.from(json[field.invitedUsers] ?? []),
+      blockedUsers: List<String>.from(json[field.blockedUsers] ?? []),
+      rejectedUsers: List<String>.from(json[field.rejectedUsers] ?? []),
+      createdAt: json[field.createdAt] is Timestamp
+          ? (json[field.createdAt] as Timestamp).toDate()
           : DateTime.now(),
-      updatedAt: json['updatedAt'] is Timestamp
-          ? (json['updatedAt'] as Timestamp).toDate()
+      updatedAt: json[field.updatedAt] is Timestamp
+          ? (json[field.updatedAt] as Timestamp).toDate()
           : DateTime.now(),
-      lastMessageText: json['lastMessageText'],
-      lastMessageAt: json['lastMessageAt'] is Timestamp
-          ? (json['createdAt'] as Timestamp).toDate()
+      lastMessageText: json[field.lastMessageText],
+      lastMessageAt: json[field.lastMessageAt] is Timestamp
+          ? (json[field.lastMessageAt] as Timestamp).toDate()
           : DateTime.now(),
-      lastMessageUid: json['lastMessageUid'],
-      lastMessageUrl: json['lastMessageUrl'],
-      verifiedUserOnly: json['verifiedUserOnly'],
-      urlForVerifiedUserOnly: json['urlForVerifiedUserOnly'],
-      uploadForVerifiedUserOnly: json['uploadForVerifiedUserOnly'],
-      gender: json['gender'],
-      domain: json['domain'],
+      lastMessageUid: json[field.lastMessageUid],
+      lastMessageUrl: json[field.lastMessageUrl],
+      verifiedUserOnly: json[field.verifiedUserOnly],
+      urlForVerifiedUserOnly: json[field.urlForVerifiedUserOnly],
+      uploadForVerifiedUserOnly: json[field.uploadForVerifiedUserOnly],
+      gender: json[field.gender],
+      domain: json[field.domain],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'description': description,
-      'iconUrl': iconUrl,
-      'open': open,
-      'single': single,
-      'group': group,
-      'hasPassword': hasPassword,
-      'users': Map.fromEntries(users.map((user) => user.toMapEntry)),
-      'masterUsers': masterUsers,
-      'invitedUsers': invitedUsers,
-      'blockedUsers': blockedUsers,
-      'rejectedUsers': rejectedUsers,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'lastMessageText': lastMessageText,
-      'lastMessageAt': lastMessageAt,
-      'lastMessageUid': lastMessageUid,
-      'lastMessageUrl': lastMessageUrl,
-      'verifiedUserOnly': verifiedUserOnly,
-      'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
-      'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
-      'gender': gender,
-      'domain': domain,
+      field.name: name,
+      field.description: description,
+      field.iconUrl: iconUrl,
+      field.open: open,
+      field.single: single,
+      field.group: group,
+      field.hasPassword: hasPassword,
+      field.users: Map.fromEntries(users.map((user) => user.toMapEntry)),
+      field.masterUsers: masterUsers,
+      field.invitedUsers: invitedUsers,
+      field.blockedUsers: blockedUsers,
+      field.rejectedUsers: rejectedUsers,
+      field.createdAt: createdAt,
+      field.updatedAt: updatedAt,
+      field.lastMessageText: lastMessageText,
+      field.lastMessageAt: lastMessageAt,
+      field.lastMessageUid: lastMessageUid,
+      field.lastMessageUrl: lastMessageUrl,
+      field.verifiedUserOnly: verifiedUserOnly,
+      field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
+      field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
+      field.gender: gender,
+      field.domain: domain,
     };
   }
 
@@ -236,34 +264,37 @@ class ChatRoom {
       throw 'chat-room-create/single-or-group Single or group chat room must be selected';
     }
 
-    Map<String, Map> usersMap = {};
+    Map<String, dynamic> usersMap = {};
     if (users != null && users.isNotEmpty) {
-      usersMap = Map.fromEntries(users.map((uid) => MapEntry(uid, {
-            'sO': FieldValue.serverTimestamp(),
-            'gO': FieldValue.serverTimestamp(),
-            'nMC': 0,
-          })));
+      usersMap = Map.fromEntries(
+        users.map(
+          (uid) => ChatRoomUser.newMapEntry(
+            uid,
+            singleOrder: FieldValue.serverTimestamp(),
+            groupOrder: FieldValue.serverTimestamp(),
+            newMessageCounter: 0,
+          ),
+        ),
+      );
     }
     final newRoom = {
-      if (name != null) 'name': name,
-      if (description != null) 'description': description,
-      if (iconUrl != null) 'iconUrl': iconUrl,
-      'open': open,
-      'single': single,
-      'group': group,
-      'hasPassword': false,
-      // 'hasPassword': password != null, (NOT IMPLEMENTED YET)
-      if (invitedUsers != null) 'invitedUsers': invitedUsers,
-      'users': usersMap,
-      'masterUsers': [my.uid],
-      // if (password != null) 'password': password, (NOT IMPLEMENTED YET)
-      'verifiedUserOnly': verifiedUserOnly,
-      'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
-      'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
-      'gender': gender,
-      'domain': domain,
-      'createdAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
+      if (name != null) field.name: name,
+      if (description != null) field.description: description,
+      if (iconUrl != null) field.iconUrl: iconUrl,
+      field.open: open,
+      field.single: single,
+      field.group: group,
+      field.hasPassword: false,
+      if (invitedUsers != null) field.invitedUsers: invitedUsers,
+      field.users: usersMap,
+      field.masterUsers: [my.uid],
+      field.verifiedUserOnly: verifiedUserOnly,
+      field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
+      field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
+      field.gender: gender,
+      field.domain: domain,
+      field.createdAt: FieldValue.serverTimestamp(),
+      field.updatedAt: FieldValue.serverTimestamp(),
     };
 
     DocumentReference ref;
@@ -315,17 +346,17 @@ class ChatRoom {
       throw 'chat-room-update/single-or-group Single or group chat room must be selected';
     }
     final updateData = {
-      if (name != null) 'name': name,
-      if (description != null) 'description': description,
-      if (iconUrl != null) 'iconUrl': iconUrl,
-      if (open != null) 'open': open,
-      if (single != null) 'single': single,
-      if (group != null) 'group': group,
-      if (lastMessageText != null) 'lastMessageText': lastMessageText,
-      if (lastMessageAt != null) 'lastMessageAt': lastMessageAt,
-      if (lastMessageUid != null) 'lastMessageUid': lastMessageUid,
-      if (lastMessageUrl != null) 'lastMessageUrl': lastMessageUrl,
-      'updatedAt': FieldValue.serverTimestamp(),
+      if (name != null) field.name: name,
+      if (description != null) field.description: description,
+      if (iconUrl != null) field.iconUrl: iconUrl,
+      if (open != null) field.open: open,
+      if (single != null) field.single: single,
+      if (group != null) field.group: group,
+      if (lastMessageText != null) field.lastMessageText: lastMessageText,
+      if (lastMessageAt != null) field.lastMessageAt: lastMessageAt,
+      if (lastMessageUid != null) field.lastMessageUid: lastMessageUid,
+      if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
+      field.updatedAt: FieldValue.serverTimestamp(),
     };
 
     await ChatRoom.col.doc(id).update(updateData);
@@ -333,26 +364,27 @@ class ChatRoom {
 
   Future<void> inviteUser(String uid) async {
     await ChatRoom.col.doc(id).update({
-      'invitedUsers': FieldValue.arrayUnion([uid]),
-      'updatedAt': FieldValue.serverTimestamp(),
+      field.invitedUsers: FieldValue.arrayUnion([uid]),
+      field.updatedAt: FieldValue.serverTimestamp(),
     });
   }
 
   Future<void> acceptInvitation() async {
     await ChatRoom.col.doc(id).update({
-      'invitedUsers': FieldValue.arrayRemove([my.uid]),
-      'users': FieldValue.arrayUnion([my.uid]),
+      field.invitedUsers: FieldValue.arrayRemove([my.uid]),
+      // TODO must be
+      // 'users': FieldValue.arrayUnion([my.uid]),
       // In case, the user rejected the invitation
       // but actually wants to accept it, then we should
       // also remove the uid from rejeceted users.
-      'rejectedUsers': FieldValue.arrayRemove([my.uid]),
+      field.rejectedUsers: FieldValue.arrayRemove([my.uid]),
     });
   }
 
   Future<void> rejectInvitation() async {
     await ChatRoom.col.doc(id).update({
-      'invitedUsers': FieldValue.arrayRemove([my.uid]),
-      'rejectedUsers': FieldValue.arrayUnion([my.uid]),
+      field.invitedUsers: FieldValue.arrayRemove([my.uid]),
+      field.rejectedUsers: FieldValue.arrayUnion([my.uid]),
     });
   }
 }
