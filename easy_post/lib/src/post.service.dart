@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_category/easy_category.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/screens/post.list.screen.dart';
 import 'package:flutter/material.dart';
@@ -13,35 +14,13 @@ class PostService {
   bool initialized = false;
   CollectionReference get col => FirebaseFirestore.instance.collection('posts');
 
-  /// Categories of posts. This is used to categorize posts.
-  ///
-  /// The categories can be set using the `init` method. And it's entirely up
-  /// to the developer to decide what categories to use. The developer can
-  /// develop his own post list screen where he can design his own category
-  /// options.
-  ///
-  /// Example:
-  /// ```dart
-  /// PostService.instance.init(categories: {
-  ///  'qna': '질문답변',
-  ///  'discussion': 'Discussion',
-  ///  'news': 'News',
-  ///  'job': '구인구직',
-  /// });
-  /// ```
-  @Deprecated('Remove categories and pass the options where it needs.')
-  late Map<String, String> categories = {};
-
   Future Function(BuildContext, Post)? $showPostDetailScreen;
 
   init({
-    Map<String, String>? categories,
     Future Function(BuildContext, Post)? showPostDetailScreen,
   }) {
     initialized = true;
     $showPostDetailScreen = showPostDetailScreen;
-
-    this.categories = categories ?? this.categories;
 
     addPostTranslations();
   }
@@ -97,12 +76,15 @@ class PostService {
 
   Future showPostListScreen({
     required BuildContext context,
+    required List<Category> categories,
     Post? post,
   }) {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) {
-        return const PostListScreen();
+        return PostListScreen(
+          categories: categories,
+        );
       },
     );
   }

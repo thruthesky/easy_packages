@@ -3,8 +3,20 @@ import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
+/// `PostEditScreen` Screen for creating or updating the post
+/// if the post is provided the screen is for updating where the post information
+/// is display and can be edited
+///
+/// if the post is not provided the screen is for creating where you can create new post
+///
 class PostEditScreen extends StatefulWidget {
+  /// `routeName` so it can be use it other router ex: go_router packages
   static const String routeName = '/PostEdit';
+
+  /// `category` is category of the post ex: 'youtube', 'feed, 'forum'
+  ///
+  /// `post` is the post information, if the post is provided the screen is
+  /// updating the post and if not provided the screen for creating a post
   const PostEditScreen({
     super.key,
     required this.category,
@@ -29,6 +41,8 @@ class _PostEditScreenState extends State<PostEditScreen> {
   bool get isCreate => widget.post == null;
   bool get isUpdate => !isCreate;
 
+  bool inProgress = false;
+
   List<String> urls = [];
 
   @override
@@ -41,14 +55,14 @@ class _PostEditScreenState extends State<PostEditScreen> {
     }
   }
 
-  /// prepare data if the event is update a post to display in the screen if its create
-  /// display
+  /// prepare data if the event is updating the post
   prepareData() {
     if (isCreate) return;
     if (widget.post == null) return;
     titleController.text = widget.post!.title;
     contentController.text = widget.post!.content;
     youtubeController.text = widget.post!.youtubeUrl;
+    urls = widget.post!.urls;
     setState(() {});
   }
 
@@ -74,30 +88,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              DropdownButton<String?>(
-                  isDense: false,
-                  padding: const EdgeInsets.only(
-                      left: 12, top: 4, right: 4, bottom: 4),
-                  isExpanded: true, // 화살표 아이콘을 오른쪽에 밀어 붙이기
-                  menuMaxHeight: 300, // 높이 조절
-                  items: [
-                    DropdownMenuItem(
-                      value: null,
-                      child: Text('Select Category'.t),
-                    ),
-                    ...PostService.instance.categories.entries.map((e) {
-                      return DropdownMenuItem(
-                        value: e.key,
-                        child: Text(e.value),
-                      );
-                    }),
-                  ],
-                  value: category,
-                  onChanged: (value) {
-                    setState(() {
-                      category = value;
-                    });
-                  }),
               const SizedBox(height: 24),
               TextField(
                 controller: titleController,
@@ -138,34 +128,37 @@ class _PostEditScreenState extends State<PostEditScreen> {
                     setState(() {});
                   }),
                   const Spacer(),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (isCreate) {
-                        final ref = await Post.create(
-                          category: category ?? '',
-                          title: titleController.text,
-                          content: contentController.text,
-                          youtubeUrl: youtubeController.text,
-                          urls: urls,
-                        );
-                        if (context.mounted) {
-                          Navigator.of(context).pop(ref);
-                        }
-                      } else if (isUpdate) {
-                        await widget.post!.update(
-                          title: titleController.text,
-                          content: contentController.text,
-                          youtubeUrl: youtubeController.text,
-                          urls: urls,
-                        );
+                  inProgress
+                      ? const CircularProgressIndicator.adaptive()
+                      : ElevatedButton(
+                          onPressed: () async {
+                            setState(() => inProgress = true);
+                            if (isCreate) {
+                              final ref = await Post.create(
+                                category: category ?? '',
+                                title: titleController.text,
+                                content: contentController.text,
+                                youtubeUrl: youtubeController.text,
+                                urls: urls,
+                              );
+                              if (context.mounted) {
+                                Navigator.of(context).pop(ref);
+                              }
+                            } else if (isUpdate) {
+                              await widget.post!.update(
+                                title: titleController.text,
+                                content: contentController.text,
+                                youtubeUrl: youtubeController.text,
+                                urls: urls,
+                              );
 
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      }
-                    },
-                    child: Text(isCreate ? 'post Create'.t : 'Update'.t),
-                  ),
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                              }
+                            }
+                          },
+                          child: Text(isCreate ? 'post Create'.t : 'Update'.t),
+                        ),
                 ],
               )
             ],

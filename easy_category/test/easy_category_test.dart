@@ -1,6 +1,6 @@
 // import 'package:flutter_test/flutter_test.dart';
 
-// import 'package:easy_like/easy_like.dart';
+// import 'package:easy_category/easy_category.dart';
 
 // void main() {
 //   test('adds one to input values', () {

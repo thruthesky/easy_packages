@@ -1,0 +1,19 @@
+name: easy_category
+description: "Easy to use the category management package. Category can be used for any type of data."
+version: 0.0.2
+homepage: https://github.com/thruthesky/easy-packages/main/tree/easy_category
+
+environment:
+  sdk: ">=3.4.4 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:

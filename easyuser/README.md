@@ -179,51 +179,59 @@ UserDoc(
 ```
 
 
-- There is a handy hlper method for `UserAvatar` which you can put 
-
-UserAvatar.fromUid(uid: myUid, sync: true),
-
-
 
 ## Finding user 
 
-You can search user from collection by thier display name. use `UserSearchDialog()` or `UserService.instance.showUserSearchDialog` 
+You can search users by thier name or display name with `UserService.instance.showUserSearchDialog` .
+
 
 - if `exactSearch` is `true` it will search the exact text search provided in the user collection (ex: You search John Smith it will show result of user who name exactly Johm Smith). while if its `false` it will search base on the given and provide what might be your searching (ex: you search John and it will show result of user who have John in thier name John Smith, John Doe, John Carl, etc)
 
 
-- if `searchName` is `true` is will search from the name field of the user. and if `searchName` is `false` it will search from the display name field of the user. `search is case insensitive` and the `default search is name`.
+- if `searchName` is `true` is will search from the name field of the user.
+- if `searchNickname` is `true` it will search from the display name field of the user.
 
-Note: Search is `case-insensitive` and the by default it will search `exact match` of the user `name` field.
+- The name or display name are case insensitive. And it is supported by saving the name and display name in lower case in the Firestore.
+
+- Note that, the search is `case-insensitive` and the by default it will search `exact match` of the user `name` field.
 
 
 Using UserSearchDialog Widget
-```dart
-ElevatedButton (
-  onPressed:() {
-    showDialog(
-      context: context,
-      builder: (context) => UserSearchDialog(
-        exactSearch: false,
-        searchName: true,
-      ),
-    )
-  },
-  child: const Text('Search User'),
-);
-```
 
-Using UserService.instance.showUserSearchDialog
 ```dart
-ElevatedButton(onPressed: () {
-  UserService.instance.showUserSearchDialog(
+ElevatedButton(
+  onPressed: () async {
+    final user = await UserService.instance.showUserSearchDialog(
+      context,
       exactSearch: false,
-      searchName: true,
+      searchNickname: true,
     );
-  }, 
-  child: const Text('Search User'),
+    print('user; $user');
+  },
+  child: const Text('User Search Dialog'),
 ),
 ```
+
+
+For custom design, you would design for the search item(user) and `pop` with the user object. Even though it's really up to you how you can customize. You can do something else instead of `pop`ing the user object.
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    final user = await UserService.instance.showUserSearchDialog(
+      context,
+      exactSearch: false,
+      itemBuilder: (user, index) => ElevatedButton(
+        onPressed: () => Navigator.of(context).pop(user),
+        child: Text(user.displayName),
+      ),
+    );
+    print('user; $user');
+  },
+  child: const Text('User Search Dialog'),
+),
+```
+
 
 ## Trouble shooting
 
@@ -667,9 +675,24 @@ This will show `displayName`, not `name` of the user.
 The `UserAvatar` widget can be used like this:
 
 ```dart
-UserAvatar(uid: uid, size: 100, radius: 40),
+UserAvatar(user: user, size: 100, radius: 40),
 ```
 
+
+To display user avatar for login user, you may use the code below. The code below displays anonymous avatar if the user didn't signed in. And if the user signed in, it displays the user's photo url. If the user does not have photo url, it will display the first letter of the uid. And it also gives tap event to sign in or updating profile.
+
+```dart
+InkWell(
+  child: MyDoc(
+    builder: (user) => user == null
+        ? const AnonymousAvatar()
+        : UserAvatar(user: user),
+  ),
+  onTap: () => i.signedIn
+      ? UserService.instance.showProfileUpdaeScreen(context)
+      : context.push(SignInScreen.routeName),
+),
+```
 
 #### UserAvatar.fromUid
 
@@ -678,6 +701,13 @@ If you have only the uid of a user, then you can use this widget to display user
 ```dart
 UserAvatar.fromUid(uid: user.uid),
 ```
+
+- There is an options for `sync` that will update the avatar when the user update his profile photo. Use this when you want to update the user avatar in a chat room or any other screen that might need to display the user's photo in real time.
+
+```dart
+UserAvatar.fromUid(uid: myUid, sync: true),
+```
+
 
 ## Block and unblock
 

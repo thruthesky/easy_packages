@@ -31,18 +31,32 @@ You can access the custom value like `post.extra['size']`. Note that, the `post.
 
 # Category
 
+The category is being saved in `category` field. The `category` field must exists and it can be empty string.
 
-The categories can be set using the `init` method. And it's entirely up to you to decide what categories to use.
+It's entirely up to you to decide how you want to design the UI/UX of the categories. But by default, `easy_post_v2` uses `easy_category`.
+
+`easy_post_v2` provides post list screen and it requires some categories. You can feed the categories like below;
 
 Example:
 ```dart
-PostService.instance.init(categories: {
- 'qna': '질문답변',
- 'discussion': 'Discussion',
- 'news': 'News',
- 'job': '구인구직',
-});
+PostService.instance.showPostListScreen(
+  context: context,
+  categories: [
+    Category(id: 'qna', name: 'QnA'),
+    Category(id: 'discussion', name: 'Discussion'),
+    Category(id: 'youtube', name: 'Youtube'),
+    Category(id: 'buyandsell', name: 'Buy and Sell'),
+    Category(id: 'job', name: 'Jobs'),
+    Category(id: 'news', name: 'News'),
+  ],
+)
 ```
+
+If you don't want to use the `easy_category`, you can customize the whole post list screen by yourself. And actually, customizing the whole post list screen is recommended since your app would require different UI/UX. But that does not mean you have to use something other than `easy_category`. You can still use it even if you customize the UI/UX of the whole post screens and widgets.
+
+
+
+
 
 You can develop your own post list screen where you can design your own category options. It's really up to you for anything. You don't even have to use categoreis if you don't need them.
 
@@ -86,6 +100,18 @@ YoutubePlayer(
   post:post,
 )
 ```
+- youtube with fullscreen you need to wrap your scaffold with `YoutubeFullscreenBuilder`
+this widget allows your youtube video to be fullscreen 
+
+``` dart
+YoutubeFullscreenBuilder(
+  post: post,
+  builder: (context, youtube){
+    return youtube;
+  }
+)
+```
+
 
 # Post Details 
 To display display the details of post you can use `PostServices.instance.showPostDetailScreen()` or `PostDetailScreen()`
@@ -107,3 +133,39 @@ IconButton(
 PostDetailScreen(post: post);
 
 ```
+
+
+
+# Widgets
+
+## PostDoc
+
+`PostDoc` is a widget that displays a post document.
+
+- `post`: The post document to display. It will be also used for initialData for the StreamBuilder of FutureBuilder to reduce the flickering.
+- `sync`: If true, it will use `StreamBuilder` to fetch the post and rebuild the widget whenever the post is updated. If false, it will use `FutureBuilder` to fetch the post only once. The default is false.
+
+Example:
+```dart
+@override
+Widget build(BuildContext context) {
+  return PostDoc(
+      post: post,
+      sync: true,
+      builder: (post) {
+        /// If the post has no youtube video, return the normal scallfold.
+        if (post.hasYoutube == false) {
+          return NormalPostScaffold(context);
+        }
+
+        /// If the post has youtube video, return the youtube fullscreen
+        /// builder.
+        return YoutubeFullscreenBuilder(
+            post: post,
+            builder: (context, player) {
+              return YoutubePostScaffold(context, player);
+            });
+      });
+}
+```
+

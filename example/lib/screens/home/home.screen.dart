@@ -1,5 +1,3 @@
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:easy_engine/easy_engine.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/forum/comment.test.screen.dart';
@@ -32,7 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Home'),
         actions: [
           InkWell(
-            child: UserAvatar.fromUid(uid: myUid, sync: true),
+            child: MyDoc(
+              builder: (user) => user == null
+                  ? const AnonymousAvatar()
+                  : UserAvatar(user: user),
+            ),
             onTap: () => i.signedIn
                 ? UserService.instance.showProfileUpdaeScreen(context)
                 : context.push(SignInScreen.routeName),
@@ -98,14 +100,20 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text('User Search Dialog: exact search'),
             ),
             ElevatedButton(
-              onPressed: () {
-                UserService.instance.showUserSearchDialog(
+              onPressed: () async {
+                final user = await UserService.instance.showUserSearchDialog(
                   context,
                   exactSearch: false,
+                  itemBuilder: (user, index) => ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(user),
+                    child: Text(user.displayName),
+                  ),
                 );
+                print('user; $user');
               },
               child: const Text('User Search Dialog: partial search search'),
             ),
+            //
             ElevatedButton(
               onPressed: () {
                 ChatService.instance.showChatRoomListScreen(context);
