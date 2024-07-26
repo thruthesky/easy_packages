@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/src/chat.functions.dart';
+import 'package:easychat/src/chat.room.user.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
@@ -28,7 +29,7 @@ class ChatRoom {
   final String? iconUrl;
 
   /// [users] is the uid list of users who are join the room
-  final List<String> users;
+  final List<ChatRoomUser> users;
   final List<String> invitedUsers;
   final List<String> rejectedUsers;
   final List<String> blockedUsers;
@@ -83,6 +84,7 @@ class ChatRoom {
   /// Note that, [gender] is not supported at this time.
   final String gender;
 
+  // TODO, better be a getter and return the length of users
   /// [noOfUsers] is the number of users in the chat room.
   final noOfUsers = 0;
 
@@ -129,6 +131,10 @@ class ChatRoom {
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
+    final usersMap = Map<String, dynamic>.from((json['users'] ?? {}) as Map);
+    final users = usersMap.entries.map((entry) {
+      return ChatRoomUser.fromJson(json: entry.value, uid: entry.key);
+    }).toList();
     return ChatRoom(
       id: id,
       name: json['name'] ?? '',
@@ -138,7 +144,7 @@ class ChatRoom {
       single: json['single'],
       group: json['group'],
       hasPassword: json['hasPassword'],
-      users: List<String>.from(json['users']),
+      users: users,
       masterUsers: List<String>.from(json['masterUsers']),
       invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
       blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
@@ -172,7 +178,7 @@ class ChatRoom {
       'single': single,
       'group': group,
       'hasPassword': hasPassword,
-      'users': users,
+      'users': Map.fromEntries(users.map((user) => user.toMapEntry)),
       'masterUsers': masterUsers,
       'invitedUsers': invitedUsers,
       'blockedUsers': blockedUsers,
@@ -229,9 +235,16 @@ class ChatRoom {
     if (single == false && group == false) {
       throw 'chat-room-create/single-or-group Single or group chat room must be selected';
     }
+
+    Map<String, Map> usersMap = {};
+    if (users != null && users.isNotEmpty) {
+      usersMap = Map.fromEntries(users.map((uid) => MapEntry(uid, {
+            'sO': FieldValue.serverTimestamp(),
+            'gO': FieldValue.serverTimestamp(),
+            'nMC': 0,
+          })));
+    }
     final newRoom = {
-      'users': [my.uid],
-      'masterUsers': [my.uid],
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (iconUrl != null) 'iconUrl': iconUrl,
@@ -241,13 +254,11 @@ class ChatRoom {
       'hasPassword': false,
       // 'hasPassword': password != null, (NOT IMPLEMENTED YET)
       if (invitedUsers != null) 'invitedUsers': invitedUsers,
-      if (users != null) 'users': users,
-      if (masterUsers != null) 'masterUsers': masterUsers,
+      'users': usersMap,
+      'masterUsers': [my.uid],
       // if (password != null) 'password': password, (NOT IMPLEMENTED YET)
       'verifiedUserOnly': verifiedUserOnly,
-
       'urlForVerifiedUserOnly': urlForVerifiedUserOnly,
-
       'uploadForVerifiedUserOnly': uploadForVerifiedUserOnly,
       'gender': gender,
       'domain': domain,

@@ -15,15 +15,16 @@ class ChatRoomMemberListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Member List"),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(room.users[index]),
-          );
-          // return UserListTile(user: user) only uid
-        },
-        itemCount: room.users.length,
-      ),
+      // TODO
+      // body: ListView.builder(
+      //   itemBuilder: (context, index) {
+      //     return ListTile(
+      //       title: Text(room.users[index]),
+      //     );
+      //     // return UserListTile(user: user) only uid
+      //   },
+      //   itemCount: room.users.length,
+      // ),
     );
   }
 }

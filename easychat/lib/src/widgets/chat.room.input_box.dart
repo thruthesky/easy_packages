@@ -99,13 +99,14 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   shouldAcceptInvitation() async {
     if (widget.room == null) return;
     if (widget.room!.users.contains(my.uid)) return;
-    if (widget.room!.invitedUsers.contains(my.uid)) {
-      await widget.room!.acceptInvitation();
-      widget.room!.users.add(my.uid);
-      widget.room!.invitedUsers.remove(my.uid);
-      widget.afterAccept?.call();
-      return;
-    }
+    // TODO
+    // if (widget.room!.invitedUsers.contains(my.uid)) {
+    //   await widget.room!.acceptInvitation();
+    //   widget.room!.users.add(my.uid);
+    //   widget.room!.invitedUsers.remove(my.uid);
+    //   widget.afterAccept?.call();
+    //   return;
+    // }
     throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 }
