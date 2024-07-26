@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Fix. Firestore dependency.
+
 ## 0.0.2
 
 * Add. like functionality.
