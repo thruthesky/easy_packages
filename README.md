@@ -177,11 +177,40 @@ This is the style guide of the development easy packages.
 
 ## Model
 
-Model class does
+Waht the Model class does
 - serialization/deserialization
 - basic crud of the model data
 - helper functions of the entity itself. Not other entities of the same model.
 - encapsulating the refs.
+
+
+The name of the model classes should be the noun of what it is being called like
+
+- `User`
+- `Category`
+- `Post`
+- `Comment`
+- etc.
+
+
+## Widget of Model
+
+What the widget of model does
+- display a UI based on the model data
+- realtime update
+
+The name of the widget of a model should end with `Doc` of the name of the model like
+
+- `UserDoc`
+- `CategoryDoc`
+- `PostDoc`
+- `Comment`
+- `LikeDoc`
+- etc.
+
+The document must have a `sync` parameter to re-build the widget when the database changes.
+
+
 
 
 

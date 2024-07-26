@@ -10,6 +10,14 @@ The `easy_like` package provides an easy and efficient way to manage the `like` 
 It does not support `dislike` since most of the community don't provide `dislike` button. It discourages usres to participate the community.
 
 
+## Installation
+
+### Security rules
+
+
+- On the document, the `likes` should be open to be written by any one.
+
+
 
 
 ## Terms
@@ -30,6 +38,13 @@ It does not support `dislike` since most of the community don't provide `dislike
 - Whenever there is a changes on `vote`, the number of `likes` must be updated in the original document.
 - When the user unlike(or the like again), then the no of like will be decrease.
 
+
+
+
+
+## Widgets
+
+- `Like.sync(builder: (like) => Text(like.likes.toString()))`
 
 
 

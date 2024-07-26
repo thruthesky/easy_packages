@@ -1,5 +1,6 @@
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_like/easy_like.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/post.detail.photos.dart';
@@ -86,7 +87,11 @@ class _PostDetailState extends State<PostDetail> {
               child: Text('Reply'.t),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                final like =
+                    Like(uid: my.uid, documentReference: widget.post.ref);
+                await like.like();
+              },
               child: Text('Like'.tr(args: {'n': 3}, form: 3)),
             ),
             const Spacer(),
