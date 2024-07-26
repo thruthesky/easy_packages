@@ -111,9 +111,8 @@ class ChatRoom {
   /// Note that, [gender] is not supported at this time.
   final String gender;
 
-  // TODO, better be a getter and return the length of users
   /// [noOfUsers] is the number of users in the chat room.
-  final noOfUsers = 0;
+  int get noOfUsers => users.length;
 
   /// [domain] is the domain of the chat room. It can be the name of the app.
   ///
@@ -372,7 +371,7 @@ class ChatRoom {
   Future<void> acceptInvitation() async {
     await ChatRoom.col.doc(id).update({
       field.invitedUsers: FieldValue.arrayRemove([my.uid]),
-      // TODO must be
+      // TODO must be map
       // 'users': FieldValue.arrayUnion([my.uid]),
       // In case, the user rejected the invitation
       // but actually wants to accept it, then we should
