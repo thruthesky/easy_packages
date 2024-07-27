@@ -18,17 +18,20 @@ class ReportService {
     String? otherUid,
     String? reason,
   }) async {
-    final re = await showDialog<String>(
+    final reason = await showDialog<String>(
       context: context,
       builder: (context) => ReportDialog(documentReference: documentReference),
     );
-    if (re == null) return;
+    if (reason == null) return;
 
-    /// TODO 여기서 부터.
-    await documentReference.collection('reports').add({
+    /// TODO 여기서 부터, Firestore 의 /reports 에 권한을 주고,
+    /// TODO 신고를 했는지 확인해서, 신고를 했으면, 이미 신고했다고 알려준다.
+    /// TODO 신고 대상사의 이름과 사진을 보여준다.
+
+    await col.add({
       'reporter': currentUser!.uid,
       'reportee': otherUid,
-      'reason': re,
+      'reason': reason,
       'createdAt': FieldValue.serverTimestamp(),
     });
   }

@@ -181,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           await ReportService.instance.report(
                             context: context,
                             otherUid: user.uid,
+                            documentReference: user.ref,
                           );
                         },
                         child: const Text('Report')),
