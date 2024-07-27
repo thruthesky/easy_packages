@@ -1,3 +1,6 @@
+## 0.0.8
+* Add. notEmpty for the alias of !isNullOrEmpty
+
 ## 0.0.7
 * Add. empty for the alias of isNullOrEmpty
 

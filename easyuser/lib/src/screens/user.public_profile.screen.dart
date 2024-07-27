@@ -114,7 +114,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
-                          if (user.stateMessage.empty)
+                          if (user.stateMessage.isNotEmpty)
                             Text(
                               user.stateMessage,
                               style: Theme.of(context)
