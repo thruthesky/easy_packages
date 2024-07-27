@@ -1,3 +1,4 @@
+import 'package:easy_report/easy_report.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/forum/comment.test.screen.dart';
@@ -158,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     UserAvatar(
                       user: user,
                     ),
-                    ElevatedButton(
+                    TextButton(
                       onPressed: () => ChatService.instance.showChatRoomScreen(
                         context,
                         user: user,
@@ -166,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: const Text('Chat'),
                     ),
-                    ElevatedButton(
+                    TextButton(
                       onPressed: () async {
                         await i.block(context: context, otherUid: user.uid);
                       },
@@ -175,7 +176,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (b) => Text(b ? 'Un-block' : 'Block'),
                       ),
                     ),
-                    ElevatedButton(
+                    TextButton(
+                        onPressed: () async {
+                          await ReportService.instance.report(
+                            context: context,
+                            otherUid: user.uid,
+                          );
+                        },
+                        child: const Text('Report')),
+                    TextButton(
                         onPressed: () => i.showPublicProfileScreen(
                               context,
                               user: user,

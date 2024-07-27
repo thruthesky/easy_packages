@@ -145,10 +145,10 @@ class UserPublicProfileScreen extends StatelessWidget {
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  await ReportService.instance.report(
-                                      context: context,
-                                      otherUid: user.uid,
-                                      documentRef);
+                                  // await ReportService.instance.report(
+                                  //     context: context,
+                                  //     otherUid: user.uid,
+                                  //     documentRef);
                                 },
                                 child: Text(
                                   'report'.t,

@@ -21,6 +21,7 @@ dependencies:
   easy_like:
   easy_locale:
   easy_post_v2:
+  easy_report:
   easy_storage:
   easychat:
   easyuser:
@@ -58,6 +59,8 @@ dependency_overrides:
     path: ../easy_like
   easy_locale:
     path: ../easy_locale
+  easy_report:
+    path: ../easy_report
   easy_storage:
     path: ../easy_storage
   easychat:
