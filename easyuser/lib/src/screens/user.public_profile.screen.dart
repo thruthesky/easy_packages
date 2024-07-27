@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -114,9 +115,9 @@ class UserPublicProfileScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
-                          if (user.stateMessage.isNotEmpty)
+                          if (user.stateMessage.notEmpty)
                             Text(
-                              user.stateMessage,
+                              user.stateMessage!,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
@@ -124,6 +125,38 @@ class UserPublicProfileScreen extends StatelessWidget {
                                     color: Colors.white,
                                   ),
                             ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: () async {
+                                  await i.block(
+                                      context: context, otherUid: user.uid);
+                                },
+                                child: UserBlocked(
+                                  otherUid: user.uid,
+                                  builder: (blocked) => Text(
+                                    blocked ? 'Unblock'.t : 'block'.t,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  await i.block(
+                                      context: context, otherUid: user.uid);
+                                },
+                                child: Text(
+                                  'report'.t,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           const SizedBox(
                             height: 32,
                           ),
