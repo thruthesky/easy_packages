@@ -233,7 +233,24 @@ Service class does
 - Add `Count` at the end of the field name that records no of counts. Like `commentCount`, `likeCount`, etc.
 
 
-# Exception
+## Fields
+
+- To prevent the typo error and improve reusabilities, define field class like below
+
+```dart
+class UserField {
+  UserField._();
+  static const String statePhotoUrl = 'statePhotoUrl';
+}
+```
+
+- And use like below
+
+```dart
+UserField.statePhotoUrl
+```
+
+## Exception
 
 - To handle better exception, you can catch the exceptions of each packages.
 
@@ -271,6 +288,9 @@ class UserException implements Exception {
   }
 })();
 ```
+
+
+
 
 
 

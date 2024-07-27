@@ -96,8 +96,8 @@ The fields used in the user document are as follows. If your app uses fields oth
 
 
 
-- `state`
-- `stateMessage`
+- `stateMessage`: User can save his state message. This will be displayed with profile.
+- `statePhotoUrl`: User can save a photo for his state. It is mostly used as a background of his profile.
 
 
 

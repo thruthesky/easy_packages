@@ -200,12 +200,15 @@ class UserService {
 
   // to display public profile user `UserService.intance.showPublicProfile`
   // this will display publicProfile from fireflutter
-  showPublicProfileScreen(BuildContext context) {
+  showPublicProfileScreen(
+    BuildContext context, {
+    required User user,
+  }) {
     return $showPublicProfileScreen?.call(context, user) ??
         showGeneralDialog(
           context: context,
           pageBuilder: (context, _, __) {
-            return UserPublicProfileScreen(user: user!);
+            return UserPublicProfileScreen(user: user);
           },
         );
   }

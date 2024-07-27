@@ -175,6 +175,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (b) => Text(b ? 'Un-block' : 'Block'),
                       ),
                     ),
+                    ElevatedButton(
+                        onPressed: () => i.showPublicProfileScreen(
+                              context,
+                              user: user,
+                            ),
+                        child: const Text('Public Profile')),
                   ],
                 ),
               ),

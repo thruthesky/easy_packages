@@ -186,6 +186,18 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Age',
     'ko': '나이',
   },
+  'state message': {
+    'en': 'State Message',
+    'ko': '상태 메시지',
+  },
+  'state photo': {
+    'en': 'State Photo',
+    'ko': '상태 사진',
+  },
+  'Upload State Photo': {
+    'en': 'Upload State Photo',
+    'ko': '상태 사진 업로드',
+  },
   'phone number': {
     'en': 'Phone Number',
     'ko': '전화번호',

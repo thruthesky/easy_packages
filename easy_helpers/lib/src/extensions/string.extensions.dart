@@ -125,6 +125,9 @@ extension EasyHelperNullableStringExtension on String? {
   /// Alias of [isNullOrEmpty]
   bool get isEmpty => isNullOrEmpty;
 
+  /// Alias of [isNullOrEmpty]
+  bool get empty => isNullOrEmpty;
+
   /// If the string is null or empty, then it will return the newString
   String or(String newString) => isNullOrEmpty ? newString : this!;
 }

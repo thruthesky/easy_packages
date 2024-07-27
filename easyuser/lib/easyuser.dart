@@ -19,5 +19,6 @@ export './src/widgets/user.search.dialog.dart';
 export './src/user.exception.dart';
 export './src/user.dart';
 export './src/user.defines.dart';
+export './src/user.field.dart';
 export './src/user.functions.dart';
 export './src/user.service.dart';

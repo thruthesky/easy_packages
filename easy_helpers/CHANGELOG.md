@@ -1,3 +1,6 @@
+## 0.0.7
+* Add. empty for the alias of isNullOrEmpty
+
 ## 0.0.6
 * Add. More features
 
