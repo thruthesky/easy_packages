@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:flutter/material.dart';
 
 /// Confirm dialgo
@@ -22,11 +23,11 @@ Future<bool?> confirm({
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('no'),
+            child: Text('no'.t),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('yes'),
+            child: Text('yes'.t),
           ),
         ],
       );

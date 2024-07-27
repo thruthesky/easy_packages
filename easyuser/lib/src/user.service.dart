@@ -251,6 +251,9 @@ class UserService {
   /// it is better to use this method to unify the block logic.
   ///
   /// This method toggles the block status.
+  ///
+  /// TODO: Display the other user's name and photo in the confirmation dialog.
+  /// TODO: Dispaly error on blocking himself.
   Future block({
     required BuildContext context,
     required String otherUid,

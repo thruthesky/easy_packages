@@ -35,48 +35,67 @@ class _PostDetailState extends State<PostDetail> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         UserDoc(
-            uid: post.uid,
-            builder: (user) {
-              return user == null
-                  ? const SizedBox.shrink()
-                  : Row(
-                      children: [
-                        UserAvatar(
-                          user: user,
+          uid: post.uid,
+          builder: (user) {
+            return user == null
+                ? const SizedBox.shrink()
+                : Row(
+                    children: [
+                      UserAvatar(
+                        user: user,
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(user.displayName),
+                            Text('${user.createdAt}'),
+                          ],
                         ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(user.displayName),
-                              Text('${user.createdAt}'),
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-            }),
+                      )
+                    ],
+                  );
+          },
+        ),
         const SizedBox(height: 16),
-        if (post.deleted) ...{
-          const SizedBox(
-            width: double.infinity,
-            height: 200,
-            child: Center(
-              child: Text('This Post has been deleted.'),
-            ),
-          ),
-        } else ...{
-          if (post.hasYoutube && widget.youtubePlayer != null)
-            widget.youtubePlayer!,
-          PostDetailYoutubeMeta(post: widget.post),
-          PostDetailPhotos(post: widget.post),
-          const SizedBox(height: 16),
-          Text(post.title),
-          Text(post.content),
-        },
+        UserBlocked(
+          otherUid: post.uid,
+          builder: (blocked) {
+            if (blocked) {
+              return const SizedBox(
+                width: double.infinity,
+                height: 200,
+                child: Center(
+                  child: Text('This user has been blocked.'),
+                ),
+              );
+            }
+            return Column(
+              children: [
+                if (post.deleted) ...{
+                  const SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child: Center(
+                      child: Text('This Post has been deleted.'),
+                    ),
+                  ),
+                } else ...{
+                  if (post.hasYoutube && widget.youtubePlayer != null)
+                    widget.youtubePlayer!,
+                  PostDetailYoutubeMeta(post: widget.post),
+                  PostDetailPhotos(post: widget.post),
+                  const SizedBox(height: 16),
+                  Text(post.title),
+                  Text(post.content),
+                },
+              ],
+            );
+          },
+        ),
         Row(
           children: [
             TextButton(
@@ -117,7 +136,11 @@ class _PostDetailState extends State<PostDetail> {
                 ),
                 PopupMenuItem(
                   value: 'block',
-                  child: Text('Block'.t),
+                  child: UserBlocked(
+                    otherUid: post.uid,
+                    builder: (blocked) =>
+                        Text(blocked ? 'Unblock'.t : 'Block'.t),
+                  ),
                 ),
               ],
               child: const Icon(Icons.more_vert),
@@ -144,8 +167,7 @@ class _PostDetailState extends State<PostDetail> {
                   //   documentReference: post.ref,
                   // );
 
-//TODO
-                  // final u = await i.block(context: context, otherUid: post.uid);
+                  await i.block(context: context, otherUid: post.uid);
                 }
               },
             ),

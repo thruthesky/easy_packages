@@ -9,6 +9,14 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Home',
     'ko': '홈',
   },
+  'yes': {
+    'en': 'Yes',
+    'ko': '예',
+  },
+  'no': {
+    'en': 'No',
+    'ko': '아니요',
+  },
   'menu': {
     'en': 'Menu',
     'ko': '메뉴',
@@ -40,6 +48,34 @@ final Map<String, dynamic> localeTexts = {
   'block': {
     'en': 'Block',
     'ko': '차단',
+  },
+  'unblock': {
+    'en': 'Un-block',
+    'ko': '차단해제',
+  },
+  'block confirm title': {
+    'en': 'Block User',
+    'ko': '사용자 차단',
+  },
+  'block confirm message': {
+    'en': 'Are you sure you want to block this user?',
+    'ko': '이 사용자를 차단하시겠습니까?',
+  },
+  'un-block confirm title': {
+    'en': 'Un-block User',
+    'ko': '사용자 차단 해제',
+  },
+  'un-block confirm message': {
+    'en': 'Are you sure you want to un-block this user?',
+    'ko': '이 사용자의 차단을 해제하시겠습니까?',
+  },
+  'user is blocked': {
+    'en': 'User is blocked',
+    'ko': '사용자가 차단되었습니다',
+  },
+  'user is un-blocked': {
+    'en': 'User is un-blocked',
+    'ko': '사용자의 차단이 해제되었습니다',
   },
   'report': {
     'en': 'Report',
@@ -170,15 +206,6 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Access permission to the gallery has been denied',
     'ko': '갤러리에 대한 접근 권한이 거부되었습니다',
   },
-  'yes': {
-    'en': 'Yes',
-    'ko': '예',
-  },
-  'no': {
-    'en': 'No',
-    'ko': '아니요',
-  },
-
   'title': {
     'en': 'Title',
     'ko': '제목',
