@@ -1,0 +1,20 @@
+name: easy_report
+description: "An easy report management system for various type of data for Flutter and Firebase"
+version: 0.0.1
+homepage: https://github.com/thruthesky/easy_packages/main/tree/easy_report
+
+environment:
+  sdk: ">=3.4.4 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  cloud_firestore: ^5.0.2
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
