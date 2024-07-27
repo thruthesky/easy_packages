@@ -151,20 +151,31 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text('Easy Comment Screen'),
             ),
             SizedBox(
-              height: 80,
+              height: 180,
               child: UserListView(
-                itemBuilder: (user, p1) => GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    ChatService.instance.showChatRoomScreen(
-                      context,
+                itemBuilder: (user, p1) => Row(
+                  children: [
+                    UserAvatar(
                       user: user,
-                      // room: room,
-                    );
-                  },
-                  child: UserAvatar(
-                    user: user,
-                  ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => ChatService.instance.showChatRoomScreen(
+                        context,
+                        user: user,
+                        // room: room,
+                      ),
+                      child: const Text('Chat'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await i.block(context: context, otherUid: user.uid);
+                      },
+                      child: UserBlocked(
+                        otherUid: user.uid,
+                        builder: (b) => Text(b ? 'Un-block' : 'Block'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

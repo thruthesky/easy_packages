@@ -40,6 +40,7 @@ class User {
   /// Collection reference of the user's collection.
   ///
   CollectionReference col = UserService.instance.col;
+  CollectionReference metaCol = UserService.instance.metaCol;
 
   /// [doc] is the document reference of this user model.
   DocumentReference get doc => col.doc(uid);
@@ -190,7 +191,7 @@ class User {
     throw UnimplementedError('This is not for use.');
   }
 
-  Future update({
+  Future<void> update({
     String? displayName,
     String? name,
     int? birthYear,

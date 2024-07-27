@@ -72,6 +72,7 @@ If you have a different database structure for user data management, you will ne
 - The user's private information is stored in `/users/{uid}/user-meta/private`.
 - The user's settings are stored in `/users/{uid}/user-meta/settings`.
 
+
 ### User document fields
 
 The fields used in the user document are as follows. If your app uses fields other than those listed below, you should ensure they are saved(copied) according to these fields.
@@ -101,7 +102,34 @@ The fields used in the user document are as follows. If your app uses fields oth
 
 
 
+### User blocking
 
+- User model and user service supports user blockings.
+- User blocking functionality is not seprated to another package because
+  - a user can block only users. Not the other entities(or other data type). Meaning, user blocking is part of the user management feature. That's why it is not separated as another package.
+  - It is often required functionality for app review. Without user blocking feature, the app may be rejected from the reviewer of the app publishing.
+- `/users/{uid}/user-meta/blocks`: This document holds all the list of blocked users.
+  - It is separated from the user document because
+    - Blocking information is a private information and that must be protected
+    - If it is in the user document (even if it's a privacy matter), the document may become big and cost more on network in seaching user's public data.
+
+- When A blocks B, A should not see the contents from B.
+  - A can still invite/like B.
+  - This security can be softly done within the flutter code. There is no need to be hard limited from security rules.
+
+- Below is an example of blocking user and unblocking user.
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await i.block(context: context, otherUid: user.uid);
+  },
+  child: UserBlocked(
+    otherUid: user.uid,
+    builder: (b) => Text(b ? 'Un-block' : 'Block'),
+  ),
+),
+```
 
 
 

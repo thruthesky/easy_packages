@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:flutter/material.dart';
@@ -17,9 +18,22 @@ class UserService {
   bool initialized = false;
 
   CollectionReference get col => FirebaseFirestore.instance.collection('users');
+  CollectionReference get metaCol => col.doc(myUid).collection('user-meta');
+
+  /// Reference of the block document.
+  DocumentReference get blockDoc => metaCol.doc('blocks');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
+
+  /// The document of `users/user-meta/block` that holds the block information
+  /// of other users.
+  /// This data is updated in real-time.
+  Map<String, dynamic> blocks = {};
+
+  /// Fires whenever the user blocking data changes.
+  BehaviorSubject<Map<String, dynamic>> blockChanges =
+      BehaviorSubject.seeded({});
 
   /// Enable anonymous sign in, by default it is false.
   ///
@@ -52,7 +66,7 @@ class UserService {
     }
     initialized = true;
     this.enableAnonymousSignIn = enableAnonymousSignIn;
-    listenUserDocumentChanges();
+    listenDocumentChanges();
     $showPublicProfileScreen = showPublicProfileScreen;
     $showProfileUpdateScreen = showProfileUpdateScreen;
   }
@@ -82,18 +96,33 @@ class UserService {
   StreamSubscription<fa.User?>? firebaseAuthSubscription;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
       firestoreMyDocSubscription;
-  listenUserDocumentChanges() {
+
+  StreamSubscription<DocumentSnapshot>? firestoreBlockingSubscription;
+
+  listenDocumentChanges() {
     firebaseAuthSubscription?.cancel();
     firebaseAuthSubscription =
         // .distinct((p, n) => p?.user?.uid == n?.user?.uid)
         fa.FirebaseAuth.instance.authStateChanges().listen((faUser) async {
       /// User state changed
+      ///
+      ///
+
+      /// User signed out
       if (faUser == null) {
         // dog('Firebase User is null. User signed out.');
         user = null;
         changes.add(user);
+
+        /// Clear user blocking data
+        blocks = {};
+        blockChanges.add(blocks);
         initAnonymousSignIn();
       } else {
+        /// User signed in
+        ///
+
+        /// User is anonymous
         if (faUser.isAnonymous) {
           // dog('User signed in. The Firebase User is anonymous');
         } else {
@@ -119,10 +148,24 @@ class UserService {
           }
           changes.add(user);
         });
+
+        firestoreBlockingSubscription?.cancel();
+        firestoreBlockingSubscription = blockDoc.snapshots().listen(
+          (snapshot) {
+            if (snapshot.exists) {
+              blocks = snapshot.data() as Map<String, dynamic>;
+            } else {
+              blocks = {};
+            }
+            dog('updated blocks: $blocks');
+            blockChanges.add(blocks);
+          },
+        );
       }
     });
   }
 
+  /// Get my user document
   Future<void> signOut() async {
     await fa.FirebaseAuth.instance.signOut();
   }
@@ -197,5 +240,58 @@ class UserService {
         searchNickname: searchNickname,
       ),
     );
+  }
+
+  /// Blocks other user.
+  ///
+  /// User can block other user and the block button may appear in different
+  /// places in the app.
+  ///
+  /// Since the block has some logic of displaying the confirmation dialog,
+  /// it is better to use this method to unify the block logic.
+  ///
+  /// This method toggles the block status.
+  Future block({
+    required BuildContext context,
+    required String otherUid,
+  }) async {
+    /// The user is alredy blocked?
+    if (blocks.containsKey(otherUid)) {
+      /// Ask if the login-user want to un-block the user.
+      final re = await confirm(
+        context: context,
+        title: 'un-block confirm title'.t,
+        message: 'un-block confirm message'.t,
+      );
+      if (re != true) return false;
+
+      await blockDoc.update({
+        otherUid: FieldValue.delete(),
+      });
+      if (context.mounted) {
+        toast(context: context, message: 'user is un-blocked'.t);
+      }
+      return;
+    }
+
+    final re = await confirm(
+      context: context,
+      title: 'block confirm title'.t,
+      message: 'block confirm message'.t,
+    );
+    if (re != true) return false;
+
+    await blockDoc.set(
+      {
+        otherUid: {
+          'blockedAt': FieldValue.serverTimestamp(),
+        },
+      },
+      SetOptions(merge: true),
+    );
+
+    if (context.mounted) {
+      toast(context: context, message: 'user is blocked'.t);
+    }
   }
 }

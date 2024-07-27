@@ -220,7 +220,7 @@ packages:
       path: "../easy_like"
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   easy_locale:
     dependency: "direct main"
     description:

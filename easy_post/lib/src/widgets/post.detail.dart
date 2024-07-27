@@ -28,13 +28,14 @@ class PostDetail extends StatefulWidget {
 }
 
 class _PostDetailState extends State<PostDetail> {
+  Post get post => widget.post;
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         UserDoc(
-            uid: widget.post.uid,
+            uid: post.uid,
             builder: (user) {
               return user == null
                   ? const SizedBox.shrink()
@@ -59,7 +60,7 @@ class _PostDetailState extends State<PostDetail> {
                     );
             }),
         const SizedBox(height: 16),
-        if (widget.post.deleted) ...{
+        if (post.deleted) ...{
           const SizedBox(
             width: double.infinity,
             height: 200,
@@ -68,13 +69,13 @@ class _PostDetailState extends State<PostDetail> {
             ),
           ),
         } else ...{
-          if (widget.post.hasYoutube && widget.youtubePlayer != null)
+          if (post.hasYoutube && widget.youtubePlayer != null)
             widget.youtubePlayer!,
           PostDetailYoutubeMeta(post: widget.post),
           PostDetailPhotos(post: widget.post),
           const SizedBox(height: 16),
-          Text(widget.post.title),
-          Text(widget.post.content),
+          Text(post.title),
+          Text(post.content),
         },
         Row(
           children: [
@@ -82,7 +83,7 @@ class _PostDetailState extends State<PostDetail> {
               onPressed: () {
                 CommentService.instance.showCommentEditDialog(
                   context: context,
-                  documentReference: widget.post.ref,
+                  documentReference: post.ref,
                   focusOnContent: false,
                 );
               },
@@ -90,24 +91,22 @@ class _PostDetailState extends State<PostDetail> {
             ),
             TextButton(
               onPressed: () async {
-                final like =
-                    Like(uid: my.uid, documentReference: widget.post.ref);
+                final like = Like(uid: my.uid, documentReference: post.ref);
                 await like.like();
               },
               child: Text(
-                'Like'.tr(
-                    args: {'n': widget.post.likes}, form: widget.post.likes),
+                'Like'.tr(args: {'n': post.likeCount}, form: post.likeCount),
               ),
             ),
             const Spacer(),
             PopupMenuButton<String>(
               itemBuilder: (_) => [
-                if (widget.post.isMine)
+                if (post.isMine)
                   PopupMenuItem(
                     value: 'edit',
                     child: Text('Edit'.t),
                   ),
-                if (widget.post.isMine)
+                if (post.isMine)
                   PopupMenuItem(
                     value: 'delete',
                     child: Text('Delete'.t),
@@ -133,7 +132,20 @@ class _PostDetailState extends State<PostDetail> {
                     message: 'Are you sure you wanted to delete this post?'.t,
                   );
                   if (re == false) return;
-                  await widget.post.delete();
+                  await post.delete();
+                } else if (value == 'report') {
+                  // await ReportService.instance.showReportDialog(
+                  //   context: context,
+                  //   documentReference: post.ref,
+                  // );
+                } else if (value == 'block') {
+                  // await i.block(post.uid) BlockService.instance.showBlockDialog(
+                  //   context: context,
+                  //   documentReference: post.ref,
+                  // );
+
+//TODO
+                  // final u = await i.block(context: context, otherUid: post.uid);
                 }
               },
             ),

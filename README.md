@@ -233,30 +233,43 @@ Service class does
 - Add `Count` at the end of the field name that records no of counts. Like `commentCount`, `likeCount`, etc.
 
 
-## Throwing An Exception
+# Exception
 
-- The package must throw an except in this format.
-  - `domain/code message`
-  - `domain` is the feature or category.
-  - `code` is the code of exception
-  - `message` is the reason(or description/explanation) of the exception.
-  - For instance, `task-create/auth-required User sign in required to create a task`.
+- To handle better exception, you can catch the exceptions of each packages.
 
-- You can handle error message like below.
-  - the `domain` is ignored and not displayed in the code below.
+- This is an example of UserException from `easyuser` package.
+
+Example:
+```dart
+class UserException implements Exception {
+  final String code;
+  final String message;
+
+  UserException(this.code, this.message);
+
+  @override
+  String toString() {
+    return 'UserException: ($code) $message';
+  }
+}
+```
+
+- `code` is the code of exception
+- `message` is the reason(or description/explanation) of the exception.
+
+
+- To handle the error message, you can do the following.
 
 ```dart
-if (e.toString().contains('/')) {
-  final title = e.toString().split(' ')[0].split('/')[1];
-  final parts = e.toString().split(' ');
-  String message = '';
-  if (parts.length > 1) {
-    message = parts.sublist(1).join(' ');
+(() async {
+  try {
+    throw UserException('sign-in-required', 'Please sign in first');
+  } on UserException catch (e) {
+    print('* UserException: ${e.code}, ${e.message}');
+  } catch (e) {
+    print('* Exception: $e');
   }
-  error(context: globalContext, title: title, message: message);
-} else {
-  error(context: globalContext, message: e.toString());
-}
+})();
 ```
 
 

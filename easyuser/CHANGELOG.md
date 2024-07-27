@@ -1,3 +1,7 @@
+## 0.0.15
+* Add. user blocking/un-blocking
+
+
 ## 0.0.14
 * Add. myUid
 
