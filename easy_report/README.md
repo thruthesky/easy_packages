@@ -23,3 +23,45 @@ It also provides a way of listing and blocking users.
 
 
 
+## How to use
+
+
+### Displaying a report button
+
+You can display report button like this. And call the `report` method.
+
+```dart
+TextButton(
+  onPressed: () async {
+    await ReportService.instance.report(
+      context: context,
+      otherUid: user.uid,
+      documentReference: user.ref,
+    );
+  },
+  child: const Text('Report'),
+),
+```
+
+
+### Displaying the list of blocks
+
+You can display the list of blocked users.
+
+
+```dart
+ElevatedButton(
+  onPressed: () =>
+      ReportService.instance.showReportListScreen(context),
+  child: const Text(
+    'Report list',
+  ),
+),
+```
+
+### UI/UX customization
+
+It's open source. You can simply open the source code of this package and copy/paste/edit the code. The code would be easy enough to re-use.
+
+
+

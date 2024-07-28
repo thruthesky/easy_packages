@@ -52,11 +52,20 @@ class ReportService {
       'reporter': currentUser!.uid,
       'reportee': otherUid,
       'reason': reason,
+      'documentReference': documentReference,
       'createdAt': FieldValue.serverTimestamp(),
     });
 
     if (context.mounted) {
       toast(context: context, message: 'You have reported this user now'.t);
     }
+  }
+
+  /// Show post list screen
+  void showReportListScreen(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => const ReportListScreen(),
+    );
   }
 }

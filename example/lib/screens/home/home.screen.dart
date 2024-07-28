@@ -20,7 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int userCount = 0;
+  Map<String, int> index = {};
   @override
   void initState() {
     super.initState();
@@ -154,7 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () =>
+                      ReportService.instance.showReportListScreen(context),
                   child: const Text(
                     'Report list',
                   ),
@@ -167,13 +168,14 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FirestoreListView(
                 query: UserService.instance.col
                     .orderBy('createdAt', descending: true),
-                itemBuilder: (context, doc) {
-                  final user = User.fromSnapshot(doc);
-                  user.listCount ??= userCount++;
+                itemBuilder: (context, snapshot) {
+                  final user = User.fromSnapshot(snapshot);
+
+                  index.putIfAbsent(user.uid, () => index.length);
                   return Row(
                     children: [
                       UserAvatar(user: user),
-                      Text('c: ${user.listCount}'),
+                      Text('c: ${index[user.uid]}'),
                       TextButton(
                         onPressed: () =>
                             ChatService.instance.showChatRoomScreen(
@@ -193,14 +195,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       TextButton(
-                          onPressed: () async {
-                            await ReportService.instance.report(
-                              context: context,
-                              otherUid: user.uid,
-                              documentReference: user.ref,
-                            );
-                          },
-                          child: const Text('Report')),
+                        onPressed: () async {
+                          await ReportService.instance.report(
+                            context: context,
+                            otherUid: user.uid,
+                            documentReference: user.ref,
+                          );
+                        },
+                        child: const Text('Report'),
+                      ),
                       TextButton(
                           onPressed: () => i.showPublicProfileScreen(
                                 context,
@@ -212,51 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-
-            // SizedBox(
-            //   height: 180,
-            //   child: UserListView(
-            //     itemBuilder: (user, p1) => Row(
-            //       children: [
-            //         UserAvatar(
-            //           user: user,
-            //         ),
-            //         TextButton(
-            //           onPressed: () => ChatService.instance.showChatRoomScreen(
-            //             context,
-            //             user: user,
-            //             // room: room,
-            //           ),
-            //           child: const Text('Chat'),
-            //         ),
-            //         TextButton(
-            //           onPressed: () async {
-            //             await i.block(context: context, otherUid: user.uid);
-            //           },
-            //           child: UserBlocked(
-            //             otherUid: user.uid,
-            //             builder: (b) => Text(b ? 'Un-block' : 'Block'),
-            //           ),
-            //         ),
-            //         TextButton(
-            //             onPressed: () async {
-            //               await ReportService.instance.report(
-            //                 context: context,
-            //                 otherUid: user.uid,
-            //                 documentReference: user.ref,
-            //               );
-            //             },
-            //             child: const Text('Report')),
-            //         TextButton(
-            //             onPressed: () => i.showPublicProfileScreen(
-            //                   context,
-            //                   user: user,
-            //                 ),
-            //             child: const Text('Public Profile')),
-            //       ],
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
