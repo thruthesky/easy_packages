@@ -53,8 +53,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             onPressed: () async {
               final re = await confirm(
                 context: context,
-                title: "Task Delete",
-                message: "Are you sure you want to delete the task?",
+                title: const Text("Task Delete"),
+                message:
+                    const Text("Are you sure you want to delete the task?"),
               );
               if (re != true) return;
               await task.delete();

@@ -202,7 +202,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                       );
                       toast(
                         context: context,
-                        message: 'Profile Updated Successfully'.t,
+                        message: Text('Profile Updated Successfully'.t),
                       );
                     },
                     child: Text('Update'.t),

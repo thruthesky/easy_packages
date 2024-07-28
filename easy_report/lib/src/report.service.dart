@@ -29,7 +29,8 @@ class ReportService {
     if (snapshot.docs.isNotEmpty) {
       if (context.mounted) {
         toast(
-            context: context, message: 'You have already reported this user'.t);
+            context: context,
+            message: Text('You have already reported this user'.t));
       }
       return;
     }
@@ -57,7 +58,8 @@ class ReportService {
     });
 
     if (context.mounted) {
-      toast(context: context, message: 'You have reported this user now'.t);
+      toast(
+          context: context, message: Text('You have reported this user now'.t));
     }
   }
 

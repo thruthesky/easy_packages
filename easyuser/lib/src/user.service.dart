@@ -266,8 +266,8 @@ class UserService {
       /// Ask if the login-user want to un-block the user.
       final re = await confirm(
         context: context,
-        title: 'un-block confirm title'.t,
-        message: 'un-block confirm message'.t,
+        title: Text('un-block confirm title'.t),
+        message: Text('un-block confirm message'.t),
       );
       if (re != true) return false;
 
@@ -275,16 +275,17 @@ class UserService {
         otherUid: FieldValue.delete(),
       });
       if (context.mounted) {
-        toast(context: context, message: 'user is un-blocked'.t);
+        toast(context: context, message: Text('user is un-blocked'.t));
       }
       return;
     }
 
     final re = await confirm(
-      context: context,
-      title: 'block confirm title'.t,
-      message: 'block confirm message'.t,
-    );
+        context: context,
+        title: Text('block confirm title'.t),
+        message: Text(
+          'block confirm message'.t,
+        ));
     if (re != true) return false;
 
     await blockDoc.set(
@@ -297,7 +298,7 @@ class UserService {
     );
 
     if (context.mounted) {
-      toast(context: context, message: 'user is blocked'.t);
+      toast(context: context, message: Text('user is blocked'.t));
     }
   }
 }

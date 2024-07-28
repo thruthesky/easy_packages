@@ -151,8 +151,9 @@ class _PostDetailState extends State<PostDetail> {
                 } else if (value == 'delete') {
                   final re = await confirm(
                     context: context,
-                    title: 'Delete'.t,
-                    message: 'Are you sure you wanted to delete this post?'.t,
+                    title: Text('Delete'.t),
+                    message:
+                        Text('Are you sure you wanted to delete this post?'.t),
                   );
                   if (re == false) return;
                   await post.delete();

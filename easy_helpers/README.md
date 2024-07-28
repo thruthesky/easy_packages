@@ -398,8 +398,8 @@ Provides functions to display alert dialogs.
 ```dart
 alert(
     context,
-    title: 'Alert',
-    content: 'This is an alert dialog',
+    title: Text('Alert'),
+    content: Text('This is an alert dialog'),
     onOkPressed: () {
         print('OK pressed');
     },
@@ -501,8 +501,8 @@ Provides functions to display toast messages.
 final re = await my?.block(chat.room.otherUserUid!);
 toast(
   context: context,
-  title: re == true ? 'Blocked' : 'Unblocked',
-  message: re == true ? 'You have blocked this user' : 'You have unblocked this user',
+  title: Text(re == true ? 'Blocked' : 'Unblocked'),
+  message: Text(re == true ? 'You have blocked this user' : 'You have unblocked this user'),
 );
 ```
 
