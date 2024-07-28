@@ -7,6 +7,7 @@ import 'package:example/screens/forum/forum.screen.dart';
 import 'package:example/screens/menu/menu.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int userCount = 0;
   @override
   void initState() {
     super.initState();
@@ -160,51 +162,101 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             //
-
             SizedBox(
               height: 180,
-              child: UserListView(
-                itemBuilder: (user, p1) => Row(
-                  children: [
-                    UserAvatar(
-                      user: user,
-                    ),
-                    TextButton(
-                      onPressed: () => ChatService.instance.showChatRoomScreen(
-                        context,
-                        user: user,
-                        // room: room,
+              child: FirestoreListView(
+                query: UserService.instance.col
+                    .orderBy('createdAt', descending: true),
+                itemBuilder: (context, doc) {
+                  final user = User.fromSnapshot(doc);
+                  user.listCount ??= userCount++;
+                  return Row(
+                    children: [
+                      UserAvatar(user: user),
+                      Text('c: ${user.listCount}'),
+                      TextButton(
+                        onPressed: () =>
+                            ChatService.instance.showChatRoomScreen(
+                          context,
+                          user: user,
+                          // room: room,
+                        ),
+                        child: const Text('Chat'),
                       ),
-                      child: const Text('Chat'),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        await i.block(context: context, otherUid: user.uid);
-                      },
-                      child: UserBlocked(
-                        otherUid: user.uid,
-                        builder: (b) => Text(b ? 'Un-block' : 'Block'),
-                      ),
-                    ),
-                    TextButton(
+                      TextButton(
                         onPressed: () async {
-                          await ReportService.instance.report(
-                            context: context,
-                            otherUid: user.uid,
-                            documentReference: user.ref,
-                          );
+                          await i.block(context: context, otherUid: user.uid);
                         },
-                        child: const Text('Report')),
-                    TextButton(
-                        onPressed: () => i.showPublicProfileScreen(
-                              context,
-                              user: user,
-                            ),
-                        child: const Text('Public Profile')),
-                  ],
-                ),
+                        child: UserBlocked(
+                          otherUid: user.uid,
+                          builder: (b) => Text(b ? 'Un-block' : 'Block'),
+                        ),
+                      ),
+                      TextButton(
+                          onPressed: () async {
+                            await ReportService.instance.report(
+                              context: context,
+                              otherUid: user.uid,
+                              documentReference: user.ref,
+                            );
+                          },
+                          child: const Text('Report')),
+                      TextButton(
+                          onPressed: () => i.showPublicProfileScreen(
+                                context,
+                                user: user,
+                              ),
+                          child: const Text('Public Profile')),
+                    ],
+                  );
+                },
               ),
             ),
+
+            // SizedBox(
+            //   height: 180,
+            //   child: UserListView(
+            //     itemBuilder: (user, p1) => Row(
+            //       children: [
+            //         UserAvatar(
+            //           user: user,
+            //         ),
+            //         TextButton(
+            //           onPressed: () => ChatService.instance.showChatRoomScreen(
+            //             context,
+            //             user: user,
+            //             // room: room,
+            //           ),
+            //           child: const Text('Chat'),
+            //         ),
+            //         TextButton(
+            //           onPressed: () async {
+            //             await i.block(context: context, otherUid: user.uid);
+            //           },
+            //           child: UserBlocked(
+            //             otherUid: user.uid,
+            //             builder: (b) => Text(b ? 'Un-block' : 'Block'),
+            //           ),
+            //         ),
+            //         TextButton(
+            //             onPressed: () async {
+            //               await ReportService.instance.report(
+            //                 context: context,
+            //                 otherUid: user.uid,
+            //                 documentReference: user.ref,
+            //               );
+            //             },
+            //             child: const Text('Report')),
+            //         TextButton(
+            //             onPressed: () => i.showPublicProfileScreen(
+            //                   context,
+            //                   user: user,
+            //                 ),
+            //             child: const Text('Public Profile')),
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -52,6 +52,8 @@ class User {
   /// [ref] is an alias of [doc].
   DocumentReference get ref => doc;
 
+  /// This is used by the app only. This is not saved in the database.
+  int? listCount;
   User({
     required this.uid,
     this.admin = false,
