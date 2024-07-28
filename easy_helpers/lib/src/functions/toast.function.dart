@@ -13,8 +13,8 @@ import 'package:easy_locale/easy_locale.dart';
 /// ```
 ScaffoldFeatureController toast({
   required BuildContext context,
-  String? title,
-  required String message,
+  Widget? title,
+  required Widget message,
   Icon? icon,
   Duration duration = const Duration(seconds: 8),
   Function(Function)? onTap,
@@ -60,14 +60,8 @@ ScaffoldFeatureController toast({
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (title != null)
-                        Text(
-                          title,
-                          style: TextStyle(
-                              color: foregroundColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      Text(message, style: TextStyle(color: foregroundColor)),
+                      if (title != null) title,
+                      message,
                     ],
                   ),
                 ),
@@ -96,8 +90,8 @@ ScaffoldFeatureController toast({
 
 ScaffoldFeatureController errorToast({
   required BuildContext context,
-  String? title,
-  required String message,
+  Widget? title,
+  required Widget message,
   Icon? icon,
   Duration duration = const Duration(seconds: 8),
   Function(Function)? onTap,

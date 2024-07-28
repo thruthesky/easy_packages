@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 /// Return true if the user taps on the 'Yes' button.
 Future<bool?> confirm({
   required BuildContext context,
-  required String title,
-  required String message,
+  required Widget title,
+  Widget? subtitle,
+  required Widget message,
 }) {
   return
       //  HouseService.instance.confirmDialog
@@ -17,20 +18,52 @@ Future<bool?> confirm({
       showDialog<bool?>(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('no'.t),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('yes'.t),
-          ),
-        ],
+      return ConfirmDialog(
+        title: title,
+        subtitle: subtitle,
+        message: message,
       );
     },
   );
+}
+
+class ConfirmDialog extends StatelessWidget {
+  const ConfirmDialog({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.message,
+  });
+
+  final Widget title;
+  final Widget? subtitle;
+  final Widget message;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: title,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (subtitle != null) ...[
+            subtitle!,
+            const SizedBox(height: 24),
+          ],
+          message,
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text('no'.t),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: Text('yes'.t),
+        ),
+      ],
+    );
+  }
 }

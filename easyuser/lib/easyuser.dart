@@ -1,3 +1,4 @@
+export './src/screens/block_list.screen.dart';
 export './src/screens/user.profile_update.screen.dart';
 export './src/screens/user.public_profile.screen.dart';
 

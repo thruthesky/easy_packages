@@ -410,15 +410,31 @@ alert(
 
 Provides functions to display confirmation dialogs.
 
-#### Example:
+ Example:
 ```dart
 final re = await confirm(
   context: context,
-  title: 'Delete'.t,
-  message: 'Are you sure you wanted to delete this post?'.t,
+  title: Text('Delete'.t),
+  message: Text('Are you sure you wanted to delete this post?'.t),
 );
 if (re == false) return;
 ```
+
+You can optionally give a subtitle widget. It's a widget, not a text string.
+
+Example:
+```dart
+confirm(
+  context: context,
+  title: Text('title'),
+  subtitle: const CircleAvatar(
+    child: Text('yo'),
+  ),
+  message: Text('message'),
+);
+```
+
+
 
 ## Error
 

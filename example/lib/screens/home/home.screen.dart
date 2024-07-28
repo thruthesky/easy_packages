@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -146,6 +147,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                   child: const Text('Easy Comment Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final re = await confirm(
+                      context: context,
+                      title: const Text('title'),
+                      subtitle: const CircleAvatar(
+                        child: Text('yo'),
+                      ),
+                      message: const Text('message'),
+                    );
+                    print('re; $re');
+                  },
+                  child: const Text(
+                    'Confirm dialog',
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {},

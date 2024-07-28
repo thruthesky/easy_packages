@@ -21,24 +21,27 @@ zoneErrorHandler(e, stackTrace) {
     } else if (e.code == 'email-already-in-use') {
       message = '메일 주소 또는 비밀번호를 잘못 입력하였습니다.';
     }
-    toast(context: globalContext, message: '로그인 에러 :  $message');
+    toast(context: globalContext, message: Text('로그인 에러 :  $message'));
   } else if (e is FirebaseException) {
     log("FirebaseException :  ${e.code}, ${e.message}");
     if (e.plugin == 'firebase_storage') {
       if (e.code == 'unknown') {
         error(
             context: globalContext,
-            message: '파일 업로드 에러 :  ${e.message}\n\nStorage 서비스를 확인해주세요.');
+            message: Text('파일 업로드 에러 :  ${e.message}\n\nStorage 서비스를 확인해주세요.'));
       } else {
-        error(context: globalContext, message: e.toString());
+        error(context: globalContext, message: Text(e.toString()));
       }
     } else {
-      error(context: globalContext, message: e.toString());
+      error(context: globalContext, message: Text(e.toString()));
     }
   } else if (e is PlatformException) {
     log("PlatformException: (${e.code}) - ${e.message}");
 
-    error(context: globalContext, title: e.code, message: e.message ?? '');
+    error(
+        context: globalContext,
+        title: Text(e.code),
+        message: Text(e.message ?? ''));
   } else {
     log("Unknown Error :  $e");
     if (e.toString().contains('/')) {
@@ -48,9 +51,9 @@ zoneErrorHandler(e, stackTrace) {
       if (parts.length > 1) {
         message = parts.sublist(1).join(' ');
       }
-      error(context: globalContext, title: title, message: message);
+      error(context: globalContext, title: Text(title), message: Text(message));
     } else {
-      error(context: globalContext, message: e.toString());
+      error(context: globalContext, message: Text(e.toString()));
     }
   }
   debugPrintStack(stackTrace: stackTrace);
