@@ -1,5 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_report/easy_report.dart';
+import 'package:easy_task/easy_task.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/forum/comment.test.screen.dart';
@@ -178,7 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 ElevatedButton(
-                    onPressed: () {}, child: const Text('Task Crate')),
+                    onPressed: () =>
+                        TaskService.instance.showTaskCreateScreen(context),
+                    child: const Text('Task Crate')),
               ],
             ),
             //
