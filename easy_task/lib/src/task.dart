@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 /// Task service
@@ -16,10 +17,38 @@ class TaskService {
 
   showTaskCreateScreen(BuildContext context) {
     showGeneralDialog(
-        context: context,
-        pageBuilder: (context, _, __) {
-          return const TaskCreateScreen();
-        });
+      context: context,
+      pageBuilder: (context, _, __) {
+        return const TaskCreateScreen();
+      },
+    );
+  }
+
+  showTaskUpdateScreen(BuildContext context, Task task) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return TaskUpdateScreen(task: task);
+      },
+    );
+  }
+
+  showTaskDetailScreen(BuildContext context, Task task) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return TaskDetailsScreen(task: task);
+      },
+    );
+  }
+
+  showTaskListScreen(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return const TaskListScreen();
+      },
+    );
   }
 }
 
@@ -81,6 +110,15 @@ class Task {
     };
   }
 
+  /// Get the task with the given [id].
+  static Future<Task?> get(String id) async {
+    final snapshot = await col.doc(id).get();
+    if (!snapshot.exists) {
+      return null;
+    }
+    return Task.fromSnapshot(snapshot);
+  }
+
   static Future<DocumentReference> create({
     required String title,
     required String description,
@@ -123,11 +161,12 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
   Future<void> _createTask() async {
     if (_formKey.currentState!.validate()) {
-      await Task.create(
+      final ref = await Task.create(
         title: _titleController.text,
         description: _descriptionController.text,
       );
-      Navigator.of(context).pop();
+      final task = await Task.get(ref.id);
+      TaskService.instance.showTaskDetailScreen(context, task!);
     }
   }
 
@@ -178,7 +217,9 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
 class TaskDetailsScreen extends StatefulWidget {
   static const String routeName = '/TaskDetails';
-  const TaskDetailsScreen({super.key});
+  final Task task;
+
+  const TaskDetailsScreen({super.key, required this.task});
 
   @override
   State<TaskDetailsScreen> createState() => _TaskDetailsScreenState();
@@ -189,12 +230,92 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TaskDetails'),
+        title: const Text('Task Details'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('User ID: ${widget.task.creator}',
+                style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Text('Title: ${widget.task.title}',
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('Description: ${widget.task.description}',
+                style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Text('Created At: ${widget.task.createdAt}',
+                style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Text('Updated At: ${widget.task.updatedAt}',
+                style: const TextStyle(fontSize: 16)),
+            ElevatedButton(
+                onPressed: () => TaskService.instance
+                    .showTaskUpdateScreen(context, widget.task),
+                child: const Text('Update Task')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TaskUpdateScreen extends StatefulWidget {
+  static const String routeName = '/TaskUpdate';
+  const TaskUpdateScreen({super.key, required this.task});
+
+  final Task task;
+
+  @override
+  State<TaskUpdateScreen> createState() => _TaskUpdateScreenState();
+}
+
+class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('TaskUpdate'),
       ),
       body: const Column(
         children: [
-          Text("TaskDetails"),
+          Text("TaskUpdate"),
         ],
+      ),
+    );
+  }
+}
+
+class TaskListScreen extends StatefulWidget {
+  static const String routeName = '/TaskList';
+  const TaskListScreen({super.key});
+
+  @override
+  State<TaskListScreen> createState() => _TaskListScreenState();
+}
+
+class _TaskListScreenState extends State<TaskListScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('TaskList'),
+      ),
+      body: FirestoreListView(
+        query: Task.col
+            .where('creator', isEqualTo: TaskService.instance.currentUser!.uid),
+        itemBuilder: (context, snapshot) {
+          final task = Task.fromSnapshot(snapshot);
+          return ListTile(
+            title: Text(task.title),
+            subtitle: Text(task.description),
+            onTap: () =>
+                TaskService.instance.showTaskDetailScreen(context, task),
+          );
+        },
       ),
     );
   }

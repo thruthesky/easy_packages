@@ -15,9 +15,12 @@ This package is a todo like task manage system which allows a user to create gro
 
 사용자 로그인은 FirebaseAuth 를 통해서 관리하며, TaskService.instance.currentUser 가 로그인을 한 사용자의 FirebaseAuth User 값을 가지고 있습니다. 앱에서 사용자는 로그인을 이미 한 것으로 가정하고 개발을 합니다.
 
-아래에서 TaskCreateScreen 위젯은 task 를 생성하는 스크린입니다.
+아래의 소스 코드에서 TaskCreateScreen 위젯은 task 를 생성하는 스크린입니다.
 
-TaskDetailScreen 에서 생성된 task 의 정보를 보여주고 싶습니다. 사용자의 이름에는 uid 를 적어주시고, 제목, 내용, 생성된 날짜, 수정된 날짜 를 보여주는 코드를 완성해주세요.
+아래의 소스 코드에서 TaskDetailScreen 에서 생성된 task 의 정보를 보여줍니다. TaskDetailScreen 에서는 task 를 생성한 사용자 ID 와  제목, 내용, 생성된 날짜, 수정된 날짜 등을 보여주고 있습니다.
+
+TaskUpdateScreen 에 task 를 수정하는 코드를 만들고 싶습니다. 코드를 완선해 주세요.
+
 
 
 
