@@ -5,6 +5,10 @@
 
 It also provides a way of listing and blocking users.
 
+## TODO
+
+- Let admin list the reported users and their contents. And decide to block(disbable) their account. So that they cannot use the app.
+
 
 
 ## Concept

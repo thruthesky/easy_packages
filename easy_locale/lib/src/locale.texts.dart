@@ -25,6 +25,11 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Close',
     'ko': '닫기',
   },
+
+  'User not found': {
+    'en': 'User not found',
+    'ko': '사용자를 찾을 수 없습니다',
+  },
   'dismiss': {
     'en': 'Dismiss',
     'ko': '닫기',
@@ -76,10 +81,6 @@ final Map<String, dynamic> localeTexts = {
   'user is un-blocked': {
     'en': 'User is un-blocked',
     'ko': '사용자의 차단이 해제되었습니다',
-  },
-  'report': {
-    'en': 'Report',
-    'ko': '신고',
   },
   'like': {
     'en': {
@@ -272,5 +273,41 @@ final Map<String, dynamic> localeTexts = {
   'Upload from': {
     'en': 'Upload from',
     'ko': '업로드 방법 선택',
+  },
+
+  /// ----------------------- Report -----------------------
+  ///
+
+  'report': {
+    'en': 'Report',
+    'ko': '신고',
+  },
+  'You have already reported this user': {
+    'en': 'You have already reported this user',
+    'ko': '이 사용자를 이미 신고했습니다',
+  },
+  'Why are you reporting this user?': {
+    'en': 'Are you reporting this user?',
+    'ko': '이 사용자를 신고하시겠습니까?',
+  },
+  'Select a reason for reporting': {
+    'en': 'Select a reason for reporting',
+    'ko': '신고 사유를 선택하세요',
+  },
+  'Spam': {
+    'en': 'Spam',
+    'ko': '스팸',
+  },
+  'Abusive': {
+    'en': 'Abusive',
+    'ko': '욕설',
+  },
+  'Other': {
+    'en': 'Other',
+    'ko': '기타',
+  },
+  'You have reported this user now': {
+    'en': 'You have reported this user now',
+    'ko': '이 사용자를 신고했습니다',
   },
 };

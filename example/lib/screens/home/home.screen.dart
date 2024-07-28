@@ -51,37 +51,32 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Column(
+            AuthStateChanges(
+              builder: (user) => user == null
+                  ? const Text('Sign-in first')
+                  : Column(
+                      children: [
+                        UserAvatar.fromUid(uid: user.uid),
+                        Text('User UID: ${user.uid}'),
+                      ],
+                    ),
+            ),
+            Wrap(
               children: [
-                AuthStateChanges(
-                  builder: (user) => user == null
-                      ? const Text('Sign-in first')
-                      : Column(
-                          children: [
-                            UserAvatar.fromUid(uid: user.uid),
-                            Text('User UID: ${user.uid}'),
-                          ],
-                        ),
+                ElevatedButton(
+                  onPressed: () {
+                    ChatService.instance.showChatRoomListScreen(context);
+                  },
+                  child: const Text("Chat Room List"),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        ChatService.instance.showChatRoomListScreen(context);
-                      },
-                      child: const Text("Chat Room List"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // ChatService.instance
-                        //     .showChatRoomListScreen(context);
+                ElevatedButton(
+                  onPressed: () {
+                    // ChatService.instance
+                    //     .showChatRoomListScreen(context);
 
-                        ChatService.instance.showInviteListScreen(context);
-                      },
-                      child: const Text("Chat Invite List"),
-                    ),
-                  ],
+                    ChatService.instance.showInviteListScreen(context);
+                  },
+                  child: const Text("Chat Invite List"),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -89,68 +84,83 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: const Text("Open Room List"),
                 ),
+                ElevatedButton(
+                  onPressed: () {
+                    UserService.instance.showUserSearchDialog(
+                      context,
+                      exactSearch: true,
+                    );
+                  },
+                  child: const Text('User Search Dialog: exact search'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final user =
+                        await UserService.instance.showUserSearchDialog(
+                      context,
+                      exactSearch: false,
+                      itemBuilder: (user, index) => ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(user),
+                        child: Text(user.displayName),
+                      ),
+                    );
+                    print('user; $user');
+                  },
+                  child:
+                      const Text('User Search Dialog: partial search search'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    ChatService.instance.showChatRoomListScreen(context);
+                  },
+                  child: const Text('Chat Room List Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) => const UploadImageScreen(),
+                  ),
+                  child: const Text('Upload Image'),
+                ),
+                ElevatedButton(
+                  onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) => const LocaleScreen(),
+                  ),
+                  child: const Text('Easy Locale Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) => const ForumScreen(),
+                  ),
+                  child: const Text('Easy Forum Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (_, __, ___) => const CommentTestScreen(),
+                    );
+                  },
+                  child: const Text('Easy Comment Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Block list',
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Report list',
+                  ),
+                ),
               ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                UserService.instance.showUserSearchDialog(
-                  context,
-                  exactSearch: true,
-                );
-              },
-              child: const Text('User Search Dialog: exact search'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final user = await UserService.instance.showUserSearchDialog(
-                  context,
-                  exactSearch: false,
-                  itemBuilder: (user, index) => ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(user),
-                    child: Text(user.displayName),
-                  ),
-                );
-                print('user; $user');
-              },
-              child: const Text('User Search Dialog: partial search search'),
-            ),
             //
-            ElevatedButton(
-              onPressed: () {
-                ChatService.instance.showChatRoomListScreen(context);
-              },
-              child: const Text('Chat Room List Screen'),
-            ),
-            ElevatedButton(
-              onPressed: () => showGeneralDialog(
-                context: context,
-                pageBuilder: (_, __, ___) => const UploadImageScreen(),
-              ),
-              child: const Text('Upload Image'),
-            ),
-            ElevatedButton(
-              onPressed: () => showGeneralDialog(
-                context: context,
-                pageBuilder: (_, __, ___) => const LocaleScreen(),
-              ),
-              child: const Text('Easy Locale Screen'),
-            ),
-            ElevatedButton(
-              onPressed: () => showGeneralDialog(
-                context: context,
-                pageBuilder: (_, __, ___) => const ForumScreen(),
-              ),
-              child: const Text('Easy Forum Screen'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                showGeneralDialog(
-                  context: context,
-                  pageBuilder: (_, __, ___) => const CommentTestScreen(),
-                );
-              },
-              child: const Text('Easy Comment Screen'),
-            ),
+
             SizedBox(
               height: 180,
               child: UserListView(

@@ -24,13 +24,14 @@ It does not support `dislike` since most of the community don't provide `dislike
 
 - `vote` is the action of voting(doing) like or unlike.
 - `like document` is the document under `/likes` collection.
+- `target document` is the original document that hte like is refering. It can be a user document, post document, commnet document, chat room document, or what ever.
 
 ## Database structure for Like and Dislike
 
-- `/likes/{documentId}`: is the like document for holding like information.
-    - The fields are
-      - `documentReference`: to access the document that this like belong to.
-      - `likedBy`: is the list of user uid who did like. If the user unlikes, then the uid will be removed.
+- `/likes/{documentId}`: This is where like information saved. And the id of the document is the target document.
+- `documentReference`: This is the reference of the target document. It's a reference. So it can access the target document regardless of any collection.
+- `likedBy`: is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
+
 
 ## Logic
 

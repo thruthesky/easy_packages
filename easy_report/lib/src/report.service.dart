@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+/// Report service
 class ReportService {
   static ReportService? _instance;
   static ReportService get instance => _instance ??= ReportService._();
@@ -12,21 +15,38 @@ class ReportService {
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
+  // report
   Future<void> report({
     required BuildContext context,
     required DocumentReference documentReference,
-    String? otherUid,
-    String? reason,
+    required String otherUid,
   }) async {
-    final reason = await showDialog<String>(
-      context: context,
-      builder: (context) => ReportDialog(documentReference: documentReference),
-    );
-    if (reason == null) return;
+    // Check if the user has already reported by you.
+    final snapshot = await col
+        .where('reporter', isEqualTo: currentUser!.uid)
+        .where('reportee', isEqualTo: otherUid)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      if (context.mounted) {
+        toast(
+            context: context, message: 'You have already reported this user'.t);
+      }
+      return;
+    }
 
-    /// TODO 여기서 부터, Firestore 의 /reports 에 권한을 주고,
-    /// TODO 신고를 했는지 확인해서, 신고를 했으면, 이미 신고했다고 알려준다.
-    /// TODO 신고 대상사의 이름과 사진을 보여준다.
+    String? reason;
+
+    if (context.mounted) {
+      reason = await showDialog<String>(
+        context: context,
+        builder: (context) => ReportDialog(
+          reportee: otherUid,
+          documentReference: documentReference,
+        ),
+      );
+
+      if (reason == null) return;
+    }
 
     await col.add({
       'reporter': currentUser!.uid,
@@ -34,5 +54,9 @@ class ReportService {
       'reason': reason,
       'createdAt': FieldValue.serverTimestamp(),
     });
+
+    if (context.mounted) {
+      toast(context: context, message: 'You have reported this user now'.t);
+    }
   }
 }
