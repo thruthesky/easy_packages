@@ -165,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => i.showBlockListScreen(context),
                   child: const Text(
                     'Block list',
                   ),

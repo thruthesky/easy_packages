@@ -26,6 +26,9 @@ class UserService {
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
 
+  /// List of blocked users by the login user.
+  ///
+  ///
   /// The document of `users/user-meta/block` that holds the block information
   /// of other users.
   /// This data is updated in real-time.
@@ -261,12 +264,28 @@ class UserService {
     required BuildContext context,
     required String otherUid,
   }) async {
+    /// Display user info as subtitle in the confirmation dialog.
+    Widget userInfoSubtitle = UserDoc(
+      uid: otherUid,
+      builder: (user) => user == null
+          ? const SizedBox.shrink()
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                UserAvatar(user: user),
+                DisplayName(user: user),
+              ],
+            ),
+    );
+
     /// The user is alredy blocked?
     if (blocks.containsKey(otherUid)) {
       /// Ask if the login-user want to un-block the user.
       final re = await confirm(
         context: context,
         title: Text('un-block confirm title'.t),
+        subtitle: userInfoSubtitle,
         message: Text('un-block confirm message'.t),
       );
       if (re != true) return false;
@@ -283,6 +302,7 @@ class UserService {
     final re = await confirm(
         context: context,
         title: Text('block confirm title'.t),
+        subtitle: userInfoSubtitle,
         message: Text(
           'block confirm message'.t,
         ));
@@ -300,5 +320,12 @@ class UserService {
     if (context.mounted) {
       toast(context: context, message: Text('user is blocked'.t));
     }
+  }
+
+  showBlockListScreen(BuildContext context) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) => const UserBlockListScreen(),
+    );
   }
 }

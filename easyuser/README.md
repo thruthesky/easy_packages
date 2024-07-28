@@ -131,8 +131,17 @@ ElevatedButton(
 ),
 ```
 
-- Use the code below to display the list of users who are blocked by the login user
+- Use the code below to display the list of users who are blocked by the login user.
+  - This screen also shows unblock button.
 
+```dart
+ElevatedButton(
+  onPressed: () => i.showBlockListScreen(context),
+  child: const Text(
+    'Block list',
+  ),
+),
+```
 
 
 
