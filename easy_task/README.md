@@ -2,10 +2,6 @@
 
 This package is a todo like task manage system which allows a user to create groups, user lists, tasks and assign the task to the users of the group, and moderating the workflow.
 
-## Logic
-
-- `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
-  - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
 
 # ai
 
@@ -19,7 +15,13 @@ This package is a todo like task manage system which allows a user to create gro
 
 아래의 소스 코드에서 TaskDetailScreen 에서 생성된 task 의 정보를 보여줍니다. TaskDetailScreen 에서는 task 를 생성한 사용자 ID 와  제목, 내용, 생성된 날짜, 수정된 날짜 등을 보여주고 있습니다.
 
-TaskUpdateScreen 에 task 를 수정하는 코드를 만들고 싶습니다. 코드를 완선해 주세요.
+TaskUpdateScreen 에서는 task 를 수정하는 제목, 내용 입력 박스를 보여주고, 업데이트 버튼을 통해서 task 업데이트를 합니다.
+
+
+TaskListScreen 에 FirestoreListView 를 통해서 로그인한 사용자가 작성한 task 목록을 보여주고 있습니다. 각 task 목록의 왼쪽에 체크 박스를 보여주고, 사용자가 체크 박스를 선택하면, Firestore 의 task 문서의 complete 필드에 true 값을 저장하고 싶습니다. 코드를 완성해 주세요.
+
+
+
 
 
 
@@ -94,51 +96,11 @@ Do the widget test as Flutter does.
 
 
 
-## Task Group Structure
+# Logic
+
+- `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
+  - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
 
 
-- `task-group` is the group of tasks. It has
-
-
-- `creator`
-- `moderatorUsers`
-- `users` - This is a list of uid of the users who accepted the invitation.
-- `userGroups` - This is the group list of user groups. (NOTE, NOT SUPPORTED THIS TIME). A task group can have multiple user gropus. And the user groups are added, the users no need to accept the invitation.
-- `invitedUsers` -
-- `rejectedUsers`
-- `name`
-- `title`
-- `createdAt`
-- `updatedAt`
-
-
-## Task Assign Database Structure
-
-It is not ideal to put the assigned user list in the task document for indexing and filtering. So, it uses a separate collection to maintain relation between task and its assigned users.
-
-- `task-assign/{assignId}` is the collection name.
-
-- `assignedTo`
-- `assignedBy`
-- `createdAt`
-- `taskId`
-- `status`
-
-
-
-
-
-
-
-## Task User Group Database Structure
-
-NOTE, THIS IS NOT SUPPPORTED AT THIS TIME!
-
-Any one can create user groups. The user must accept invitation to become a member of the user group. And the the user gruop is assigned to the `task-group`, invitation is no longer required fore the members of the group since they initially accepted the invition to be that user group.
-
-- `task-user-group` - is the collection name.
-
-
-
-
-
+- By default, it works for login user only.
+  - And the user can extends the task for group of users for multi work.
