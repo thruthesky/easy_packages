@@ -102,5 +102,49 @@ Do the widget test as Flutter does.
   - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
 
 
-- By default, it works for login user only.
-  - And the user can extends the task for group of users for multi work.
+- `Task` is a work.
+
+- Each task has fields like below;
+  - `project: bool` to know if it's a project or a task.
+  - `child: bool` to know if it has a parent or not. If it's true, it belong to a project.
+
+- `Project` is a task with a special purpose. It has `project: true`, while task has `project: false`. Think about it as a comment thread, `A task can have children tasks`. And the task that has children is called `Project`.
+  - The `Project` information is saved as a task document, for the management purpose. So, in the list view, it will be listed together with otehr tasks.
+  - Project can have many child tasks. Remember, Projects and tasks are saved in same `tasks` collection.
+
+- A task can be assigned to other user (NOT supported, yet)
+
+- A task can be moved to a project, and vice versa.
+
+- In the list view, children tasks with `child: true` are not dispolayed.
+
+- `Group task` is displayed together with other tasks in the same task list view.
+  - Group task has no check box.
+  - When the gropu task is clicked, it will display the details of it.
+
+
+```mermaid
+flowchart TD
+Task_List-->Task_Create-->Task_Detail-->Task_Update-->Task_List
+Task_List-->Task_Detail
+Task_List-->Project_Detail
+Task_Detail-->Task_List
+Task_List-->Menu-->User_Group_List
+User_Group_List-->Create_User_Group
+User_Group_List-->View_User_Group-->Invite_Users_1
+Project_Detail-->Project_Detail_Menu-->Invite_User_2
+Project_Detail_Menu-->Invite_User_Group
+```
+
+
+
+
+
+
+
+
+
+
+
+# Known Issues
+
