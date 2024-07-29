@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,23 @@ class _TaskListScreenState extends State<TaskListScreen> {
             subtitle: Text(task.description),
             onTap: () =>
                 TaskService.instance.showTaskDetailScreen(context, task),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          dog('error: $error');
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('An error occurred'),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
           );
         },
       ),
