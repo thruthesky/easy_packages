@@ -2,26 +2,17 @@
 
 This package is a todo like task manage system which allows a user to create groups, user lists, tasks and assign the task to the users of the group, and moderating the workflow.
 
-## Logic
-
-- `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
-  - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
-
-# ai
-
-저는 해야 할 일을 관리하는 앱을 만들고 싶습니다. 플러터와 파이어베이스의 파이어스토어 데이터베이스로 만들려고 합니다.
-해야 할 일은 task 라고 부르며, task 의 데이터 모델 이름은 Task 클래스입니다. 이 Task 클래스는 파이어스토어 문서의 task 필드 정보를 가지고 있으며, 기본적인 task 생성, 수정, 삭제 등을 담당합니다.
-아래에서 TaskService 클래스는 해야 할 일 시스템을 전반적으로 관리하고 도와주는 역할을 합니다.
-
-사용자 로그인은 FirebaseAuth 를 통해서 관리하며, TaskService.instance.currentUser 가 로그인을 한 사용자의 FirebaseAuth User 값을 가지고 있습니다. 앱에서 사용자는 로그인을 이미 한 것으로 가정하고 개발을 합니다.
-
-아래의 소스 코드에서 TaskCreateScreen 위젯은 task 를 생성하는 스크린입니다.
-
-아래의 소스 코드에서 TaskDetailScreen 에서 생성된 task 의 정보를 보여줍니다. TaskDetailScreen 에서는 task 를 생성한 사용자 ID 와  제목, 내용, 생성된 날짜, 수정된 날짜 등을 보여주고 있습니다.
-
-TaskUpdateScreen 에 task 를 수정하는 코드를 만들고 싶습니다. 코드를 완선해 주세요.
 
 
+
+# Installation
+
+
+## Firestore Indexes
+
+
+- `tasks` collection composit indexes
+  - `creator: asc` and `createdAt: desc` is required.
 
 
 
@@ -94,51 +85,55 @@ Do the widget test as Flutter does.
 
 
 
-## Task Group Structure
+# Logic
+
+- `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
+  - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
 
 
-- `task-group` is the group of tasks. It has
+- `Task` is a work.
+
+- Each task has fields like below;
+  - `project: bool` to know if it's a project or a task.
+  - `child: bool` to know if it has a parent or not. If it's true, it belong to a project.
+
+- `Project` is a task with a special purpose. It has `project: true`, while task has `project: false`. Think about it as a comment thread, `A task can have children tasks`. And the task that has children is called `Project`.
+  - The `Project` information is saved as a task document, for the management purpose. So, in the list view, it will be listed together with otehr tasks.
+  - Project can have many child tasks. Remember, Projects and tasks are saved in same `tasks` collection.
+
+- A task can be assigned to other user (NOT supported, yet)
+
+- A task can be moved to a project, and vice versa.
+
+- In the list view, children tasks with `child: true` are not dispolayed.
+
+- `Group task` is displayed together with other tasks in the same task list view.
+  - Group task has no check box.
+  - When the gropu task is clicked, it will display the details of it.
 
 
-- `creator`
-- `moderatorUsers`
-- `users` - This is a list of uid of the users who accepted the invitation.
-- `userGroups` - This is the group list of user groups. (NOTE, NOT SUPPORTED THIS TIME). A task group can have multiple user gropus. And the user groups are added, the users no need to accept the invitation.
-- `invitedUsers` -
-- `rejectedUsers`
-- `name`
-- `title`
-- `createdAt`
-- `updatedAt`
-
-
-## Task Assign Database Structure
-
-It is not ideal to put the assigned user list in the task document for indexing and filtering. So, it uses a separate collection to maintain relation between task and its assigned users.
-
-- `task-assign/{assignId}` is the collection name.
-
-- `assignedTo`
-- `assignedBy`
-- `createdAt`
-- `taskId`
-- `status`
-
-
-
-
-
-
-
-## Task User Group Database Structure
-
-NOTE, THIS IS NOT SUPPPORTED AT THIS TIME!
-
-Any one can create user groups. The user must accept invitation to become a member of the user group. And the the user gruop is assigned to the `task-group`, invitation is no longer required fore the members of the group since they initially accepted the invition to be that user group.
-
-- `task-user-group` - is the collection name.
+```mermaid
+flowchart TD
+Task_List-->Task_Create-->Task_Detail-->Task_Update-->Task_List
+Task_List-->Task_Detail
+Task_List-->Project_Detail
+Task_Detail-->Task_List
+Task_List-->Menu-->User_Group_List
+User_Group_List-->Create_User_Group
+User_Group_List-->View_User_Group-->Invite_Users_1
+Project_Detail-->Project_Detail_Menu-->Invite_User_2
+Project_Detail_Menu-->Invite_User_Group
+```
 
 
 
 
+
+
+
+
+
+
+
+# Known Issues
 
