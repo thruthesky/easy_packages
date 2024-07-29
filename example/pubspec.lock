@@ -213,7 +213,14 @@ packages:
       path: "../easy_helpers"
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.9"
+  easy_like:
+    dependency: "direct main"
+    description:
+      path: "../easy_like"
+      relative: true
+    source: path
+    version: "0.0.5"
   easy_locale:
     dependency: "direct main"
     description:
@@ -228,6 +235,13 @@ packages:
       relative: true
     source: path
     version: "0.0.3"
+  easy_report:
+    dependency: "direct main"
+    description:
+      path: "../easy_report"
+      relative: true
+    source: path
+    version: "0.0.2"
   easy_storage:
     dependency: "direct main"
     description:
@@ -235,6 +249,13 @@ packages:
       relative: true
     source: path
     version: "0.0.8"
+  easy_task:
+    dependency: "direct main"
+    description:
+      path: "../easy_task"
+      relative: true
+    source: path
+    version: "0.0.2"
   easychat:
     dependency: "direct main"
     description:
@@ -248,7 +269,7 @@ packages:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.13"
+    version: "0.0.15"
   fake_async:
     dependency: transitive
     description:

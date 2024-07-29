@@ -6,6 +6,9 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+/// PostListView
+///
+///
 class PostListView extends StatelessWidget {
   const PostListView({
     super.key,

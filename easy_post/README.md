@@ -64,32 +64,19 @@ You can develop your own post list screen where you can design your own category
 
 # Youtube
 
+- You can save the URL of youtube video at `youtubeUrl` field in the post document.
+- When you save it (or change it), the post model automatically produces the `youtube` map field in the post document with the name, title, views, thumbnail images, etc.
+- You can use the `youtube` map data to display the youtube thumbnail and title on the post list screen.
+- The default UI screen for creating and updating has youtube url input box already.
+- And there is a default screen for displaying youtube video as a post list view. You can use `PostService.instance.showYoutubeListScreen()`. This screen will show youtube thumbnails and metadata in the list view. If the post has no youtube, then it will show the post title.
+- The post details screen displays youtube if there is a youtube. Otherwise, it will display post details without youtube.
 
-- The `PostService.instance.showPostCreateScreen()` has an option of `youtubeUrl`. 
 
-- If you create a post with a `youtubeUrl`  the post will generate a youtube information base on the `youtubeUrl`.
+## displaying youtube screen
 
-```dart
-PostService.instance.showEditScreen(category: 'youtube');
-```
-
-displaying youtube screen
-
-- you can display a youtube screen via `YoutubeScreen()` or `PostService.instance.showYoutubeScren()`
+- you can display a youtube screen with `PostService.instance.showYoutubeScren()`
 - YoutubeScreen supported fullscreen mode
 
-```dart 
-YoutubeScreen(
-  post:post,
-)
-
-/// or 
-
-PostService.intsance.showYoutubeScreen(
-  post:pos
-),
-gs
-```
 
 Displaying a Youtube video
 
@@ -113,7 +100,7 @@ YoutubeFullscreenBuilder(
 ```
 
 
-# Post Details 
+# PostDetailScreen
 To display display the details of post you can use `PostServices.instance.showPostDetailScreen()` or `PostDetailScreen()`
 
 
@@ -169,3 +156,22 @@ Widget build(BuildContext context) {
 }
 ```
 
+
+
+# Developer's Tips
+
+## Show a post screen with random post creation
+
+Sometimes, you would want to see the post view screen for testing or designing. You can do the following.
+
+```dart
+initState() {
+  (() async {
+    final ref = await Post.create(
+        category: 'yo', title: 'title', content: 'content');
+    final post = await Post.get(ref.id);
+    PostService.instance
+        .showPostDetailScreen(context: globalContext, post: post);
+  })();
+}
+```

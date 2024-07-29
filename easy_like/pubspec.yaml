@@ -1,6 +1,6 @@
 name: easy_like
-description: "An esay way to handle the like and dislike feature."
-version: 0.0.1
+description: "An esay way to handle the like functionality for every use case"
+version: 0.0.5
 homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_like
 
 environment:
@@ -8,6 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  cloud_firestore: ^5.0.2
   flutter:
     sdk: flutter
 

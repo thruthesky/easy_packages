@@ -18,9 +18,12 @@ dependencies:
   easy_comment:
   easy_engine:
   easy_helpers:
+  easy_like:
   easy_locale:
   easy_post_v2:
+  easy_report:
   easy_storage:
+  easy_task:
   easychat:
   easyuser:
   firebase_auth: 5.1.1
@@ -53,10 +56,16 @@ dependency_overrides:
     path: ../easy_post
   easy_helpers:
     path: ../easy_helpers
+  easy_like:
+    path: ../easy_like
   easy_locale:
     path: ../easy_locale
+  easy_report:
+    path: ../easy_report
   easy_storage:
     path: ../easy_storage
+  easy_task:
+    path: ../easy_task
   easychat:
     path: ../easychat
   easyuser:

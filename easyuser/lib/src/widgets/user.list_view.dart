@@ -35,10 +35,7 @@ class UserListView extends StatelessWidget {
     this.addSemanticIndexes = true,
     this.cacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
-
-    /// TODO check if [onDrag] is working.
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior
-        .onDrag, // ScrollViewKeyboardDismissBehavior.manual,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.onDrag,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
     this.itemBuilder,

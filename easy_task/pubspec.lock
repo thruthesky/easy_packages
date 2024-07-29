@@ -85,10 +85,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_helpers
-      sha256: "0babe4eff211d1a3ecaa1145136c5743d583aab3c40eda603e09026e6489478b"
+      sha256: "049c26c2a1b06c5adbdf55fbeabf1e80122bba04453b62a92170c0017ac4ae76"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.6"
+    version: "0.0.9"
   easy_locale:
     dependency: transitive
     description:

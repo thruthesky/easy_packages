@@ -1,7 +1,4 @@
-import 'package:example/screens/group/task.user.group.list.screen.dart';
 import 'package:example/screens/home/home.screen.dart';
-import 'package:example/screens/task/task.list.screen.dart';
-import 'package:example/screens/test/test.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,18 +12,6 @@ final router = GoRouter(
     GoRoute(
       path: HomeScreen.routeName,
       builder: (context, state) => const HomeScreen(),
-    ),
-    GoRoute(
-      path: TaskListScreen.routeName,
-      builder: (context, state) => const TaskListScreen(),
-    ),
-    GoRoute(
-      path: TaskUserGroupListScreen.routeName,
-      builder: (context, state) => const TaskUserGroupListScreen(),
-    ),
-    GoRoute(
-      path: TestScreen.routeName,
-      builder: (context, state) => const TestScreen(),
     ),
   ],
 );
