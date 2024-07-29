@@ -1,3 +1,11 @@
+## 0.0.5
+
+* Refactor. rename likes to likeCount
+
+## 0.0.4
+
+* Refactor. transaction rewrite.
+
 ## 0.0.3
 
 * Fix. Firestore dependency.

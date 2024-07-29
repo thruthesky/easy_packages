@@ -43,9 +43,9 @@ class _RejectedChatRoomInviteListScreenState
             onTap: (room) async {
               final re = await confirm(
                 context: context,
-                title: "Rejected Chat",
-                message:
-                    "You have rejected the chat already. Accept and continue chat?",
+                title: const Text("Rejected Chat"),
+                message: const Text(
+                    "You have rejected the chat already. Accept and continue chat?"),
               );
 
               if (re ?? false) {

@@ -7,6 +7,22 @@ This package is a todo like task manage system which allows a user to create gro
 - `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
   - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
 
+# ai
+
+저는 해야 할 일을 관리하는 앱을 만들고 싶습니다. 플러터와 파이어베이스의 파이어스토어 데이터베이스로 만들려고 합니다.
+해야 할 일은 task 라고 부르며, task 의 데이터 모델 이름은 Task 클래스입니다. 이 Task 클래스는 파이어스토어 문서의 task 필드 정보를 가지고 있으며, 기본적인 task 생성, 수정, 삭제 등을 담당합니다.
+아래에서 TaskService 클래스는 해야 할 일 시스템을 전반적으로 관리하고 도와주는 역할을 합니다.
+
+사용자 로그인은 FirebaseAuth 를 통해서 관리하며, TaskService.instance.currentUser 가 로그인을 한 사용자의 FirebaseAuth User 값을 가지고 있습니다. 앱에서 사용자는 로그인을 이미 한 것으로 가정하고 개발을 합니다.
+
+아래의 소스 코드에서 TaskCreateScreen 위젯은 task 를 생성하는 스크린입니다.
+
+아래의 소스 코드에서 TaskDetailScreen 에서 생성된 task 의 정보를 보여줍니다. TaskDetailScreen 에서는 task 를 생성한 사용자 ID 와  제목, 내용, 생성된 날짜, 수정된 날짜 등을 보여주고 있습니다.
+
+TaskUpdateScreen 에 task 를 수정하는 코드를 만들고 싶습니다. 코드를 완선해 주세요.
+
+
+
 
 
 # Test
