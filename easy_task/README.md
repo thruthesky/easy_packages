@@ -13,6 +13,10 @@ This package is a todo like task manage system which allows a user to create gro
 
 - `tasks` collection composit indexes
   - `creator: asc` and `createdAt: desc` is required.
+  - `project: asc` and `createdAt: desc` is required.
+  - `parent: asc` and `createdAt: desc` is required.
+  - `completed: asc` and `createdAt: desc` is required.
+
 
 
 
@@ -111,6 +115,8 @@ Do the widget test as Flutter does.
   - Group task has no check box.
   - When the gropu task is clicked, it will display the details of it.
 
+- User invitation is done by `easyuser`.
+- Comment under each task is used by `easy_comment` package.
 
 ```mermaid
 flowchart TD

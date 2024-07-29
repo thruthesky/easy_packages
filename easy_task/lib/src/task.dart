@@ -18,6 +18,8 @@ class Task {
     required this.createdAt,
     required this.updatedAt,
     required this.completed,
+    required this.parent,
+    required this.project,
   });
 
   final String id;
@@ -27,6 +29,11 @@ class Task {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool completed;
+
+  final String parent;
+
+  /// For Projects
+  final bool project;
 
   factory Task.fromSnapshot(DocumentSnapshot snapshot) {
     return Task.fromJson(snapshot.data() as Map<String, dynamic>, snapshot.id);
@@ -45,6 +52,8 @@ class Task {
           ? (json['updatedAt'] as Timestamp).toDate()
           : DateTime.now(),
       completed: json['completed'] ?? false,
+      parent: json['parent'],
+      project: json['project'],
     );
   }
 
@@ -56,6 +65,8 @@ class Task {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'completed': completed,
+      'parent': parent,
+      'project': project,
     };
   }
 
@@ -70,7 +81,9 @@ class Task {
 
   static Future<DocumentReference> create({
     required String title,
-    required String description,
+    String description = '',
+    bool project = false,
+    String parent = '',
   }) async {
     final doc = await col.add({
       'creator': TaskService.instance.currentUser!.uid,
@@ -79,6 +92,8 @@ class Task {
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
       'completed': false,
+      'parent': parent,
+      'project': project,
     });
     return doc;
   }
@@ -86,10 +101,12 @@ class Task {
   Future<void> update({
     required String title,
     required String description,
+    required bool project,
   }) async {
     await ref.update({
       'title': title,
       'description': description,
+      'project': project,
       'updatedAt': FieldValue.serverTimestamp(),
     });
   }

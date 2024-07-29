@@ -1,7 +1,5 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:easyuser/src/user.service.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 class UserBlockListScreen extends StatefulWidget {
@@ -35,7 +33,7 @@ class _UserBlockListScreenState extends State<UserBlockListScreen> {
               itemBuilder: (context, index) {
                 final uid = blocks.keys.elementAt(index);
 
-                print(blocks[uid]['blockedAt']);
+                // print(blocks[uid]['blockedAt']);
                 return UserDoc(
                     uid: uid,
                     builder: (user) {

@@ -160,7 +160,7 @@ class UserService {
             } else {
               blocks = {};
             }
-            dog('updated blocks: $blocks');
+            // dog('updated blocks: $blocks');
             blockChanges.add(blocks);
           },
         );

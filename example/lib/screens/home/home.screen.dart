@@ -99,8 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final user =
-                        await UserService.instance.showUserSearchDialog(
+                    await UserService.instance.showUserSearchDialog(
                       context,
                       exactSearch: false,
                       itemBuilder: (user, index) => ElevatedButton(
@@ -108,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text(user.displayName),
                       ),
                     );
-                    print('user; $user');
+                    // print('user; $user');
                   },
                   child:
                       const Text('User Search Dialog: partial search search'),
@@ -159,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       message: const Text('message'),
                     );
-                    print('re; $re');
+                    // print('re; $re');
                   },
                   child: const Text(
                     'Confirm dialog',
@@ -233,11 +232,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Text('Report'),
                       ),
                       TextButton(
-                          onPressed: () => i.showPublicProfileScreen(
-                                context,
-                                user: user,
-                              ),
-                          child: const Text('Public Profile')),
+                        onPressed: () => i.showPublicProfileScreen(
+                          context,
+                          user: user,
+                        ),
+                        child: const Text('Public Profile'),
+                      ),
                     ],
                   );
                 },
