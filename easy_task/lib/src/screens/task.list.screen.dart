@@ -4,6 +4,9 @@ import 'package:easy_task/easy_task.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
+/// Task list screen
+///
+/// TODO: 사진 업로드, 태스크 아카이브(삭제 기능은 없음), 태스크(프로젝트) 삭제,
 class TaskListScreen extends StatefulWidget {
   static const String routeName = '/TaskList';
   const TaskListScreen({super.key});
