@@ -148,12 +148,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           ],
           if (room != null)
             chatMessagesWidget ??= Expanded(
-              child: room?.messageRef != null
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: ChatMessagesListView(room: room!),
-                    )
-                  : const Center(child: CircularProgressIndicator()),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: ChatMessagesListView(room: room!),
+              ),
             )
           else
             const Spacer(),
