@@ -37,9 +37,14 @@ class User {
   DateTime? lastLoginAt;
   String? photoUrl;
 
+  /// state message and state image url
+  String? stateMessage;
+  String? statePhotoUrl;
+
   /// Collection reference of the user's collection.
   ///
   CollectionReference col = UserService.instance.col;
+  CollectionReference metaCol = UserService.instance.metaCol;
 
   /// [doc] is the document reference of this user model.
   DocumentReference get doc => col.doc(uid);
@@ -62,6 +67,8 @@ class User {
     this.birthDay,
     this.lastLoginAt,
     this.photoUrl,
+    this.stateMessage,
+    this.statePhotoUrl,
   });
 
   /// Create a user with the given [uid].
@@ -117,6 +124,8 @@ class User {
       birthMonth: json['birthMonth'],
       birthDay: json['birthDay'],
       photoUrl: json['photoUrl'],
+      stateMessage: json['stateMessage'],
+      statePhotoUrl: json['statePhotoUrl'],
     );
   }
 
@@ -134,7 +143,14 @@ class User {
     data['birthDay'] = birthDay;
     data['lastLoginAt'] = lastLoginAt;
     data['photoUrl'] = photoUrl;
+    data['stateMessage'] = stateMessage;
+    data['statePhotoUrl'] = statePhotoUrl;
     return data;
+  }
+
+  @override
+  toString() {
+    return 'User(${toJson()})';
   }
 
   /// Get a user with the given [uid].
@@ -152,19 +168,25 @@ class User {
     User? user;
     if (cache) {
       user = MemoryCache.instance.read<User?>(uid);
-      return user;
+      if (user != null) {
+        return user;
+      }
     }
+
+    /// Get the user data from the server
     final DocumentSnapshot snapshot =
         await UserService.instance.col.doc(uid).get();
+
+    /// If the snapshot exists, save in memory and return.
     if (snapshot.exists) {
       user = User.fromSnapshot(snapshot);
       MemoryCache.instance.create(uid, user);
       return user;
     }
 
-    /// It overrides the exisiting cache
-    MemoryCache.instance.create<User?>(uid, user);
-    return user;
+    /// If the snapshot does not exist, return null.
+    MemoryCache.instance.create<User?>(uid, null);
+    return null;
   }
 
   /// Deprecated
@@ -179,7 +201,7 @@ class User {
     throw UnimplementedError('This is not for use.');
   }
 
-  Future update({
+  Future<void> update({
     String? displayName,
     String? name,
     int? birthYear,
@@ -187,6 +209,8 @@ class User {
     int? birthDay,
     String? gender,
     String? photoUrl,
+    String? stateMessage,
+    String? statePhotoUrl,
   }) async {
     await doc.set(
       {
@@ -201,6 +225,8 @@ class User {
         if (birthDay != null) 'birthDay': birthDay,
         if (gender != null) 'gender': gender,
         if (photoUrl != null) 'photoUrl': photoUrl,
+        if (stateMessage != null) 'stateMessage': stateMessage,
+        if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
       },
       SetOptions(merge: true),
     );

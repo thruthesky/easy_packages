@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/defines.dart';
-import 'package:youtube/youtube.dart';
-import 'package:youtube_parser/youtube_parser.dart';
+import 'package:easy_storage/easy_storage.dart';
 
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
@@ -34,6 +32,7 @@ class Post {
   final DateTime createdAt;
   final DateTime updateAt;
   final List<String> urls;
+  final bool deleted;
 
   static CollectionReference col = PostService.instance.col;
 
@@ -47,12 +46,22 @@ class Post {
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
 
   /// Youtube URL. Refer README.md for more information
-  final String? youtubeUrl;
-
-  final int commentCount;
-  final Map<String, dynamic> data;
+  final String youtubeUrl;
   final Map<String, dynamic> youtube;
+
+  /// Returns true if the current post has youtube.
+  bool get hasYoutube =>
+      (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
+
+  final int likeCount;
+  final int commentCount;
+
+  final Map<String, dynamic> data;
+
   Map<String, dynamic> get extra => data;
+
+  /// Return true if the post is created by the current user
+  bool get isMine => currentUser?.uid == uid;
 
   Post({
     required this.id,
@@ -67,6 +76,8 @@ class Post {
     required this.commentCount,
     required this.data,
     required this.youtube,
+    required this.deleted,
+    required this.likeCount,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -82,11 +93,15 @@ class Post {
       updateAt: json['updateAt'] is Timestamp
           ? (json['updateAt'] as Timestamp).toDate()
           : DateTime.now(),
-      youtubeUrl: json['youtubeUrl'],
+
+      /// youtubeUrl never be null. But just in case, it put empty string as default.
+      youtubeUrl: json['youtubeUrl'] ?? '',
       urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
       commentCount: json['commentCount'] ?? 0,
       data: json,
       youtube: json['youtube'] ?? {},
+      deleted: json['deleted'],
+      likeCount: json['likeCount'] ?? 0,
     );
   }
   Map<String, dynamic> toJson() => {
@@ -99,7 +114,9 @@ class Post {
         'urls': urls,
         'youtubeUrl': youtubeUrl,
         'commentCount': commentCount,
-        'youtube': youtube
+        'youtube': youtube,
+        'deleted': deleted,
+        'likeCount': likeCount,
       };
 
   @override
@@ -141,9 +158,9 @@ class Post {
     if (currentUser == null) {
       throw 'post-create/sign-in-required You must login firt to create a post';
     }
-    if (category.isEmpty) {
-      throw 'post-create/category-is-required Category is required';
-    }
+    // if (category.isEmpty) {
+    //   throw 'post-create/category-is-required Category is required';
+    // }
 
     final data = {
       'category': category,
@@ -155,25 +172,23 @@ class Post {
       'commentCount': 0,
       'createdAt': FieldValue.serverTimestamp(),
       'updateAt': FieldValue.serverTimestamp(),
+      'deleted': false,
     };
 
-    /// if there is youtube url prepare youtube information
-    if (youtubeUrl != '') {
-      final youtube = await prepareYoutubeInfo(youtubeUrl);
-      if (youtube == null) {
-        throw 'post-create/invalid-youtube-url Invalid Youtube URL';
-      }
-      data['youtube'] = youtube;
-      dog('msg: $youtube');
-    }
+    final youtube = await getYoutubeConfig(youtubeUrl);
 
     return await PostService.instance.col.add({
       ...data,
+      if (youtube != null) 'youtube': youtube,
       ...?extra,
     });
   }
 
-  Future<Post?> update({
+  /// update a post
+  ///
+  /// TODO: display loader while updating
+  /// TODO: display loader and percentage while image uploading
+  Future<void> update({
     String? title,
     String? content,
     List<String>? urls,
@@ -187,58 +202,32 @@ class Post {
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
     };
 
-    /// if there is youtube url prepare youtube information
-    if (youtubeUrl != '') {
-      final youtube = prepareYoutubeInfo(youtubeUrl!);
-      data['youtube'] = youtube;
-    }
-
-    if (data.isEmpty) {
-      throw 'post-update/no-data-update No data to update';
-    }
     await doc(id).update(
       {
         ...data,
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
+          'youtube': await getYoutubeConfig(youtubeUrl),
         'updateAt': FieldValue.serverTimestamp(),
         ...?extra,
       },
     );
-
-    return get(id);
   }
 
-//  prepared youtube information
-  static Future<Map<String, dynamic>?> prepareYoutubeInfo(
-      String youtubeUrl) async {
-    // get youtubeId
-    final youtubeId = getIdFromUrl(youtubeUrl);
-
-    if (youtubeId == null) {
-      return null;
+  /// delete post, this will not delete the document but instead mark the the
+  /// document as deleted
+  ///
+  /// TODO: display loader while deleting
+  Future<void> delete() async {
+    if (deleted == true) {
+      throw 'post-delete/post-already-deleted Post is already deleted';
     }
 
-    /// check if the youtube url is a valid
-    try {
-      await Youtube.config(videoId: youtubeId);
-    } catch (e) {
-      throw 'post-prepare-youtube-info/no-data-update preparing youtube info field. check if the youtubeUrl is valid';
+    for (String url in urls) {
+      await StorageService.instance.delete(url);
     }
 
-    final youtubeVideoDetails = Youtube.videoDetails;
-    final youtubeChannelDetails = Youtube.channelDetails;
-    final youtubeThumbnailDetails = Youtube.thumbnails;
-
-    return {
-      'id': youtubeId,
-      'title': youtubeVideoDetails.title,
-      'name': youtubeChannelDetails.name,
-      'fullHd': youtubeThumbnailDetails.fullhd,
-      'hd': youtubeThumbnailDetails.hd,
-      'sd': youtubeThumbnailDetails.sd,
-      'hq': youtubeThumbnailDetails.hq,
-      'lq': youtubeThumbnailDetails.lq,
-      'duration': youtubeVideoDetails.duration,
-      'viewCount': youtubeVideoDetails.viewCount
-    };
+    await ref.update({
+      'deleted': true,
+    });
   }
 }

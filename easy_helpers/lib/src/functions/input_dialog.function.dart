@@ -22,8 +22,8 @@ import 'package:flutter/material.dart';
 /// - admin.messaging.screen.dart
 Future<String?> input({
   required BuildContext context,
-  required String title,
-  String? subtitle,
+  required Widget title,
+  Widget? subtitle,
   required String hintText,
   String? initialValue,
   int? minLines,
@@ -43,16 +43,13 @@ Future<String?> input({
     builder: (BuildContext context) {
       final controller = TextEditingController(text: initialValue);
       return AlertDialog(
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        title: title,
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (subtitle != null) ...[
-              Text(subtitle),
+              subtitle,
               const SizedBox(height: 24),
             ],
             TextField(

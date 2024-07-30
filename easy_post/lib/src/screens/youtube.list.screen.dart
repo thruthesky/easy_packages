@@ -3,14 +3,13 @@ import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
 /// easy_post provide a youtube screen
-/// `post`
-/// `autoPlay` if true the current playing youtube video will automatically play
+///
 class YoutubeListScreen extends StatefulWidget {
   static const String routeName = '/YouTube';
 
-  const YoutubeListScreen({super.key, this.autoPlay = false});
+  const YoutubeListScreen({super.key, required this.category});
 
-  final bool autoPlay;
+  final String category;
 
   @override
   State<YoutubeListScreen> createState() => _YoutubeListScreenState();
@@ -35,25 +34,16 @@ class _YoutubeListScreenState extends State<YoutubeListScreen> {
         ],
       ),
       body: PostListView(
-        // change query
-        category: 'youtube',
+        category: widget.category,
         separatorBuilder: (context, index) => const SizedBox(
           height: 16,
         ),
         itemBuilder: (post, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            child: GestureDetector(
-              onTap: () async {
-                await PostService.instance
-                    .showPostDetailScreen(context: context, post: post);
-              },
-              child: YoutubeTile(post: post),
-            ),
-          );
+          if (post.youtubeUrl.isEmpty || post.youtube.isEmpty) {
+            return PostListTile(post: post);
+          } else {
+            return YoutubeTile(post: post);
+          }
         },
       ),
     );

@@ -27,12 +27,37 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
       appBar: AppBar(
         title: const Text('CommentTest'),
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
-          SliverToBoxAdapter(child: CommentInputBox(documentReference: ref)),
-          CommentListTreeView(documentReference: ref),
-        ],
+      body:
+
+          /// 트리 형태 세로 라인 코멘트
+          //     CustomScrollView(
+          //   slivers: [
+          //     SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
+          //     SliverToBoxAdapter(child: CommentInputBox(documentReference: ref)),
+          //     // 트리 형태 세로 라인 표시
+          //     CommentListTreeView(documentReference: ref),
+          //   ],
+          // ),
+
+          // 일반 코멘트
+          Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: ListView(
+          children: [
+            Text('Reference: ${ref.path}'),
+            CommentInputBox(documentReference: ref),
+            CommentListView(
+              documentReference: ref,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (comment, index) {
+                // return CommentListDetail(comment: comment);
+                // return CommentListArrowDetail(comment: comment);
+                return CommentListVerticalLineDetail(comment: comment);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

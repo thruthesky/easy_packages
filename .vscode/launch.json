@@ -13,6 +13,30 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "Example - iPhone11ProMax",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone11ProMax",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Example - iPhone 15 Pro",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Example - iPhone SE",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone SE",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "EasyUser Example - iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",

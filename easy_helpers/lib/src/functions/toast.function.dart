@@ -1,4 +1,6 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_locale/easy_locale.dart';
 
 /// Display a snackbar
 ///
@@ -11,8 +13,8 @@ import 'package:flutter/material.dart';
 /// ```
 ScaffoldFeatureController toast({
   required BuildContext context,
-  String? title,
-  required String message,
+  Widget? title,
+  required Widget message,
   Icon? icon,
   Duration duration = const Duration(seconds: 8),
   Function(Function)? onTap,
@@ -58,14 +60,8 @@ ScaffoldFeatureController toast({
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (title != null)
-                        Text(
-                          title,
-                          style: TextStyle(
-                              color: foregroundColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      Text(message, style: TextStyle(color: foregroundColor)),
+                      if (title != null) title,
+                      message,
                     ],
                   ),
                 ),
@@ -75,11 +71,14 @@ ScaffoldFeatureController toast({
           if (hideCloseButton == false)
             TextButton(
               onPressed: () {
-                if (!context.mounted) return;
+                if (!context.mounted) {
+                  dog('toast(): context is not mouned!');
+                  return;
+                }
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
               child: Text(
-                'dismiss',
+                'dismiss'.t,
                 style: TextStyle(color: foregroundColor),
               ),
             )
@@ -91,8 +90,8 @@ ScaffoldFeatureController toast({
 
 ScaffoldFeatureController errorToast({
   required BuildContext context,
-  String? title,
-  required String message,
+  Widget? title,
+  required Widget message,
   Icon? icon,
   Duration duration = const Duration(seconds: 8),
   Function(Function)? onTap,

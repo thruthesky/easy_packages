@@ -1,4 +1,5 @@
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 
 /// [iam] and [i] are the simple aliases of UserService.instance
 UserService get iam => UserService.instance;
@@ -19,8 +20,10 @@ User get my {
     throw Exception('UserService is not initialized');
   }
   if (UserService.instance.user == null) {
-    throw Exception(
-        'user-document-not-loaded. The user may be in the middle of login process. This may happens when the app booting or hot restarted. Or the user may not logged in. Or the user document does not exist.');
+    throw 'user/not-logged-in UserService.instance.user is null. The user may be in the middle of login process. This may happens when the app booting or hot restarted. Or the user may not logged in. Or the user document does not exist.';
   }
   return iam.user as User;
 }
+
+/// [myUid] returns the current user's uid. It can be null.
+String? get myUid => FirebaseAuth.instance.currentUser?.uid;

@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+/// PostListView
+///
+///
 class PostListView extends StatelessWidget {
   const PostListView({
     super.key,
@@ -84,7 +88,7 @@ class PostListView extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
           return emptyBuilder?.call() ??
-              const Center(child: Text('empty list'));
+              Center(child: Text('post list is empty'.t));
         }
 
         return ListView.separated(
@@ -111,7 +115,7 @@ class PostListView extends StatelessWidget {
             // obtain more items
             if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
               // Tell FirebaseDatabaseQueryBuilder to try to obtain more items.
-              // It is safe to call this function from within the build method.
+              // It is safe to call this  function from within the build method.
               snapshot.fetchMore();
             }
 

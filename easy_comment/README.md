@@ -36,6 +36,8 @@ Initially, we considered using the Realtime Database for comments. However, sinc
   - `hasChild` is used for sorting and displaying purpose.
 
 
+- `deleted` is set to true if the comment is deleted. It is false by default. So, you can filter comments that are not deleted.
+
 
 
 
@@ -103,18 +105,36 @@ CommentListView(
 For the `itemBuilder`, you may use one of `CommentDetail`, `CommentListDetail`, `CommentListArrowDetail`, or `CommentListVerticalLineDetail`. Or you can copy the code and build your own.
 
 
-### CommentListTreeView
-
-This list view provides a nice tree style vertical lines on the nested comment list.
+Example: Below is an example of using the available widgets.
 
 ```dart
-CustomScrollView(
-  slivers: [
-    SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
-    SliverToBoxAdapter(child: CommentInputBox(documentReference: ref)),
-    CommentListTreeView(documentReference: ref),
-  ],
+CommentListView(
+  documentReference: ref,
+  itemBuilder: (comment, index) {
+    return CommentListDetail(comment: comment); // default
+    return CommentListArrowDetail(comment: comment); // arrow style comment
+    return CommentListVerticalLineDetail(comment: comment); // vertical line comment
+  },
 ),
+```
+
+
+
+### CommentListTreeView
+
+`CommentListTreeView` provides a nice tree style vertical lines on the nested comment list. It is designed to work in sliver scroll view. So, you should use `CustomScrollView` on the screen.
+
+```dart
+SliverToBoxAdapter(
+  child: CommentFakeInputBox(
+    onTap: () => CommentService.instance.showCommentEditDialog(
+      context: context,
+      documentReference: task.ref,
+      focusOnContent: true,
+    ),
+  ),
+),
+CommentListTreeView(documentReference: task.ref),
 ```
 
 

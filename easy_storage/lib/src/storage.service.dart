@@ -415,7 +415,7 @@ class StorageService {
         final XFile? video =
             await ImagePicker().pickVideo(source: ImageSource.gallery);
         return video?.path;
-      } else if (source == SourceType.gallery) {
+      } else if (source == SourceType.mediaGallery) {
         final XFile? image = await ImagePicker().pickMedia();
         return image?.path;
       } else if (source == SourceType.file) {
@@ -429,14 +429,14 @@ class StorageService {
       if (error.code == 'photo_access_denied') {
         errorToast(
           context: context,
-          title: 'Gallery Access Denied'.t,
-          message: 'Access permission to the gallery has been denied'.t,
+          title: Text('Gallery Access Denied'.t),
+          message: Text('Access permission to the gallery has been denied'.t),
         );
       } else if (error.code == 'camera_access_denied') {
         errorToast(
           context: context,
-          title: 'Camera Access Denied'.t,
-          message: 'Access permission to the Camera has been denied'.t,
+          title: Text('Camera Access Denied'.t),
+          message: Text('Access permission to the Camera has been denied'.t),
         );
       } else {
         /// rethrow the unhandled error from PlatformException if there's any

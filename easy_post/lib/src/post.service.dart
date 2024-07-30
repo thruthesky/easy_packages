@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_category/easy_category.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easy_post_v2/src/screens/post.detail.screen.dart';
 import 'package:easy_post_v2/src/screens/post.list.screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,27 +14,13 @@ class PostService {
   bool initialized = false;
   CollectionReference get col => FirebaseFirestore.instance.collection('posts');
 
-  /// Categories of posts. This is used to categorize posts.
-  ///
-  /// The categories can be set using the `init` method. And it's entirely up
-  /// to the developer to decide what categories to use. The developer can
-  /// develop his own post list screen where he can design his own category
-  /// options.
-  ///
-  /// Example:
-  /// ```dart
-  /// PostService.instance.init(categories: {
-  ///  'qna': '질문답변',
-  ///  'discussion': 'Discussion',
-  ///  'news': 'News',
-  ///  'job': '구인구직',
-  /// });
-  /// ```
-  late Map<String, String> categories = {};
+  Future Function(BuildContext, Post)? $showPostDetailScreen;
 
-  init({Map<String, String>? categories}) {
+  init({
+    Future Function(BuildContext, Post)? showPostDetailScreen,
+  }) {
     initialized = true;
-    this.categories = categories ?? this.categories;
+    $showPostDetailScreen = showPostDetailScreen;
 
     addPostTranslations();
   }
@@ -70,14 +56,35 @@ class PostService {
     );
   }
 
+  ///
+  Future<DocumentReference?> showPostUpdateScreen({
+    required BuildContext context,
+    required Post post,
+    bool enableYoutubeUrl = false,
+  }) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return PostEditScreen(
+          category: post.category,
+          post: post,
+          enableYoutubeUrl: enableYoutubeUrl,
+        );
+      },
+    );
+  }
+
   Future showPostListScreen({
     required BuildContext context,
+    required List<Category> categories,
     Post? post,
   }) {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) {
-        return const PostListScreen();
+        return PostListScreen(
+          categories: categories,
+        );
       },
     );
   }
@@ -86,22 +93,28 @@ class PostService {
     required BuildContext context,
     required Post post,
   }) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) {
-        return PostDetailScreen(post: post);
-      },
-    );
+    return $showPostDetailScreen?.call(context, post) ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (_, __, ___) {
+            return PostDetailScreen(post: post);
+          },
+        );
   }
 
+  /// Show a screen to list youtube videos.
   Future showYoutubeListScreen({
     required BuildContext context,
-    bool autoPlay = false,
+    required String category,
   }) {
     return showGeneralDialog(
         context: context,
         pageBuilder: (_, __, ___) {
-          return YoutubeListScreen(autoPlay: autoPlay);
+          return YoutubeListScreen(
+            category: category,
+          );
         });
   }
+
+  // like
 }

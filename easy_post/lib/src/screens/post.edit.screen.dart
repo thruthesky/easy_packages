@@ -1,14 +1,32 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
+/// `PostEditScreen` Screen for creating or updating the post
+/// if the post is provided the screen is for updating where the post information
+/// is display and can be edited
+///
+/// if the post is not provided the screen is for creating where you can create new post
+///
 class PostEditScreen extends StatefulWidget {
+  /// `routeName` so it can be use it other router ex: go_router packages
   static const String routeName = '/PostEdit';
-  const PostEditScreen(
-      {super.key, required this.category, this.enableYoutubeUrl = false});
+
+  /// `category` is category of the post ex: 'youtube', 'feed, 'forum'
+  ///
+  /// `post` is the post information, if the post is provided the screen is
+  /// updating the post and if not provided the screen for creating a post
+  const PostEditScreen({
+    super.key,
+    required this.category,
+    this.enableYoutubeUrl = false,
+    this.post,
+  });
 
   final String? category;
   final bool enableYoutubeUrl;
+  final Post? post;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();
@@ -20,19 +38,40 @@ class _PostEditScreenState extends State<PostEditScreen> {
   final contentController = TextEditingController();
   final youtubeController = TextEditingController();
 
+  bool get isCreate => widget.post == null;
+  bool get isUpdate => !isCreate;
+
+  bool inProgress = false;
+
+  List<String> urls = [];
+
   @override
   void initState() {
     super.initState();
+
+    prepareData();
     if (widget.category != null) {
       category = widget.category!;
     }
   }
 
+  /// prepare data if the event is updating the post
+  prepareData() {
+    if (isCreate) return;
+    if (widget.post == null) return;
+    titleController.text = widget.post!.title;
+    contentController.text = widget.post!.content;
+    youtubeController.text = widget.post!.youtubeUrl;
+    urls = widget.post!.urls;
+    setState(() {});
+  }
+
   @override
   void dispose() {
-    super.dispose();
     titleController.dispose();
     contentController.dispose();
+    youtubeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,36 +82,12 @@ class _PostEditScreenState extends State<PostEditScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('PostEdit'),
+          title: Text(isCreate ? 'Create'.t : 'Update'.t),
         ),
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              DropdownButton<String?>(
-                  isDense: false,
-                  padding: const EdgeInsets.only(
-                      left: 12, top: 4, right: 4, bottom: 4),
-                  isExpanded: true, // 화살표 아이콘을 오른쪽에 밀어 붙이기
-                  menuMaxHeight: 300, // 높이 조절
-                  items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('Select Category'),
-                    ),
-                    ...PostService.instance.categories.entries.map((e) {
-                      return DropdownMenuItem(
-                        value: e.key,
-                        child: Text(e.value),
-                      );
-                    }),
-                  ],
-                  value: category,
-                  onChanged: (value) {
-                    setState(() {
-                      category = value;
-                    });
-                  }),
               const SizedBox(height: 24),
               TextField(
                 controller: titleController,
@@ -100,19 +115,51 @@ class _PostEditScreenState extends State<PostEditScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () async {
-                  final ref = await Post.create(
-                    category: category ?? '',
-                    title: titleController.text,
-                    content: contentController.text,
-                    youtubeUrl: youtubeController.text,
-                  );
-                  if (context.mounted) {
-                    Navigator.of(context).pop(ref);
-                  }
-                },
-                child: Text('post Create'.t),
+              DisplayEditableUploads(
+                  urls: urls,
+                  onDelete: (url) {
+                    urls.remove(url);
+                    setState(() {});
+                  }),
+              Row(
+                children: [
+                  UploadIconButton(onUpload: (url) {
+                    urls.add(url);
+                    setState(() {});
+                  }),
+                  const Spacer(),
+                  inProgress
+                      ? const CircularProgressIndicator.adaptive()
+                      : ElevatedButton(
+                          onPressed: () async {
+                            setState(() => inProgress = true);
+                            if (isCreate) {
+                              final ref = await Post.create(
+                                category: category ?? '',
+                                title: titleController.text,
+                                content: contentController.text,
+                                youtubeUrl: youtubeController.text,
+                                urls: urls,
+                              );
+                              if (context.mounted) {
+                                Navigator.of(context).pop(ref);
+                              }
+                            } else if (isUpdate) {
+                              await widget.post!.update(
+                                title: titleController.text,
+                                content: contentController.text,
+                                youtubeUrl: youtubeController.text,
+                                urls: urls,
+                              );
+
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                              }
+                            }
+                          },
+                          child: Text(isCreate ? 'post Create'.t : 'Update'.t),
+                        ),
+                ],
               )
             ],
           ),

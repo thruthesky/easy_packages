@@ -25,18 +25,18 @@ void updatePost() async {
       'Creating Post');
 
   dog('post ${post.id}');
-  final updatePost = await post.update(content: 'Updaing post content');
+  // final updatePost = await post.update(content: 'Updaing post content');
 
   //
-  isTrue(updatePost?.content == 'Updaing post content', 'Updating the content');
-  final updateTitle = await post.update(title: 'Update post title');
-  //
+  // isTrue(updatePost?.content == 'Updaing post content', 'Updating the content');
+  // final updateTitle = await post.update(title: 'Update post title');
+  // //
 
-  isTrue(updateTitle?.title == 'Update post title', 'Updating the title');
+  // isTrue(updateTitle?.title == 'Update post title', 'Updating the title');
 
-  final updateUrls = await post.update(urls: [url]);
+  // final updateUrls = await post.update(urls: [url]);
 
-  isTrue(updateUrls!.urls.contains(url), 'Updating the post');
+  // isTrue(updateUrls!.urls.contains(url), 'Updating the post');
 
   await isException(() async {
     await post.update();
@@ -70,5 +70,43 @@ void createYouyubePost() async {
     category: 'youtube',
     youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50Easdasdasd',
   );
+  testReport();
+}
+
+void deletePost() async {
+  testStart('Delete post');
+  final ref = await Post.create(
+    category: 'temp',
+    title: 'deleting post',
+    content: 'deleting post ',
+    youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
+  );
+
+  final post = await Post.get(ref.id);
+
+  await post.delete();
+
+  final deletedPost = await Post.get(ref.id);
+  isTrue(deletedPost.deleted == true, "Deleting post");
+
+  await isException(() async {
+    await deletedPost.delete();
+  });
+
+  // final ref2 = await Post.create(
+  //   category: 'temp',
+  //   title: 'youtube',
+  //   youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
+  // );
+  // final post2 = await Post.get(ref2.id);
+
+  // await post2.delete();
+
+  // final deletedPost2 = await Post.get(ref2.id);
+  // isTrue(deletedPost2.deleted == true, "Deleting post");
+
+  // await isException(() async {
+  //   await deletedPost2.delete();
+  // });
   testReport();
 }

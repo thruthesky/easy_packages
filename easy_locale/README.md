@@ -1,16 +1,15 @@
 # Easy Locale
 
-The simplest and easist internatinoalization package.
+Simple, yet another easy internationalizaion package.
+
+The features of this package are:
+
+- No need to apply locale in the Flutter app
+- Very simple to use
 
 
-본 패키지의 특징은
+For reference, this `easy_locale` can be used together with other multilingual packages.
 
-- 플러터 앱에서 locale 을 적용하지 않아도 되며,
-- 사용 방법이 매우 단순하다
-
-것 입니다.
-
-참고로, 본 `easy_locale` 은 다른 다국어 패키지들과 함께 사용하셔도 됩니다.
 
 ## 설치
 

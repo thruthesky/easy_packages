@@ -1,13 +1,17 @@
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:easy_engine/easy_engine.dart';
-import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_report/easy_report.dart';
+import 'package:easy_task/easy_task.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:example/screens/locale/locale.screen.dart';
 import 'package:example/screens/forum/forum.screen.dart';
+import 'package:example/screens/menu/menu.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
+import 'package:example/screens/user/sign_in.screen.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -18,135 +22,227 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Map<String, int> index = {};
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        actions: [
+          InkWell(
+            child: MyDoc(
+              builder: (user) => user == null
+                  ? const AnonymousAvatar()
+                  : UserAvatar(user: user),
+            ),
+            onTap: () => i.signedIn
+                ? UserService.instance.showProfileUpdaeScreen(context)
+                : context.push(SignInScreen.routeName),
+          ),
+          IconButton(
+            onPressed: () {
+              context.push(MenuScreen.routeName);
+            },
+            icon: const Icon(Icons.menu),
+          ),
+        ],
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Text('age'.t),
             AuthStateChanges(
-              builder: (user) {
-                return user == null
-                    ? const EmailPasswordLogin()
-                    : Column(
-                        children: [
-                          UserAvatar.fromUid(uid: user.uid),
-                          Text('User UID: ${user.uid}'),
-                          ElevatedButton(
-                            onPressed: () => UserService.instance
-                                .showProfileUpdaeScreen(context),
-                            child: const Text('Profile update'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => i.signOut(),
-                            child: const Text('Sign out'),
-                          ),
-                          const ClaimAdminButton(region: 'asia-northeast3'),
-                          ElevatedButton(
-                            onPressed: () async {
-                              try {
-                                final re = await engine.deleteAccount();
-                                debugPrint(re);
-                              } on FirebaseFunctionsException catch (e) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text('Error: ${e.code}/${e.message}'),
-                                    ),
-                                  );
-                                }
-                              } catch (e) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Error: $e'),
-                                    ),
-                                  );
-                                }
-                              }
-                            },
-                            child: const Text('Delete Account'),
-                          ),
-                        ],
-                      );
-              },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                UserService.instance.showUserSearchDialog(
-                  context,
-                  exactSearch: true,
-                );
-              },
-              child: const Text('User Search Dialog: exact search'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                UserService.instance.showUserSearchDialog(
-                  context,
-                  exactSearch: false,
-                );
-              },
-              child: const Text('User Search Dialog: partial search search'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                ChatService.instance.showChatRoomListScreen(context);
-              },
-              child: const Text('Chat Room List Screen'),
-            ),
-            ElevatedButton(
-              onPressed: () => showGeneralDialog(
-                context: context,
-                pageBuilder: (_, __, ___) => const UploadImageScreen(),
-              ),
-              child: const Text('Upload Image'),
-            ),
-            ElevatedButton(
-              onPressed: () => showGeneralDialog(
-                context: context,
-                pageBuilder: (_, __, ___) => const LocaleScreen(),
-              ),
-              child: const Text('Easy Locale Screen'),
-            ),
-            ElevatedButton(
-              onPressed: () => showGeneralDialog(
-                context: context,
-                pageBuilder: (_, __, ___) => const ForumScreen(),
-              ),
-              child: const Text('Easy Forum Screen'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                showGeneralDialog(
-                  context: context,
-                  pageBuilder: (_, __, ___) => const CommentTestScreen(),
-                );
-              },
-              child: const Text('Easy Comment Screen'),
-            ),
-            SizedBox(
-                height: 80,
-                child: UserListView(
-                  itemBuilder: (user, p1) => GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      ChatService.instance.showChatRoomScreen(
-                        context,
-                        user: user,
-                        // room: room,
-                      );
-                    },
-                    child: UserAvatar(
-                      user: user,
+              builder: (user) => user == null
+                  ? const Text('Sign-in first')
+                  : Column(
+                      children: [
+                        UserAvatar.fromUid(uid: user.uid),
+                        Text('User UID: ${user.uid}'),
+                      ],
                     ),
+            ),
+            Wrap(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    ChatService.instance.showChatRoomListScreen(context);
+                  },
+                  child: const Text("Chat Room List"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // ChatService.instance
+                    //     .showChatRoomListScreen(context);
+
+                    ChatService.instance.showInviteListScreen(context);
+                  },
+                  child: const Text("Chat Invite List"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    ChatService.instance.showOpenChatRoomListScreen(context);
+                  },
+                  child: const Text("Open Room List"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    UserService.instance.showUserSearchDialog(
+                      context,
+                      exactSearch: true,
+                    );
+                  },
+                  child: const Text('User Search Dialog: exact search'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await UserService.instance.showUserSearchDialog(
+                      context,
+                      exactSearch: false,
+                      itemBuilder: (user, index) => ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(user),
+                        child: Text(user.displayName),
+                      ),
+                    );
+                    // print('user; $user');
+                  },
+                  child:
+                      const Text('User Search Dialog: partial search search'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    ChatService.instance.showChatRoomListScreen(context);
+                  },
+                  child: const Text('Chat Room List Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) => const UploadImageScreen(),
                   ),
-                )),
+                  child: const Text('Upload Image'),
+                ),
+                ElevatedButton(
+                  onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) => const LocaleScreen(),
+                  ),
+                  child: const Text('Easy Locale Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () => showGeneralDialog(
+                    context: context,
+                    pageBuilder: (_, __, ___) => const ForumScreen(),
+                  ),
+                  child: const Text('Easy Forum Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (_, __, ___) => const CommentTestScreen(),
+                    );
+                  },
+                  child: const Text('Easy Comment Screen'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final re = await confirm(
+                      context: context,
+                      title: const Text('title'),
+                      subtitle: const CircleAvatar(
+                        child: Text('yo'),
+                      ),
+                      message: const Text('message'),
+                    );
+                    // print('re; $re');
+                  },
+                  child: const Text(
+                    'Confirm dialog',
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => i.showBlockListScreen(context),
+                  child: const Text(
+                    'Block list',
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () =>
+                      ReportService.instance.showReportListScreen(context),
+                  child: const Text(
+                    'Report list',
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () =>
+                      TaskService.instance.showTaskCreateScreen(context),
+                  child: const Text('Task Crate'),
+                ),
+                ElevatedButton(
+                  onPressed: () =>
+                      TaskService.instance.showTaskListScreen(context),
+                  child: const Text('Task List of my creation'),
+                ),
+              ],
+            ),
+            //
+            SizedBox(
+              height: 180,
+              child: FirestoreListView(
+                query: UserService.instance.col
+                    .orderBy('createdAt', descending: true),
+                itemBuilder: (context, snapshot) {
+                  final user = User.fromSnapshot(snapshot);
+
+                  index.putIfAbsent(user.uid, () => index.length);
+                  return Row(
+                    children: [
+                      UserAvatar(user: user),
+                      Text('c: ${index[user.uid]}'),
+                      TextButton(
+                        onPressed: () =>
+                            ChatService.instance.showChatRoomScreen(
+                          context,
+                          user: user,
+                          // room: room,
+                        ),
+                        child: const Text('Chat'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await i.block(context: context, otherUid: user.uid);
+                        },
+                        child: UserBlocked(
+                          otherUid: user.uid,
+                          builder: (b) => Text(b ? 'Un-block' : 'Block'),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await ReportService.instance.report(
+                            context: context,
+                            otherUid: user.uid,
+                            documentReference: user.ref,
+                          );
+                        },
+                        child: const Text('Report'),
+                      ),
+                      TextButton(
+                        onPressed: () => i.showPublicProfileScreen(
+                          context,
+                          user: user,
+                        ),
+                        child: const Text('Public Profile'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),

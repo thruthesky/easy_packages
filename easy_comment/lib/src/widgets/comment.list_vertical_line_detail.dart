@@ -15,32 +15,17 @@ class CommentListVerticalLineDetail extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          if (comment.depth > 1)
-            Row(
-              children: [
-                for (int i = 0; i < comment.depth - 1; i++)
-
-                  /// Draw a vertical line using Container widget
-                  SizedBox(
-                    width: 16,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: VerticalDivider(
-                            color: Colors.grey[300],
-                            thickness: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
+          for (int i = 0; i < comment.depth; i++)
+            VerticalDivider(
+              color: Colors.grey[400],
+              thickness: 2,
             ),
           const SizedBox(
             width: 8,
           ),
-          CommentDetail(comment: comment),
+          Expanded(child: CommentDetail(comment: comment)),
         ],
       ),
     );

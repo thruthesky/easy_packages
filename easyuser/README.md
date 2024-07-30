@@ -72,6 +72,7 @@ If you have a different database structure for user data management, you will ne
 - The user's private information is stored in `/users/{uid}/user-meta/private`.
 - The user's settings are stored in `/users/{uid}/user-meta/settings`.
 
+
 ### User document fields
 
 The fields used in the user document are as follows. If your app uses fields other than those listed below, you should ensure they are saved(copied) according to these fields.
@@ -95,12 +96,52 @@ The fields used in the user document are as follows. If your app uses fields oth
 
 
 
-- `state`
-- `stateMessage`
+- `stateMessage`: User can save his state message. This will be displayed with profile.
+- `statePhotoUrl`: User can save a photo for his state. It is mostly used as a background of his profile.
 
 
 
 
+### User blocking
+
+- User model and user service supports user blockings.
+- User blocking functionality is not seprated to another package because
+  - a user can block only users. Not the other entities(or other data type). Meaning, user blocking is part of the user management feature. That's why it is not separated as another package.
+  - It is often required functionality for app review. Without user blocking feature, the app may be rejected from the reviewer of the app publishing.
+- `/users/{uid}/user-meta/blocks`: This document holds all the list of blocked users.
+  - It is separated from the user document because
+    - Blocking information is a private information and that must be protected
+    - If it is in the user document (even if it's a privacy matter), the document may become big and cost more on network in seaching user's public data.
+
+- When A blocks B, A should not see the contents from B.
+  - A can still invite/like B.
+  - This security can be softly done within the flutter code. There is no need to be hard limited from security rules.
+
+- Below is an example of blocking user and unblocking user.
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await i.block(context: context, otherUid: user.uid);
+  },
+  child: UserBlocked(
+    otherUid: user.uid,
+    builder: (b) => Text(b ? 'Un-block' : 'Block'),
+  ),
+),
+```
+
+- Use the code below to display the list of users who are blocked by the login user.
+  - This screen also shows unblock button.
+
+```dart
+ElevatedButton(
+  onPressed: () => i.showBlockListScreen(context),
+  child: const Text(
+    'Block list',
+  ),
+),
+```
 
 
 
@@ -151,19 +192,18 @@ And to make it short, you can use `MyDocReady`.
 
 ## UserDoc
 
-You can create a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
+- You can display a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
 
-`uid` is the user's UID. It uses the `MemoryCache` package to cach the data in memory.
+- `uid` is the user's UID. It uses the `MemoryCache` package to cach the data in memory.
 
-There are three different modes for using `UserDoc`
+- There are three different usage for using `UserDoc`
+  - If `sync` is passed as true, then it will rebuild the widget whenever the database changes. It first shows the data cached in memory as the `initialData` (this will help reducing flickering).  And then shows(re-builds) data from database. The default value is false.
+  - If `cache` is true, it uses data cached in memory. If there is no cached data in memory, it reads data from the server. The default value is true, and once user data is read(loaded) from the database, it does not access the database again.
+  - If the both of `sync` and `cache` are set to false, it will get the data from database always.
 
-If `cacheOnly` is true, it only uses data cached in memory. If there is cached data in memory, it uses that data. If there is no cached data in memory, it reads data from the server. The default value is true, and once user data is read from the DB, it does not read from the DB again.
+  If `sync` is passed as true, the `cache` option will be ignore.it first shows the data cached in memory as the `initialData` and then fetches and shows data from the server. So, it build the widget twice.
 
-If `cacheOnly` is false, it first shows the data cached in memory as the `initialData` and then fetches and shows data from the server. So, it build the widget twice.
-
-Using [sync], it first shows the data cached in memory as the `initialData` and then shows data updated in real-time.
-
-It uses the `initialData` for reducing flickering.
+- It uses the `initialData` for reducing flickering.
 
 
 Examples:
@@ -181,46 +221,58 @@ UserDoc(
 
 
 
-
 ## Finding user 
 
-You can search user from collection by thier display name. use `UserSearchDialog()` or `UserService.instance.showUserSearchDialog` 
+You can search users by thier name or display name with `UserService.instance.showUserSearchDialog` .
+
 
 - if `exactSearch` is `true` it will search the exact text search provided in the user collection (ex: You search John Smith it will show result of user who name exactly Johm Smith). while if its `false` it will search base on the given and provide what might be your searching (ex: you search John and it will show result of user who have John in thier name John Smith, John Doe, John Carl, etc)
 
 
-- if `searchName` is `true` is will search from the name field of the user. and if `searchName` is `false` it will search from the display name field of the user. `search is case insensitive` and the `default search is name`.
+- if `searchName` is `true` is will search from the name field of the user.
+- if `searchNickname` is `true` it will search from the display name field of the user.
 
-Note: Search is `case-insensitive` and the by default it will search `exact match` of the user `name` field.
+- The name or display name are case insensitive. And it is supported by saving the name and display name in lower case in the Firestore.
+
+- Note that, the search is `case-insensitive` and the by default it will search `exact match` of the user `name` field.
 
 
 Using UserSearchDialog Widget
-```dart
-ElevatedButton (
-  onPressed:() {
-    showDialog(
-      context: context,
-      builder: (context) => UserSearchDialog(
-        exactSearch: false,
-        searchName: true,
-      ),
-    )
-  },
-  child: const Text('Search User'),
-);
-```
 
-Using UserService.instance.showUserSearchDialog
 ```dart
-ElevatedButton(onPressed: () {
-  UserService.instance.showUserSearchDialog(
+ElevatedButton(
+  onPressed: () async {
+    final user = await UserService.instance.showUserSearchDialog(
+      context,
       exactSearch: false,
-      searchName: true,
+      searchNickname: true,
     );
-  }, 
-  child: const Text('Search User'),
+    print('user; $user');
+  },
+  child: const Text('User Search Dialog'),
 ),
 ```
+
+
+For custom design, you would design for the search item(user) and `pop` with the user object. Even though it's really up to you how you can customize. You can do something else instead of `pop`ing the user object.
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    final user = await UserService.instance.showUserSearchDialog(
+      context,
+      exactSearch: false,
+      itemBuilder: (user, index) => ElevatedButton(
+        onPressed: () => Navigator.of(context).pop(user),
+        child: Text(user.displayName),
+      ),
+    );
+    print('user; $user');
+  },
+  child: const Text('User Search Dialog'),
+),
+```
+
 
 ## Trouble shooting
 
@@ -664,9 +716,24 @@ This will show `displayName`, not `name` of the user.
 The `UserAvatar` widget can be used like this:
 
 ```dart
-UserAvatar(uid: uid, size: 100, radius: 40),
+UserAvatar(user: user, size: 100, radius: 40),
 ```
 
+
+To display user avatar for login user, you may use the code below. The code below displays anonymous avatar if the user didn't signed in. And if the user signed in, it displays the user's photo url. If the user does not have photo url, it will display the first letter of the uid. And it also gives tap event to sign in or updating profile.
+
+```dart
+InkWell(
+  child: MyDoc(
+    builder: (user) => user == null
+        ? const AnonymousAvatar()
+        : UserAvatar(user: user),
+  ),
+  onTap: () => i.signedIn
+      ? UserService.instance.showProfileUpdaeScreen(context)
+      : context.push(SignInScreen.routeName),
+),
+```
 
 #### UserAvatar.fromUid
 
@@ -675,6 +742,13 @@ If you have only the uid of a user, then you can use this widget to display user
 ```dart
 UserAvatar.fromUid(uid: user.uid),
 ```
+
+- There is an options for `sync` that will update the avatar when the user update his profile photo. Use this when you want to update the user avatar in a chat room or any other screen that might need to display the user's photo in real time.
+
+```dart
+UserAvatar.fromUid(uid: myUid, sync: true),
+```
+
 
 ## Block and unblock
 

@@ -22,7 +22,7 @@ class VideoUploadIconButton extends StatelessWidget {
   });
 
   final void Function(String url) onUpload;
-  
+
   final void Function(SourceType?)? onUploadSourceSelected;
   final Widget icon;
   final Function(double)? progress;

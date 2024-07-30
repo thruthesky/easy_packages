@@ -28,8 +28,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     UserService.instance.init(
-      collectionName: 'my_members_col',
-    );
+        // collectionName: 'my_members_col',
+        );
     ChatService.instance.init();
   }
 

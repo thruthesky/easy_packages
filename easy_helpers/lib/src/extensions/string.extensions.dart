@@ -1,42 +1,32 @@
-import 'package:intl/intl.dart';
-
-extension FireFlutterStringExtension on String {
-  /// 문자를 정수로 변환
+/// String extension methods
+///
+///
+extension EasyHelperStringExtension on String {
+  /// Converts a string to an integer
   ///
-  /// 만약 변환할 수 없다면 0을 리턴.
+  /// Returns 0 if the conversion fails.
   int tryInt() {
     return int.tryParse(this) ?? 0;
   }
 
+  /// Converts a string to a double
+  ///
+  /// Returns 0.0 if the conversion fails.
   double? tryDouble() {
     return double.parse(this);
   }
 
+  /// Returns true if the string is an email address
   bool get isEmail =>
       RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(this);
 
-  /// Return value if the current string is empty.
-  ///
-  /// example
-  /// ```dart
-  /// ''.ifEmpty('This is empty!') // result: 'This is empty!'
-  /// String? uid; uid?.ifEmpty('UID is empty!') // result: null
-  ///
-  /// ```
-  String ifEmpty(String value) => isEmpty ? value : this;
-
-  /// If the string is empty, return the value.
+  /// If the string is empty, return the newString.
   ///
   /// example
   /// ```dart
   /// String gender = user.gender.or(null);
   /// ```
-  String or(String value) => isEmpty ? value : this;
-
-  /// If the string is empty, return tnull
-  dynamic get orNull => isEmpty ? null : this;
-
-  String upTo(int len) => length <= len ? this : substring(0, len);
+  String or(String newString) => isEmpty ? newString : this;
 
   /// Cut the string
   ///
@@ -64,96 +54,82 @@ extension FireFlutterStringExtension on String {
     return s;
   }
 
-  /// Return true if the string contains the url.
-  bool get hasUrl =>
-      contains('http://') || contains('https://') || contains('www.');
+  /// Check if string is a valid date
+  bool get isValidDateTime => DateTime.tryParse(this) != null;
 
-  // /// 해당 문자열이 빈 문자열이면, 익명 프로필 사진 URL 을 반환한다.
-  // String get orAnonymousUrl => isEmpty ? anonymousUrl : this;
-
-  // /// 해당 문자열이 빈 문자열이면, 검은색 사진 URL 을 반환한다.
-  // String get orBlackUrl => isEmpty ? blackUrl : this;
-
-  // /// 해당 문자열이 빈 문자열이면, 흰색 사진 URL 을 반환한다.
-  // String get orWhiteUrl => isEmpty ? whiteUrl : this;
-
-  // /// 각종 특수 문자를 없앤다.
-  // String get sanitize => trim().replaceAll(RegExp(r'[\r\n\t]'), " ");
-
-  // /// 내가 [uid] 사용자를 차단했으면, [message] 를 리턴한다. 아니면, 현재 문자열을 리턴한다.
-  // String orBlocked(String uid, String message) {
-  //   if (notLoggedIn) return this;
-  //   return iHave.blocked(uid) ? message : this;
-  // }
-
-  /// 문자열을 DateTime 으로 변경한다. 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, null 을 리턴하지 않고
-  /// 현재 시간을 리턴한다.
+  /// Converts a string to a DateTime object.
+  ///
+  /// If the string is not in a valid date format and cannot be parsed,
+  /// it returns the begining date time of unix time stamp which is 1970.
   ///
   /// 예) '2021-01-01' -> 2021-01-01 00:00:00.000
+  ///
+  ///
   DateTime get dateTime {
     try {
       return DateTime.parse(this);
     } catch (e) {
-      return DateTime.now();
+      return DateTime(1970);
     }
   }
 
-  /// 문자열을 DateTime 으로 변경한 다음, YYYY-MM-DD 형태로 리턴한다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
+  /// Returns string with capitalized first letter
   ///
-  /// 예) 20210101 -> 2021-01-01
-  // ignore: non_constant_identifier_names
-  String get Ymd {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
-  }
+  /// Example:
+  /// ```dart
+  /// assert('test'.capitalizeFirstLetter(), 'Test');
+  /// ```
+  ///
+  /// From: https://github.com/ScerIO/packages.dart/tree/master/packages
+  String capitalizeFirstLetter() =>
+      isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : this;
 
-  /// 문자열을 DateTime 으로 변경한 다음, YY-MM-DD 형태로 리턴한다. 앞에 년도가 두 자리 수 이다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
-  String get ymd {
-    return '${dateTime.year.toString().substring(2)}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
-  }
+  /// Alias of [capitalizeFirstLetter]
+  String get ucFirst => capitalizeFirstLetter();
 
-  /// 문자열을 DateTime 으로 변경한 다음, YYYY-MM-DD HH:MM:SS 형태로 리턴한다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
-  // ignore: non_constant_identifier_names
-  String get YmdHms {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
-  }
+  /// Check if this string matches a regular expression (regex)
+  ///
+  ///
+  bool hasMatch(String pattern) => RegExp(pattern).hasMatch(this);
 
-  // ignore: non_constant_identifier_names
-  String get YmdHm {
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-  }
+  /// Checks if string consist only Alphabet. (No Whitespace)
+  bool get isAlphabet => hasMatch(r'^[a-zA-Z]+$');
 
-  /// 문자열을 DateTime 으로 변경한 다음, MM-DD 형태로 리턴한다.
-  /// 만약, 문자열의 값이 시간 형식이 아니라서 파싱이 안되면, 현재 시간을 기준으로 날짜 값을 리턴한다.
-  /// 예) 2021-01-01 -> 01-01
-  String get md {
-    return '${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
-  }
+  /// Check if string is Alphanumeric
+  bool get isAlphanumeric => hasMatch(r'^[a-zA-Z0-9]+$');
 
-  /// Returns in the format of "HH:mm:ss" from dateTime
-  String get his {
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
-  }
+  /// Check if string is a boolean
+  bool get isBool => this == 'true' || this == 'false';
 
-  /// 문자열을 DateTime 으로 변경한 다음,
-  /// - 오늘 날짜이면, HH:MM AM 로 리턴하고
-  /// - 오늘 날짜가 아니면, YYYY-MM-DD 형태로 리턴한다.
-  String get shortDateTime {
-    final dt = dateTime;
-    final now = DateTime.now();
-    if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
-      return DateFormat.jm().format(dt);
-    } else {
-      return DateFormat('yy.MM.dd').format(dt);
-    }
-  }
+  /// Check if string is an integer
+  bool get isInt => int.tryParse(this) != null;
+
+  /// Check if string is numeric
+  bool get isNumeric => double.tryParse(this) != null;
+
+  /// Return true if the string contains the url.
+  bool get hasUrl =>
+      contains('http://') || contains('https://') || contains('www.');
+
+  /// Check if string is URL
+  bool get isURL => hasMatch(r'^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?$');
 }
 
-/// 문자열이 null 이거나 빈 문자열인지 확인하는 확장 함수
+/// String Extension to check if a string is null or empty
 ///
-/// String? 을 extends 에서 null 인지 아닌지를 검사한다.
-extension FireFlutterNullableStringExtension on String? {
+/// Checks if a String? is null or not in the extends clause.
+extension EasyHelperNullableStringExtension on String? {
+  /// Returns true if the string is null or empty
   bool get isNullOrEmpty => this == null || this!.isEmpty;
+
+  /// Alias of [isNullOrEmpty]
+  bool get isEmpty => isNullOrEmpty;
+
+  /// Alias of [isNullOrEmpty]
+  bool get empty => isNullOrEmpty;
+
+  bool get notEmpty => !isNullOrEmpty;
+
+  /// If the string is null or empty, then it will return the newString
+  String or(String newString) => isNullOrEmpty ? newString : this!;
 }

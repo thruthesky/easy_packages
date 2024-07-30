@@ -4,10 +4,10 @@ import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-/// [emptyBuilder] empty builder return true if the empty is called in
-/// the query result and return false if the empty is called
-/// when the textfield is empty or the user is not yet searching in this way you
-/// customize which emtpy you want to display
+/// [emptyBuilder] will be called with a boolean when the list is empty.
+/// true will be passed if the user submit the search word and no user found.
+/// false will be passwd otherwise. So, when the dialog is opened, the list
+/// will be empty and the emptyBuilder will be called with false.
 ///
 /// [padding] padding create padding around the dialog content
 ///
@@ -18,8 +18,12 @@ import 'package:flutter/material.dart';
 /// [exactSearch] if true the search will be exact if false the search will be
 /// partial search.
 ///
-/// [searchName] if true the search will be based on the name if false the
-/// search will be based on the displayName. By default it is true.
+/// [searchName] if true the search will be based on the name.
+///
+/// [searchNickname] if true the search will be based on the nickname.
+///
+/// If both of [searchName] and [searchNickname] are false, the search will be
+/// based on the name.
 ///
 ///
 class UserSearchDialog extends StatefulWidget {
@@ -29,7 +33,8 @@ class UserSearchDialog extends StatefulWidget {
     this.padding,
     this.itemBuilder,
     this.exactSearch = true,
-    this.searchName = true,
+    this.searchName = false,
+    this.searchNickname = false,
   });
 
   final Widget Function(bool)? emptyBuilder;
@@ -37,6 +42,7 @@ class UserSearchDialog extends StatefulWidget {
   final Widget Function(User, int)? itemBuilder;
   final bool exactSearch;
   final bool searchName;
+  final bool searchNickname;
 
   @override
   State<UserSearchDialog> createState() => _UserSearchDialogState();
@@ -54,8 +60,14 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
   }
 
   Query get query {
-    final field =
-        widget.searchName ? 'caseIncensitveName' : 'caseIncensitiveDisplayName';
+    String field;
+    if (widget.searchName) {
+      field = 'caseIncensitveName';
+    } else if (widget.searchNickname) {
+      field = 'caseIncensitiveDisplayName';
+    } else {
+      field = 'caseIncensitveName';
+    }
 
     return widget.exactSearch
         ? userCol.where(field, isEqualTo: searchText)
@@ -111,8 +123,8 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                     itemBuilder: (user, index) =>
                         widget.itemBuilder?.call(user, index) ??
                         UserListTile(
-                          // contentPadding: EdgeInsets.zero,
                           user: user,
+                          onTap: () => Navigator.of(context).pop(user),
                         ),
                   ),
                 )

@@ -3,20 +3,18 @@ import 'package:flutter/material.dart';
 class ErrorDialog extends StatelessWidget {
   const ErrorDialog({super.key, this.title, required this.message});
 
-  final String? title;
-  final String message;
+  final Widget? title;
+  final Widget message;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
-        title ?? 'Error',
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-      content: Text(
-        message,
-        style: Theme.of(context).textTheme.labelLarge,
-      ),
+      title: title ??
+          Text(
+            'Error',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+      content: message,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
@@ -33,8 +31,8 @@ class ErrorDialog extends StatelessWidget {
 ///
 Future error({
   required BuildContext context,
-  String? title,
-  required String message,
+  Widget? title,
+  required Widget message,
 }) {
   return
       //  HouseService.instance.errorDialog?.call(

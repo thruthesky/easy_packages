@@ -108,6 +108,28 @@ Please refer to the [Task Management System Package - easy_task](https://pub.dev
 - easy_locale - A multilingual translation package. There are many translation packages on pub.dev, but we use the simpler easy_locale package. There's no need for you to use this package in your app, but you can if you want.
 
 
+## Like and Dislike
+
+The `like` and `dislike` functionality can be applied to various entities in the app, such as user profiles, uploaded photos, posts, and comments.
+
+A simple way to handle this is by saving a list of user IDs who liked or disliked an item. However, if the document becomes too large, it can slow down the app and increase costs for network usage on Firebase. Additionally, Firestore documents have a 1MB size limit, which can cause issues if too many users like or dislike an item.
+
+The `easy_like` package provides an easy and efficient way to manage the `like` and `dislike` functionality.
+
+
+## Category
+
+
+
+## Block
+
+
+## Report
+
+
+
+
+
 ## Engine
 
 - `easy_engine` package is the counter part of the [easy-engin](https://github.com/thruthesky/easy-engine) backend.
@@ -155,11 +177,40 @@ This is the style guide of the development easy packages.
 
 ## Model
 
-Model class does
+Waht the Model class does
 - serialization/deserialization
 - basic crud of the model data
 - helper functions of the entity itself. Not other entities of the same model.
 - encapsulating the refs.
+
+
+The name of the model classes should be the noun of what it is being called like
+
+- `User`
+- `Category`
+- `Post`
+- `Comment`
+- etc.
+
+
+## Widget of Model
+
+What the widget of model does
+- display a UI based on the model data
+- realtime update
+
+The name of the widget of a model should end with `Doc` of the name of the model like
+
+- `UserDoc`
+- `CategoryDoc`
+- `PostDoc`
+- `Comment`
+- `LikeDoc`
+- etc.
+
+The document must have a `sync` parameter to re-build the widget when the database changes.
+
+
 
 
 
@@ -174,36 +225,72 @@ Service class does
 
 ## Database
 
-- Give empty value for the field to help filtering. For instance, if the user didn't choose this gender, then save it as empty string into the database so, it can be used for filtering to get who didn't put their gender. If the field does not exists, it's not easy to filter.
+- Give default value for the field to help filtering. For instance,
+  - if the user didn't choose his gender, then save it as empty string into the database so, it can be used for filtering to know who didn't choose for their gender. If the field does not exists, it's not easy to filter.
+  - if the post is not deleted, then save fales to `deleted` field. With this, you can easily filter posts that are not deleted. Without the default value, you cannot filter.
 
 
+- Add `Count` at the end of the field name that records no of counts. Like `commentCount`, `likeCount`, etc.
 
 
-## Throwing An Exception
+## Fields
 
-- The package must throw an except in this format.
-  - `domain/code message`
-  - `domain` is the feature or category.
-  - `code` is the code of exception
-  - `message` is the reason(or description/explanation) of the exception.
-  - For instance, `task-create/auth-required User sign in required to create a task`.
-
-- You can handle error message like below.
-  - the `domain` is ignored and not displayed in the code below.
+- To prevent the typo error and improve reusabilities, define field class like below
 
 ```dart
-if (e.toString().contains('/')) {
-  final title = e.toString().split(' ')[0].split('/')[1];
-  final parts = e.toString().split(' ');
-  String message = '';
-  if (parts.length > 1) {
-    message = parts.sublist(1).join(' ');
-  }
-  error(context: globalContext, title: title, message: message);
-} else {
-  error(context: globalContext, message: e.toString());
+class UserField {
+  UserField._();
+  static const String statePhotoUrl = 'statePhotoUrl';
 }
 ```
+
+- And use like below
+
+```dart
+UserField.statePhotoUrl
+```
+
+## Exception
+
+- To handle better exception, you can catch the exceptions of each packages.
+
+- This is an example of UserException from `easyuser` package.
+
+Example:
+```dart
+class UserException implements Exception {
+  final String code;
+  final String message;
+
+  UserException(this.code, this.message);
+
+  @override
+  String toString() {
+    return 'UserException: ($code) $message';
+  }
+}
+```
+
+- `code` is the code of exception
+- `message` is the reason(or description/explanation) of the exception.
+
+
+- To handle the error message, you can do the following.
+
+```dart
+(() async {
+  try {
+    throw UserException('sign-in-required', 'Please sign in first');
+  } on UserException catch (e) {
+    print('* UserException: ${e.code}, ${e.message}');
+  } catch (e) {
+    print('* Exception: $e');
+  }
+})();
+```
+
+
+
 
 
 
@@ -264,15 +351,36 @@ Use `FirestoreQueryBuilder` or `FirebaseDatabaseQueryBuilder`. Use query builder
 
 
 
+# Tests
 
-# Unit test
+All package developers should do tests.
 
-Do the unit test as Flutter does.
+## Unit test
 
-# Widget test
+You can follow the unit test as described in Flutter document.
+
+The purpose of unit test is to test on the units.
+
+The recommendation on the unit testing is to provide a test service like `LikeTestService.instance.runTests()`.
+
+See `easy_like` for the details.
+
+
+
+
+
+## Widget test
 
 
 Do the widget test as Flutter does.
+
+
+## Integration test
+
+You would probably create an example app to build and test the package. And It's upto you to do integration-test on the example app.
+
+
+
 
 
 
@@ -284,4 +392,23 @@ Do the widget test as Flutter does.
 - When you, as an easy package developer, add text translation for your package, you have to options to put the translation
   - 1. Add it to `easy_locale/lib/src/locale.text.dart` if you think the translation text is one of the basic ones.
   - 2. Add it to the `init` method of the package service if you think the translation is only applicable to the package.
+
+
+
+
+# Customization
+
+- You can customize the screen by providing the `showXxxxScreen` callback on the service.
+  - This callback function can be everywhere but should be provided by the service class.
+
+Example:
+```dart
+UserService.instance.init(
+  showPublicProfileScreen: (user) => CustomizedPublicProfileScreen(context: context, user: user);
+);
+```
+
+
+- Note that, the callback **must pass** the BuildContext.
+
 

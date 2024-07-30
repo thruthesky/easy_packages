@@ -1,5 +1,6 @@
 import 'package:easyuser/easyuser.dart';
 import 'package:easyuser/src/widgets/privates/user.build_avatar.dart';
+import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 /// UserAvatar
@@ -29,26 +30,50 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UserBuildAvatar(user: user);
+    return UserBuildAvatar(
+      user: user,
+      size: size,
+      radius: radius,
+      border: border,
+    );
   }
 
+  /// Display user's avatar from the user's uid.
   static Widget fromUid({
     Key? key,
     required String uid,
     double size = 48,
     double radius = 20,
     Border? border,
+    bool sync = false,
   }) {
     return UserDoc(
       uid: uid,
+      sync: sync,
       builder: (user) => user == null
-          ? const SizedBox.shrink()
+          ? buildAnonymouseAvatar(size: size, radius: radius, border: border)
           : UserBuildAvatar(
               user: user,
               size: size,
               radius: radius,
               border: border,
             ),
+    );
+  }
+
+  static buildAnonymouseAvatar({
+    required double size,
+    double radius = 20,
+    Border? border,
+  }) {
+    return UserCircleAvatar(
+      size: size,
+      radius: radius,
+      border: border,
+      child: Icon(
+        Icons.person,
+        size: size / 1.5,
+      ),
     );
   }
 }

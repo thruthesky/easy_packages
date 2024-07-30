@@ -32,7 +32,7 @@ class CommentListArrowDetail extends StatelessWidget {
                 ),
             ],
           ),
-        if (comment.depth > 1)
+        if (comment.depth > 0)
           Icon(
             Icons.subdirectory_arrow_right,
             // Icons.arrow_right_rounded,
@@ -44,7 +44,7 @@ class CommentListArrowDetail extends StatelessWidget {
         const SizedBox(
           width: 8,
         ),
-        CommentDetail(comment: comment),
+        Expanded(child: CommentDetail(comment: comment)),
       ],
     );
   }
