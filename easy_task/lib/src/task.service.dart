@@ -15,11 +15,27 @@ class TaskService {
   CollectionReference col = FirebaseFirestore.instance.collection('tasks');
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
+  /// Show the task create screen. It can be a project creation.
   showTaskCreateScreen(BuildContext context) {
     showGeneralDialog(
       context: context,
       pageBuilder: (context, _, __) {
         return const TaskCreateScreen();
+      },
+    );
+  }
+
+  /// Show the child task create screen
+  showChildTaskCreateScreen(
+    BuildContext context, {
+    required Task parentTask,
+  }) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return ChildTaskCreateScreen(
+          parentTask: parentTask,
+        );
       },
     );
   }
@@ -47,6 +63,15 @@ class TaskService {
       context: context,
       pageBuilder: (context, _, __) {
         return const TaskListScreen();
+      },
+    );
+  }
+
+  showProjectDetailScreen(BuildContext context, Task task) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return ProjectDetailsScreen(task: task);
       },
     );
   }

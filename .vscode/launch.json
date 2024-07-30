@@ -37,6 +37,14 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "Example - SM A750GN",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "320066b04746b53d",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "EasyUser Example - iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",

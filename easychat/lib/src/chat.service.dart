@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/screens/chat.room.invite_list.screen.dart';
 import 'package:easychat/src/widgets/screens/chat.room.member_list.screen.dart';
@@ -72,7 +71,6 @@ class ChatService {
         );
   }
 
-  // TODO dry
   Future showOpenChatRoomListScreen(BuildContext context) {
     return $showChatRoomListScreen?.call(
           context: context,
@@ -80,12 +78,13 @@ class ChatService {
         ) ??
         showGeneralDialog(
           context: context,
-          pageBuilder: (_, __, ___) => const ChatRoomListScreen(open: true),
+          pageBuilder: (_, __, ___) => const ChatRoomListScreen(
+            queryType: ChatRoomListQuery.open,
+          ),
         );
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
-  // TODO
   Future<DocumentReference?> showChatRoomEditScreen(BuildContext context,
       {ChatRoom? room}) {
     return $showChatRoomEditScreen?.call(context: context) ??
@@ -96,7 +95,6 @@ class ChatService {
   }
 
   showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
-    dog("Called showChatRoomScreen user: $user room: $room");
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) => ChatRoomScreen(

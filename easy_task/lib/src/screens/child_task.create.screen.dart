@@ -3,19 +3,19 @@ import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:flutter/material.dart';
 
-class TaskCreateScreen extends StatefulWidget {
-  static const String routeName = '/TaskCreate';
-  const TaskCreateScreen({super.key});
+class ChildTaskCreateScreen extends StatefulWidget {
+  static const String routeName = '/ChildTaskCreate';
+  const ChildTaskCreateScreen({super.key, required this.parentTask});
+
+  final Task parentTask;
 
   @override
-  State<TaskCreateScreen> createState() => _TaskCreateScreenState();
+  State<ChildTaskCreateScreen> createState() => _ChildTaskCreateScreenState();
 }
 
-class _TaskCreateScreenState extends State<TaskCreateScreen> {
+class _ChildTaskCreateScreenState extends State<ChildTaskCreateScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-
-  bool project = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +28,6 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CheckboxListTile(
-              value: project,
-              title: Text('Project'.t),
-              subtitle: const Text('Is it a project?'),
-              onChanged: (v) => setState(() => project = v ?? false),
-            ),
             TextField(
               controller: _titleController,
               decoration: const InputDecoration(labelText: 'Title'),
@@ -52,7 +46,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                 final ref = await Task.create(
                   title: _titleController.text,
                   description: _descriptionController.text,
-                  project: project,
+                  parent: widget.parentTask.id,
                 );
                 final task = await Task.get(ref.id);
                 if (context.mounted) {

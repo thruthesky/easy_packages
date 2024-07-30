@@ -122,16 +122,19 @@ CommentListView(
 
 ### CommentListTreeView
 
-This list view provides a nice tree style vertical lines on the nested comment list.
+`CommentListTreeView` provides a nice tree style vertical lines on the nested comment list. It is designed to work in sliver scroll view. So, you should use `CustomScrollView` on the screen.
 
 ```dart
-CustomScrollView(
-  slivers: [
-    SliverToBoxAdapter(child: Text('Reference: ${ref.path}')),
-    SliverToBoxAdapter(child: CommentInputBox(documentReference: ref)),
-    CommentListTreeView(documentReference: ref),
-  ],
+SliverToBoxAdapter(
+  child: CommentFakeInputBox(
+    onTap: () => CommentService.instance.showCommentEditDialog(
+      context: context,
+      documentReference: task.ref,
+      focusOnContent: true,
+    ),
+  ),
 ),
+CommentListTreeView(documentReference: task.ref),
 ```
 
 
