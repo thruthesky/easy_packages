@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 class ChatRoomInputBox extends StatefulWidget {
   const ChatRoomInputBox({
     super.key,
-    this.room,
+    required this.room,
     this.afterAccept,
   });
 
-  final ChatRoom? room;
+  final ChatRoom room;
   final Function(BuildContext context, ChatRoom updatedRoom)? afterAccept;
 
   @override
@@ -24,34 +24,16 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   bool submitable = false;
   double? uploadProgress;
 
-  ChatRoom? room;
-
-  StreamSubscription? subscription;
+  ChatRoom get room => widget.room;
 
   @override
   void initState() {
     super.initState();
-    prepareRoom();
-  }
-
-  @override
-  void didUpdateWidget(covariant ChatRoomInputBox oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    prepareRoom();
-  }
-
-  prepareRoom() {
-    room = widget.room;
-    subscription?.cancel();
-    subscription = room?.ref.snapshots().listen((doc) {
-      room = ChatRoom.fromSnapshot(doc);
-    });
   }
 
   @override
   void dispose() {
     controller.dispose();
-    subscription?.cancel();
     super.dispose();
   }
 
@@ -111,18 +93,15 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   }
 
   Future sendMessage({String? photoUrl, String? text}) async {
-    if (room == null) {
-      throw 'chat-room/room-not-ready Either room is not ready or room is set as null.';
-    }
     if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
     await shouldAcceptInvitation();
     List<Future> futures = [
       ChatMessage.create(
-        roomId: room!.id,
+        roomId: room.id,
         text: text,
         url: photoUrl,
       ),
-      room!.updateUnreadUsers(
+      room.updateUnreadUsers(
         lastMessageText: text,
         lastMessageUrl: photoUrl,
       ),
@@ -133,14 +112,13 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   }
 
   shouldAcceptInvitation() async {
-    if (room == null) return;
-    if (room!.userUids.contains(my.uid)) return;
-    if (room!.invitedUsers.contains(my.uid) || room!.group) {
+    if (room.userUids.contains(my.uid)) return;
+    if (room.invitedUsers.contains(my.uid) || room.group) {
       // await room!.acceptInvitation();
-      await room!.join();
-      room!.invitedUsers.remove(my.uid);
+      await room.join();
+      room.invitedUsers.remove(my.uid);
       if (widget.afterAccept == null) return;
-      final updatedRoom = await ChatRoom.get(room!.id);
+      final updatedRoom = await ChatRoom.get(room.id);
       if (updatedRoom == null) return;
       if (!mounted) return;
       widget.afterAccept?.call(context, updatedRoom);

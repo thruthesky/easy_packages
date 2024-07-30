@@ -36,7 +36,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // If room is null, user should not be null.
     // We have to get room from other user.
     if (widget.room == null) await loadRoomFromOtherUser();
-
+    setState(() {});
     $room!.listen();
     $room!.updateMeta();
   }
@@ -100,11 +100,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           else
           // There is a chance for user to open the chat room
           // if the user is not a member of the chat room
-          if (room!.userUids.contains(my.uid) == false) ...[
+          if ($room!.userUids.contains(my.uid) == false) ...[
             // The user has a chance to open the chat room with message
             // when the other user sent a message (1:1) but the user
             // haven't accepted yet.
-            if (room!.invitedUsers.contains(my.uid))
+            if ($room!.invitedUsers.contains(my.uid))
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -124,7 +124,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
               )
             // For open chat rooms, the rooms can be seen by users.
-            else if (room!.group)
+            else if ($room!.group)
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -148,22 +148,24 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: ChatMessagesListView(room: room!),
+              child: ChatMessagesListView(room: $room!),
             ),
           ),
           SafeArea(
             top: false,
-            child: ChatRoomInputBox(
-              room: room,
-              afterAccept: (context, room) {
-                if (!mounted) return;
-                setState(
-                  () {
-                    this.room = room;
-                  },
-                );
-              },
-            ),
+            child: $room == null
+                ? const SizedBox.shrink()
+                : ChatRoomInputBox(
+                    room: $room!,
+                    afterAccept: (context, room) {
+                      if (!mounted) return;
+                      setState(
+                        () {
+                          $room = room;
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
