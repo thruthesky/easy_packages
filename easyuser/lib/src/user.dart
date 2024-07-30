@@ -37,9 +37,14 @@ class User {
   DateTime? lastLoginAt;
   String? photoUrl;
 
+  /// state message and state image url
+  String? stateMessage;
+  String? statePhotoUrl;
+
   /// Collection reference of the user's collection.
   ///
   CollectionReference col = UserService.instance.col;
+  CollectionReference metaCol = UserService.instance.metaCol;
 
   /// [doc] is the document reference of this user model.
   DocumentReference get doc => col.doc(uid);
@@ -62,6 +67,8 @@ class User {
     this.birthDay,
     this.lastLoginAt,
     this.photoUrl,
+    this.stateMessage,
+    this.statePhotoUrl,
   });
 
   /// Create a user with the given [uid].
@@ -117,6 +124,8 @@ class User {
       birthMonth: json['birthMonth'],
       birthDay: json['birthDay'],
       photoUrl: json['photoUrl'],
+      stateMessage: json['stateMessage'],
+      statePhotoUrl: json['statePhotoUrl'],
     );
   }
 
@@ -134,6 +143,8 @@ class User {
     data['birthDay'] = birthDay;
     data['lastLoginAt'] = lastLoginAt;
     data['photoUrl'] = photoUrl;
+    data['stateMessage'] = stateMessage;
+    data['statePhotoUrl'] = statePhotoUrl;
     return data;
   }
 
@@ -190,7 +201,7 @@ class User {
     throw UnimplementedError('This is not for use.');
   }
 
-  Future update({
+  Future<void> update({
     String? displayName,
     String? name,
     int? birthYear,
@@ -198,6 +209,8 @@ class User {
     int? birthDay,
     String? gender,
     String? photoUrl,
+    String? stateMessage,
+    String? statePhotoUrl,
   }) async {
     await doc.set(
       {
@@ -212,6 +225,8 @@ class User {
         if (birthDay != null) 'birthDay': birthDay,
         if (gender != null) 'gender': gender,
         if (photoUrl != null) 'photoUrl': photoUrl,
+        if (stateMessage != null) 'stateMessage': stateMessage,
+        if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
       },
       SetOptions(merge: true),
     );

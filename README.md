@@ -177,11 +177,40 @@ This is the style guide of the development easy packages.
 
 ## Model
 
-Model class does
+Waht the Model class does
 - serialization/deserialization
 - basic crud of the model data
 - helper functions of the entity itself. Not other entities of the same model.
 - encapsulating the refs.
+
+
+The name of the model classes should be the noun of what it is being called like
+
+- `User`
+- `Category`
+- `Post`
+- `Comment`
+- etc.
+
+
+## Widget of Model
+
+What the widget of model does
+- display a UI based on the model data
+- realtime update
+
+The name of the widget of a model should end with `Doc` of the name of the model like
+
+- `UserDoc`
+- `CategoryDoc`
+- `PostDoc`
+- `Comment`
+- `LikeDoc`
+- etc.
+
+The document must have a `sync` parameter to re-build the widget when the database changes.
+
+
 
 
 
@@ -201,33 +230,67 @@ Service class does
   - if the post is not deleted, then save fales to `deleted` field. With this, you can easily filter posts that are not deleted. Without the default value, you cannot filter.
 
 
+- Add `Count` at the end of the field name that records no of counts. Like `commentCount`, `likeCount`, etc.
 
 
-## Throwing An Exception
+## Fields
 
-- The package must throw an except in this format.
-  - `domain/code message`
-  - `domain` is the feature or category.
-  - `code` is the code of exception
-  - `message` is the reason(or description/explanation) of the exception.
-  - For instance, `task-create/auth-required User sign in required to create a task`.
-
-- You can handle error message like below.
-  - the `domain` is ignored and not displayed in the code below.
+- To prevent the typo error and improve reusabilities, define field class like below
 
 ```dart
-if (e.toString().contains('/')) {
-  final title = e.toString().split(' ')[0].split('/')[1];
-  final parts = e.toString().split(' ');
-  String message = '';
-  if (parts.length > 1) {
-    message = parts.sublist(1).join(' ');
-  }
-  error(context: globalContext, title: title, message: message);
-} else {
-  error(context: globalContext, message: e.toString());
+class UserField {
+  UserField._();
+  static const String statePhotoUrl = 'statePhotoUrl';
 }
 ```
+
+- And use like below
+
+```dart
+UserField.statePhotoUrl
+```
+
+## Exception
+
+- To handle better exception, you can catch the exceptions of each packages.
+
+- This is an example of UserException from `easyuser` package.
+
+Example:
+```dart
+class UserException implements Exception {
+  final String code;
+  final String message;
+
+  UserException(this.code, this.message);
+
+  @override
+  String toString() {
+    return 'UserException: ($code) $message';
+  }
+}
+```
+
+- `code` is the code of exception
+- `message` is the reason(or description/explanation) of the exception.
+
+
+- To handle the error message, you can do the following.
+
+```dart
+(() async {
+  try {
+    throw UserException('sign-in-required', 'Please sign in first');
+  } on UserException catch (e) {
+    print('* UserException: ${e.code}, ${e.message}');
+  } catch (e) {
+    print('* Exception: $e');
+  }
+})();
+```
+
+
+
 
 
 

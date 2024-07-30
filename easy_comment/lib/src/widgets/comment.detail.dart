@@ -101,8 +101,8 @@ class CommentDetail extends StatelessWidget {
                 } else if (value == 'delete') {
                   final re = await confirm(
                     context: context,
-                    title: 'delete comment title'.t,
-                    message: 'delete comment message'.t,
+                    title: Text('delete comment title'.t),
+                    message: Text('delete comment message'.t),
                   );
                   if (re != true) return;
 

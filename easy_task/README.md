@@ -2,10 +2,21 @@
 
 This package is a todo like task manage system which allows a user to create groups, user lists, tasks and assign the task to the users of the group, and moderating the workflow.
 
-## Logic
 
-- `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
-  - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
+
+
+# Installation
+
+
+## Firestore Indexes
+
+
+- `tasks` collection composit indexes
+  - `creator: asc` and `createdAt: desc` is required.
+  - `project: asc` and `createdAt: desc` is required.
+  - `parent: asc` and `createdAt: desc` is required.
+  - `completed: asc` and `createdAt: desc` is required.
+
 
 
 
@@ -78,51 +89,57 @@ Do the widget test as Flutter does.
 
 
 
-## Task Group Structure
+# Logic
+
+- `Sign-in` is required before using any of the widget or logic of the package. This package does not provide anything for user authentication. You can develop your own.
+  - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
 
 
-- `task-group` is the group of tasks. It has
+- `Task` is a work.
 
+- Each task has fields like below;
+  - `project: bool` to know if it's a project or a task.
+  - `child: bool` to know if it has a parent or not. If it's true, it belong to a project.
 
-- `creator`
-- `moderatorUsers`
-- `users` - This is a list of uid of the users who accepted the invitation.
-- `userGroups` - This is the group list of user groups. (NOTE, NOT SUPPORTED THIS TIME). A task group can have multiple user gropus. And the user groups are added, the users no need to accept the invitation.
-- `invitedUsers` -
-- `rejectedUsers`
-- `name`
-- `title`
-- `createdAt`
-- `updatedAt`
+- `Project` is a task with a special purpose. It has `project: true`, while task has `project: false`. Think about it as a comment thread, `A task can have children tasks`. And the task that has children is called `Project`.
+  - The `Project` information is saved as a task document, for the management purpose. So, in the list view, it will be listed together with otehr tasks.
+  - Project can have many child tasks. Remember, Projects and tasks are saved in same `tasks` collection.
 
+- A task can be assigned to other user (NOT supported, yet)
 
-## Task Assign Database Structure
+- A task can be moved to a project, and vice versa.
 
-It is not ideal to put the assigned user list in the task document for indexing and filtering. So, it uses a separate collection to maintain relation between task and its assigned users.
+- In the list view, children tasks with `child: true` are not dispolayed.
 
-- `task-assign/{assignId}` is the collection name.
+- `Group task` is displayed together with other tasks in the same task list view.
+  - Group task has no check box.
+  - When the gropu task is clicked, it will display the details of it.
 
-- `assignedTo`
-- `assignedBy`
-- `createdAt`
-- `taskId`
-- `status`
+- User invitation is done by `easyuser`.
+- Comment under each task is used by `easy_comment` package.
 
-
-
-
-
-
-
-## Task User Group Database Structure
-
-NOTE, THIS IS NOT SUPPPORTED AT THIS TIME!
-
-Any one can create user groups. The user must accept invitation to become a member of the user group. And the the user gruop is assigned to the `task-group`, invitation is no longer required fore the members of the group since they initially accepted the invition to be that user group.
-
-- `task-user-group` - is the collection name.
-
+```mermaid
+flowchart TD
+Task_List-->Task_Create-->Task_Detail-->Task_Update-->Task_List
+Task_List-->Task_Detail
+Task_List-->Project_Detail
+Task_Detail-->Task_List
+Task_List-->Menu-->User_Group_List
+User_Group_List-->Create_User_Group
+User_Group_List-->View_User_Group-->Invite_Users_1
+Project_Detail-->Project_Detail_Menu-->Invite_User_2
+Project_Detail_Menu-->Invite_User_Group
+```
 
 
 
+
+
+
+
+
+
+
+
+# Known Issues
 

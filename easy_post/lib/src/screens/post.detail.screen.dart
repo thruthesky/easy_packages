@@ -14,13 +14,14 @@ class PostDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// The post must be in realtime to update the post in realtime
     return PostDoc(
         post: post,
         sync: true,
         builder: (post) {
           /// If the post has no youtube video, return the normal scallfold.
           if (post.hasYoutube == false) {
-            return buildScaffold(context);
+            return PostDetailScaffold(post: post);
           }
 
           /// If the post has youtube video, return the youtube fullscreen
@@ -28,12 +29,26 @@ class PostDetailScreen extends StatelessWidget {
           return YoutubeFullscreenBuilder(
               post: post,
               builder: (context, player) {
-                return buildScaffold(context, player);
+                return PostDetailScaffold(post: post, youtubePlayer: player);
               });
         });
   }
+}
 
-  buildScaffold(BuildContext context, [Widget? player]) {
+/// PostDetailScaffold
+///
+/// This widget displays the post details scaffold. The reason why it is
+/// separated from the PostDetailScreen is to inject the youtube player
+/// if the post has youtube video. If the post has no youtube video, it
+/// will not inject the youtube player.
+class PostDetailScaffold extends StatelessWidget {
+  const PostDetailScaffold({super.key, required this.post, this.youtubePlayer});
+
+  final Post post;
+  final Widget? youtubePlayer;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('PostDetail'),
@@ -45,7 +60,7 @@ class PostDetailScreen extends StatelessWidget {
             sliver: SliverToBoxAdapter(
               child: PostDetail(
                 post: post,
-                youtubePlayer: player,
+                youtubePlayer: youtubePlayer,
               ),
             ),
           ),

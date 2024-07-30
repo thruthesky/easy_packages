@@ -1,11 +1,5 @@
-import 'package:example/screens/group/task.user.group.list.screen.dart';
-import 'package:example/screens/group/received_invitation.screen.dart';
-import 'package:example/screens/task/task.list.screen.dart';
-import 'package:example/screens/test/test.screen.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:easy_task/easy_task.dart';
 import 'package:easyuser/easyuser.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,9 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Home'),
         actions: [
           IconButton(
-            onPressed: () {
-              context.push(TestScreen.routeName);
-            },
+            onPressed: () {},
             icon: const Icon(Icons.fact_check),
           ),
         ],
@@ -50,55 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ] else ...[
                   Text("Display Name: ${user.displayName}"),
                   Text("UID: ${user.uid}"),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      showGeneralDialog(
-                        context: context,
-                        pageBuilder: (context, a1, a2) {
-                          return const TaskCreateScreen();
-                        },
-                      );
-                      if (!context.mounted) return;
-                      setState(() {});
-                    },
-                    child: const Text('+ Create Task'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.push(TaskListScreen.routeName);
-                    },
-                    child: const Text('Task Lists'),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.push(TaskUserGroupListScreen.routeName);
-                    },
-                    child: const Text("Group"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      showGeneralDialog(
-                        context: context,
-                        pageBuilder: (context, a1, a2) =>
-                            const ReceivedInvitationScreen(),
-                      );
-                    },
-                    child: const Text("Received Group Invitations"),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await fa.FirebaseAuth.instance.signOut();
-                      if (!context.mounted) return;
-                      setState(() {});
-                    },
-                    child: const Text('Sign Out'),
-                  ),
-                  const SafeArea(
-                    child: SizedBox(height: 24),
-                  ),
                 ],
               ],
             );

@@ -31,11 +31,11 @@ class LikeTestService {
 
     final gotSnapshot = await documentReference.get();
     final gotData = gotSnapshot.data()!;
-    assert(gotData['likes'] == 1);
+    assert(gotData['likeCount'] == 1);
 
     final refSnapshot = await like.ref.get();
     final dynamic refData = refSnapshot.data()!;
-    assert(refData['likes'] == 1);
+    assert(refData['likeCount'] == 1);
     assert(refData['likedBy'].length == 1);
     assert(refData['likedBy'].contains('uid-a'));
 
@@ -45,11 +45,11 @@ class LikeTestService {
 
     final gotSnapshot2 = await documentReference.get();
     final gotData2 = gotSnapshot2.data()!;
-    assert(gotData2['likes'] == 0);
+    assert(gotData2['likeCount'] == 0);
 
     final refSnapshot2 = await like.ref.get();
     final dynamic refData2 = refSnapshot2.data()!;
-    assert(refData2['likes'] == 0);
+    assert(refData2['likeCount'] == 0);
     assert(refData2['likedBy'].length == 0);
     assert(refData2['likedBy'].contains('uid-a') == false);
   }

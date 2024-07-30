@@ -130,10 +130,10 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                               ///
                               final re = await confirm(
                                   context: context,
-                                  title: 'Delete Avatar?'.t,
-                                  message:
+                                  title: Text('Delete Avatar?'.t),
+                                  message: Text(
                                       'Are you sure you wanted to delete this avatar?'
-                                          .t);
+                                          .t));
                               if (re == false) return;
                               StorageService.instance.delete(data['photoUrl']);
                               UserService.instance.col.doc(my.uid).update({
