@@ -16,6 +16,13 @@ class ChatRoomInviteListScreen extends StatefulWidget {
 }
 
 class _ChatRoomInviteListScreenState extends State<ChatRoomInviteListScreen> {
+  List<String> get allInvitedUsers {
+    final List<String> allUids = [];
+    allUids.addAll(widget.room.invitedUsers);
+    allUids.addAll(widget.room.rejectedUsers);
+    return allUids;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +46,12 @@ class _ChatRoomInviteListScreenState extends State<ChatRoomInviteListScreen> {
                 exactSearch: false,
               );
               if (invitedUser == null) return;
+              if (widget.room.invitedUsers.contains(invitedUser.uid) ||
+                  widget.room.userUids.contains(invitedUser.uid) ||
+                  // the users who rejected earlier must not be invited as well
+                  widget.room.rejectedUsers.contains(invitedUser.uid)) {
+                throw 'chat-room/invited-user-already-invited The user is already invited or a member.';
+              }
               widget.room.inviteUser(invitedUser.uid);
               widget.room.invitedUsers.add(invitedUser.uid);
               if (!mounted) return;
@@ -48,13 +61,16 @@ class _ChatRoomInviteListScreenState extends State<ChatRoomInviteListScreen> {
         ],
       ),
       body: ListView.builder(
+        itemExtent: 72,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(widget.room.invitedUsers[index]),
+          return UserDoc(
+            uid: allInvitedUsers[index],
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : UserListTile(user: user),
           );
-          // return UserListTile(user: user) only uid
         },
-        itemCount: widget.room.invitedUsers.length,
+        itemCount: allInvitedUsers.length,
       ),
     );
   }

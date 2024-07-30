@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -27,6 +28,18 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   ChatRoom? room;
 
   @override
+  void initState() {
+    super.initState();
+    room = widget.room;
+  }
+
+  @override
+  void didUpdateWidget(covariant ChatRoomInputBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    room = widget.room;
+  }
+
+  @override
   void dispose() {
     controller.dispose();
     super.dispose();
@@ -34,18 +47,29 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 8, 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (uploadProgress != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: LinearProgressIndicator(
+              value: uploadProgress,
+            ),
+          ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 8, 12),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ImageUploadIconButton(
+                progress: (progress) {
+                  setState(() => uploadProgress = progress);
+                },
+                complete: () {
+                  setState(() => uploadProgress = null);
+                },
                 onUpload: (url) async {
-                  uploadProgress = 0;
-                  setState(() {});
                   await sendMessage(photoUrl: url);
                 },
               ),
@@ -71,8 +95,8 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
