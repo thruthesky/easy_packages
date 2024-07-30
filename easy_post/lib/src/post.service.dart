@@ -15,13 +15,22 @@ class PostService {
   CollectionReference get col => FirebaseFirestore.instance.collection('posts');
 
   Future Function(BuildContext, Post)? $showPostDetailScreen;
+  Future<DocumentReference?> Function(BuildContext, String?)?
+      $showPostCreateScreen;
+  Future<DocumentReference?> Function(BuildContext, Post)?
+      $showPostUpdateScreen;
 
   init({
     Future Function(BuildContext, Post)? showPostDetailScreen,
+    Future<DocumentReference?> Function(BuildContext, String?)?
+        showPostCreateScreen,
+    Future<DocumentReference?> Function(BuildContext, Post)?
+        showPostUpdateScreen,
   }) {
     initialized = true;
     $showPostDetailScreen = showPostDetailScreen;
-
+    $showPostCreateScreen = showPostCreateScreen;
+    $showPostUpdateScreen = showPostUpdateScreen;
     addPostTranslations();
   }
 
@@ -45,15 +54,16 @@ class PostService {
     String? category,
     bool enableYoutubeUrl = false,
   }) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) {
-        return PostEditScreen(
-          category: category,
-          enableYoutubeUrl: enableYoutubeUrl,
+    return $showPostCreateScreen?.call(context, category) ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (_, __, ___) {
+            return PostEditScreen(
+              category: category,
+              enableYoutubeUrl: enableYoutubeUrl,
+            );
+          },
         );
-      },
-    );
   }
 
   ///
@@ -62,16 +72,17 @@ class PostService {
     required Post post,
     bool enableYoutubeUrl = false,
   }) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) {
-        return PostEditScreen(
-          category: post.category,
-          post: post,
-          enableYoutubeUrl: enableYoutubeUrl,
+    return $showPostUpdateScreen?.call(context, post) ??
+        showGeneralDialog(
+          context: context,
+          pageBuilder: (_, __, ___) {
+            return PostEditScreen(
+              category: post.category,
+              post: post,
+              enableYoutubeUrl: enableYoutubeUrl,
+            );
+          },
         );
-      },
-    );
   }
 
   Future showPostListScreen({
