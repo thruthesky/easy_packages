@@ -40,6 +40,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // If room is null, user should not be null.
     // We have to get room from other user.
     if (room == null) await getRoomFromOtherUser();
+    roomStream = room?.ref.snapshots();
     if (room!.single && user == null) await getOtherUser();
     if (!mounted) return;
     room!.read();
@@ -48,7 +49,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   getRoomFromOtherUser() async {
     room = await ChatRoom.get(singleChatRoomId(user!.uid));
-    roomStream = room?.ref.snapshots();
     if (room != null) return;
     // In case the room doesn't exists, we create the room.
     // Automatically this will invite the other user.
