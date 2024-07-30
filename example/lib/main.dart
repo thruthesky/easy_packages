@@ -86,8 +86,6 @@ class MyAppState extends State<MyApp> {
       //     Category(id: 'news', name: 'News'),
       //   ],
       // );
-<<<<<<< HEAD
-=======
 
       // FirebaseFirestore.instance
       //     .collection('chat-rooms')
@@ -111,7 +109,6 @@ class MyAppState extends State<MyApp> {
       //       .showPostDetailScreen(context: globalContext, post: post);
       // })();
       // LikeTestService.instance.runTests();
->>>>>>> e2ac23c0ad9fccca9259ba896ba002033e2032e2
     });
   }
 

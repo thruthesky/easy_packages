@@ -404,19 +404,50 @@ class ChatRoom {
     });
   }
 
+  /// This only subtracts about 50 years in time. Using subtraction
+  /// will help to preserve order after reading the message.
+  /// There is a minimum limit for Timestamp for Firestore, that is why,
+  /// we can only do a subtraction of about 50 years.
+  Timestamp _negatedOrder(DateTime order) =>
+      Timestamp.fromDate(order.subtract(const Duration(days: 19000)));
+
   /// [updateUnreadUsers] is used to update all unread data for all
   /// users inside the chat room.
-  Future<void> updateUnreadUsers(
-      {String? lastMessageText, String? lastMessageUrl}) async {
+  Future<void> updateUnreadUsers({
+    String? lastMessageText,
+    String? lastMessageUrl,
+  }) async {
+    final serverTimestamp = FieldValue.serverTimestamp();
     final updateUserData = users.map(
-      (uid, value) => MapEntry(uid, {
-        if (single)
-          ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-        if (group) ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
-        ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-        ChatRoomUser.field.newMessageCounter:
-            uid == my.uid ? 0 : FieldValue.increment(1),
-      }),
+      (uid, value) {
+        if (uid == my.uid) {
+          final readOrder = _negatedOrder(DateTime.now());
+          return MapEntry(
+            uid,
+            {
+              if (single) ChatRoomUser.field.singleOrder: readOrder,
+              if (single) ChatRoomUser.field.singleTimeOrder: serverTimestamp,
+              if (group) ChatRoomUser.field.groupOrder: readOrder,
+              if (group) ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+              ChatRoomUser.field.order: readOrder,
+              ChatRoomUser.field.timeOrder: serverTimestamp,
+              ChatRoomUser.field.newMessageCounter: 0,
+            },
+          );
+        }
+        return MapEntry(
+          uid,
+          {
+            if (single) ChatRoomUser.field.singleOrder: serverTimestamp,
+            if (single) ChatRoomUser.field.singleTimeOrder: serverTimestamp,
+            if (group) ChatRoomUser.field.groupOrder: serverTimestamp,
+            if (group) ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+            ChatRoomUser.field.order: serverTimestamp,
+            ChatRoomUser.field.timeOrder: serverTimestamp,
+            ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
+          },
+        );
+      },
     );
     await ref.set({
       field.lastMessageText: lastMessageText ?? FieldValue.delete(),
@@ -429,7 +460,6 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  // TODO review
   /// [read] is used to set as read by the current user.
   /// It means, turning newMessageCounter into zero
   /// and updating the order
@@ -437,8 +467,7 @@ class ChatRoom {
     if (!userUids.contains(my.uid)) return;
     if (users[my.uid]!.newMessageCounter == 0) return;
     final myReadOrder = users[my.uid]!.order;
-    final updatedOrder = myReadOrder!.subtract(const Duration(days: 40000));
-
+    final updatedOrder = _negatedOrder(myReadOrder!);
     await ref.set({
       field.lastMessageText: lastMessageText ?? FieldValue.delete(),
       field.lastMessageAt: FieldValue.serverTimestamp(),

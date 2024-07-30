@@ -4,7 +4,7 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
 
-class ChatMessagesListView extends StatelessWidget {
+class ChatMessagesListView extends StatefulWidget {
   const ChatMessagesListView({
     super.key,
     required this.room,
@@ -17,17 +17,19 @@ class ChatMessagesListView extends StatelessWidget {
   final Widget Function(BuildContext context, ChatMessage message)? itemBuilder;
 
   @override
+  State<ChatMessagesListView> createState() => _ChatMessagesListViewState();
+}
+
+class _ChatMessagesListViewState extends State<ChatMessagesListView> {
+  @override
   Widget build(BuildContext context) {
-    dog("chat.messages.list_view room.messageRef: ${room?.messageRef}");
+    dog("chat.messages.list_view room.messageRef: ${widget.room?.messageRef}");
     return FirebaseDatabaseListView(
-      query: room!.messageRef.orderByChild("order"),
+      query: widget.room!.messageRef.orderByChild("order"),
       reverse: true,
-      // loadingBuilder: (context) => const Center(
-      //   child: Text("Loading..."),
-      // ),
       itemBuilder: (context, doc) {
         final message = ChatMessage.fromSnapshot(doc);
-        return itemBuilder?.call(context, message) ??
+        return widget.itemBuilder?.call(context, message) ??
             ListTile(
               title: Align(
                 alignment: message.uid == my.uid
