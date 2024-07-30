@@ -108,14 +108,16 @@ class _PostEditScreenState extends State<PostEditScreen> {
                   minLines: 5,
                   maxLines: 8,
                 ),
-                const SizedBox(height: 24),
-                TextField(
-                  controller: youtubeController,
-                  decoration: InputDecoration(
-                    hintText: 'Youtube'.t,
-                    labelText: 'Youtube'.t,
+                if (widget.enableYoutubeUrl) ...{
+                  const SizedBox(height: 24),
+                  TextField(
+                    controller: youtubeController,
+                    decoration: InputDecoration(
+                      hintText: 'Youtube'.t,
+                      labelText: 'Youtube'.t,
+                    ),
                   ),
-                ),
+                },
                 const SizedBox(height: 24),
                 if (uploadingPhotoProgress != null &&
                     !uploadingPhotoProgress!.isNaN)
