@@ -52,7 +52,7 @@ class _PostDetailState extends State<PostDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(user.displayName),
-                            Text('${user.createdAt}'),
+                            Text('${user.createdAt?.yMd}'),
                           ],
                         ),
                       )
@@ -74,6 +74,7 @@ class _PostDetailState extends State<PostDetail> {
               );
             }
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (post.deleted) ...{
                   const SizedBox(
