@@ -242,6 +242,19 @@ Widget build(BuildContext context) {
 ```
 
 
+## Post Detail Widgets
+
+ Creating your own screen, you might want to create a customize screen to specific need of your app and still want to use the some of the default
+ widget used on the defualt screen, you can use the widget below
+
+- `PostDetail` this contains the default widget used in `PostDetailScreen` such as `user meta data`, `post`, `post action button`.
+
+- `PostDetailCommentListTreeView` this contains the list of comments of the Post.
+
+- `PostDetailCommentInputBox` this contains the post comment input box and will open a bottom sheet to input the commnet. 
+
+- `PostDailBottomAction` this contains the post action such as `like`, `comment` and `menu` for `edit`, `delete`, `report`, `block`
+
 
 # Developer's Tips
 

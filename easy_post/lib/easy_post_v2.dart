@@ -1,10 +1,17 @@
 export './src/post.dart';
 export './src/post.locales.dart';
 export './src/post.service.dart';
-export './src/screens/post.detail.screen.dart';
+
 export './src/widgets/post.doc.dart';
-export './src/screens/post.edit.screen.dart';
 export './src/widgets/post.detail.dart';
+export './src/widgets/post.detail_bottom_action.dart';
+export './src/widgets/post.detail_comment_input_box.dart';
+export './src/widgets/post.detail_comment_list_tree_view.dart';
+
+export './src/widgets/post.detail.photos.dart';
+
+export './src/screens/post.detail.screen.dart';
+export './src/screens/post.edit.screen.dart';
 export './src/widgets/post.list_tile.dart';
 export './src/widgets/post.list_view.dart';
 
