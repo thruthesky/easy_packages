@@ -83,6 +83,7 @@ class ChatBubble extends StatelessWidget {
                     ),
                     clipBehavior: Clip.hardEdge,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (message.url != null) ...[
@@ -90,11 +91,11 @@ class ChatBubble extends StatelessWidget {
                             height: 200,
                             width: 200,
                             child: CachedNetworkImage(
+                              key: ValueKey(message.url),
                               fadeInDuration: Duration.zero,
                               fadeOutDuration: Duration.zero,
                               fit: BoxFit.cover,
                               imageUrl: message.url!,
-                              cacheKey: message.url,
                             ),
                           ),
                         ],
