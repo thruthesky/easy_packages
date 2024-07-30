@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/chat.functions.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -49,8 +52,16 @@ class _ReceivedChatRoomInviteListScreenState
               final doc = snapshot.docs[index];
               final room = ChatRoom.fromSnapshot(doc);
 
+              String roomName;
+              if (room.name.trim().isNotEmpty) {
+                roomName = room.name;
+              } else if (room.single) {
+                roomName = getOtherUserUidFromRoomId(room.id)!;
+              } else {
+                roomName = room.id;
+              }
               return ListTile(
-                title: Text(room.id),
+                title: Text(roomName),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

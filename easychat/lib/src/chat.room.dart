@@ -380,6 +380,9 @@ class ChatRoom {
   }
 
   Future<void> acceptInvitation() async {
+    final timestampAtLastMessage = lastMessageAt != null
+        ? Timestamp.fromDate(lastMessageAt!)
+        : FieldValue.serverTimestamp();
     await ref.set(
       {
         field.invitedUsers: FieldValue.arrayRemove([my.uid]),
@@ -387,14 +390,15 @@ class ChatRoom {
           my.uid: {
             if (single) ...{
               ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-              ChatRoomUser.field.singleTimeOrder: FieldValue.serverTimestamp(),
+              ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
             },
             if (group) ...{
               ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
-              ChatRoomUser.field.groupTimeOrder: FieldValue.serverTimestamp(),
+              ChatRoomUser.field.groupTimeOrder: timestampAtLastMessage,
             },
             ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-            ChatRoomUser.field.timeOrder: FieldValue.serverTimestamp(),
+            ChatRoomUser.field.timeOrder: timestampAtLastMessage,
+            // need to add new message so that the order will be correct after reading,
             ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
           },
         },
