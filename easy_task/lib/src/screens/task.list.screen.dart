@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 /// Task list screen
 ///
 /// TODO: 사진 업로드, 태스크 아카이브(삭제 기능은 없음), 태스크(프로젝트) 삭제,
+/// TODO: 프로젝트에는 task 갯수. 전체, complete 된것 과 되지않은 것 구분해서 카운트.
 class TaskListScreen extends StatefulWidget {
   static const String routeName = '/TaskList';
   const TaskListScreen({super.key});

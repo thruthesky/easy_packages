@@ -255,7 +255,7 @@ packages:
       path: "../easy_task"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   easychat:
     dependency: "direct main"
     description:
