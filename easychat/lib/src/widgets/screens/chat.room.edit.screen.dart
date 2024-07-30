@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 /// This is the screen for creating and updating chat rooms.
 class ChatRoomEditScreen extends StatefulWidget {
   static const String routeName = '/ChatRoomEdit';
-  const ChatRoomEditScreen({super.key, this.room});
+  const ChatRoomEditScreen({
+    super.key,
+    this.room,
+  });
 
   final ChatRoom? room;
 
@@ -97,21 +100,17 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
               },
             ),
           ),
-
-          // TODO
           if (isCreate)
             ElevatedButton(
               onPressed: () async {
                 final newRoomRef = await ChatRoom.create(
                   name: nameController.text,
                   description: descriptionController.text,
-                  iconUrl: 'iconUrl',
+                  iconUrl: '',
                   open: open,
-                  // password: 'password',
+                  group: true,
+                  single: false,
                   users: [my.uid],
-                  verifiedUserOnly: true,
-                  urlForVerifiedUserOnly: true,
-                  uploadForVerifiedUserOnly: true,
                 );
                 final chatRoom = await ChatRoom.get(newRoomRef.id);
                 if (!context.mounted) return;
@@ -124,22 +123,13 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           else if (isUpdate)
             ElevatedButton(
               onPressed: () async {
-                final newRoomRef = await ChatRoom.create(
+                await room!.update(
                   name: nameController.text,
                   description: descriptionController.text,
-                  iconUrl: 'iconUrl',
                   open: open,
-                  // password: 'password',
-                  users: [my.uid],
-                  verifiedUserOnly: true,
-                  urlForVerifiedUserOnly: true,
-                  uploadForVerifiedUserOnly: true,
                 );
-                final chatRoom = await ChatRoom.get(newRoomRef.id);
                 if (!context.mounted) return;
-                Navigator.of(context).pop(chatRoom!.ref);
-                ChatService.instance
-                    .showChatRoomScreen(context, room: chatRoom);
+                Navigator.of(context).pop(room!.ref);
               },
               child: const Text('UPDATE'),
             ),
