@@ -63,8 +63,11 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                 ),
               ),
               IconButton(
-                onPressed: () =>
-                    submitable ? sendMessage(text: controller.text) : null,
+                onPressed: () => submitable
+                    ? sendMessage(
+                        text: controller.text,
+                      )
+                    : null,
                 icon: const Icon(Icons.send),
               ),
             ],

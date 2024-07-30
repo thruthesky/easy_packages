@@ -488,13 +488,9 @@ class ChatRoom {
   Future<void> read() async {
     if (!userUids.contains(my.uid)) return;
     if (users[my.uid]!.newMessageCounter == 0) return;
-    final myReadOrder = users[my.uid]!.order;
+    final myReadOrder = users[my.uid]!.timeOrder;
     final updatedOrder = _negatedOrder(myReadOrder!);
     await ref.set({
-      field.lastMessageText: lastMessageText ?? FieldValue.delete(),
-      field.lastMessageAt: FieldValue.serverTimestamp(),
-      field.lastMessageUid: my.uid,
-      field.lastMessageUrl: lastMessageUrl ?? FieldValue.delete(),
       field.users: {
         my.uid: {
           if (single) ChatRoomUser.field.singleOrder: updatedOrder,
