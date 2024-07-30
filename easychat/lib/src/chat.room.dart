@@ -411,6 +411,10 @@ class ChatRoom {
     );
   }
 
+  /// Alias for [acceptInvitation]. Since they have
+  /// related logic.
+  Future<void> join() => acceptInvitation();
+
   Future<void> rejectInvitation() async {
     await ref.update({
       field.invitedUsers: FieldValue.arrayRemove([my.uid]),
