@@ -31,13 +31,13 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   @override
   void initState() {
     super.initState();
-    room = widget.room;
+    prepareRoom();
   }
 
   @override
   void didUpdateWidget(covariant ChatRoomInputBox oldWidget) {
     super.didUpdateWidget(oldWidget);
-    room = widget.room;
+    prepareRoom();
   }
 
   prepareRoom() {
