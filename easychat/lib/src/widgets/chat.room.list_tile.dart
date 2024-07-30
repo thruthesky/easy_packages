@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:easyuser/easyuser.dart';
@@ -20,9 +21,7 @@ class ChatRoomListTile extends StatelessWidget {
           ? UserDoc.sync(
               uid: getOtherUserUidFromRoomId(room.id)!,
               builder: (user) {
-                if (user == null) {
-                  return const SizedBox.shrink();
-                }
+                if (user == null) return const SizedBox.shrink();
                 return UserAvatar(user: user);
               },
             )
@@ -38,9 +37,7 @@ class ChatRoomListTile extends StatelessWidget {
           ? UserDoc.sync(
               uid: getOtherUserUidFromRoomId(room.id)!,
               builder: (user) {
-                if (user == null) {
-                  return Text(room.id);
-                }
+                if (user == null) return Text(room.id);
                 return Text(user.displayName.trim().isNotEmpty
                     ? user.displayName
                     : user.uid);
@@ -49,6 +46,17 @@ class ChatRoomListTile extends StatelessWidget {
           : Text(room.name.trim().isNotEmpty ? room.name : room.id),
       subtitle:
           room.lastMessageText != null ? Text(room.lastMessageText!) : null,
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text((room.lastMessageAt ?? room.updatedAt).short),
+          if ((room.users[my.uid]?.newMessageCounter ?? 0) > 0)
+            Badge(
+              label: Text("${room.users[my.uid]!.newMessageCounter}"),
+            ),
+        ],
+      ),
       onTap: () => onTap != null
           ? onTap!.call(room)
           : ChatService.instance.showChatRoomScreen(
