@@ -85,6 +85,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             StreamBuilder(
                 stream: roomStream,
                 builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    room = ChatRoom.fromSnapshot(snapshot.data);
+                  }
                   return IconButton(
                     onPressed: () {
                       if (room == null) return;
