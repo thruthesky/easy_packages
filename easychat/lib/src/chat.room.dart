@@ -385,12 +385,17 @@ class ChatRoom {
         field.invitedUsers: FieldValue.arrayRemove([my.uid]),
         field.users: {
           my.uid: {
-            if (single)
+            if (single) ...{
               ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-            if (group)
+              ChatRoomUser.field.singleTimeOrder: FieldValue.serverTimestamp(),
+            },
+            if (group) ...{
               ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+              ChatRoomUser.field.groupTimeOrder: FieldValue.serverTimestamp(),
+            },
             ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-            ChatRoomUser.field.newMessageCounter: 0,
+            ChatRoomUser.field.timeOrder: FieldValue.serverTimestamp(),
+            ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
           },
         },
         // In case, the user rejected the invitation
@@ -430,10 +435,14 @@ class ChatRoom {
           return MapEntry(
             uid,
             {
-              if (single) ChatRoomUser.field.singleOrder: readOrder,
-              if (single) ChatRoomUser.field.singleTimeOrder: serverTimestamp,
-              if (group) ChatRoomUser.field.groupOrder: readOrder,
-              if (group) ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+              if (single) ...{
+                ChatRoomUser.field.singleOrder: readOrder,
+                ChatRoomUser.field.singleTimeOrder: serverTimestamp,
+              },
+              if (group) ...{
+                ChatRoomUser.field.groupOrder: readOrder,
+                ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+              },
               ChatRoomUser.field.order: readOrder,
               ChatRoomUser.field.timeOrder: serverTimestamp,
               ChatRoomUser.field.newMessageCounter: 0,
@@ -443,10 +452,14 @@ class ChatRoom {
         return MapEntry(
           uid,
           {
-            if (single) ChatRoomUser.field.singleOrder: serverTimestamp,
-            if (single) ChatRoomUser.field.singleTimeOrder: serverTimestamp,
-            if (group) ChatRoomUser.field.groupOrder: serverTimestamp,
-            if (group) ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+            if (single) ...{
+              ChatRoomUser.field.singleOrder: serverTimestamp,
+              ChatRoomUser.field.singleTimeOrder: serverTimestamp,
+            },
+            if (group) ...{
+              ChatRoomUser.field.groupOrder: serverTimestamp,
+              ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+            },
             ChatRoomUser.field.order: serverTimestamp,
             ChatRoomUser.field.timeOrder: serverTimestamp,
             ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
