@@ -29,7 +29,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
   @override
   void initState() {
     super.initState();
-    stream = ref.onChildAdded.listen((DatabaseEvent event) => room.read());
+    // stream = ref.onChildAdded.listen((DatabaseEvent event) => room.read());
   }
 
   @override

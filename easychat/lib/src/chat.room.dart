@@ -514,14 +514,14 @@ class ChatRoom {
 
   /// Chat room subscription
   StreamSubscription? chatRoomSubscription;
-  BehaviorSubject<ChatRoom> chatRoomChanges = BehaviorSubject();
+  BehaviorSubject<ChatRoom> changes = BehaviorSubject();
 
   listen() {
     chatRoomSubscription?.cancel();
-    chatRoomChanges.add(this);
+    changes.add(this);
     chatRoomSubscription = ref.snapshots().listen((snapshot) {
       dog("snapshot: $snapshot");
-      chatRoomChanges.add(ChatRoom.fromSnapshot(snapshot));
+      changes.add(ChatRoom.fromSnapshot(snapshot));
     });
   }
 
@@ -531,8 +531,8 @@ class ChatRoom {
 
   Widget builder(Function(ChatRoom) builder) {
     return StreamBuilder<ChatRoom>(
-      initialData: chatRoomChanges.value,
-      stream: chatRoomChanges.stream,
+      initialData: changes.value,
+      stream: changes.stream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {

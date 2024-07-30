@@ -29,10 +29,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   @override
   void initState() {
     super.initState();
+    // sub = room.changes.listen((value) => room = value);
   }
 
   @override
   void dispose() {
+    // sub?.cancel();
     controller.dispose();
     super.dispose();
   }
