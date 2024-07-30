@@ -30,6 +30,7 @@ class YoutubeFullscreenBuilder extends StatefulWidget {
 
 class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   YoutubePlayerController? youtubeController;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
         mute: false,
         controlsVisibleAtStart: false,
       ),
-    );
+    )..addListener(listener);
   }
 
   @override
@@ -50,6 +51,13 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
     youtubeController?.pause();
     youtubeController?.dispose();
     super.dispose();
+  }
+
+  listener() {
+    if (mounted && youtubeController!.value.isReady) {
+      isPlaying = youtubeController!.value.isPlaying;
+      setState(() {});
+    }
   }
 
   /// Load the new post youtube id if the post youtube url changes
@@ -80,9 +88,7 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
               }
             },
             icon: Icon(
-              youtubeController != null && youtubeController!.value.isPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow,
+              isPlaying ? Icons.pause : Icons.play_arrow,
               color: Colors.white,
             ),
           ),

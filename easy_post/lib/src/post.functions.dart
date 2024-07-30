@@ -36,6 +36,7 @@ Future<Map<String, dynamic>?> getYoutubeConfig(String? youtubeUrl) async {
     throw 'youtube/get-config-failed failed to get youtube config';
   }
 
+  final shorts = youtubeUrl.contains('shorts');
   return {
     'id': youtubeId,
     'title': youtubeVideoDetails.title,
@@ -46,7 +47,8 @@ Future<Map<String, dynamic>?> getYoutubeConfig(String? youtubeUrl) async {
     'hq': youtubeThumbnailDetails.hq,
     'lq': youtubeThumbnailDetails.lq,
     'duration': youtubeVideoDetails.duration,
-    'viewCount': youtubeVideoDetails.viewCount
+    'viewCount': youtubeVideoDetails.viewCount,
+    'isShorts': shorts
   };
 }
 

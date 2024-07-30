@@ -52,7 +52,7 @@ class _PostDetailState extends State<PostDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(user.displayName),
-                            Text('${user.createdAt}'),
+                            Text('${user.createdAt?.yMd}'),
                           ],
                         ),
                       )
@@ -74,6 +74,7 @@ class _PostDetailState extends State<PostDetail> {
               );
             }
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (post.deleted) ...{
                   const SizedBox(
@@ -84,13 +85,15 @@ class _PostDetailState extends State<PostDetail> {
                     ),
                   ),
                 } else ...{
+                  PostDetailPhotos(post: widget.post),
                   if (post.hasYoutube && widget.youtubePlayer != null)
                     widget.youtubePlayer!,
                   PostDetailYoutubeMeta(post: widget.post),
-                  PostDetailPhotos(post: widget.post),
-                  const SizedBox(height: 16),
-                  Text(post.title),
-                  Text(post.content),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  if (widget.post.title.isNotEmpty) Text(post.title),
+                  if (widget.post.content.isNotEmpty) Text(post.content),
                 },
               ],
             );

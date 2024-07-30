@@ -1,4 +1,5 @@
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/post.doc.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class PostDetailScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PostDetail'),
+        title: Text('Post'.t),
       ),
       body: CustomScrollView(
         slivers: [
@@ -70,6 +71,7 @@ class PostDetailScaffold extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.only(bottom: 16),
         child: CommentFakeInputBox(onTap: () {
           CommentService.instance.showCommentEditDialog(
             context: context,
