@@ -1,46 +1,80 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/chat.room.user.dart';
 import 'package:easychat/src/widgets/chat.room.list_tile.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ChatRoomListScreen extends StatelessWidget {
+enum ChatRoomListQuery {
+  allMine,
+  allMineByTime,
+  open,
+  single,
+  singleByTime,
+  group,
+  groupByTime,
+}
+
+class ChatRoomListScreen extends StatefulWidget {
   static const String routeName = '/ChatRoomList';
   const ChatRoomListScreen({
     super.key,
-    this.group = false,
-    this.open = false,
-    this.single = false,
+    this.queryType = ChatRoomListQuery.allMine,
   });
 
-  // For now we are doing boolean to prevent premature optimization
-  final bool? open;
-  final bool? group;
-  final bool? single;
+  final ChatRoomListQuery queryType;
+
+  @override
+  State<ChatRoomListScreen> createState() => _ChatRoomListScreenState();
+}
+
+class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
+  late ChatRoomListQuery _queryType;
+  @override
+  void initState() {
+    super.initState();
+    _queryType = widget.queryType;
+  }
 
   Query get query {
     Query q = ChatService.instance.roomCol;
-    if (single == true) {
+    if (_queryType == ChatRoomListQuery.allMine) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.order}',
+        descending: true,
+      );
+    } else if (_queryType == ChatRoomListQuery.allMineByTime) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.timeOrder}',
+        descending: true,
+      );
+    } else if (_queryType == ChatRoomListQuery.open) {
       q = q
-          .where('single', isEqualTo: true)
-          .where('users', arrayContains: my.uid);
+          .where(ChatRoom.field.open, isEqualTo: true)
+          .orderBy(ChatRoom.field.updatedAt, descending: true);
+    } else if (_queryType == ChatRoomListQuery.single) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleOrder}',
+        descending: true,
+      );
+    } else if (_queryType == ChatRoomListQuery.singleByTime) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleTimeOrder}',
+        descending: true,
+      );
+    } else if (_queryType == ChatRoomListQuery.group) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupOrder}',
+        descending: true,
+      );
+    } else if (_queryType == ChatRoomListQuery.groupByTime) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupTimeOrder}',
+        descending: true,
+      );
     }
-    if (group == true) {
-      q = q
-          .where('group', isEqualTo: true)
-          .where('users', arrayContains: my.uid);
-    }
-
-    if (open == true) {
-      q = q.where('open', isEqualTo: true);
-    }
-
-    /// TODO: Issue: Chat rooms with new message must be put on the top. So, order by `updatedAt` will not work.
-    /// To make it work, each user must maintain their own list of chat join relation which is good for rtdb.
-    q = q.orderBy('updatedAt', descending: true);
-
     return q;
   }
 
@@ -48,13 +82,26 @@ class ChatRoomListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat Room List'),
+        title: Text('Chat Room List: ${_queryType.name}'),
         actions: [
           IconButton(
             onPressed: () {
               ChatService.instance.showChatRoomEditScreen(context);
             },
             icon: const Icon(Icons.add),
+          ),
+          PopupMenuButton(
+            icon: const Icon(Icons.settings),
+            onSelected: (q) {
+              setState(() {
+                _queryType = q;
+              });
+            },
+            itemBuilder: (BuildContext context) {
+              return ChatRoomListQuery.values
+                  .map((q) => PopupMenuItem(value: q, child: Text(q.name)))
+                  .toList();
+            },
           ),
         ],
       ),

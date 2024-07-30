@@ -1,4 +1,5 @@
 import 'package:easychat/easychat.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomMemberListScreen extends StatelessWidget {
@@ -16,11 +17,14 @@ class ChatRoomMemberListScreen extends StatelessWidget {
         title: const Text("Member List"),
       ),
       body: ListView.builder(
+        itemExtent: 72,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(room.users[index]),
+          return UserDoc(
+            uid: room.users.keys.toList()[index],
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : UserListTile(user: user),
           );
-          // return UserListTile(user: user) only uid
         },
         itemCount: room.users.length,
       ),
