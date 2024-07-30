@@ -48,6 +48,14 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
         return widget.itemBuilder?.call(context, message) ??
             ChatBubble(message: message);
       },
+      errorBuilder: (context, error, stackTrace) {
+        print("Error: $error");
+        return Center(
+          child: Text(
+            "Error: $error",
+          ),
+        );
+      },
     );
   }
 }

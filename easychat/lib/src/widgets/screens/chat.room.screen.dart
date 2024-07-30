@@ -22,50 +22,46 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  ChatRoom? room;
-  User? user;
+  ChatRoom? $room;
 
-  Stream? roomStream;
-  Widget? chatMessagesWidget;
+  User? get user => widget.user;
 
   @override
   void initState() {
     super.initState();
-    room = widget.room;
-    user = widget.user;
     init();
   }
 
   init() async {
     // If room is null, user should not be null.
     // We have to get room from other user.
-    if (room == null) await getRoomFromOtherUser();
-    roomStream = room?.ref.snapshots();
-    if (room!.single && user == null) await getOtherUser();
-    if (!mounted) return;
-    room!.read();
-    setState(() {});
+    if (widget.room == null) await loadRoomFromOtherUser();
+
+    $room!.listen();
+    $room!.updateMeta();
   }
 
-  Future<void> getRoomFromOtherUser() async {
-    room = await ChatRoom.get(singleChatRoomId(user!.uid));
-    if (room != null) return;
+  @override
+  dispose() {
+    $room?.dispose();
+    super.dispose();
+  }
+
+  Future<void> loadRoomFromOtherUser() async {
+    $room = await ChatRoom.get(singleChatRoomId(user!.uid));
+    if ($room != null) return;
     // In case the room doesn't exists, we create the room.
     // Automatically this will invite the other user.
     // The other user wont normally see the message in chat room
     // list. However the other user may see the messages if the
     // other user opens the chat room.
     final newRoomRef = await ChatRoom.createSingle(user!.uid);
-    room = await ChatRoom.get(newRoomRef.id);
+    $room = await ChatRoom.get(newRoomRef.id);
   }
 
-  Future<void> getOtherUser() async {
-    user = await User.get(getOtherUserUidFromRoomId(room!.id)!, cache: false);
-  }
-
-  String get title {
-    if (room != null && room!.name.trim().isNotEmpty) {
-      return room!.name;
+  String title(ChatRoom room) {
+    if (room.name.trim().isNotEmpty) {
+      return room.name;
     }
     if (user != null) {
       return user!.displayName.trim().isNotEmpty
@@ -79,37 +75,36 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: $room!.builder((r) => Text(title(r))),
         actions: [
-          if ((room?.userUids.contains(my.uid) ?? false) &&
-              (room?.group ?? false))
-            StreamBuilder(
-                stream: roomStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    room = ChatRoom.fromSnapshot(snapshot.data);
-                  }
-                  return IconButton(
-                    onPressed: () {
-                      if (room == null) return;
-                      ChatService.instance
-                          .showChatRoomMenuScreen(context, room!);
-                    },
-                    icon: const Icon(Icons.more_vert),
-                  );
-                }),
+          $room!.builder(
+            (room) {
+              if (room.joined == false) return const SizedBox.shrink();
+              if (room.group == false) return const SizedBox.shrink();
+
+              return IconButton(
+                onPressed: () {
+                  ChatService.instance.showChatRoomMenuScreen(context, room);
+                },
+                icon: const Icon(Icons.more_vert),
+              );
+            },
+          ),
         ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if ($room == null)
+            const CircularProgressIndicator.adaptive()
+          else
           // There is a chance for user to open the chat room
           // if the user is not a member of the chat room
-          if (!(room?.userUids.contains(my.uid) ?? true)) ...[
+          if (room!.userUids.contains(my.uid) == false) ...[
             // The user has a chance to open the chat room with message
             // when the other user sent a message (1:1) but the user
             // haven't accepted yet.
-            if (room?.invitedUsers.contains(my.uid) ?? false)
+            if (room!.invitedUsers.contains(my.uid))
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -129,7 +124,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
               )
             // For open chat rooms, the rooms can be seen by users.
-            else if (room?.group ?? false)
+            else if (room!.group)
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -150,15 +145,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               ),
             // Else, it should be handled by the Firestore rulings.
           ],
-          if (room != null)
-            chatMessagesWidget ??= Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: ChatMessagesListView(room: room!),
-              ),
-            )
-          else
-            const Spacer(),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ChatMessagesListView(room: room!),
+            ),
+          ),
           SafeArea(
             top: false,
             child: ChatRoomInputBox(

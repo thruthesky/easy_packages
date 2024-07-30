@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/src/chat.functions.dart';
@@ -5,6 +7,8 @@ import 'package:easychat/src/chat.room.user.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ChatRoom {
   /// Field names used for the Firestore document
@@ -59,6 +63,8 @@ class ChatRoom {
   final Map<String, ChatRoomUser> users;
 
   List<String> get userUids => users.keys.toList();
+
+  bool get joined => userUids.contains(my.uid);
 
   final List<String> invitedUsers;
   final List<String> rejectedUsers;
@@ -486,10 +492,10 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  /// [read] is used to set as read by the current user.
+  /// [updateMeta] is used to set as read by the current user.
   /// It means, turning newMessageCounter into zero
   /// and updating the order
-  Future<void> read() async {
+  Future<void> updateMeta() async {
     if (!userUids.contains(my.uid)) return;
     if (users[my.uid]!.newMessageCounter == 0) return;
     final myReadOrder = users[my.uid]!.timeOrder;
@@ -504,5 +510,43 @@ class ChatRoom {
         }
       }
     }, SetOptions(merge: true));
+  }
+
+  /// Chat room subscription
+  StreamSubscription? chatRoomSubscription;
+  BehaviorSubject<ChatRoom> chatRoomChanges = BehaviorSubject();
+
+  listen() {
+    chatRoomSubscription?.cancel();
+    chatRoomChanges.add(this);
+    chatRoomSubscription = ref.snapshots().listen((snapshot) {
+      dog("snapshot: $snapshot");
+      chatRoomChanges.add(ChatRoom.fromSnapshot(snapshot));
+    });
+  }
+
+  dispose() {
+    chatRoomSubscription?.cancel();
+  }
+
+  Widget builder(Function(ChatRoom) builder) {
+    return StreamBuilder<ChatRoom>(
+      initialData: chatRoomChanges.value,
+      stream: chatRoomChanges.stream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
+          return const CircularProgressIndicator();
+        }
+
+        if (snapshot.hasError) {
+          debugPrint("Error: ${snapshot.error}");
+          return Text("Error: ${snapshot.error}");
+        }
+
+        final room = snapshot.data!;
+        return builder(room);
+      },
+    );
   }
 }
