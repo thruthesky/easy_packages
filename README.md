@@ -288,15 +288,36 @@ Use `FirestoreQueryBuilder` or `FirebaseDatabaseQueryBuilder`. Use query builder
 
 
 
+# Tests
 
-# Unit test
+All package developers should do tests.
 
-Do the unit test as Flutter does.
+## Unit test
 
-# Widget test
+You can follow the unit test as described in Flutter document.
+
+The purpose of unit test is to test on the units.
+
+The recommendation on the unit testing is to provide a test service like `LikeTestService.instance.runTests()`.
+
+See `easy_like` for the details.
+
+
+
+
+
+## Widget test
 
 
 Do the widget test as Flutter does.
+
+
+## Integration test
+
+You would probably create an example app to build and test the package. And It's upto you to do integration-test on the example app.
+
+
+
 
 
 
@@ -326,3 +347,5 @@ UserService.instance.init(
 
 
 - Note that, the callback **must pass** the BuildContext.
+
+

@@ -214,6 +214,13 @@ packages:
       relative: true
     source: path
     version: "0.0.6"
+  easy_like:
+    dependency: "direct main"
+    description:
+      path: "../easy_like"
+      relative: true
+    source: path
+    version: "0.0.1"
   easy_locale:
     dependency: "direct main"
     description:
