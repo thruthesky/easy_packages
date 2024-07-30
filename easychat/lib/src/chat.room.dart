@@ -272,12 +272,17 @@ class ChatRoom {
       usersMap = Map.fromEntries(
         users.map(
           (uid) => MapEntry(uid, {
-            if (single)
+            if (single) ...{
               ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-            if (group)
+              ChatRoomUser.field.singleTimeOrder: FieldValue.serverTimestamp(),
+            },
+            if (group) ...{
               ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+              ChatRoomUser.field.groupTimeOrder: FieldValue.serverTimestamp(),
+            },
             ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-            ChatRoomUser.field.newMessageCounter: 0,
+            ChatRoomUser.field.timeOrder: FieldValue.serverTimestamp(),
+            ChatRoomUser.field.newMessageCounter: 1,
           }),
         ),
       );
@@ -450,10 +455,10 @@ class ChatRoom {
       },
     );
     await ref.set({
-      field.lastMessageText: lastMessageText ?? FieldValue.delete(),
+      if (lastMessageText != null) field.lastMessageText: lastMessageText,
       field.lastMessageAt: FieldValue.serverTimestamp(),
       field.lastMessageUid: my.uid,
-      field.lastMessageUrl: lastMessageUrl ?? FieldValue.delete(),
+      if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
       field.users: {
         ...updateUserData,
       }

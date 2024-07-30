@@ -110,7 +110,6 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                   open: open,
                   group: true,
                   single: false,
-                  // password: 'password',
                   users: [my.uid],
                 );
                 final chatRoom = await ChatRoom.get(newRoomRef.id);
