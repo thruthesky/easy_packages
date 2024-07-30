@@ -103,6 +103,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
                     /// link with current user.
                     await FirebaseAuth.instance.currentUser
                         ?.linkWithCredential(credential);
+                    widget.onLogin?.call();
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'email-already-in-use') {
                       dog('The email is already in use -> Try to sign-in with the email and password.');
