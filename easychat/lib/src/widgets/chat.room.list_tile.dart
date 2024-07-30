@@ -46,18 +46,17 @@ class ChatRoomListTile extends StatelessWidget {
           : Text(room.name.trim().isNotEmpty ? room.name : room.id),
       subtitle:
           room.lastMessageText != null ? Text(room.lastMessageText!) : null,
-      trailing: room.users[my.uid] != null
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text((room.users[my.uid]!.timeOrder ?? DateTime.now()).short),
-                if ((room.users[my.uid]!.newMessageCounter ?? 0) > 0)
-                  Badge(
-                    label: Text("${room.users[my.uid]!.newMessageCounter}"),
-                  ),
-              ],
-            )
-          : null,
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text((room.lastMessageAt ?? room.updatedAt).short),
+          if ((room.users[my.uid]?.newMessageCounter ?? 0) > 0)
+            Badge(
+              label: Text("${room.users[my.uid]!.newMessageCounter}"),
+            ),
+        ],
+      ),
       onTap: () => onTap != null
           ? onTap!.call(room)
           : ChatService.instance.showChatRoomScreen(

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/screens/chat.room.invite_list.screen.dart';
 import 'package:easychat/src/widgets/screens/chat.room.member_list.screen.dart';
@@ -79,7 +78,9 @@ class ChatService {
         ) ??
         showGeneralDialog(
           context: context,
-          pageBuilder: (_, __, ___) => const ChatRoomListScreen(open: true),
+          pageBuilder: (_, __, ___) => const ChatRoomListScreen(
+            queryType: ChatRoomListQuery.open,
+          ),
         );
   }
 

@@ -7,26 +7,62 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
+enum ChatRoomListQuery {
+  allMine,
+  allMineByTime,
+  open,
+  single,
+  singleByTime,
+  group,
+  groupByTime,
+}
+
 class ChatRoomListScreen extends StatelessWidget {
   static const String routeName = '/ChatRoomList';
   const ChatRoomListScreen({
     super.key,
-    this.group = false,
-    this.open = false,
-    this.single = false,
+    this.queryType = ChatRoomListQuery.allMine,
   });
 
-  // For now we are doing boolean to prevent premature optimization
-  final bool? open;
-  final bool? group;
-  final bool? single;
+  final ChatRoomListQuery queryType;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
-    // TODO add the other sortations
-    q = q.orderBy(
+    if (queryType == ChatRoomListQuery.allMine) {
+      q = q.orderBy(
         '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.order}',
-        descending: true);
+        descending: true,
+      );
+    } else if (queryType == ChatRoomListQuery.allMineByTime) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.timeOrder}',
+        descending: true,
+      );
+    } else if (queryType == ChatRoomListQuery.open) {
+      q = q
+          .where(ChatRoom.field.open, isEqualTo: true)
+          .orderBy(ChatRoom.field.updatedAt, descending: true);
+    } else if (queryType == ChatRoomListQuery.single) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleOrder}',
+        descending: true,
+      );
+    } else if (queryType == ChatRoomListQuery.singleByTime) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleTimeOrder}',
+        descending: true,
+      );
+    } else if (queryType == ChatRoomListQuery.group) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupOrder}',
+        descending: true,
+      );
+    } else if (queryType == ChatRoomListQuery.groupByTime) {
+      q = q.orderBy(
+        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupTimeOrder}',
+        descending: true,
+      );
+    }
     return q;
   }
 
@@ -34,7 +70,7 @@ class ChatRoomListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat Room List'),
+        title: Text('Chat Room List: ${queryType.name}'),
         actions: [
           IconButton(
             onPressed: () {

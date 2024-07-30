@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -12,7 +11,7 @@ class ChatRoomInputBox extends StatefulWidget {
   });
 
   final ChatRoom? room;
-  final Function()? afterAccept;
+  final Function(BuildContext context, ChatRoom updatedRoom)? afterAccept;
 
   @override
   State<ChatRoomInputBox> createState() => _ChatRoomInputBoxState();
@@ -97,14 +96,16 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   shouldAcceptInvitation() async {
     if (widget.room == null) return;
     if (widget.room!.userUids.contains(my.uid)) return;
-    // TODO
-    // if (widget.room!.invitedUsers.contains(my.uid)) {
-    //   await widget.room!.acceptInvitation();
-    //   widget.room!.users.add(my.uid);
-    //   widget.room!.invitedUsers.remove(my.uid);
-    //   widget.afterAccept?.call();
-    //   return;
-    // }
-    // throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
+    if (widget.room!.invitedUsers.contains(my.uid)) {
+      await widget.room!.acceptInvitation();
+      widget.room!.invitedUsers.remove(my.uid);
+      if (widget.afterAccept == null) return;
+      final updatedRoom = await ChatRoom.get(widget.room!.id);
+      if (updatedRoom == null) return;
+      if (!mounted) return;
+      widget.afterAccept?.call(context, updatedRoom);
+      return;
+    }
+    throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 }
