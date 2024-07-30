@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -26,32 +25,10 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   double? uploadProgress;
 
   ChatRoom? room;
-  StreamSubscription? roomSubscription;
-
-  prepareRoom() {
-    room = widget.room;
-    roomSubscription?.cancel();
-    roomSubscription = room?.ref.snapshots().listen((snapshot) {
-      room = ChatRoom.fromSnapshot(snapshot);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    prepareRoom();
-  }
-
-  @override
-  void didUpdateWidget(covariant ChatRoomInputBox oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    prepareRoom();
-  }
 
   @override
   void dispose() {
     controller.dispose();
-    roomSubscription?.cancel();
     super.dispose();
   }
 
