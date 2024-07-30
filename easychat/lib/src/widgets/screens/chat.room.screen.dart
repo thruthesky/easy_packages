@@ -81,7 +81,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       appBar: AppBar(
         title: Text(title),
         actions: [
-          if (room?.userUids.contains(my.uid) ?? false)
+          if ((room?.userUids.contains(my.uid) ?? false) &&
+              (room?.group ?? false))
             StreamBuilder(
                 stream: roomStream,
                 builder: (context, snapshot) {
