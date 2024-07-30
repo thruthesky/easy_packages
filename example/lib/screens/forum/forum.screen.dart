@@ -21,7 +21,7 @@ class ForumScreen extends StatelessWidget {
                     ),
                 child: const Text('UnitTest')),
             ElevatedButton(
-              onPressed: () => PostService.instance.showPostEditScreen(
+              onPressed: () => PostService.instance.showPostCreateScreen(
                 context: context,
                 category: null,
               ),

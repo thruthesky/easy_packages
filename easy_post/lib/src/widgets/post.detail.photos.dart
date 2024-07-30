@@ -111,6 +111,7 @@ class PostDetailPhotos extends StatelessWidget {
                     children: [
                       CachedNetworkImage(
                         width: halfWidth,
+                        height: halfWidth,
                         imageUrl: post.urls[1],
                         fit: BoxFit.cover,
                       ),
