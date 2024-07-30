@@ -47,7 +47,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     setState(() {});
   }
 
-  getRoomFromOtherUser() async {
+  Future<void> getRoomFromOtherUser() async {
     room = await ChatRoom.get(singleChatRoomId(user!.uid));
     if (room != null) return;
     // In case the room doesn't exists, we create the room.
@@ -59,7 +59,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     room = await ChatRoom.get(newRoomRef.id);
   }
 
-  getOtherUser() async {
+  Future<void> getOtherUser() async {
     user = await User.get(getOtherUserUidFromRoomId(room!.id)!, cache: false);
   }
 
