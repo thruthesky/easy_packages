@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:easychat/src/widgets/chat.messages.list_view.dart';
@@ -74,6 +75,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return 'Chat Room';
   }
 
+  String notMemberMessage(ChatRoom room) {
+    if (room.invitedUsers.contains(my.uid)) {
+      // The user has a chance to open the chat room with message
+      // when the other user sent a message (1:1) but the user
+      // haven't accepted yet.
+      return "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.";
+    }
+    if (room.group) {
+      // For open chat rooms, the rooms can be seen by users.
+      return "This is an open group. Once you sent a message, you will automatically join the group.";
+    }
+    // Else, it should be handled by the Firestore rulings.
+    return "You are not a member of this group";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +100,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 (room) {
                   if (room.joined == false) return const SizedBox.shrink();
                   if (room.group == false) return const SizedBox.shrink();
-
                   return IconButton(
                     onPressed: () {
                       ChatService.instance
@@ -105,12 +120,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           else ...[
             // There is a chance for user to open the chat room
             // if the user is not a member of the chat room
-            if ($room!.userUids.contains(my.uid) == false) ...[
-              // The user has a chance to open the chat room with message
-              // when the other user sent a message (1:1) but the user
-              // haven't accepted yet.
-              if ($room!.invitedUsers.contains(my.uid))
-                Container(
+            if (!$room!.joined) ...[
+              $room!.builder((room) {
+                if (room.joined) return const SizedBox.shrink();
+                return Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,
@@ -121,34 +134,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
+                          notMemberMessage(room),
                           style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ),
                     ],
                   ),
-                )
-              // For open chat rooms, the rooms can be seen by users.
-              else if ($room!.group)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondaryContainer),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "This is an open group. Once you sent a message, you will automatically join the group.",
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              // Else, it should be handled by the Firestore rulings.
+                );
+              }),
             ],
             Expanded(
               child: Align(

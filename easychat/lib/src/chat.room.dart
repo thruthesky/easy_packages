@@ -529,11 +529,13 @@ class ChatRoom {
     chatRoomSubscription?.cancel();
   }
 
-  Widget builder(Function(ChatRoom) builder) {
+  StreamBuilder<ChatRoom> builder(Widget Function(ChatRoom room) builder) {
     return StreamBuilder<ChatRoom>(
       initialData: changes.value,
       stream: changes.stream,
       builder: (context, snapshot) {
+        dog("[Imp] Something has changed within me - chat room");
+
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
           return const CircularProgressIndicator();
@@ -545,6 +547,7 @@ class ChatRoom {
         }
 
         final room = snapshot.data!;
+        dog("[Imp] Am I a member now? ${room.joined}");
         return builder(room);
       },
     );
