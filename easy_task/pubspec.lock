@@ -154,7 +154,7 @@ packages:
     source: hosted
     version: "0.0.5"
   easy_storage:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: easy_storage
       sha256: "5ec347507416b0f7258e5118b2f2a5c4a54b485cb7b0aa373e4904d066be65b3"

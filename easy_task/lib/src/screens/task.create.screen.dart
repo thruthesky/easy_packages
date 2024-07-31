@@ -1,5 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,10 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
   bool project = false;
 
+  /// For uploading images
+  double? uploadProgress;
+  List<String> urls = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +36,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
             CheckboxListTile(
               value: project,
               title: Text('Project'.t),
-              subtitle: const Text('Is it a project?'),
+              subtitle: Text('Is this a project?'.t),
               onChanged: (v) => setState(() => project = v ?? false),
             ),
             TextField(
@@ -43,28 +48,59 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
               decoration: const InputDecoration(labelText: 'Description'),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                if (_titleController.text.isEmpty) {
-                  toast(context: context, message: Text('enter a title'.t));
-                  return;
-                }
-                final ref = await Task.create(
-                  title: _titleController.text,
-                  description: _descriptionController.text,
-                  project: project,
-                );
-                final task = await Task.get(ref.id);
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                  if (task!.project) {
-                    TaskService.instance.showProjectDetailScreen(context, task);
-                  } else {
-                    TaskService.instance.showTaskDetailScreen(context, task);
-                  }
-                }
-              },
-              child: const Text('Create Task'),
+            if (uploadProgress != null && !uploadProgress!.isNaN)
+              LinearProgressIndicator(
+                value: uploadProgress,
+              ),
+            const SizedBox(height: 24),
+            DisplayEditableUploads(
+                urls: urls,
+                onDelete: (url) {
+                  urls.remove(url);
+                  setState(() {});
+                }),
+            Row(
+              children: [
+                UploadIconButton(
+                  icon: const Icon(Icons.camera_alt),
+                  onUpload: (url) {
+                    urls.add(url);
+                    setState(() {});
+                  },
+                  progress: (v) => setState(
+                    () => uploadProgress = v,
+                  ),
+                  complete: () => setState(
+                    () => uploadProgress = null,
+                  ),
+                ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_titleController.text.isEmpty) {
+                      toast(context: context, message: Text('enter a title'.t));
+                      return;
+                    }
+                    final ref = await Task.create(
+                      title: _titleController.text,
+                      description: _descriptionController.text,
+                      project: project,
+                    );
+                    final task = await Task.get(ref.id);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      if (task!.project) {
+                        TaskService.instance
+                            .showProjectDetailScreen(context, task);
+                      } else {
+                        TaskService.instance
+                            .showTaskDetailScreen(context, task);
+                      }
+                    }
+                  },
+                  child: const Text('Create Task'),
+                ),
+              ],
             ),
           ],
         ),
