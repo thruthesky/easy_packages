@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
+import 'package:easy_task/src/widgets/task.count.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -25,54 +25,6 @@ class TaskListScreen extends StatefulWidget {
 class _TaskListScreenState extends State<TaskListScreen> {
   bool completed = false;
   String menu = 'all';
-
-  Query get query {
-    Query q = Task.col;
-
-    if (menu == 'all') {
-      q = q.where(Filter.and(
-        Filter(
-          'creator',
-          isEqualTo: TaskService.instance.currentUser!.uid,
-        ),
-        Filter.or(
-          // if project
-          Filter('project', isEqualTo: true),
-          Filter.and(
-            // if not project and not child (that is root level task)
-            Filter('project', isEqualTo: false),
-            Filter('child', isEqualTo: false),
-          ),
-        ),
-      ));
-    } else if (menu == 'task') {
-      q = q.where(Filter.and(
-        Filter(
-          'creator',
-          isEqualTo: TaskService.instance.currentUser!.uid,
-        ),
-        Filter('project', isEqualTo: false),
-        Filter('child', isEqualTo: false),
-      ));
-    } else if (menu == 'project') {
-      q = q.where(Filter.and(
-        Filter(
-          'creator',
-          isEqualTo: TaskService.instance.currentUser!.uid,
-        ),
-        Filter('project', isEqualTo: true),
-      ));
-    }
-
-    // if the menu is all or tasks, then apply the completed filter
-    if (menu != 'project') {
-      q = q.where('completed', isEqualTo: completed);
-    }
-
-    q = q.orderBy('createdAt', descending: true);
-
-    return q;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,30 +65,44 @@ class _TaskListScreenState extends State<TaskListScreen> {
                         menu = 'all';
                       });
                     },
-                    child: const Text('All')),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('All'),
+                        TaskCount(menu: 'all', completed: completed),
+                      ],
+                    )),
                 TextButton(
-                  onPressed: () {
-                    setState(() {
-                      menu = 'task';
-                    });
-                  },
-                  child: const Text('Tasks'),
-                ),
+                    onPressed: () {
+                      setState(() {
+                        menu = 'task';
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Tasks'),
+                        TaskCount(menu: 'task', completed: completed),
+                      ],
+                    )),
                 TextButton(
-                  onPressed: () {
-                    setState(() {
-                      menu = 'project';
-                    });
-                  },
-                  child: const Text(
-                    'Projects',
-                  ),
-                ),
+                    onPressed: () {
+                      setState(() {
+                        menu = 'project';
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Projects'),
+                        TaskCount(menu: 'project', completed: completed),
+                      ],
+                    ))
               ],
             ),
           )),
       body: FirestoreListView(
-        query: query,
+        query: TaskFilter.query(menu: menu, completed: completed),
         itemBuilder: (context, snapshot) {
           final task = Task.fromSnapshot(snapshot);
           return TaskListTile(task: task);

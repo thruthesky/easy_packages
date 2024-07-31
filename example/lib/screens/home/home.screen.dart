@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final re = await confirm(
+                    await confirm(
                       context: context,
                       title: const Text('title'),
                       subtitle: const CircleAvatar(

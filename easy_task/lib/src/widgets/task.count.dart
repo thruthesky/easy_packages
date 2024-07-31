@@ -22,66 +22,31 @@ import 'package:flutter/material.dart';
 class TaskCount extends StatelessWidget {
   const TaskCount({
     super.key,
-    this.all,
-    this.child,
-    this.project,
-    this.completed,
-    this.rootLevelTasks,
-  }) : assert(all != null ||
-            child != null ||
-            project != null ||
-            completed != null ||
-            rootLevelTasks != null);
+    required this.menu,
+    this.completed = false,
+  });
 
-  final bool? all;
-  final bool? child;
-  final bool? project;
-  final bool? completed;
-  final bool? rootLevelTasks;
-
-  Query get query {
-    Query query = Task.col;
-
-    if (all == true) {
-      return query;
-    } else if (child != null) {
-      // query = query.where('parent', isNotEqualTo: child ? '' : );
-    } else if (project != null) {
-      query = query.where('project', isEqualTo: project);
-    } else if (completed != null) {
-      query = query.where('completed', isEqualTo: completed);
-    } else if (rootLevelTasks == true) {
-      query = query
-          .where('project', isEqualTo: false)
-          .where('parent', isEqualTo: '');
-    }
-
-    return query;
-  }
+  final String menu;
+  final bool completed;
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Task.col.snapshots(),
+    return StreamBuilder<AggregateQuerySnapshot>(
+      stream: TaskFilter.filter(menu: menu, completed: completed)
+          .count()
+          .get()
+          .asStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const CircularProgressIndicator.adaptive();
         }
 
-        final tasks = snapshot.data!.docs
-            .map((e) => Task.fromSnapshot(e))
-            .where((e) => e.project == project)
-            .where((e) => e.completed == completed)
-            .where((e) => e.parent == null)
-            .toList();
-
         return Text(
-          tasks.length.toString(),
-          style: Theme.of(context).textTheme.titleLarge,
+          '(${snapshot.data!.count})',
         );
       },
     );
