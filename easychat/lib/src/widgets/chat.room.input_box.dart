@@ -49,7 +49,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               ImageUploadIconButton(
                 progress: (prog) => setState(() => uploadProgress = prog),
                 complete: () => setState(() => uploadProgress = null),
-                onUpload: (url) async => await sendMessage(photoUrl: url),
+                onUpload: (url) async {
+                  await ChatService.instance.sendMessage(
+                    room,
+                    photoUrl: url,
+                  );
+                },
               ),
               Expanded(
                 child: TextField(
@@ -61,13 +66,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                     if (submitable == value.isNotEmpty) return;
                     setState(() => submitable = value.isNotEmpty);
                   },
-                  onSubmitted: (value) => sendMessage(text: value),
+                  onSubmitted: (value) => sendTextMessage(value),
                 ),
               ),
               IconButton(
-                onPressed: submitable
-                    ? () => sendMessage(text: controller.text)
-                    : null,
+                onPressed:
+                    submitable ? () => sendTextMessage(controller.text) : null,
                 icon: const Icon(Icons.send),
               ),
             ],
@@ -77,12 +81,11 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     );
   }
 
-  Future sendMessage({String? photoUrl, String? text}) async {
-    if (text != null) controller.clear();
+  Future sendTextMessage(String text) async {
+    if (text.isNotEmpty) controller.clear();
     setState(() => submitable = false);
     await ChatService.instance.sendMessage(
       room,
-      photoUrl: photoUrl,
       text: text,
     );
   }
