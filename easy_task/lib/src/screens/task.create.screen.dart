@@ -57,7 +57,11 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                 final task = await Task.get(ref.id);
                 if (context.mounted) {
                   Navigator.of(context).pop();
-                  TaskService.instance.showTaskDetailScreen(context, task!);
+                  if (task!.project) {
+                    TaskService.instance.showProjectDetailScreen(context, task);
+                  } else {
+                    TaskService.instance.showTaskDetailScreen(context, task);
+                  }
                 }
               },
               child: const Text('Create Task'),

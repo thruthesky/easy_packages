@@ -1,14 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/easy_task.dart';
 
+/// Task filter
+///
+/// This class contains the filter for the task
 class TaskFilter {
   TaskFilter._();
 
-  /// filter().count();
+  /// Task filter for the task list
+  ///
+  /// It returns the Query. It does not include 'orderBy`.
+  ///
+  /// You can use it for query, count, etc.
+  ///
   static Query filter({
     required String menu,
     required bool completed,
   }) {
+    assert(menu == 'all' ||
+        menu == 'task' ||
+        menu == 'project' ||
+        menu == 'latest');
+
     Query q = Task.col;
 
     if (menu == 'all') {
@@ -17,6 +30,10 @@ class TaskFilter {
       q = q.where(taskMenuFilter);
     } else if (menu == 'project') {
       q = q.where(projectMenuFilter);
+    } else if (menu == 'latest') {
+      q = q
+          .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+          .where('project', isEqualTo: false);
     }
 
     // if the menu is all or tasks, then apply the completed filter
