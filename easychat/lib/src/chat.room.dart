@@ -517,6 +517,8 @@ class ChatRoom {
   }
 
   /// Chat room subscription
+  ///
+  /// This is used to listen the chat room changes.
   StreamSubscription? chatRoomSubscription;
   BehaviorSubject<ChatRoom> changes = BehaviorSubject();
 
