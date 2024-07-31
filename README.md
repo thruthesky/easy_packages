@@ -229,8 +229,12 @@ Service class does
   - if the user didn't choose his gender, then save it as empty string into the database so, it can be used for filtering to know who didn't choose for their gender. If the field does not exists, it's not easy to filter.
   - if the post is not deleted, then save fales to `deleted` field. With this, you can easily filter posts that are not deleted. Without the default value, you cannot filter.
 
+  - Avoid using range comparisons. For example, if the `parent` field holds the parent document ID and is an empty string if there's no parent, you might need to use a range search like `isGreaterThan('parent', '')` to check if a document is a child. Instead, save a boolean `child` field to indicate if a document is a child. And save `null` to `parent` in this case.
+
 
 - Add `Count` at the end of the field name that records no of counts. Like `commentCount`, `likeCount`, etc.
+
+
 
 
 ## Fields
@@ -323,7 +327,6 @@ class UserException implements Exception {
 `builder` 는 해당 위젯의 데이터를 화면에 직접 디자인하고자 할 때 사용한다. 옵션이다.
 `errorBuilder` 는 퍼미션 에러 등의 에러가 발생할 경우 화면에 표시할 때 사용하는 위젯으로 옵션이 직접 디자인을 하고자 할 때 사용한다.
 `loadingBuilder` 는 데이터를 데이터베이스로 부터 로딩 중에 표시하는 것으로 옵션이며 직접 디자인을 변경하고자 할 때 사용한다.
-
 
 
 For instance, `UserDoc` is the one that works in this way.

@@ -1,18 +1,15 @@
 import 'dart:async';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomInputBox extends StatefulWidget {
   const ChatRoomInputBox({
     super.key,
     required this.room,
-    this.afterAccept,
   });
 
   final ChatRoom room;
-  final Function(BuildContext context, ChatRoom updatedRoom)? afterAccept;
 
   @override
   State<ChatRoomInputBox> createState() => _ChatRoomInputBoxState();
@@ -27,14 +24,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   ChatRoom get room => widget.room;
 
   @override
-  void initState() {
-    super.initState();
-    // sub = room.changes.listen((value) => room = value);
-  }
-
-  @override
   void dispose() {
-    // sub?.cancel();
     controller.dispose();
     super.dispose();
   }
@@ -57,15 +47,9 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ImageUploadIconButton(
-                progress: (progress) {
-                  setState(() => uploadProgress = progress);
-                },
-                complete: () {
-                  setState(() => uploadProgress = null);
-                },
-                onUpload: (url) async {
-                  await sendMessage(photoUrl: url);
-                },
+                progress: (prog) => setState(() => uploadProgress = prog),
+                complete: () => setState(() => uploadProgress = null),
+                onUpload: (url) async => await sendMessage(photoUrl: url),
               ),
               Expanded(
                 child: TextField(
@@ -77,14 +61,13 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                     if (submitable == value.isNotEmpty) return;
                     setState(() => submitable = value.isNotEmpty);
                   },
-                  onSubmitted: (value) {
-                    sendMessage(text: value);
-                  },
+                  onSubmitted: (value) => sendMessage(text: value),
                 ),
               ),
               IconButton(
-                onPressed: () =>
-                    submitable ? sendMessage(text: controller.text) : null,
+                onPressed: submitable
+                    ? () => sendMessage(text: controller.text)
+                    : null,
                 icon: const Icon(Icons.send),
               ),
             ],
@@ -95,38 +78,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   }
 
   Future sendMessage({String? photoUrl, String? text}) async {
-    if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
-    await shouldAcceptInvitation();
-    List<Future> futures = [
-      ChatMessage.create(
-        roomId: room.id,
-        text: text,
-        url: photoUrl,
-      ),
-      room.updateUnreadUsers(
-        lastMessageText: text,
-        lastMessageUrl: photoUrl,
-      ),
-    ];
     if (text != null) controller.clear();
     setState(() => submitable = false);
-    await Future.wait(futures);
-  }
-
-  shouldAcceptInvitation() async {
-    if (room.userUids.contains(my.uid)) return;
-    if (room.invitedUsers.contains(my.uid) || room.group) {
-      // await room!.acceptInvitation();
-      await room.join();
-      room.invitedUsers.remove(my.uid);
-      if (widget.afterAccept == null) return;
-      final updatedRoom = await ChatRoom.get(room.id);
-      if (updatedRoom == null) return;
-      if (!mounted) return;
-      widget.afterAccept?.call(context, updatedRoom);
-      return;
-    }
-
-    throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
+    await ChatService.instance.sendMessage(
+      room,
+      photoUrl: photoUrl,
+      text: text,
+    );
   }
 }

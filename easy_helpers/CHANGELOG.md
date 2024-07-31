@@ -1,3 +1,6 @@
+## 0.0.10
+* Update. `dog` can take any type of variables.
+
 ## 0.0.9
 * Change. The string of title, message in dialog functions are now widget.
 

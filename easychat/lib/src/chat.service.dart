@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/chat.room.list_view.dart';
 import 'package:easychat/src/widgets/screens/chat.room.invite_list.screen.dart';
 import 'package:easychat/src/widgets/screens/chat.room.member_list.screen.dart';
 import 'package:easychat/src/widgets/screens/chat.room.menu.screeen.dart';
@@ -79,7 +80,7 @@ class ChatService {
         showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => const ChatRoomListScreen(
-            queryType: ChatRoomListQuery.open,
+            queryOption: ChatRoomListOption.open,
           ),
         );
   }
@@ -144,5 +145,33 @@ class ChatService {
       context: context,
       pageBuilder: (_, __, ___) => const RejectedChatRoomInviteListScreen(),
     );
+  }
+
+  Future sendMessage(ChatRoom room, {String? photoUrl, String? text}) async {
+    if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
+    await _shouldBeOrBecomeMember(room);
+    List<Future> futures = [
+      ChatMessage.create(
+        roomId: room.id,
+        text: text,
+        url: photoUrl,
+      ),
+      room.updateNewMessagesMeta(
+        lastMessageText: text,
+        lastMessageUrl: photoUrl,
+      ),
+    ];
+    await Future.wait(futures);
+  }
+
+  _shouldBeOrBecomeMember(
+    ChatRoom room,
+  ) async {
+    if (room.joined) return;
+    if (room.open) return await room.join();
+    if (room.invitedUsers.contains(my.uid)) {
+      return await room.acceptInvitation();
+    }
+    throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 }
