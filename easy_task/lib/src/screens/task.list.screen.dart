@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/widgets/task.count.dart';
