@@ -29,7 +29,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
   @override
   void initState() {
     super.initState();
-    stream = ref.onChildAdded.listen((DatabaseEvent event) => room.read());
+    // stream = ref.onChildAdded.listen((DatabaseEvent event) => room.read());
   }
 
   @override
@@ -47,6 +47,14 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
         final message = ChatMessage.fromSnapshot(doc);
         return widget.itemBuilder?.call(context, message) ??
             ChatBubble(message: message);
+      },
+      errorBuilder: (context, error, stackTrace) {
+        print("Error: $error");
+        return Center(
+          child: Text(
+            "Error: $error",
+          ),
+        );
       },
     );
   }

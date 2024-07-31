@@ -11,6 +11,7 @@ class YoutubeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () async {
         await PostService.instance
             .showPostDetailScreen(context: context, post: post);

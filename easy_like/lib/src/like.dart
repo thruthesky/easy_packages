@@ -28,15 +28,6 @@ class Like {
   /// - Increase the likes count
   /// - Increaes the likes count in the document
   Future<void> like() async {
-    // await col.doc(documentReference.id).update({
-    //   'likes': FieldValue.increment(1),
-    //   'likedBy': FieldValue.arrayUnion([uid]),
-    // });
-    // await documentReference.update({
-    //   'likes': FieldValue.increment(1),
-    //   'likedBy': FieldValue.arrayUnion([uid]),
-    // });
-
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       FieldValue $likedBy;
 

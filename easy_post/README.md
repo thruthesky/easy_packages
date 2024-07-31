@@ -72,7 +72,9 @@ You can develop your own post list screen where you can design your own category
 - The post details screen displays youtube if there is a youtube. Otherwise, it will display post details without youtube.
 
 
-## displaying youtube screen
+# Screen
+
+## Youtube Screen
 
 - you can display a youtube screen with `PostService.instance.showYoutubeScren()`
 - YoutubeScreen supported fullscreen mode
@@ -99,8 +101,74 @@ YoutubeFullscreenBuilder(
 )
 ```
 
+## Post Create Screen
 
-# PostDetailScreen
+- Displaying a post creation screen, simply call `PostService.instance.showPostCreateScreen()`
+
+```dart
+IconButton(
+  onPressed: () {
+    PostService.instance
+        .showPostCreateScreen(context: context, category: 'idol');
+  },
+  icon: const Icon(Icons.add),
+),
+```
+- To display your own customize post creation screen you initialize post create screen like this. 
+
+- you can still used the default design if you only want to customize something base on your need.
+
+```dart 
+PostService.instance.init(
+  showPostCreateScreen: (context, category) {
+    return showGeneralDialog(
+        context: context,
+        pageBuilder: (_, __, ___) {
+          if (category == 'idol') {
+            return const IdolCreateScreen();
+          }
+          return PostEditScreen(category: category);
+        });
+  },
+);
+```
+
+## Post Update Screen 
+ - to display a post update screen, simply call `PostService.instance.showPostUpdateScreen()`
+
+
+```dart 
+IconButton(
+  onPressed: () {
+    PostService.instance
+        .showPostUpdateScreen(context: context, post:post);
+  },
+  icon: const Icon(Icons.add),
+),
+```
+
+
+- To display your own customize post update screen you can initialize post update screen like the example below. 
+
+- you can still used the default design if you only want to customize something base on your need.
+
+```dart 
+PostService.instance.init(
+  showPostUpdateScreen: (context, post) {
+    return showGeneralDialog(
+        context: context,
+        pageBuilder: (_, __, ___) {
+          if (category == 'idol') {
+            return const CustomUpdateScreen(post: post);
+          }
+          return PostEditScreen(category: post.category);
+        });
+  },
+);
+```
+
+
+## Post Detail Screen
 To display display the details of post you can use `PostServices.instance.showPostDetailScreen()` or `PostDetailScreen()`
 
 
@@ -121,7 +189,24 @@ PostDetailScreen(post: post);
 
 ```
 
+- To display your own customize post detail, simply initialize the showPostDetailScreen from the example.
 
+- You can still use the default design if you only want to customize something base on your need.
+
+```dart
+PostService.instance.init(
+  showPostDetailScreen: (context, post) {
+    return showGeneralDialog(
+        context: context,
+        pageBuilder: (_, __, ___) {
+          if (post.category == 'idol') {
+            return const IdolDetailScreen();
+          }
+          return PostDetailScreen(post: post);
+        });
+  },
+);
+```
 
 # Widgets
 
@@ -156,6 +241,19 @@ Widget build(BuildContext context) {
 }
 ```
 
+
+## Post Detail Widgets
+
+ Creating your own screen, you might want to create a customize screen to specific need of your app and still want to use the some of the default
+ widget used on the defualt screen, you can use the widget below
+
+- `PostDetail` this contains the default widget used in `PostDetailScreen` such as `user meta data`, `post`, `post action button`.
+
+- `PostDetailCommentListTreeView` this contains the list of comments of the Post.
+
+- `PostDetailCommentInputBox` this contains the post comment input box and will open a bottom sheet to input the commnet. 
+
+- `PostDailBottomAction` this contains the post action such as `like`, `comment` and `menu` for `edit`, `delete`, `report`, `block`
 
 
 # Developer's Tips

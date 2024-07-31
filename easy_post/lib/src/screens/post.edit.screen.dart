@@ -42,6 +42,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
   bool get isUpdate => !isCreate;
 
   bool inProgress = false;
+  double? uploadingPhotoProgress;
 
   List<String> urls = [];
 
@@ -86,82 +87,103 @@ class _PostEditScreenState extends State<PostEditScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              const SizedBox(height: 24),
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  hintText: 'input title'.t,
-                  labelText: 'Title'.t,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 24),
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    hintText: 'input title'.t,
+                    labelText: 'Title'.t,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: contentController,
-                decoration: InputDecoration(
-                  hintText: 'Input Content'.t,
-                  labelText: 'Content'.t,
+                const SizedBox(height: 24),
+                TextField(
+                  controller: contentController,
+                  decoration: InputDecoration(
+                    hintText: 'Input Content'.t,
+                    labelText: 'Content'.t,
+                  ),
+                  minLines: 5,
+                  maxLines: 8,
                 ),
-                minLines: 5,
-                maxLines: 8,
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: youtubeController,
-                decoration: InputDecoration(
-                  hintText: 'Youtube'.t,
-                  labelText: 'Youtube'.t,
-                ),
-              ),
-              const SizedBox(height: 24),
-              DisplayEditableUploads(
-                  urls: urls,
-                  onDelete: (url) {
-                    urls.remove(url);
-                    setState(() {});
-                  }),
-              Row(
-                children: [
-                  UploadIconButton(onUpload: (url) {
-                    urls.add(url);
-                    setState(() {});
-                  }),
-                  const Spacer(),
-                  inProgress
-                      ? const CircularProgressIndicator.adaptive()
-                      : ElevatedButton(
-                          onPressed: () async {
-                            setState(() => inProgress = true);
-                            if (isCreate) {
-                              final ref = await Post.create(
-                                category: category ?? '',
-                                title: titleController.text,
-                                content: contentController.text,
-                                youtubeUrl: youtubeController.text,
-                                urls: urls,
-                              );
-                              if (context.mounted) {
-                                Navigator.of(context).pop(ref);
-                              }
-                            } else if (isUpdate) {
-                              await widget.post!.update(
-                                title: titleController.text,
-                                content: contentController.text,
-                                youtubeUrl: youtubeController.text,
-                                urls: urls,
-                              );
+                if (widget.enableYoutubeUrl) ...{
+                  const SizedBox(height: 24),
+                  TextField(
+                    controller: youtubeController,
+                    decoration: InputDecoration(
+                      hintText: 'Youtube'.t,
+                      labelText: 'Youtube'.t,
+                    ),
+                  ),
+                },
+                const SizedBox(height: 24),
+                if (uploadingPhotoProgress != null &&
+                    !uploadingPhotoProgress!.isNaN)
+                  LinearProgressIndicator(
+                    value: uploadingPhotoProgress,
+                  ),
+                const SizedBox(height: 24),
+                DisplayEditableUploads(
+                    urls: urls,
+                    onDelete: (url) {
+                      urls.remove(url);
+                      setState(() {});
+                    }),
+                Row(
+                  children: [
+                    UploadIconButton(
+                      onUpload: (url) {
+                        urls.add(url);
+                        setState(() {});
+                      },
+                      progress: (v) => setState(
+                        () => uploadingPhotoProgress = v,
+                      ),
+                      complete: () => setState(
+                        () => uploadingPhotoProgress = null,
+                      ),
+                    ),
+                    const Spacer(),
+                    inProgress
+                        ? const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          )
+                        : ElevatedButton(
+                            onPressed: () async {
+                              setState(() => inProgress = true);
+                              if (isCreate) {
+                                final ref = await Post.create(
+                                  category: category ?? '',
+                                  title: titleController.text,
+                                  content: contentController.text,
+                                  youtubeUrl: youtubeController.text,
+                                  urls: urls,
+                                );
+                                if (context.mounted) {
+                                  Navigator.of(context).pop(ref);
+                                }
+                              } else if (isUpdate) {
+                                await widget.post!.update(
+                                  title: titleController.text,
+                                  content: contentController.text,
+                                  youtubeUrl: youtubeController.text,
+                                  urls: urls,
+                                );
 
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                }
                               }
-                            }
-                          },
-                          child: Text(isCreate ? 'post Create'.t : 'Update'.t),
-                        ),
-                ],
-              )
-            ],
+                            },
+                            child:
+                                Text(isCreate ? 'post Create'.t : 'Update'.t),
+                          ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
