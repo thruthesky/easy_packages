@@ -24,11 +24,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   ChatRoom get room => widget.room;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     controller.dispose();
     super.dispose();
@@ -70,8 +65,9 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                 ),
               ),
               IconButton(
-                onPressed: () =>
-                    submitable ? sendMessage(text: controller.text) : null,
+                onPressed: submitable
+                    ? () => sendMessage(text: controller.text)
+                    : null,
                 icon: const Icon(Icons.send),
               ),
             ],

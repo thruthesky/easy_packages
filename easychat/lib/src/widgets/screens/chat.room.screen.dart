@@ -87,7 +87,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       return "This is an open group. Once you sent a message, you will automatically join the group.";
     }
     // Else, it should be handled by the Firestore rulings.
-    return "You are not a member of this group";
+    return "The Chat Room may be private and/or deleted.";
   }
 
   @override
@@ -129,16 +129,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondaryContainer),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          notMemberMessage(room),
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      ),
-                    ],
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                  ),
+                  child: Text(
+                    notMemberMessage(room),
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                 );
               }),
