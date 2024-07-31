@@ -12,57 +12,69 @@ class ChatRoomListTile extends StatelessWidget {
   });
 
   final ChatRoom room;
-  final Function(ChatRoom room)? onTap;
+  final Function(BuildContext context, ChatRoom room, User? user)? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: room.single
-          ? UserDoc.sync(
-              uid: getOtherUserUidFromRoomId(room.id)!,
-              builder: (user) {
-                if (user == null) return const SizedBox.shrink();
-                return UserAvatar(user: user);
-              },
-            )
-          : Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-              ),
-              width: 48,
-              height: 48,
-              child: const Icon(Icons.people)),
-      title: room.single
-          ? UserDoc.sync(
-              uid: getOtherUserUidFromRoomId(room.id)!,
-              builder: (user) {
-                if (user == null) return Text(room.id);
-                return Text(user.displayName.trim().isNotEmpty
-                    ? user.displayName
-                    : user.uid);
-              },
-            )
-          : Text(room.name.trim().isNotEmpty ? room.name : room.id),
-      subtitle:
-          room.lastMessageText != null ? Text(room.lastMessageText!) : null,
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text((room.lastMessageAt ?? room.updatedAt).short),
-          if ((room.users[my.uid]?.newMessageCounter ?? 0) > 0)
-            Badge(
-              label: Text("${room.users[my.uid]!.newMessageCounter}"),
-            ),
-        ],
-      ),
-      onTap: () => onTap != null
-          ? onTap!.call(room)
-          : ChatService.instance.showChatRoomScreen(
-              context,
-              room: room,
-            ),
+    if (room.group) {
+      return ListTile(
+        leading: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Theme.of(context).colorScheme.tertiaryContainer,
+          ),
+          width: 48,
+          height: 48,
+          child: const Icon(Icons.people),
+        ),
+        title: Text(room.name.trim().isNotEmpty ? room.name : room.id),
+        subtitle: subtitle,
+        trailing: trailing,
+        onTap: () => onTapTile(context, room, null),
+      );
+    }
+    return UserDoc.sync(
+      uid: getOtherUserUidFromRoomId(room.id)!,
+      builder: (user) {
+        return ListTile(
+          leading: user == null ? null : UserAvatar(user: user),
+          title: user == null
+              ? Text(room.id)
+              : Text(user.displayName.trim().isNotEmpty
+                  ? user.displayName
+                  : user.uid),
+          subtitle: subtitle,
+          trailing: trailing,
+          onTap: () => onTapTile(context, room, user),
+        );
+      },
     );
+  }
+
+  Widget? get subtitle =>
+      room.lastMessageText != null ? Text(room.lastMessageText!) : null;
+
+  Widget get trailing {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text((room.lastMessageAt ?? room.updatedAt).short),
+        if ((room.users[my.uid]?.newMessageCounter ?? 0) > 0)
+          Badge(
+            label: Text("${room.users[my.uid]!.newMessageCounter}"),
+          ),
+      ],
+    );
+  }
+
+  onTapTile(BuildContext context, ChatRoom room, User? user) {
+    onTap != null
+        ? onTap!.call(context, room, user)
+        : ChatService.instance.showChatRoomScreen(
+            context,
+            room: room,
+            user: user,
+          );
   }
 }

@@ -35,7 +35,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   init() async {
     // If room is null, user should not be null.
     // We have to get room from other user.
-    if (widget.room == null) await loadRoomFromOtherUser();
+    if (widget.room == null) {
+      await loadRoomFromOtherUser();
+    } else {
+      $room = widget.room;
+    }
     setState(() {});
     $room!.listen();
     $room!.updateMeta();
