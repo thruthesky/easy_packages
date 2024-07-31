@@ -97,76 +97,77 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         children: [
           if ($room == null)
             const CircularProgressIndicator.adaptive()
-          else
-          // There is a chance for user to open the chat room
-          // if the user is not a member of the chat room
-          if ($room!.userUids.contains(my.uid) == false) ...[
-            // The user has a chance to open the chat room with message
-            // when the other user sent a message (1:1) but the user
-            // haven't accepted yet.
-            if ($room!.invitedUsers.contains(my.uid))
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            // For open chat rooms, the rooms can be seen by users.
-            else if ($room!.group)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "This is an open group. Once you sent a message, you will automatically join the group.",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            // Else, it should be handled by the Firestore rulings.
-          ],
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ChatMessagesListView(room: $room!),
-            ),
-          ),
-          SafeArea(
-            top: false,
-            child: $room == null
-                ? const SizedBox.shrink()
-                : ChatRoomInputBox(
-                    room: $room!,
-                    afterAccept: (context, room) {
-                      if (!mounted) return;
-                      setState(
-                        () {
-                          $room = room;
-                        },
-                      );
-                    },
+          else ...[
+            // There is a chance for user to open the chat room
+            // if the user is not a member of the chat room
+            if ($room!.userUids.contains(my.uid) == false) ...[
+              // The user has a chance to open the chat room with message
+              // when the other user sent a message (1:1) but the user
+              // haven't accepted yet.
+              if ($room!.invitedUsers.contains(my.uid))
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
                   ),
-          ),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondaryContainer),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              // For open chat rooms, the rooms can be seen by users.
+              else if ($room!.group)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondaryContainer),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "This is an open group. Once you sent a message, you will automatically join the group.",
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              // Else, it should be handled by the Firestore rulings.
+            ],
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: ChatMessagesListView(room: $room!),
+              ),
+            ),
+            SafeArea(
+              top: false,
+              child: $room == null
+                  ? const SizedBox.shrink()
+                  : ChatRoomInputBox(
+                      room: $room!,
+                      afterAccept: (context, room) {
+                        if (!mounted) return;
+                        setState(
+                          () {
+                            $room = room;
+                          },
+                        );
+                      },
+                    ),
+            ),
+          ],
         ],
       ),
     );
