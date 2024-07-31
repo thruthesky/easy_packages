@@ -18,8 +18,6 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
 
   bool project = false;
 
-  /// For uploading images
-  double? uploadProgress;
   List<String> urls = [];
 
   @override
@@ -48,59 +46,35 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
               decoration: const InputDecoration(labelText: 'Description'),
             ),
             const SizedBox(height: 20),
-            if (uploadProgress != null && !uploadProgress!.isNaN)
-              LinearProgressIndicator(
-                value: uploadProgress,
+            UploadForm(
+              urls: urls,
+              onUpload: (url) => {},
+              onDelete: (url) => {},
+              button: ElevatedButton(
+                onPressed: () async {
+                  if (_titleController.text.isEmpty) {
+                    toast(context: context, message: Text('enter a title'.t));
+                    return;
+                  }
+                  final ref = await Task.create(
+                    title: _titleController.text,
+                    description: _descriptionController.text,
+                    project: project,
+                    urls: urls,
+                  );
+                  final task = await Task.get(ref.id);
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                    if (task!.project) {
+                      TaskService.instance
+                          .showProjectDetailScreen(context, task);
+                    } else {
+                      TaskService.instance.showTaskDetailScreen(context, task);
+                    }
+                  }
+                },
+                child: const Text('Create Task'),
               ),
-            const SizedBox(height: 24),
-            DisplayEditableUploads(
-                urls: urls,
-                onDelete: (url) {
-                  urls.remove(url);
-                  setState(() {});
-                }),
-            Row(
-              children: [
-                UploadIconButton(
-                  icon: const Icon(Icons.camera_alt),
-                  onUpload: (url) {
-                    urls.add(url);
-                    setState(() {});
-                  },
-                  progress: (v) => setState(
-                    () => uploadProgress = v,
-                  ),
-                  complete: () => setState(
-                    () => uploadProgress = null,
-                  ),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (_titleController.text.isEmpty) {
-                      toast(context: context, message: Text('enter a title'.t));
-                      return;
-                    }
-                    final ref = await Task.create(
-                      title: _titleController.text,
-                      description: _descriptionController.text,
-                      project: project,
-                    );
-                    final task = await Task.get(ref.id);
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                      if (task!.project) {
-                        TaskService.instance
-                            .showProjectDetailScreen(context, task);
-                      } else {
-                        TaskService.instance
-                            .showTaskDetailScreen(context, task);
-                      }
-                    }
-                  },
-                  child: const Text('Create Task'),
-                ),
-              ],
             ),
           ],
         ),

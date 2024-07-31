@@ -11,6 +11,13 @@ class TaskService {
   static TaskService? _instance;
   static TaskService get instance => _instance ??= TaskService._();
 
+  /// Task count rebuild notifier
+  ///
+  /// Firestore aggregation queries cannot be updated in real-time. That's why
+  /// when there is changes on the completion of 'root level task', it will
+  /// notify the listeners to rebuild the UI of the task count.
+  ValueNotifier<String> countRebuildNotifier = ValueNotifier('');
+
   TaskService._() {
     dog('TaskService is created');
     addPostTranslations();

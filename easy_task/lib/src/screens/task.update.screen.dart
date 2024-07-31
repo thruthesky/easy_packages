@@ -1,5 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:flutter/material.dart';
 
@@ -53,18 +54,24 @@ class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
               decoration: const InputDecoration(labelText: 'Description'),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await widget.task.update(
-                  title: titleController.text,
-                  description: descriptionController.text,
-                  project: project,
-                );
-                if (context.mounted) {
-                  toast(context: context, message: Text('Task Updated'.t));
-                }
-              },
-              child: const Text('Update Task'),
+            UploadForm(
+              urls: widget.task.urls,
+              onUpload: (url) => {},
+              onDelete: (url) => {},
+              button: ElevatedButton(
+                onPressed: () async {
+                  await widget.task.update(
+                    title: titleController.text,
+                    description: descriptionController.text,
+                    project: project,
+                    urls: widget.task.urls,
+                  );
+                  if (context.mounted) {
+                    toast(context: context, message: Text('Task Updated'.t));
+                  }
+                },
+                child: const Text('Update Task'),
+              ),
             ),
           ],
         ),
