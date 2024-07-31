@@ -1,5 +1,6 @@
-export './src/task.service.dart';
 export './src/task.dart';
+export './src/task.filter.dart';
+export './src/task.service.dart';
 export './src/screens/child_task.create.screen.dart';
 export './src/screens/project.detail.screen.dart';
 export './src/screens/task.create.screen.dart';
