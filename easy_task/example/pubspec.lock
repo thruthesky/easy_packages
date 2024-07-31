@@ -133,10 +133,10 @@ packages:
     dependency: transitive
     description:
       name: easy_comment
-      sha256: "819c29d44d88e5dc108eae43093626a9b2f382e0fb069a49bd83253f166b7b07"
+      sha256: cbde1cb0c6aefd4465f6580e21b1acfccdc8af5e6f2bedfa6907811cb97e3ab0
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.5"
   easy_helpers:
     dependency: transitive
     description:

@@ -6,16 +6,9 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-class RejectedChatRoomInviteListScreen extends StatefulWidget {
+class RejectedChatRoomInviteListScreen extends StatelessWidget {
   const RejectedChatRoomInviteListScreen({super.key});
 
-  @override
-  State<RejectedChatRoomInviteListScreen> createState() =>
-      _RejectedChatRoomInviteListScreenState();
-}
-
-class _RejectedChatRoomInviteListScreenState
-    extends State<RejectedChatRoomInviteListScreen> {
   Query get query => ChatService.instance.roomCol.where(
         'rejectedUsers',
         arrayContains: my.uid,
@@ -31,23 +24,15 @@ class _RejectedChatRoomInviteListScreenState
         query: query,
         itemBuilder: (context, doc) {
           final room = ChatRoom.fromSnapshot(doc);
-          // return ListTile(
-          //   title: Text(room.id),
-          //   // onTap: () => ChatService.instance.showChatRoomScreen(
-          //   //   context,
-          //   //   room: room,
-          //   // ),
-          // );
           return ChatRoomListTile(
             room: room,
-            onTap: (room) async {
+            onTap: (context, room, user) async {
               final re = await confirm(
                 context: context,
                 title: const Text("Rejected Chat"),
                 message: const Text(
                     "You have rejected the chat already. Accept and continue chat?"),
               );
-
               if (re ?? false) {
                 await room.acceptInvitation();
               }

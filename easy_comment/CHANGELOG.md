@@ -1,3 +1,6 @@
+## 0.0.5
+* Update. dialogs from easy_helpers
+
 ## 0.0.4
 * Add. edit, delete.
 

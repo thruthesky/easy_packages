@@ -39,21 +39,22 @@ class _TaskListScreenState extends State<TaskListScreen> {
               icon: const Icon(Icons.add),
             ),
             PopupMenuButton(
-                icon: const Icon(Icons.settings),
-                itemBuilder: (context) => [
-                      PopupMenuItem(
-                        child: CheckboxListTile(
-                          value: completed,
-                          title: const Text('Completed Tasks'),
-                          onChanged: (v) {
-                            setState(() {
-                              completed = v ?? false;
-                            });
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                    ])
+              icon: const Icon(Icons.settings),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: CheckboxListTile(
+                    value: completed,
+                    title: const Text('Completed Tasks'),
+                    onChanged: (v) {
+                      setState(() {
+                        completed = v ?? false;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            )
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(80),
@@ -107,6 +108,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
           final task = Task.fromSnapshot(snapshot);
           return TaskListTile(task: task);
         },
+        emptyBuilder: (context) => const Center(
+          child: Text('No task found'),
+        ),
         errorBuilder: (context, error, stackTrace) {
           dog('error: $error');
           return Center(
