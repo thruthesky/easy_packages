@@ -435,9 +435,9 @@ class ChatRoom {
   Timestamp _negatedOrder(DateTime order) =>
       Timestamp.fromDate(order.subtract(const Duration(days: 19000)));
 
-  /// [updateUnreadUsers] is used to update all unread data for all
+  /// [updateNewMessagesMeta] is used to update all unread data for all
   /// users inside the chat room.
-  Future<void> updateUnreadUsers({
+  Future<void> updateNewMessagesMeta({
     String? lastMessageText,
     String? lastMessageUrl,
   }) async {
@@ -492,10 +492,10 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  /// [updateMeta] is used to set as read by the current user.
+  /// [updateMyReadMeta] is used to set as read by the current user.
   /// It means, turning newMessageCounter into zero
   /// and updating the order
-  Future<void> updateMeta() async {
+  Future<void> updateMyReadMeta() async {
     if (!userUids.contains(my.uid)) return;
     if (users[my.uid]!.newMessageCounter == 0) return;
     final myReadOrder = users[my.uid]!.timeOrder;

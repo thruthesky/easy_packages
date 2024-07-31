@@ -23,7 +23,6 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? $room;
-
   User? get user => widget.user;
 
   @override
@@ -42,7 +41,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
     setState(() {});
     $room!.listen();
-    $room!.updateMeta();
+    $room!.updateMyReadMeta();
   }
 
   @override
@@ -161,17 +160,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               top: false,
               child: $room == null
                   ? const SizedBox.shrink()
-                  : ChatRoomInputBox(
-                      room: $room!,
-                      afterAccept: (context, room) {
-                        if (!mounted) return;
-                        setState(
-                          () {
-                            $room = room;
-                          },
-                        );
-                      },
-                    ),
+                  : ChatRoomInputBox(room: $room!),
             ),
           ],
         ],
