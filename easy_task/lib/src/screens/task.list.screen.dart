@@ -6,6 +6,12 @@ import 'package:flutter/material.dart';
 
 /// Task list screen
 ///
+/// All menu will display all the projects and root level tasks.
+///
+/// Task menu will display only root level tasks.
+///
+/// Project menu will display only projects.
+///
 /// TODO: 사진 업로드, 태스크 아카이브(삭제 기능은 없음), 태스크(프로젝트) 삭제,
 /// TODO: 프로젝트에는 task 갯수. 전체, complete 된것 과 되지않은 것 구분해서 카운트.
 class TaskListScreen extends StatefulWidget {
@@ -30,10 +36,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
           isEqualTo: TaskService.instance.currentUser!.uid,
         ),
         Filter.or(
+          // if project
           Filter('project', isEqualTo: true),
           Filter.and(
+            // if not project and not child (that is root level task)
             Filter('project', isEqualTo: false),
-            Filter('parent', isEqualTo: ''),
+            Filter('child', isEqualTo: false),
           ),
         ),
       ));
@@ -44,7 +52,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           isEqualTo: TaskService.instance.currentUser!.uid,
         ),
         Filter('project', isEqualTo: false),
-        Filter('parent', isEqualTo: ''),
+        Filter('child', isEqualTo: false),
       ));
     } else if (menu == 'project') {
       q = q.where(Filter.and(
@@ -56,7 +64,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ));
     }
 
-    q = q.where('completed', isEqualTo: completed);
+    // if the menu is all or tasks, then apply the completed filter
+    if (menu != 'project') {
+      q = q.where('completed', isEqualTo: completed);
+    }
 
     q = q.orderBy('createdAt', descending: true);
 

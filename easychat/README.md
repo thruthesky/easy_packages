@@ -68,6 +68,17 @@ ChatService.instance.init();
 - `open` - is true when the room is open group chat.
 
 
+
+#### Cost of Firestore
+
+- Firestore is more expensive compared to Realtime Database.
+  - In the previous version, we were able to build the complete chat functionality with Realtime Database, but you(developers) don't like it. That's why we converted it to Firestore. Well, it costs more.
+  - We have plan to customize on costy parts of Firestore chat rooms, and share the chat room data management with Realtime Database.
+  - For now, when theere is a chat message, chat room updates.
+    - In chat room list screen and chat room screen, the chat room document are listened(subscribed) for realtime updates. And it will be a bit costy.
+    - If you have millions of users and if it costs, let us know. We will hurry to customize it for low cost.
+
+
 ### Chat message database struture (RTDB)
 
 For the speed and cost efficiencies, the chat messages are saved under `/chat-messages/{roomId}` in Realtime Database

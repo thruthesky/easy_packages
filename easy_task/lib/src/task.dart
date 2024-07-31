@@ -19,6 +19,7 @@ class Task {
     required this.updatedAt,
     required this.completed,
     required this.parent,
+    required this.child,
     required this.project,
   });
 
@@ -30,7 +31,8 @@ class Task {
   final DateTime updatedAt;
   final bool completed;
 
-  final String parent;
+  final String? parent;
+  final bool child;
 
   /// For Projects
   final bool project;
@@ -53,6 +55,7 @@ class Task {
           : DateTime.now(),
       completed: json['completed'] ?? false,
       parent: json['parent'],
+      child: json['child'],
       project: json['project'],
     );
   }
@@ -66,6 +69,7 @@ class Task {
       'updatedAt': updatedAt,
       'completed': completed,
       'parent': parent,
+      'child': child,
       'project': project,
     };
   }
@@ -83,7 +87,7 @@ class Task {
     required String title,
     String description = '',
     bool project = false,
-    String parent = '',
+    String? parent,
   }) async {
     final doc = await col.add({
       'creator': TaskService.instance.currentUser!.uid,
@@ -93,6 +97,7 @@ class Task {
       'updatedAt': FieldValue.serverTimestamp(),
       'completed': false,
       'parent': parent,
+      'child': parent != null,
       'project': project,
     });
     return doc;
