@@ -520,7 +520,6 @@ class ChatRoom {
     chatRoomSubscription?.cancel();
     changes.add(this);
     chatRoomSubscription = ref.snapshots().listen((snapshot) {
-      dog("snapshot: $snapshot");
       changes.add(ChatRoom.fromSnapshot(snapshot));
     });
   }
@@ -534,20 +533,15 @@ class ChatRoom {
       initialData: changes.value,
       stream: changes.stream,
       builder: (context, snapshot) {
-        dog("[Imp] Something has changed within me - chat room");
-
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
           return const CircularProgressIndicator();
         }
-
         if (snapshot.hasError) {
           debugPrint("Error: ${snapshot.error}");
           return Text("Error: ${snapshot.error}");
         }
-
         final room = snapshot.data!;
-        dog("[Imp] Am I a member now? ${room.joined}");
         return builder(room);
       },
     );
