@@ -1,6 +1,6 @@
 name: easy_task
 description: "A complete and easy to use task management system from the personal tasks to school and office works"
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_task
 
 environment:
