@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:easychat/src/widgets/chat.messages.list_view.dart';
@@ -43,6 +42,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     setState(() {});
     $room!.listen();
     $room!.updateMyReadMeta();
+    onUpdateRoom();
   }
 
   @override
@@ -61,6 +61,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // other user opens the chat room.
     final newRoomRef = await ChatRoom.createSingle(user!.uid);
     $room = await ChatRoom.get(newRoomRef.id);
+  }
+
+  onUpdateRoom() {
+    // This will update the current user's read if
+    // there is a new message.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      $room!.changes.listen((room) => room.updateMyReadMeta());
+    });
   }
 
   String title(ChatRoom room) {
