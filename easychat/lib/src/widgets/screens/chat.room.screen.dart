@@ -139,10 +139,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               }),
             ],
             Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: ChatMessagesListView(room: $room!),
-              ),
+              child: $room!.joined ||
+                      $room!.open ||
+                      $room!.invitedUsers.contains(my.uid)
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ChatMessagesListView(room: $room!),
+                    )
+                  : const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24.0),
+                        child: Text("Unable to show chat messages."),
+                      ),
+                    ),
             ),
             SafeArea(
               top: false,

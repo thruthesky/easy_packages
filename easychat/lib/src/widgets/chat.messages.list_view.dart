@@ -49,7 +49,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
             ChatBubble(message: message);
       },
       errorBuilder: (context, error, stackTrace) {
-        print("Error: $error");
+        debugPrint("Error: $error");
         return Center(
           child: Text(
             "Error: $error",
