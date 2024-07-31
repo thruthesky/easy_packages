@@ -75,21 +75,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: $room!.builder((r) => Text(title(r))),
+        title: $room?.builder((r) => Text(title(r))),
         actions: [
-          $room!.builder(
-            (room) {
-              if (room.joined == false) return const SizedBox.shrink();
-              if (room.group == false) return const SizedBox.shrink();
+          $room?.builder(
+                (room) {
+                  if (room.joined == false) return const SizedBox.shrink();
+                  if (room.group == false) return const SizedBox.shrink();
 
-              return IconButton(
-                onPressed: () {
-                  ChatService.instance.showChatRoomMenuScreen(context, room);
+                  return IconButton(
+                    onPressed: () {
+                      ChatService.instance
+                          .showChatRoomMenuScreen(context, room);
+                    },
+                    icon: const Icon(Icons.more_vert),
+                  );
                 },
-                icon: const Icon(Icons.more_vert),
-              );
-            },
-          ),
+              ) ??
+              const SizedBox.shrink(),
         ],
       ),
       body: Column(

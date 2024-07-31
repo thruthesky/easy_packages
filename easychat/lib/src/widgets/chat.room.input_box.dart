@@ -12,6 +12,8 @@ class ChatRoomInputBox extends StatefulWidget {
   });
 
   final ChatRoom room;
+
+  // TODO remove
   final Function(BuildContext context, ChatRoom updatedRoom)? afterAccept;
 
   @override
