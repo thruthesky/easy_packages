@@ -26,6 +26,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? $room;
   User? get user => widget.user;
 
+  StreamSubscription? docUpdateStream;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +57,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   dispose() {
+    docUpdateStream?.cancel();
     $room?.dispose();
     super.dispose();
   }
@@ -75,7 +78,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // This will update the current user's read if
     // there is a new message.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      $room!.changes.listen((room) => room.updateMyReadMeta());
+      docUpdateStream =
+          $room!.changes.listen((room) => room.updateMyReadMeta());
     });
   }
 
@@ -111,9 +115,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return Scaffold(
       appBar: AppBar(
         title: $room?.builder(
-          (r) => Row(
+          (room) => Row(
             children: [
-              if (r.iconUrl != null && r.iconUrl!.isNotEmpty) ...[
+              if (room.group) ...[
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
@@ -122,17 +126,25 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   width: 36,
                   height: 36,
                   clipBehavior: Clip.hardEdge,
-                  child: $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
+                  child: room.iconUrl != null && room.iconUrl!.isNotEmpty
                       ? CachedNetworkImage(
                           imageUrl: $room!.iconUrl!,
                           fit: BoxFit.cover,
                         )
                       : const Icon(Icons.people),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
+              ],
+              if (room.single) ...[
+                UserAvatar(
+                  user: user!,
+                  size: 36,
+                  radius: 15,
+                ),
+                const SizedBox(width: 12),
               ],
               Expanded(
-                child: Text(title(r)),
+                child: Text(title(room)),
               ),
             ],
           ),
