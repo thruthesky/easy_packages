@@ -24,7 +24,10 @@ class ChatMessagesListView extends StatelessWidget {
       itemBuilder: (context, doc) {
         final message = ChatMessage.fromSnapshot(doc);
         return itemBuilder?.call(context, message) ??
-            ChatBubble(message: message);
+            ChatBubble(
+              key: ValueKey("${message.id}_message"),
+              message: message,
+            );
       },
       errorBuilder: (context, error, stackTrace) {
         debugPrint("Error: $error");

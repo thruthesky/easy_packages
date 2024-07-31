@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/src/widgets/chat.messages.list_view.dart';
 import 'package:easychat/src/widgets/chat.room.input_box.dart';
 import 'package:easyuser/easyuser.dart';
@@ -109,7 +110,33 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: $room?.builder((r) => Text(title(r))),
+        title: $room?.builder(
+          (r) => Row(
+            children: [
+              if (r.iconUrl != null && r.iconUrl!.isNotEmpty) ...[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                  ),
+                  width: 36,
+                  height: 36,
+                  clipBehavior: Clip.hardEdge,
+                  child: $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: $room!.iconUrl!,
+                          fit: BoxFit.cover,
+                        )
+                      : const Icon(Icons.people),
+                ),
+                const SizedBox(width: 16),
+              ],
+              Expanded(
+                child: Text(title(r)),
+              ),
+            ],
+          ),
+        ),
         actions: [
           $room?.builder(
                 (room) {
