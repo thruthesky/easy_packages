@@ -33,7 +33,6 @@ class TaskFilter {
     } else if (menu == 'latest') {
       q = q
           .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
-          .where('completed', isEqualTo: completed)
           .where('project', isEqualTo: false);
     }
 

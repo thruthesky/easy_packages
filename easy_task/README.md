@@ -143,6 +143,11 @@ Project_Detail_Menu-->Invite_User_Group
 # Widgets
 
 
+## Task List Screen
+
+- `TaskService.instance.showTaskListScreen`: Call this method to show the tasks of the user. This method will show `TaskListScreen`. For custom design, simply copy the `TaskListScreen` and edit it on your own.
+
+
 ## TaskCount
 
 Displaying number of tasks
@@ -156,6 +161,11 @@ Displaying number of tasks
   - `completed`: if this is true, only the no of completed tasks are displayed. If it is false, then it will display the no of `not completed` number.
   - `rootLevelTasks`: It displays the no of the root level tasks. It is simpley the combination of `project`: false and `child`: false.
 
+
+
+# Custom UI Design
+
+To do custom UI design, you need to understand how easy_task works.
 
 
 
