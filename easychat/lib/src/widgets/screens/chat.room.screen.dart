@@ -39,10 +39,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     } else {
       $room = widget.room;
     }
+    roomAssert();
     setState(() {});
     $room!.listen();
     $room!.updateMyReadMeta();
     onUpdateRoom();
+  }
+
+  roomAssert() {
+    if ($room!.group) return;
+    if (user != null) return;
+    throw 'chat-room/user-required-in-single The chat room is single chat but user was not provided.';
   }
 
   @override

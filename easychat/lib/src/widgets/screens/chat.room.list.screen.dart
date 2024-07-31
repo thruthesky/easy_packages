@@ -113,7 +113,6 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
         },
         itemBuilder: (context, doc) {
           final room = ChatRoom.fromSnapshot(doc);
-
           return ChatRoomListTile(
             room: room,
           );
