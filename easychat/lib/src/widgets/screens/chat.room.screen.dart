@@ -158,7 +158,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         child: ListTile(
                           title: const Text("Invite Other"),
                           onTap: () async {
-                            final invitedUser =
+                            final selectedUser =
                                 await UserService.instance.showUserSearchDialog(
                               context,
                               itemBuilder: (user, index) {
@@ -171,6 +171,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               },
                               exactSearch: true,
                             );
+                            if (selectedUser == null) return;
+                            $room!.inviteUser(selectedUser.uid);
                           },
                         ),
                       ),

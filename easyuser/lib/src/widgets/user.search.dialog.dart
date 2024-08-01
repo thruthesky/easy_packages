@@ -95,15 +95,12 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                 decoration: InputDecoration(
                   hintText: 'Search user'.t,
                   suffixIcon: IconButton(
-                    onPressed: () {
-                      searchText = searchController.text.toLowerCase();
-                      dog(searchText);
-                      setState(() {});
-                    },
+                    onPressed: onSubmit,
                     icon: const Icon(Icons.send),
                   ),
                 ),
                 controller: searchController,
+                onSubmitted: onSubmit,
               ),
               if (searchText != '') ...{
                 ConstrainedBox(
@@ -145,5 +142,11 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
         ),
       ),
     );
+  }
+
+  onSubmit([String? value]) {
+    searchText = searchController.text.toLowerCase();
+    dog(searchText);
+    setState(() {});
   }
 }
