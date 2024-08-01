@@ -57,7 +57,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             )
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(80),
+            preferredSize: const Size.fromHeight(48),
             child: Row(
               children: [
                 TextButton(

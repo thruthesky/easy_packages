@@ -12,39 +12,46 @@ class TaskListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          task.project
-              ? const SizedBox(
-                  width: 48, height: 48, child: Icon(Icons.diversity_1))
-              : Checkbox(
-                  value: task.completed,
-                  onChanged: (bool? value) async {
-                    if (value != null) {
-                      await task.toggleCompleted(value);
-                    }
-                  },
-                ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  task.title,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  task.description,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            task.project
+                ? const SizedBox(
+                    width: 48, height: 48, child: Icon(Icons.diversity_1))
+                : Checkbox(
+                    value: task.completed,
+                    onChanged: (bool? value) async {
+                      if (value != null) {
+                        await task.toggleCompleted(value);
+                      }
+                    },
+                  ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    task.title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    task.description,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            if (task.urls.isNotEmpty) const Icon(Icons.photo_outlined),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
       ),
       onTap: () {
         if (task.project) {

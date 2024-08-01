@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 /// ImageUpload
 ///
-/// Displays an icon that can be uploaded.
+/// Displays an icon on the top, title, and subtitle as the upload UI widget.
 ///
 /// [ref] is the firestore document reference.
 ///
