@@ -21,6 +21,14 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "Example - iPhone 15 Plus",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Plus",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "Example - iPhone 15 Pro",
             "request": "launch",
             "type": "dart",
@@ -41,6 +49,14 @@
             "request": "launch",
             "type": "dart",
             "deviceId": "320066b04746b53d",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Example - Emulator",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554",
             "cwd": "example",
             "program": "lib/main.dart"
         },
