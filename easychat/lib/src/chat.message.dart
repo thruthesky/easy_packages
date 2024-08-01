@@ -59,9 +59,10 @@ class ChatMessage {
       'createdAt': ServerValue.timestamp,
       'order': DateTime.now().millisecondsSinceEpoch * -1,
     };
-    await ChatService.instance.messageRef(roomId).push().set(newMessageData);
+    final ref = ChatService.instance.messageRef(roomId).push();
+    await ref.set(newMessageData);
     return ChatMessage(
-      id: '',
+      id: ref.key!,
       roomId: roomId,
       text: text,
       url: url,

@@ -180,31 +180,29 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         child: ListTile(
                           title: const Text("Leave Chat Room"),
                           onTap: () {
-                            ChatService.instance
-                                .showInviteListScreen(context, room: room);
+                            // TODO leave chat room
                           },
                         ),
                       ),
 
-                      // PopupMenuItem(
-                      //   child: ListTile(
-                      //     title: const Text("Report"),
-                      //     onTap: () {
-                      //       ChatService.instance
-                      //           .showInviteListScreen(context, room: room);
-                      //     },
-                      //   ),
-                      // ),
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Report"),
+                          onTap: () {
+                            // TODO report
+                          },
+                        ),
+                      ),
 
-                      // PopupMenuItem(
-                      //   child: ListTile(
-                      //     title: const Text("Block"),
-                      //     onTap: () {
-                      //       ChatService.instance
-                      //           .showInviteListScreen(context, room: room);
-                      //     },
-                      //   ),
-                      // ),
+                      if ($room!.single)
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Text("Block"),
+                            onTap: () {
+                              /// TODO: block
+                            },
+                          ),
+                        ),
 
                       if (room.group) ...[
                         PopupMenuItem(
