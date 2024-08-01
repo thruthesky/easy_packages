@@ -141,7 +141,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     size: 36,
                     radius: 15,
                   ),
-                  onTap: () => UserService.instance.showPublicProfile(context),
+                  onTap: () => UserService.instance.showPublicProfileScreen(
+                    context,
+                    user: $user!,
+                  ),
                 ),
                 const SizedBox(width: 12),
               ],

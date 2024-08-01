@@ -49,7 +49,9 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
           ),
         ],
       ),
-      body: ChatRoomListView(queryOption: queryOption),
+      body: ChatRoomListView(
+        queryOption: queryOption,
+      ),
     );
   }
 }
