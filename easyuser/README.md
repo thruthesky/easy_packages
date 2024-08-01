@@ -220,6 +220,12 @@ UserDoc(
 ```
 
 
+### Deleting user document
+
+- When the user wants to resign, you can call `User.delete` method. It is recommended to delete the account from FirebaseAuth also. See the `easy_engine` for deleting user account from Firebase Auth.
+
+
+
 
 ## Finding user 
 
