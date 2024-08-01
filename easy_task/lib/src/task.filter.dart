@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/easy_task.dart';
+import 'package:easyuser/easyuser.dart';
 
 /// Task filter
 ///
@@ -13,42 +14,36 @@ class TaskFilter {
   ///
   /// You can use it for query, count, etc.
   ///
-  static Query filter({
-    required String menu,
-    required bool completed,
-  }) {
-    assert(menu == 'all' ||
-        menu == 'task' ||
-        menu == 'project' ||
-        menu == 'latest');
+  static Query filter(TaskListOptions options) {
+    assert(options.menu == 'all' ||
+        options.menu == 'task' ||
+        options.menu == 'project' ||
+        options.menu == 'latest');
 
     Query q = Task.col;
 
-    if (menu == 'all') {
+    if (options.menu == 'all') {
       q = q.where(allMenuFilter);
-    } else if (menu == 'task') {
+    } else if (options.menu == 'task') {
       q = q.where(taskMenuFilter);
-    } else if (menu == 'project') {
+    } else if (options.menu == 'project') {
       q = q.where(projectMenuFilter);
-    } else if (menu == 'latest') {
+    } else if (options.menu == 'latest') {
       q = q
-          .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+          .where('creator', isEqualTo: my.uid)
           .where('project', isEqualTo: false);
     }
 
     // if the menu is all or tasks, then apply the completed filter
-    if (menu != 'project') {
-      q = q.where('completed', isEqualTo: completed);
+    if (options.menu != 'project') {
+      q = q.where('completed', isEqualTo: options.completed);
     }
 
     return q;
   }
 
-  static Query query({
-    required String menu,
-    required bool completed,
-  }) {
-    Query q = filter(menu: menu, completed: completed);
+  static Query query(TaskListOptions options) {
+    Query q = filter(options);
     q = q.orderBy('createdAt', descending: true);
     return q;
   }
@@ -57,7 +52,7 @@ class TaskFilter {
     return Filter.and(
       Filter(
         'creator',
-        isEqualTo: TaskService.instance.currentUser!.uid,
+        isEqualTo: my.uid,
       ),
       Filter.or(
         // if project

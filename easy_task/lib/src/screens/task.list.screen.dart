@@ -1,7 +1,5 @@
-import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_task/easy_task.dart';
-import 'package:easy_task/src/widgets/task.count.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 /// Task list screen
@@ -21,112 +19,34 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  bool completed = false;
-  String menu = 'all';
+  TaskListOptions options = TaskListOptions(
+    completed: false,
+    menu: 'all',
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task List'),
+        title: Text('Task List'.t),
         actions: [
-          IconButton(
-            onPressed: () {
-              TaskService.instance.showTaskCreateScreen(context);
-            },
-            icon: const Icon(Icons.add),
-          ),
-          PopupMenuButton(
-            icon: const Icon(Icons.settings),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: CheckboxListTile(
-                  value: completed,
-                  title: const Text('Completed Tasks'),
-                  onChanged: (v) {
-                    setState(() {
-                      completed = v ?? false;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ],
-          )
+          const TaskCreateButton(),
+          TaskListHeaderMenu(options: options, onTap: () => setState(() {}))
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
-          child: Row(
-            children: [
-              TextButton(
-                  onPressed: () {
-                    setState(() {
-                      menu = 'all';
-                    });
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('All'),
-                      TaskCount(menu: 'all', completed: completed),
-                    ],
-                  )),
-              TextButton(
-                  onPressed: () {
-                    setState(() {
-                      menu = 'task';
-                    });
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('Tasks'),
-                      TaskCount(menu: 'task', completed: completed),
-                    ],
-                  )),
-              TextButton(
-                  onPressed: () {
-                    setState(() {
-                      menu = 'project';
-                    });
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('Projects'),
-                      TaskCount(menu: 'project', completed: completed),
-                    ],
-                  ))
-            ],
+          child: TaskListTabMenu(
+            options: options,
+            onTap: (menu) {
+              setState(() {
+                options.menu = menu;
+              });
+            },
           ),
         ),
       ),
-      body: FirestoreListView(
-        query: TaskFilter.query(menu: menu, completed: completed),
-        itemBuilder: (context, snapshot) {
-          final task = Task.fromSnapshot(snapshot);
-          return TaskListTile(key: ValueKey(task.id), task: task);
-        },
-        emptyBuilder: (context) => const Center(
-          child: Text('No task found'),
-        ),
-        errorBuilder: (context, error, stackTrace) {
-          dog('error: $error');
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('An error occurred;\n$error'),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {});
-                  },
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          );
-        },
+      body: TaskListView(
+        options: options,
       ),
     );
   }
