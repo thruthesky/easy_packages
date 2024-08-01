@@ -71,7 +71,7 @@ String formatDuration(int duration) {
 }
 
 /// format views from 120304050 millions views 1M views
-String formatViews(int views) {
+String abbreviateNumber(int views) {
   if (views >= 1000000) {
     return '${(views / 1000000).toStringAsFixed(1)}M';
   } else if (views >= 1000) {
