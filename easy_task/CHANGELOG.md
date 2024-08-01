@@ -1,3 +1,7 @@
+## 0.0.4
+* Update. Finishing task work and complete the navigation between screens.
+* Add. TaskCount widget.
+
 ## 0.0.3
 * Add. Task crud.
 

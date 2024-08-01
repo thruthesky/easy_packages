@@ -1,3 +1,4 @@
+export './src/task.locale.dart';
 export './src/task.dart';
 export './src/task.filter.dart';
 export './src/task.service.dart';
