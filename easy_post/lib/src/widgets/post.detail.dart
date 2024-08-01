@@ -1,7 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/post.detail.youtube_meta.dart';
-import 'package:easy_post_v2/src/widgets/post.detail_bottom_action.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
