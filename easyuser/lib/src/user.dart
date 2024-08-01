@@ -237,7 +237,7 @@ class User {
   /// User `delete` delete the user document if its there own uid
   Future delete() async {
     if (uid != my.uid) {
-      throw 'user-delete/permission-denied You dont have permission to delete other user';
+      throw 'user-delete/not-your-document You dont have permission to delete other user';
     }
     await doc.delete();
   }
