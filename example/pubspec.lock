@@ -269,7 +269,7 @@ packages:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.16"
+    version: "0.0.17"
   fake_async:
     dependency: transitive
     description:
