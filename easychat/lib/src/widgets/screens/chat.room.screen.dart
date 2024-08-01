@@ -152,12 +152,90 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           $room?.builder(
                 (room) {
                   if (room.joined == false) return const SizedBox.shrink();
-                  if (room.group == false) return const SizedBox.shrink();
-                  return IconButton(
-                    onPressed: () {
-                      ChatService.instance
-                          .showChatRoomMenuScreen(context, room);
-                    },
+                  return PopupMenuButton(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Invite Other"),
+                          onTap: () async {
+                            final invitedUser =
+                                await UserService.instance.showUserSearchDialog(
+                              context,
+                              itemBuilder: (user, index) {
+                                return UserListTile(
+                                  user: user,
+                                  onTap: () {
+                                    Navigator.of(context).pop(user);
+                                  },
+                                );
+                              },
+                              exactSearch: true,
+                            );
+                          },
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Leave Chat Room"),
+                          onTap: () {
+                            ChatService.instance
+                                .showInviteListScreen(context, room: room);
+                          },
+                        ),
+                      ),
+
+                      // PopupMenuItem(
+                      //   child: ListTile(
+                      //     title: const Text("Report"),
+                      //     onTap: () {
+                      //       ChatService.instance
+                      //           .showInviteListScreen(context, room: room);
+                      //     },
+                      //   ),
+                      // ),
+
+                      // PopupMenuItem(
+                      //   child: ListTile(
+                      //     title: const Text("Block"),
+                      //     onTap: () {
+                      //       ChatService.instance
+                      //           .showInviteListScreen(context, room: room);
+                      //     },
+                      //   ),
+                      // ),
+
+                      if (room.group) ...[
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Text("Members"),
+                            onTap: () {
+                              ///
+                              /*
+                             ListView.builder(
+        itemExtent: 72,
+        itemBuilder: (context, index) {
+          return UserDoc(
+            uid: room.users.keys.toList()[index],
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : UserListTile(user: user),
+          );
+        },
+        itemCount: room.users.length,
+      ),*/
+                            },
+                          ),
+                        ),
+                      ],
+                      // if (room.masterUsers.contains(my.uid)) ...[
+                      //   ListTile(
+                      //     title: const Text("Update Chat Room"),
+                      //     onTap: () {
+                      //       ChatService.instance
+                      //           .showChatRoomEditScreen(context, room: room);
+                      //     },
+                      //   ),
+                    ],
                     icon: const Icon(Icons.more_vert),
                   );
                 },

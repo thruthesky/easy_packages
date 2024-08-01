@@ -99,36 +99,11 @@ class ChatService {
     );
   }
 
-  showChatRoomMenuScreen(BuildContext context, ChatRoom room) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) => ChatRoomMenuScreeen(
-        room: room,
-      ),
-    );
-  }
-
-  showMemberListScreen(BuildContext context, ChatRoom room) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) => ChatRoomMemberListScreen(
-        room: room,
-      ),
-    );
-  }
-
+  @Deprecated('message')
   showInviteListScreen(BuildContext context, {ChatRoom? room}) {
-    if (room == null) {
-      return showGeneralDialog(
-        context: context,
-        pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
-      );
-    }
     return showGeneralDialog(
       context: context,
-      pageBuilder: (_, __, ___) => ChatRoomInviteListScreen(
-        room: room,
-      ),
+      pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
     );
   }
 
