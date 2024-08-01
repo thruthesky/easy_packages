@@ -1,5 +1,4 @@
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/chat.bubble.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,10 @@ class ChatMessagesListView extends StatelessWidget {
       itemBuilder: (context, doc) {
         final message = ChatMessage.fromSnapshot(doc);
         return itemBuilder?.call(context, message) ??
-            ChatBubble(message: message);
+            ChatBubble(
+              key: ValueKey("${message.id}_message"),
+              message: message,
+            );
       },
       errorBuilder: (context, error, stackTrace) {
         debugPrint("Error: $error");

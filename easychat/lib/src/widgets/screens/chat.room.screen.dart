@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
-import 'package:easychat/src/widgets/chat.messages.list_view.dart';
-import 'package:easychat/src/widgets/chat.room.input_box.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +23,8 @@ class ChatRoomScreen extends StatefulWidget {
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? $room;
   User? get user => widget.user;
+
+  StreamSubscription? docUpdateStream;
 
   @override
   void initState() {
@@ -54,6 +55,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   dispose() {
+    docUpdateStream?.cancel();
     $room?.dispose();
     super.dispose();
   }
@@ -74,7 +76,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // This will update the current user's read if
     // there is a new message.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      $room!.changes.listen((room) => room.updateMyReadMeta());
+      docUpdateStream =
+          $room!.changes.listen((room) => room.updateMyReadMeta());
     });
   }
 
@@ -109,7 +112,41 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: $room?.builder((r) => Text(title(r))),
+        title: $room?.builder(
+          (room) => Row(
+            children: [
+              if (room.group) ...[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                  ),
+                  width: 36,
+                  height: 36,
+                  clipBehavior: Clip.hardEdge,
+                  child: room.iconUrl != null && room.iconUrl!.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: $room!.iconUrl!,
+                          fit: BoxFit.cover,
+                        )
+                      : const Icon(Icons.people),
+                ),
+                const SizedBox(width: 12),
+              ],
+              if (room.single) ...[
+                UserAvatar(
+                  user: user!,
+                  size: 36,
+                  radius: 15,
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: Text(title(room)),
+              ),
+            ],
+          ),
+        ),
         actions: [
           $room?.builder(
                 (room) {

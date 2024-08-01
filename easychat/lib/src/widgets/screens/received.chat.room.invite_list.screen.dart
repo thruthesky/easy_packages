@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.functions.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,7 @@ class _ReceivedChatRoomInviteListScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat Requests'),
+        title: const Text('Accept/Reject Chat Requests'),
         actions: [
           IconButton(
             onPressed: () {
@@ -49,35 +48,7 @@ class _ReceivedChatRoomInviteListScreenState
             itemBuilder: (context, index) {
               final doc = snapshot.docs[index];
               final room = ChatRoom.fromSnapshot(doc);
-
-              String roomName;
-              if (room.name.trim().isNotEmpty) {
-                roomName = room.name;
-              } else if (room.single) {
-                roomName = getOtherUserUidFromRoomId(room.id)!;
-              } else {
-                roomName = room.id;
-              }
-              return ListTile(
-                title: Text(roomName),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await room.acceptInvitation();
-                      },
-                      child: const Text("Accept"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        await room.rejectInvitation();
-                      },
-                      child: const Text("Reject"),
-                    ),
-                  ],
-                ),
-              );
+              return ChatRoomInvitationListTile(room: room);
             },
           );
         },
