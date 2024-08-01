@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -87,7 +88,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
     //
     if ($user != null) {
-      return $user!.displayName;
+      return $user!.displayName.or('No name');
     }
     return 'Chat Room';
   }
