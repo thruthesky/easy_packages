@@ -28,7 +28,7 @@ class PostDetailYoutubeMeta extends StatelessWidget {
           style: Theme.of(context).textTheme.labelMedium,
         ),
         Text(
-          '${formatViews(post.youtube['viewCount'])} views',
+          '${abbreviateNumber(post.youtube['viewCount'])} views',
           style: Theme.of(context).textTheme.labelMedium,
         ),
       ],
