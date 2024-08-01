@@ -19,7 +19,9 @@ class Task {
     required this.updatedAt,
     required this.completed,
     required this.parent,
+    required this.child,
     required this.project,
+    required this.urls,
   });
 
   final String id;
@@ -30,10 +32,13 @@ class Task {
   final DateTime updatedAt;
   final bool completed;
 
-  final String parent;
+  final String? parent;
+  final bool child;
 
   /// For Projects
   final bool project;
+
+  final List<String> urls;
 
   factory Task.fromSnapshot(DocumentSnapshot snapshot) {
     return Task.fromJson(snapshot.data() as Map<String, dynamic>, snapshot.id);
@@ -53,7 +58,9 @@ class Task {
           : DateTime.now(),
       completed: json['completed'] ?? false,
       parent: json['parent'],
+      child: json['child'],
       project: json['project'],
+      urls: List<String>.from(json['urls'] ?? []),
     );
   }
 
@@ -66,7 +73,9 @@ class Task {
       'updatedAt': updatedAt,
       'completed': completed,
       'parent': parent,
+      'child': child,
       'project': project,
+      'urls': urls,
     };
   }
 
@@ -79,13 +88,15 @@ class Task {
     return Task.fromSnapshot(snapshot);
   }
 
+  /// Create a task or a project
   static Future<DocumentReference> create({
     required String title,
     String description = '',
     bool project = false,
-    String parent = '',
+    String? parent,
+    List<String> urls = const [],
   }) async {
-    final doc = await col.add({
+    final ref = await col.add({
       'creator': TaskService.instance.currentUser!.uid,
       'title': title,
       'description': description,
@@ -93,21 +104,28 @@ class Task {
       'updatedAt': FieldValue.serverTimestamp(),
       'completed': false,
       'parent': parent,
+      'child': parent != null,
       'project': project,
+      'urls': urls,
     });
-    return doc;
+
+    ///
+    TaskService.instance.countRebuildNotifier.value = ref.id;
+    return ref;
   }
 
   Future<void> update({
     required String title,
     required String description,
     required bool project,
+    List<String>? urls,
   }) async {
     await ref.update({
       'title': title,
       'description': description,
       'project': project,
       'updatedAt': FieldValue.serverTimestamp(),
+      if (urls != null) 'urls': urls,
     });
   }
 
@@ -116,5 +134,8 @@ class Task {
       'completed': isCompleted,
       'updatedAt': FieldValue.serverTimestamp(),
     });
+    if (child == false) {
+      TaskService.instance.countRebuildNotifier.value = id;
+    }
   }
 }

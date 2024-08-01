@@ -435,9 +435,9 @@ class ChatRoom {
   Timestamp _negatedOrder(DateTime order) =>
       Timestamp.fromDate(order.subtract(const Duration(days: 19000)));
 
-  /// [updateUnreadUsers] is used to update all unread data for all
+  /// [updateNewMessagesMeta] is used to update all unread data for all
   /// users inside the chat room.
-  Future<void> updateUnreadUsers({
+  Future<void> updateNewMessagesMeta({
     String? lastMessageText,
     String? lastMessageUrl,
   }) async {
@@ -492,10 +492,14 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  /// [updateMeta] is used to set as read by the current user.
+  /// [updateMyReadMeta] is used to set as read by the current user.
   /// It means, turning newMessageCounter into zero
-  /// and updating the order
-  Future<void> updateMeta() async {
+  /// and updating the order.
+  ///
+  /// The update will proceed only if newMessageCounter is not 0.
+  /// The Chat Room must be updated or else, it may not proceed
+  /// when old room data is 0, since newMessageCounter maybe inaccurate.
+  Future<void> updateMyReadMeta() async {
     if (!userUids.contains(my.uid)) return;
     if (users[my.uid]!.newMessageCounter == 0) return;
     final myReadOrder = users[my.uid]!.timeOrder;
@@ -513,6 +517,8 @@ class ChatRoom {
   }
 
   /// Chat room subscription
+  ///
+  /// This is used to listen the chat room changes.
   StreamSubscription? chatRoomSubscription;
   BehaviorSubject<ChatRoom> changes = BehaviorSubject();
 
@@ -520,7 +526,6 @@ class ChatRoom {
     chatRoomSubscription?.cancel();
     changes.add(this);
     chatRoomSubscription = ref.snapshots().listen((snapshot) {
-      dog("snapshot: $snapshot");
       changes.add(ChatRoom.fromSnapshot(snapshot));
     });
   }
@@ -529,7 +534,7 @@ class ChatRoom {
     chatRoomSubscription?.cancel();
   }
 
-  Widget builder(Function(ChatRoom) builder) {
+  StreamBuilder<ChatRoom> builder(Widget Function(ChatRoom room) builder) {
     return StreamBuilder<ChatRoom>(
       initialData: changes.value,
       stream: changes.stream,
@@ -538,12 +543,10 @@ class ChatRoom {
             !snapshot.hasData) {
           return const CircularProgressIndicator();
         }
-
         if (snapshot.hasError) {
           debugPrint("Error: ${snapshot.error}");
           return Text("Error: ${snapshot.error}");
         }
-
         final room = snapshot.data!;
         return builder(room);
       },

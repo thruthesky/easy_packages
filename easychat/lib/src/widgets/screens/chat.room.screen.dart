@@ -23,7 +23,6 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? $room;
-
   User? get user => widget.user;
 
   @override
@@ -35,10 +34,22 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   init() async {
     // If room is null, user should not be null.
     // We have to get room from other user.
-    if (widget.room == null) await loadRoomFromOtherUser();
+    if (widget.room == null) {
+      await loadRoomFromOtherUser();
+    } else {
+      $room = widget.room;
+    }
+    roomAssert();
     setState(() {});
     $room!.listen();
-    $room!.updateMeta();
+    $room!.updateMyReadMeta();
+    onUpdateRoom();
+  }
+
+  roomAssert() {
+    if ($room!.group) return;
+    if (user != null) return;
+    throw 'chat-room/user-required-in-single The chat room is single chat but user was not provided.';
   }
 
   @override
@@ -59,6 +70,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     $room = await ChatRoom.get(newRoomRef.id);
   }
 
+  onUpdateRoom() {
+    // This will update the current user's read if
+    // there is a new message.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      $room!.changes.listen((room) => room.updateMyReadMeta());
+    });
+  }
+
   String title(ChatRoom room) {
     if (room.name.trim().isNotEmpty) {
       return room.name;
@@ -71,25 +90,41 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return 'Chat Room';
   }
 
+  String notMemberMessage(ChatRoom room) {
+    if (room.invitedUsers.contains(my.uid)) {
+      // The user has a chance to open the chat room with message
+      // when the other user sent a message (1:1) but the user
+      // haven't accepted yet.
+      return "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.";
+    }
+    if (room.group) {
+      // For open chat rooms, the rooms can be seen by users.
+      return "This is an open group. Once you sent a message, you will automatically join the group.";
+    }
+    // Else, it should be handled by the Firestore rulings.
+    return "The Chat Room may be private and/or deleted.";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: $room!.builder((r) => Text(title(r))),
+        title: $room?.builder((r) => Text(title(r))),
         actions: [
-          $room!.builder(
-            (room) {
-              if (room.joined == false) return const SizedBox.shrink();
-              if (room.group == false) return const SizedBox.shrink();
-
-              return IconButton(
-                onPressed: () {
-                  ChatService.instance.showChatRoomMenuScreen(context, room);
+          $room?.builder(
+                (room) {
+                  if (room.joined == false) return const SizedBox.shrink();
+                  if (room.group == false) return const SizedBox.shrink();
+                  return IconButton(
+                    onPressed: () {
+                      ChatService.instance
+                          .showChatRoomMenuScreen(context, room);
+                    },
+                    icon: const Icon(Icons.more_vert),
+                  );
                 },
-                icon: const Icon(Icons.more_vert),
-              );
-            },
-          ),
+              ) ??
+              const SizedBox.shrink(),
         ],
       ),
       body: Column(
@@ -97,76 +132,49 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         children: [
           if ($room == null)
             const CircularProgressIndicator.adaptive()
-          else
-          // There is a chance for user to open the chat room
-          // if the user is not a member of the chat room
-          if ($room!.userUids.contains(my.uid) == false) ...[
-            // The user has a chance to open the chat room with message
-            // when the other user sent a message (1:1) but the user
-            // haven't accepted yet.
-            if ($room!.invitedUsers.contains(my.uid))
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            // For open chat rooms, the rooms can be seen by users.
-            else if ($room!.group)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "This is an open group. Once you sent a message, you will automatically join the group.",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            // Else, it should be handled by the Firestore rulings.
-          ],
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ChatMessagesListView(room: $room!),
-            ),
-          ),
-          SafeArea(
-            top: false,
-            child: $room == null
-                ? const SizedBox.shrink()
-                : ChatRoomInputBox(
-                    room: $room!,
-                    afterAccept: (context, room) {
-                      if (!mounted) return;
-                      setState(
-                        () {
-                          $room = room;
-                        },
-                      );
-                    },
+          else ...[
+            // There is a chance for user to open the chat room
+            // if the user is not a member of the chat room
+            if (!$room!.joined) ...[
+              $room!.builder((room) {
+                if (room.joined) return const SizedBox.shrink();
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
                   ),
-          ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                  ),
+                  child: Text(
+                    notMemberMessage(room),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                );
+              }),
+            ],
+            Expanded(
+              child: $room!.joined ||
+                      $room!.open ||
+                      $room!.invitedUsers.contains(my.uid)
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ChatMessagesListView(room: $room!),
+                    )
+                  : const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24.0),
+                        child: Text("Unable to show chat messages."),
+                      ),
+                    ),
+            ),
+            SafeArea(
+              top: false,
+              child: $room == null
+                  ? const SizedBox.shrink()
+                  : ChatRoomInputBox(room: $room!),
+            ),
+          ],
         ],
       ),
     );
