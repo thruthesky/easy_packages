@@ -1,5 +1,4 @@
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/chat.bubble.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';

@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easychat/src/widgets/chat.messages.list_view.dart';
-import 'package:easychat/src/widgets/chat.room.input_box.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
