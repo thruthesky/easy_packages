@@ -7,6 +7,8 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:easy_engine/easy_engine.dart';
+import 'package:easy_storage/easy_storage.dart';
 
 /// This is the user service class that will be used to manage the user's authentication and user data management.
 class UserService {
@@ -327,5 +329,25 @@ class UserService {
       context: context,
       pageBuilder: (context, _, __) => const UserBlockListScreen(),
     );
+  }
+
+  /// when user resign the user document, user auth, and photo from storage will be deleted.
+  Future<void> resign() async {
+    try {
+      if (my.photoUrl != null) {
+        await StorageService.instance.delete(my.photoUrl);
+      }
+      await my.delete();
+    } catch (e) {
+      dog('UserService.resign Error--->$e');
+      throw 'UserSerive.resign/failed-to-delete-document Failed to delete user document';
+    }
+    try {
+      await engine.deleteAccount();
+    } catch (e) {
+      dog('UserService.resign Error--->$e');
+      throw 'UserSerive.resign/failed-to-delete-document Failed to delete user Auth Credentials';
+    }
+    i.signOut();
   }
 }
