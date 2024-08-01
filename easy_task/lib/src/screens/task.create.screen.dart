@@ -24,7 +24,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Task'),
+        title: Text('Create Task'.t),
         actions: const [],
       ),
       body: Padding(
@@ -44,6 +44,8 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
             TextField(
               controller: _descriptionController,
               decoration: InputDecoration(labelText: 'Task Description'.t),
+              minLines: 3,
+              maxLines: 8,
             ),
             const SizedBox(height: 20),
             UploadForm(
@@ -73,7 +75,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                     }
                   }
                 },
-                child: const Text('Create Task'),
+                child: Text('Create Task'.t),
               ),
             ),
           ],

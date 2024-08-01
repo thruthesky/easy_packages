@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class TaskListHeaderMenu extends StatelessWidget {
         PopupMenuItem(
           child: CheckboxListTile(
             value: options.completed,
-            title: const Text('Completed Tasks'),
+            title: Text('Completed Tasks'.t),
             onChanged: (v) {
               options.completed = v ?? false;
               onTap();

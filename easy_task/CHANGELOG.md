@@ -1,3 +1,6 @@
+## 0.0.5
+* Refactor. Update some of the widgets for better UI/UX.
+
 ## 0.0.4
 * Update. Finishing task work and complete the navigation between screens.
 * Add. TaskCount widget.
