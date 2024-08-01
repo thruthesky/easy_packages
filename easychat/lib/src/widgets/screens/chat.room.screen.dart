@@ -76,8 +76,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // This will update the current user's read if
     // there is a new message.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      docUpdateStream =
-          $room!.changes.listen((room) => room.updateMyReadMeta());
+      docUpdateStream = $room!.changes.listen(
+        (room) => room.updateMyReadMeta(),
+      );
     });
   }
 
@@ -154,12 +155,90 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           $room?.builder(
                 (room) {
                   if (room.joined == false) return const SizedBox.shrink();
-                  if (room.group == false) return const SizedBox.shrink();
-                  return IconButton(
-                    onPressed: () {
-                      ChatService.instance
-                          .showChatRoomMenuScreen(context, room);
-                    },
+                  return PopupMenuButton(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Invite Other"),
+                          onTap: () async {
+                            final selectedUser =
+                                await UserService.instance.showUserSearchDialog(
+                              context,
+                              itemBuilder: (user, index) {
+                                return UserListTile(
+                                  user: user,
+                                  onTap: () {
+                                    Navigator.of(context).pop(user);
+                                  },
+                                );
+                              },
+                              exactSearch: true,
+                            );
+                            if (selectedUser == null) return;
+                            $room!.inviteUser(selectedUser.uid);
+                          },
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Leave Chat Room"),
+                          onTap: () {
+                            // TODO leave chat room
+                          },
+                        ),
+                      ),
+
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Report"),
+                          onTap: () {
+                            // TODO report
+                          },
+                        ),
+                      ),
+
+                      if ($room!.single)
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Text("Block"),
+                            onTap: () {
+                              /// TODO: block
+                            },
+                          ),
+                        ),
+
+                      if (room.group) ...[
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Text("Members"),
+                            onTap: () {
+                              ///
+                              /*
+                             ListView.builder(
+        itemExtent: 72,
+        itemBuilder: (context, index) {
+          return UserDoc(
+            uid: room.users.keys.toList()[index],
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : UserListTile(user: user),
+          );
+        },
+        itemCount: room.users.length,
+      ),*/
+                            },
+                          ),
+                        ),
+                      ],
+                      // if (room.masterUsers.contains(my.uid)) ...[
+                      //   ListTile(
+                      //     title: const Text("Update Chat Room"),
+                      //     onTap: () {
+                      //       ChatService.instance
+                      //           .showChatRoomEditScreen(context, room: room);
+                      //     },
+                      //   ),
+                    ],
                     icon: const Icon(Icons.more_vert),
                   );
                 },

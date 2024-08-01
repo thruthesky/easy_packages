@@ -440,7 +440,7 @@ class ChatRoom {
     String? lastMessageUrl,
   }) async {
     final serverTimestamp = FieldValue.serverTimestamp();
-    final updateUserData = users.map(
+    final Map<String, Map<String, Object>> updateUserData = users.map(
       (uid, value) {
         if (uid == my.uid) {
           final readOrder = _negatedOrder(DateTime.now());

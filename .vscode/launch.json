@@ -53,6 +53,14 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "Example - Emulator",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "EasyUser Example - iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",
