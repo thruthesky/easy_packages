@@ -22,7 +22,7 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? $room;
-  User? get user => widget.user;
+  User? $user;
 
   StreamSubscription? docUpdateStream;
 
@@ -33,24 +33,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   init() async {
-    // If room is null, user should not be null.
-    // We have to get room from other user.
-    if (widget.room == null) {
-      await loadRoomFromOtherUser();
-    } else {
-      $room = widget.room;
+    $room = widget.room;
+    $user = widget.user;
+
+    /// Single chat
+    ///
+    /// If room is null, user should not be null.
+    /// We have to get room from other user.
+    if ($room == null) {
+      await loadOrCreateRoomForSingleChat();
+    } else if ($user == null && $room!.single) {
+      $user = await User.get(getOtherUserUidFromRoomId($room!.id)!);
     }
-    roomAssert();
+
     setState(() {});
     $room!.listen();
     $room!.updateMyReadMeta();
     onUpdateRoom();
-  }
-
-  roomAssert() {
-    if ($room!.group) return;
-    if (user != null) return;
-    throw 'chat-room/user-required-in-single The chat room is single chat but user was not provided.';
   }
 
   @override
@@ -60,15 +59,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.dispose();
   }
 
-  Future<void> loadRoomFromOtherUser() async {
-    $room = await ChatRoom.get(singleChatRoomId(user!.uid));
+  Future<void> loadOrCreateRoomForSingleChat() async {
+    $room = await ChatRoom.get(singleChatRoomId($user!.uid));
     if ($room != null) return;
     // In case the room doesn't exists, we create the room.
     // Automatically this will invite the other user.
     // The other user wont normally see the message in chat room
     // list. However the other user may see the messages if the
     // other user opens the chat room.
-    final newRoomRef = await ChatRoom.createSingle(user!.uid);
+    final newRoomRef = await ChatRoom.createSingle($user!.uid);
     $room = await ChatRoom.get(newRoomRef.id);
   }
 
@@ -82,13 +81,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   String title(ChatRoom room) {
+    // Single chat or gruop chat can have name.
     if (room.name.trim().isNotEmpty) {
       return room.name;
     }
-    if (user != null) {
-      return user!.displayName.trim().isNotEmpty
-          ? user!.displayName
-          : user!.uid;
+    //
+    if ($user != null) {
+      return $user!.displayName;
     }
     return 'Chat Room';
   }
@@ -135,7 +134,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               ],
               if (room.single) ...[
                 UserAvatar(
-                  user: user!,
+                  user: $user!,
                   size: 36,
                   radius: 15,
                 ),
