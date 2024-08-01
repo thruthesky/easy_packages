@@ -71,6 +71,7 @@ class ChatRoomListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return FirestoreQueryBuilder(
       query: query,
+      // TODO move on correct place
       child: itemBuilder != null ? null : const ChatRoomInvitationShortList(),
       builder: (context, snapshot, child) {
         if (snapshot.hasError) {

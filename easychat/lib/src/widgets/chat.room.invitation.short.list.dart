@@ -4,27 +4,19 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class ChatRoomInvitationShortList extends StatefulWidget {
+class ChatRoomInvitationShortList extends StatelessWidget {
   const ChatRoomInvitationShortList({
     super.key,
   });
 
   @override
-  State<ChatRoomInvitationShortList> createState() =>
-      _ChatRoomInvitationShortListState();
-}
-
-class _ChatRoomInvitationShortListState
-    extends State<ChatRoomInvitationShortList> {
-  @override
   Widget build(BuildContext context) {
-    final query = ChatService.instance.roomCol
-        .where('invitedUsers', arrayContains: my.uid)
-        .orderBy(ChatRoom.field.updatedAt, descending: true)
-        .limit(4);
-
     return StreamBuilder<QuerySnapshot>(
-      stream: query.snapshots(),
+      stream: ChatService.instance.roomCol
+          .where('invitedUsers', arrayContains: my.uid)
+          .orderBy(ChatRoom.field.updatedAt, descending: true)
+          .limit(4)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
