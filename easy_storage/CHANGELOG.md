@@ -1,3 +1,6 @@
+## 0.0.10
+* Update. `delete` will pass if the file does not exists in Storage.
+
 ## 0.0.9
 * Add. UploadForm widget.
 

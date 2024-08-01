@@ -76,8 +76,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // This will update the current user's read if
     // there is a new message.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      docUpdateStream =
-          $room!.changes.listen((room) => room.updateMyReadMeta());
+      docUpdateStream = $room!.changes.listen(
+        (room) => room.updateMyReadMeta(),
+      );
     });
   }
 
