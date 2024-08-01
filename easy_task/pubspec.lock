@@ -165,10 +165,10 @@ packages:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "369aff2f70c4d9ea808e5ef7589b6c9a959238cd380b3fb964f3ef929f032490"
+      sha256: "872ab596d2793e7c2cc21757d34cdb9455f81fa7e3e707a32e30f0f938ce9e54"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.16"
+    version: "0.0.17"
   fake_async:
     dependency: transitive
     description:

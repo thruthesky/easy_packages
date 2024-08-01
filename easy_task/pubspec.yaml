@@ -13,7 +13,7 @@ dependencies:
   easy_helpers: ^0.0.9
   easy_locale: ^0.0.5
   easy_storage: ^0.0.10
-  easyuser: ^0.0.16
+  easyuser: ^0.0.17
   firebase_auth: ^5.1.1
   firebase_core: ^3.1.1
   firebase_storage: ^12.1.0
