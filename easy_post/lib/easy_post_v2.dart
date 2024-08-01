@@ -1,5 +1,5 @@
 export './src/post.dart';
-export './src/post.locales.dart';
+export 'src/post.locales.dart';
 export './src/post.service.dart';
 
 export './src/widgets/post.doc.dart';

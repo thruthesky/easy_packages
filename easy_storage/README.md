@@ -244,6 +244,33 @@ ImageUploadIconButton(
 )
 ```
 
+## UploadForm
+
+- `UploadForm` is a handy widget that provides an opinionated UI. It includes an upload button, showing the progress bar while uploading, and displaying the uploaded photos with delete button. It also provide `onUpload` and `onDelete` callback funtion.
+
+- One thing to note is that, the `urls` parameter will be updated as call-by-reference. So, when the button is pressed, it will get the updated value. So, the parameter of urls must be a List of String that can be modified.
+
+```dart
+List<String> urls = List<String>.from([
+  'https://firebasestorage.googleapis.com/v0/b/withcenter-test-5.appspot.com/o/users%2FZpq96ARrWbag4bttq4wOgJ577is2%2Fimage_picker_0D7D6009-3E8D-45EF-8FCA-297DABB66508-72557-00000228C41CA5C5.jpg?alt=media&token=871fdca5-c018-47fe-a35e-a96ee5d4ef32',
+]);
+UploadForm(
+  urls: urls,
+  onUpload: (url) {
+    debugPrint('Uploaded: $url');
+  },
+  onDelete: (url) {
+    debugPrint('Deleted: $url');
+  },
+  button: ElevatedButton(
+    onPressed: () {
+      debugPrint('Upload Form');
+      dog(urls);
+    },
+    child: const Text('Submit'),
+  ),
+),
+```
 
 
 # Thumbnails

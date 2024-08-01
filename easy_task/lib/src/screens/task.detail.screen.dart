@@ -1,5 +1,8 @@
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/widgets/task.doc.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_comment/easy_comment.dart';
 
@@ -21,7 +24,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       sync: true,
       builder: (task) => Scaffold(
         appBar: AppBar(
-          title: const Text('Task Details'),
+          title: Text(task.title),
         ),
         body: CustomScrollView(
           slivers: [
@@ -29,24 +32,57 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('User ID: ${task.creator}',
-                      style: const TextStyle(fontSize: 16)),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    child: UserDoc(
+                      uid: task.creator,
+                      sync: true,
+                      builder: (creator) => creator == null
+                          ? const CircularProgressIndicator.adaptive()
+                          : Row(
+                              children: [
+                                const Text('Creator: '),
+                                UserAvatar(
+                                  user: creator,
+                                  size: 24,
+                                  radius: 8,
+                                ),
+                                Text(
+                                  ' ${creator.displayName}',
+                                ),
+                                const Spacer(),
+                                Text(
+                                  'Created At: ${task.createdAt.short}',
+                                  style: Theme.of(context).textTheme.labelSmall,
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                    child: Card(
+                      child: ListTile(
+                        title: Text(task.title,
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        subtitle: Text(task.description,
+                            style: const TextStyle(fontSize: 16)),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text('Project: ${task.project}',
-                      style: const TextStyle(fontSize: 16)),
-                  Text('Title: ${task.title}',
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text('Description: ${task.description}',
-                      style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 8),
-                  Text('Created At: ${task.createdAt}',
-                      style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 8),
-                  Text('Updated At: ${task.updatedAt}',
-                      style: const TextStyle(fontSize: 16)),
+                  // Text(
+                  //   'Updated At: ${task.updatedAt.short}',
+                  //   style: Theme.of(context).textTheme.labelSmall,
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                    child: DisplayPhotos(urls: task.urls),
+                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       // complete button
                       TextButton.icon(
@@ -67,11 +103,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               ),
             ),
             SliverToBoxAdapter(
-              child: CommentFakeInputBox(
-                onTap: () => CommentService.instance.showCommentEditDialog(
-                  context: context,
-                  documentReference: task.ref,
-                  focusOnContent: true,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CommentFakeInputBox(
+                  onTap: () => CommentService.instance.showCommentEditDialog(
+                    context: context,
+                    documentReference: task.ref,
+                    focusOnContent: true,
+                  ),
                 ),
               ),
             ),

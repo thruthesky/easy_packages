@@ -99,7 +99,12 @@ Do the widget test as Flutter does.
   - See `phone_sign_in` package for sign-in that is built by the same developer of this package.
 
 
-- `Task` is a work.
+- `Task` is a work that can be managed and tracked.
+  - It has priority
+  - It may have due date.
+    - If the due date passes of an incomplete task, the task is highlighted and the tasks will be listed in `Over due` menu.
+  - But it does not have any repeat.
+    - It may have 'auto generate task every day/week/month/year' feature in the feature, but the task must not repeat.
 
 - Each task has fields like below;
   - `project: bool` to know if it's a project or a task.
