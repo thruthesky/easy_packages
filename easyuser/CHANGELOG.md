@@ -1,3 +1,6 @@
+## 0.0.18
+* Fix. Flickering on AuthStateChange
+
 ## 0.0.17
 * Update. Submit by entering the input box on search user dialog.
 
