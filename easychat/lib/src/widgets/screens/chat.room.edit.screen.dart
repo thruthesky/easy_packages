@@ -86,7 +86,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             ),
           ],
 
-          ///
+          //
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 24, 0, 0),
             child: CheckboxListTile(

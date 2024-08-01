@@ -134,10 +134,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 const SizedBox(width: 12),
               ],
               if (room.single) ...[
-                UserAvatar(
-                  user: user!,
-                  size: 36,
-                  radius: 15,
+                GestureDetector(
+                  child: UserAvatar(
+                    user: user!,
+                    size: 36,
+                    radius: 15,
+                  ),
+                  onTap: () => UserService.instance.showPublicProfile(context),
                 ),
                 const SizedBox(width: 12),
               ],
