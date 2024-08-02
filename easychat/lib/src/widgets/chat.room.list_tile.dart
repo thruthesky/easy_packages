@@ -58,8 +58,13 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? get subtitle =>
-      room.lastMessageText != null ? Text(room.lastMessageText!) : null;
+  Widget? get subtitle => room.lastMessageText != null
+      ? Text(
+          room.lastMessageText!,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        )
+      : null;
 
   Widget get trailing {
     return Column(
