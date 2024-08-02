@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 class ChatRoomInvitationShortList extends StatelessWidget {
   const ChatRoomInvitationShortList({
     super.key,
+    this.padding,
   });
+
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +41,31 @@ class ChatRoomInvitationShortList extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Text("You have message requests/invitations!"),
+            Padding(
+              padding: padding ?? const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Badge(
+                    label: Text(
+                        "${chatRooms.length < 4 ? chatRooms.length : '3+'}"),
+                  ),
+                  const SizedBox(width: 8),
+                  const Flexible(
+                    child: Text(
+                      "Message Requests/Invitations!",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
             ListView.builder(
+              padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: chatRooms.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (listViewContext, index) {
                 final room = chatRooms[index];
                 // The fourth invitation and other nexts should be in
                 // see more.
@@ -71,7 +89,16 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                     },
                   );
                 }
-                return ChatRoomInvitationListTile(room: room);
+                return ChatRoomInvitationListTile(
+                  room: room,
+                  afterAccept: (room, user) async {
+                    await ChatService.instance.showChatRoomScreen(
+                      context,
+                      room: room,
+                      user: user,
+                    );
+                  },
+                );
               },
             ),
             const Divider(),

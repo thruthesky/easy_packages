@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/chat.room.invitation.short.list.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -19,13 +18,17 @@ enum ChatRoomListOption {
 class ChatRoomListView extends StatelessWidget {
   const ChatRoomListView({
     super.key,
-    required this.queryOption,
+    this.queryOption = ChatRoomListOption.allMine,
     this.itemBuilder,
+    this.emptyBuilder,
+    this.padding,
   });
 
   final ChatRoomListOption queryOption;
   final Widget Function(BuildContext context, ChatRoom room, int index)?
       itemBuilder;
+  final Widget Function(BuildContext context)? emptyBuilder;
+  final EdgeInsetsGeometry? padding;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
@@ -71,8 +74,6 @@ class ChatRoomListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return FirestoreQueryBuilder(
       query: query,
-      // TODO move on correct place
-      child: itemBuilder != null ? null : const ChatRoomInvitationShortList(),
       builder: (context, snapshot, child) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
@@ -81,11 +82,18 @@ class ChatRoomListView extends StatelessWidget {
         if (snapshot.isFetching && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        // TODO prevent Scroll Problem when setting state
+        if (snapshot.docs.isEmpty) {
+          return emptyBuilder?.call(context) ??
+              const Center(
+                // TODO t?
+                child: Text("No chat yet."),
+              );
+        }
         final docs = snapshot.docs;
         final chatRooms =
             docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
         return ListView.builder(
+          padding: padding,
           itemCount: chatRooms.length,
           itemBuilder: (context, index) {
             if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
@@ -94,18 +102,6 @@ class ChatRoomListView extends StatelessWidget {
             final room = chatRooms[index];
             if (itemBuilder != null) {
               return itemBuilder!(context, room, index);
-            }
-            if (index == 0) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  child!,
-                  const SizedBox(height: 8),
-                  ChatRoomListTile(
-                    room: room,
-                  ),
-                ],
-              );
             }
             return ChatRoomListTile(
               room: room,

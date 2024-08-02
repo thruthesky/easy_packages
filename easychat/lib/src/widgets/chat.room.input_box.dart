@@ -30,6 +30,9 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   double photoWidth(BuildContext context) =>
       MediaQuery.of(context).size.width * 0.56 / 2;
 
+  BorderSide? enabledBorderSide(BuildContext context) =>
+      Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
+
   @override
   void dispose() {
     uploadProgress.close();
@@ -72,7 +75,13 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
         ),
         Container(
           decoration: BoxDecoration(
-            border: Border.all(),
+            border: Theme.of(context).inputDecorationTheme.enabledBorder != null
+                ? Border.all(
+                    color: enabledBorderSide(context)!.color,
+                    width: enabledBorderSide(context)!.width,
+                    style: enabledBorderSide(context)!.style,
+                  )
+                : Border.all(),
             borderRadius: BorderRadius.circular(12),
           ),
           margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
@@ -129,34 +138,42 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon: ImageUploadIconButton(
-                          progress: (prog) => uploadProgress.add(prog),
-                          complete: () => uploadProgress.add(null),
-                          onUpload: (url) async {
-                            setState(() {
-                              this.url = url;
-                              submitable = canSubmit;
-                            });
-                          },
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed:
-                              submitable ? () => sendTextMessage() : null,
-                          icon: const Icon(Icons.send),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        inputDecorationTheme: InputDecorationTheme(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
                       ),
-                      onChanged: (value) {
-                        if (submitable == canSubmit) return;
-                        setState(() => submitable = canSubmit);
-                      },
-                      onSubmitted: (value) => sendTextMessage(),
+                      child: TextField(
+                        controller: controller,
+                        // TODO maxlines 2,
+                        // maxLines: 2,
+                        decoration: InputDecoration(
+                          prefixIcon: ImageUploadIconButton(
+                            progress: (prog) => uploadProgress.add(prog),
+                            complete: () => uploadProgress.add(null),
+                            onUpload: (url) async {
+                              setState(() {
+                                this.url = url;
+                                submitable = canSubmit;
+                              });
+                            },
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed:
+                                submitable ? () => sendTextMessage() : null,
+                            icon: const Icon(Icons.send),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          if (submitable == canSubmit) return;
+                          setState(() => submitable = canSubmit);
+                        },
+                        onSubmitted: (value) => sendTextMessage(),
+                      ),
                     ),
                   ),
                 ],
