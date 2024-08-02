@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
@@ -19,15 +20,23 @@ class ChatRoomInputBox extends StatefulWidget {
 class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   final TextEditingController controller = TextEditingController();
 
+  bool get canSubmit => controller.text.isNotEmpty || url != null;
   bool submitable = false;
   BehaviorSubject<double?> uploadProgress = BehaviorSubject.seeded(null);
-
   ChatRoom get room => widget.room;
+
+  String? url;
+
+  double photoWidth(BuildContext context) =>
+      MediaQuery.of(context).size.width * 0.56;
 
   @override
   void dispose() {
     uploadProgress.close();
     controller.dispose();
+    if (url != null) {
+      StorageService.instance.delete(url);
+    }
     super.dispose();
   }
 
@@ -64,36 +73,62 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 8, 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
             children: [
-              ImageUploadIconButton(
-                progress: (prog) => uploadProgress.add(prog),
-                complete: () => uploadProgress.add(null),
-                onUpload: (url) async {
-                  await ChatService.instance.sendMessage(
-                    room,
-                    photoUrl: url,
-                  );
-                },
-              ),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    if (submitable == value.isNotEmpty) return;
-                    setState(() => submitable = value.isNotEmpty);
-                  },
-                  onSubmitted: (value) => sendTextMessage(value),
+              if (url != null) ...[
+                Stack(
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: url!,
+                    ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          StorageService.instance.delete(url);
+                          setState(() {
+                            url = null;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              IconButton(
-                onPressed:
-                    submitable ? () => sendTextMessage(controller.text) : null,
-                icon: const Icon(Icons.send),
+              ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        prefixIcon: ImageUploadIconButton(
+                          progress: (prog) => uploadProgress.add(prog),
+                          complete: () => uploadProgress.add(null),
+                          onUpload: (url) async {
+                            setState(() {
+                              submitable = canSubmit;
+                              this.url = url;
+                            });
+                          },
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed:
+                              submitable ? () => sendTextMessage() : null,
+                          icon: const Icon(Icons.send),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        if (submitable == canSubmit) return;
+                        setState(() => submitable = canSubmit);
+                      },
+                      onSubmitted: (value) => sendTextMessage(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -102,12 +137,16 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     );
   }
 
-  Future sendTextMessage(String text) async {
-    if (text.isNotEmpty) controller.clear();
+  Future sendTextMessage() async {
+    if (controller.text.isEmpty && url == null) return;
     setState(() => submitable = false);
-    await ChatService.instance.sendMessage(
+    final sendMessageFuture = ChatService.instance.sendMessage(
       room,
-      text: text,
+      text: controller.text,
+      photoUrl: url,
     );
+    url = null;
+    if (controller.text.isNotEmpty) controller.clear();
+    await sendMessageFuture;
   }
 }

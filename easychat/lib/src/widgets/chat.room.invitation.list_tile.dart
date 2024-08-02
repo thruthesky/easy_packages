@@ -58,10 +58,18 @@ class _ChatRoomInvitationListTileState
               },
             ),
       title: room.group
-          ? Text(room.name)
+          ? Text(
+              room.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )
           : UserDoc.sync(
               uid: getOtherUserUidFromRoomId(room.id)!,
-              builder: (user) => Text(user?.displayName ?? "..."),
+              builder: (user) => Text(
+                user?.displayName ?? "...",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
       subtitle: room.group
           ? Text(
