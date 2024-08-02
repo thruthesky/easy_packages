@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// Task filter
 ///
 /// This class contains the filter for the task
 class TaskFilter {
   TaskFilter._();
+
+  static get currentUser => FirebaseAuth.instance.currentUser;
 
   /// Task filter for the task list
   ///
@@ -30,7 +33,7 @@ class TaskFilter {
       q = q.where(projectMenuFilter);
     } else if (options.menu == 'latest') {
       q = q
-          .where('creator', isEqualTo: my.uid)
+          .where('creator', isEqualTo: currentUser!.uid)
           .where('project', isEqualTo: false);
     }
 
@@ -52,7 +55,7 @@ class TaskFilter {
     return Filter.and(
       Filter(
         'creator',
-        isEqualTo: my.uid,
+        isEqualTo: currentUser!.uid,
       ),
       Filter.or(
         // if project

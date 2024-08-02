@@ -7,8 +7,8 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:easy_engine/easy_engine.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:easy_engine/easy_engine.dart';
 
 /// This is the user service class that will be used to manage the user's authentication and user data management.
 class UserService {
