@@ -426,6 +426,18 @@ class ChatRoom {
     });
   }
 
+  Future<void> leave() async {
+    // TODO masters should not leave right away
+    await ref.set(
+      {
+        field.users: {
+          my.uid: FieldValue.delete(),
+        },
+      },
+      SetOptions(merge: true),
+    );
+  }
+
   /// This only subtracts about 50 years in time. Using subtraction
   /// will help to preserve order after reading the message.
   /// There is a minimum limit for Timestamp for Firestore, that is why,

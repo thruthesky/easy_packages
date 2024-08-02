@@ -8,9 +8,13 @@ class ChatRoomInvitationListTile extends StatefulWidget {
   const ChatRoomInvitationListTile({
     super.key,
     required this.room,
+    this.afterAccept,
+    this.afterReject,
   });
 
   final ChatRoom room;
+  final Function(ChatRoom room, User? user)? afterAccept;
+  final Function(ChatRoom room, User? user)? afterReject;
 
   @override
   State<ChatRoomInvitationListTile> createState() =>
@@ -20,6 +24,8 @@ class ChatRoomInvitationListTile extends StatefulWidget {
 class _ChatRoomInvitationListTileState
     extends State<ChatRoomInvitationListTile> {
   ChatRoom get room => widget.room;
+
+  User? user;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,7 @@ class _ChatRoomInvitationListTileState
           : UserDoc.sync(
               uid: getOtherUserUidFromRoomId(room.id)!,
               builder: (user) {
+                this.user = user;
                 return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -58,10 +65,18 @@ class _ChatRoomInvitationListTileState
               },
             ),
       title: room.group
-          ? Text(room.name)
+          ? Text(
+              room.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )
           : UserDoc.sync(
               uid: getOtherUserUidFromRoomId(room.id)!,
-              builder: (user) => Text(user?.displayName ?? "..."),
+              builder: (user) => Text(
+                user?.displayName ?? "...",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
       subtitle: room.group
           ? Text(
@@ -69,19 +84,19 @@ class _ChatRoomInvitationListTileState
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             )
-          : null
-      // TODO wait for statemessage
-      // UserDoc.sync(
-      //     uid: getOtherUserUidFromRoomId(room.id)!,
-      //     builder: (user) => Text(user?.stateMessage ?? "..."),
-      //   )
-      ,
+          : UserDoc.sync(
+              uid: getOtherUserUidFromRoomId(room.id)!,
+              builder: (user) => Text(user?.stateMessage ?? ""),
+            ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           ElevatedButton(
             onPressed: () async {
               await widget.room.acceptInvitation();
+              if (widget.afterAccept != null) {
+                return widget.afterAccept!(room, user);
+              }
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(12),
@@ -92,6 +107,9 @@ class _ChatRoomInvitationListTileState
           ElevatedButton(
             onPressed: () async {
               await widget.room.rejectInvitation();
+              if (widget.afterReject != null) {
+                return widget.afterReject!(room, user);
+              }
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(12),

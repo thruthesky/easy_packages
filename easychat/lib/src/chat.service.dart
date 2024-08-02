@@ -138,9 +138,13 @@ class ChatService {
   ) async {
     if (room.joined) return;
     if (room.open) return await room.join();
-    if (room.invitedUsers.contains(my.uid)) {
+    if (room.invitedUsers.contains(my.uid) ||
+        room.rejectedUsers.contains(my.uid)) {
+      // The user may mistakenly reject the chat room
+      // The user may accept it by replying.
       return await room.acceptInvitation();
     }
+
     throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 }
