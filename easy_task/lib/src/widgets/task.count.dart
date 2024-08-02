@@ -1,4 +1,3 @@
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +28,6 @@ class _TaskCountState extends State<TaskCount> {
     return ValueListenableBuilder(
       valueListenable: TaskService.instance.countRebuildNotifier,
       builder: (context, task, child) {
-        dog('TaskCount Rebuild');
         return FutureBuilder<int>(
           initialData: count,
           future: TaskFilter.filter(
@@ -37,7 +35,9 @@ class _TaskCountState extends State<TaskCount> {
               completed: widget.completed,
               menu: widget.menu,
             ),
-          ).count().get().then((snapshot) => snapshot.count ?? 0),
+          ).count().get().then(
+                (snapshot) => snapshot.count ?? 0,
+              ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting &&
                 snapshot.hasData == false) {

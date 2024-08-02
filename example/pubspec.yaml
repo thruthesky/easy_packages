@@ -22,6 +22,7 @@ dependencies:
   easy_locale:
   easy_post_v2:
   easy_report:
+  easy_setting_v2:
   easy_storage:
   easy_task:
   easychat:
@@ -48,6 +49,7 @@ dependencies:
   web: ^0.5.1
 
 dependency_overrides:
+  rxdart: ^0.28.0
   easy_comment:
     path: ../easy_comment
   easy_engine:
@@ -62,6 +64,8 @@ dependency_overrides:
     path: ../easy_locale
   easy_report:
     path: ../easy_report
+  easy_setting_v2:
+    path: ../easy_setting
   easy_storage:
     path: ../easy_storage
   easy_task:

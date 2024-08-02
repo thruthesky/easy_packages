@@ -1,3 +1,6 @@
+## 0.0.19
+* Update. rxdart: ^0.28.0
+
 ## 0.0.18
 * Fix. Flickering on AuthStateChange
 
