@@ -1,4 +1,4 @@
-name: easysetting
+name: easy_setting_v2
 description: "Easy setting management. It provides UI widgets and logics that work on Firestore"
 version: 0.0.1
 homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_setting
