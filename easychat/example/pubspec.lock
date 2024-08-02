@@ -89,6 +89,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.3"
+  cloud_functions:
+    dependency: transitive
+    description:
+      name: cloud_functions
+      sha256: "09c991cc923fdf5d723efa3400613b81e0b1d0ca37a84ac32413e24ebb8760ad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
+  cloud_functions_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_functions_platform_interface
+      sha256: f144b7e9fe616c28661876cd3be254c5f07b88566f86bf7aa704f0d5b67b0e12
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.32"
+  cloud_functions_web:
+    dependency: transitive
+    description:
+      name: cloud_functions_web
+      sha256: "875511448efad684dc37203fce17b3cc5c52c647edd041c2e950c42154fe5d7f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.10"
   collection:
     dependency: transitive
     description:
@@ -137,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.1"
+  easy_engine:
+    dependency: transitive
+    description:
+      name: easy_engine
+      sha256: "445d8ffb9d81fa3a7ea3a84ab5ffb439f1032c8da6e9b58a901c59c15b4d7232"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   easy_helpers:
     dependency: transitive
     description:
@@ -149,18 +181,18 @@ packages:
     dependency: "direct main"
     description:
       name: easy_locale
-      sha256: "6f834cf17f3aff1b22769d4703cc7882d79dbc56269b8b7c7f2a7a9cbb264a5f"
+      sha256: eb3a31e55e6126d65d0c56daae3f9c6d4c483dd93f254530b3b6d1ae85b90a70
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   easy_storage:
     dependency: transitive
     description:
       name: easy_storage
-      sha256: "998dfafc49539f691823dc06f908969796bc5bac819ded1be359208a39eef44b"
+      sha256: "063ab4dfa1fcdca292392aa228d1cbf8b89aa5940dd470f8604451c8aec0d7be"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7"
+    version: "0.0.10"
   easychat:
     dependency: "direct main"
     description:
@@ -172,10 +204,10 @@ packages:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: f4bd295d9bbf8a8847b974341e4adfa95f4eee052179404cee0814b7d79f9062
+      sha256: "0210f96760283ae5e09ab4a1b6e600769956f9547099d558dd4c00ba7957d105"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.13"
+    version: "0.0.19"
   fake_async:
     dependency: transitive
     description:
@@ -385,10 +417,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_cache_manager
-      sha256: "395d6b7831f21f3b989ebedbb785545932adb9afe2622c1ffacf7f4b53a7e544"
+      sha256: a77f77806a790eb9ba0118a5a3a936e81c4fea2b61533033b2b0c3d50bbde5ea
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.2"
+    version: "3.4.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -672,10 +704,10 @@ packages:
     dependency: transitive
     description:
       name: rxdart
-      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
       url: "https://pub.dev"
     source: hosted
-    version: "0.27.7"
+    version: "0.28.0"
   sky_engine:
     dependency: transitive
     description: flutter

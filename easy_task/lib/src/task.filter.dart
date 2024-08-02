@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_task/easy_task.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 /// Task filter

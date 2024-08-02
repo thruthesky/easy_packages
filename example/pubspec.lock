@@ -227,7 +227,7 @@ packages:
       path: "../easy_locale"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.6"
   easy_post_v2:
     dependency: "direct main"
     description:
@@ -255,7 +255,7 @@ packages:
       path: "../easy_task"
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   easychat:
     dependency: "direct main"
     description:
@@ -263,13 +263,20 @@ packages:
       relative: true
     source: path
     version: "0.0.5"
+  easysetting:
+    dependency: "direct main"
+    description:
+      path: "../easy_setting"
+      relative: true
+    source: path
+    version: "0.0.1"
   easyuser:
     dependency: "direct main"
     description:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.17"
+    version: "0.0.19"
   fake_async:
     dependency: transitive
     description:
@@ -1018,13 +1025,13 @@ packages:
     source: hosted
     version: "2.5.1"
   rxdart:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: rxdart
-      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
       url: "https://pub.dev"
     source: hosted
-    version: "0.27.7"
+    version: "0.28.0"
   sky_engine:
     dependency: transitive
     description: flutter
