@@ -28,7 +28,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   String? url;
 
   double photoWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56;
+      MediaQuery.of(context).size.width * 0.56 / 2;
 
   @override
   void dispose() {
@@ -43,7 +43,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         StreamBuilder<double?>(
           initialData: uploadProgress.value,
@@ -71,30 +70,59 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
             return const SizedBox.shrink();
           },
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 8, 12),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (url != null) ...[
-                Stack(
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: url!,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    height: photoWidth(context),
+                    width: photoWidth(context),
+                    margin: const EdgeInsets.all(12),
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          StorageService.instance.delete(url);
-                          setState(() {
-                            url = null;
-                          });
-                        },
-                      ),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl: url!,
+                          fit: BoxFit.cover,
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            color: Theme.of(context).colorScheme.onError,
+                            icon: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.error,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(Icons.close),
+                            ),
+                            onPressed: () {
+                              StorageService.instance.delete(url);
+                              setState(
+                                () {
+                                  url = null;
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ],
               Row(
@@ -104,14 +132,17 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                     child: TextField(
                       controller: controller,
                       decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                         prefixIcon: ImageUploadIconButton(
                           progress: (prog) => uploadProgress.add(prog),
                           complete: () => uploadProgress.add(null),
                           onUpload: (url) async {
                             setState(() {
-                              submitable = canSubmit;
                               this.url = url;
+                              submitable = canSubmit;
                             });
                           },
                         ),
