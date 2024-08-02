@@ -20,7 +20,7 @@ dependencies:
   firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter
-  rxdart: ^0.27.7
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:

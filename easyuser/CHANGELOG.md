@@ -1,3 +1,6 @@
+## 0.0.18
+* Update. rxdart: ^0.28.0
+
 ## 0.0.17
 * Update. Submit by entering the input box on search user dialog.
 
