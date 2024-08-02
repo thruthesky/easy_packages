@@ -1,8 +1,8 @@
-import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_like/easy_like.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_post_v2/src/widgets/buttons/post.comment_text_button.dart';
+import 'package:easy_post_v2/src/widgets/buttons/post.like_text_button.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -18,21 +18,12 @@ class PostDetailBottomAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        TextButton(
-          onPressed: () {
-            CommentService.instance.showCommentEditDialog(
-              context: context,
-              documentReference: post.ref,
-              focusOnContent: false,
-            );
-          },
+        PostCommentTextButton(
+          post: post,
           child: Text('Reply'.t),
         ),
-        TextButton(
-          onPressed: () async {
-            final like = Like(uid: my.uid, documentReference: post.ref);
-            await like.like();
-          },
+        PostLikeTextButton(
+          post: post,
           child: Text(
             'Like'.tr(args: {'n': post.likeCount}, form: post.likeCount),
           ),
