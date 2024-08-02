@@ -1,7 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easy_post_v2/src/widgets/post.detail_comment_input_box.dart';
-import 'package:easy_post_v2/src/widgets/post.detail_comment_list_tree_view.dart';
 import 'package:flutter/material.dart';
 
 class PostDetailScreen extends StatelessWidget {

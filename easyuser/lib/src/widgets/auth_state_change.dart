@@ -18,9 +18,12 @@ class AuthStateChanges extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
+      // To reduce the flickering
+      initialData: FirebaseAuth.instance.currentUser,
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            snapshot.hasData == false) {
           return const Center(
             child: CircularProgressIndicator(),
           );

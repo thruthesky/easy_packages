@@ -34,7 +34,7 @@ class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Task'),
+        title: Text('Update Task'.t),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -47,11 +47,11 @@ class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
             ),
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
+              decoration: InputDecoration(labelText: 'Title'.t),
             ),
             TextField(
               controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
+              decoration: InputDecoration(labelText: 'Description'.t),
             ),
             const SizedBox(height: 20),
             UploadForm(
@@ -67,10 +67,12 @@ class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
                     urls: widget.task.urls,
                   );
                   if (context.mounted) {
-                    toast(context: context, message: Text('Task Updated'.t));
+                    toast(
+                        context: context,
+                        message: Text('Task updated message'.t));
                   }
                 },
-                child: const Text('Update Task'),
+                child: Text('Update Task'.t),
               ),
             ),
           ],

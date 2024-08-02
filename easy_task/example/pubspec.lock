@@ -149,10 +149,10 @@ packages:
     dependency: transitive
     description:
       name: easy_locale
-      sha256: "6f834cf17f3aff1b22769d4703cc7882d79dbc56269b8b7c7f2a7a9cbb264a5f"
+      sha256: eb3a31e55e6126d65d0c56daae3f9c6d4c483dd93f254530b3b6d1ae85b90a70
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   easy_storage:
     dependency: transitive
     description:
@@ -167,15 +167,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   easyuser:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "369aff2f70c4d9ea808e5ef7589b6c9a959238cd380b3fb964f3ef929f032490"
+      sha256: "872ab596d2793e7c2cc21757d34cdb9455f81fa7e3e707a32e30f0f938ce9e54"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.16"
+    version: "0.0.17"
   fake_async:
     dependency: transitive
     description:

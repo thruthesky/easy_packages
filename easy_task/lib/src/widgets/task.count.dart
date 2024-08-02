@@ -32,11 +32,12 @@ class _TaskCountState extends State<TaskCount> {
         dog('TaskCount Rebuild');
         return FutureBuilder<int>(
           initialData: count,
-          future:
-              TaskFilter.filter(menu: widget.menu, completed: widget.completed)
-                  .count()
-                  .get()
-                  .then((snapshot) => snapshot.count ?? 0),
+          future: TaskFilter.filter(
+            TaskListOptions(
+              completed: widget.completed,
+              menu: widget.menu,
+            ),
+          ).count().get().then((snapshot) => snapshot.count ?? 0),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting &&
                 snapshot.hasData == false) {
