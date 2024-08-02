@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_setting/easy_setting.dart';
+import 'package:easysetting/easy_setting.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String routeName = '/Settings';

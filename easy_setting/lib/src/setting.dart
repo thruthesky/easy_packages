@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_setting/easy_setting.dart';
+import 'package:easysetting/easy_setting.dart';
 import 'package:flutter/material.dart';
 
 class Setting extends StatefulWidget {

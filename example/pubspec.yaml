@@ -22,7 +22,7 @@ dependencies:
   easy_locale:
   easy_post_v2:
   easy_report:
-  easy_setting:
+  easysetting:
   easy_storage:
   easy_task:
   easychat:
@@ -64,7 +64,7 @@ dependency_overrides:
     path: ../easy_locale
   easy_report:
     path: ../easy_report
-  easy_setting:
+  easysetting:
     path: ../easy_setting
   easy_storage:
     path: ../easy_storage
