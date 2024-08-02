@@ -58,11 +58,16 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text("See more..."),
+                        child: Text("See more requests..."),
                       ),
                     ),
                     onPressed: () {
-                      // Handle see more action
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (context, a1, a2) {
+                          return const ReceivedChatRoomInviteListScreen();
+                        },
+                      );
                     },
                   );
                 }
