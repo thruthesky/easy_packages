@@ -7,6 +7,7 @@ import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:example/screens/locale/locale.screen.dart';
 import 'package:example/screens/forum/forum.screen.dart';
 import 'package:example/screens/menu/menu.screen.dart';
+import 'package:example/screens/settings/settings.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
@@ -187,6 +188,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       TaskService.instance.showTaskListScreen(context),
                   child: const Text('Task List of my creation'),
                 ),
+                ElevatedButton(
+                    onPressed: () {
+                      showGeneralDialog(
+                          context: context,
+                          pageBuilder: (_, __, ___) {
+                            return const SettingsScreen();
+                          });
+                    },
+                    child: const Text('Setting'))
               ],
             ),
             //

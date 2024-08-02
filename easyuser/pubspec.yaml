@@ -1,6 +1,6 @@
 name: easyuser
 description: "An easy to use user management package with Firebase as backend."
-version: 0.0.18
+version: 0.0.19
 homepage: https://github.com/thruthesky/easy_frame/tree/main/easyuser
 
 environment:
@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   memory_cache: ^1.2.0
-  rxdart: ^0.27.7
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:

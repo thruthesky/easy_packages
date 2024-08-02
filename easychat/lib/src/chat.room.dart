@@ -529,6 +529,10 @@ class ChatRoom {
   /// Chat room subscription
   ///
   /// This is used to listen the chat room changes.
+  ///
+  /// The reason why it is not in the service is because each chat room can
+  /// have its own listener for realtime update.
+  ///
   StreamSubscription? chatRoomSubscription;
   BehaviorSubject<ChatRoom> changes = BehaviorSubject();
 
