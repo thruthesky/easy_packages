@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_setting/easy_setting.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String routeName = '/Settings';
@@ -15,9 +17,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: const Column(
+      body: Column(
         children: [
-          Text("Settings"),
+          const Text("Settings"),
+          Setting(
+            id: 'system',
+            builder: (sm) {
+              return ListTile(
+                title: Text('System count: ${sm.value<int>('count') ?? 0}'),
+                onTap: () {
+                  sm.increment('count');
+                },
+              );
+            },
+          ),
+          Setting(
+            id: FirebaseAuth.instance.currentUser!.uid,
+            builder: (sm) {
+              return ListTile(
+                title: Text('I like: ${sm.value<String>('fruit') ?? '...'}'),
+                subtitle: Row(
+                  children: [
+                    TextButton(
+                      child: const Text('Apple'),
+                      onPressed: () {
+                        sm.update({'fruit': 'Apple'});
+                      },
+                    ),
+                    TextButton(
+                      child: const Text('Banna'),
+                      onPressed: () {
+                        sm.update({'fruit': 'Banana'});
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

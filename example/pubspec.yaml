@@ -49,6 +49,7 @@ dependencies:
   web: ^0.5.1
 
 dependency_overrides:
+  rxdart: ^0.28.0
   easy_comment:
     path: ../easy_comment
   easy_engine:
