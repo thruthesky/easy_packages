@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
-import 'package:easychat/src/widgets/chat.messages.list_view.dart';
-import 'package:easychat/src/widgets/chat.room.input_box.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +23,9 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? $room;
-  User? get user => widget.user;
+  User? $user;
+
+  StreamSubscription? docUpdateStream;
 
   @override
   void initState() {
@@ -32,41 +34,41 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   init() async {
-    // If room is null, user should not be null.
-    // We have to get room from other user.
-    if (widget.room == null) {
-      await loadRoomFromOtherUser();
-    } else {
-      $room = widget.room;
+    $room = widget.room;
+    $user = widget.user;
+
+    /// Single chat
+    ///
+    /// If room is null, user should not be null.
+    /// We have to get room from other user.
+    if ($room == null) {
+      await loadOrCreateRoomForSingleChat();
+    } else if ($user == null && $room!.single) {
+      $user = await User.get(getOtherUserUidFromRoomId($room!.id)!);
     }
-    roomAssert();
+
     setState(() {});
     $room!.listen();
     $room!.updateMyReadMeta();
     onUpdateRoom();
   }
 
-  roomAssert() {
-    if ($room!.group) return;
-    if (user != null) return;
-    throw 'chat-room/user-required-in-single The chat room is single chat but user was not provided.';
-  }
-
   @override
   dispose() {
+    docUpdateStream?.cancel();
     $room?.dispose();
     super.dispose();
   }
 
-  Future<void> loadRoomFromOtherUser() async {
-    $room = await ChatRoom.get(singleChatRoomId(user!.uid));
+  Future<void> loadOrCreateRoomForSingleChat() async {
+    $room = await ChatRoom.get(singleChatRoomId($user!.uid));
     if ($room != null) return;
     // In case the room doesn't exists, we create the room.
     // Automatically this will invite the other user.
     // The other user wont normally see the message in chat room
     // list. However the other user may see the messages if the
     // other user opens the chat room.
-    final newRoomRef = await ChatRoom.createSingle(user!.uid);
+    final newRoomRef = await ChatRoom.createSingle($user!.uid);
     $room = await ChatRoom.get(newRoomRef.id);
   }
 
@@ -74,18 +76,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // This will update the current user's read if
     // there is a new message.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      $room!.changes.listen((room) => room.updateMyReadMeta());
+      docUpdateStream = $room!.changes.listen(
+        (room) => room.updateMyReadMeta(),
+      );
     });
   }
 
   String title(ChatRoom room) {
+    // Single chat or gruop chat can have name.
     if (room.name.trim().isNotEmpty) {
       return room.name;
     }
-    if (user != null) {
-      return user!.displayName.trim().isNotEmpty
-          ? user!.displayName
-          : user!.uid;
+    //
+    if ($user != null) {
+      return $user!.displayName.or('No name');
     }
     return 'Chat Room';
   }
@@ -109,17 +113,129 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: $room?.builder((r) => Text(title(r))),
+        title: $room?.builder(
+          (room) => Row(
+            children: [
+              if (room.group) ...[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                  ),
+                  width: 36,
+                  height: 36,
+                  clipBehavior: Clip.hardEdge,
+                  child: room.iconUrl != null && room.iconUrl!.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: $room!.iconUrl!,
+                          fit: BoxFit.cover,
+                        )
+                      : const Icon(Icons.people),
+                ),
+                const SizedBox(width: 12),
+              ],
+              if (room.single) ...[
+                UserAvatar(
+                  user: $user!,
+                  size: 36,
+                  radius: 15,
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: Text(title(room)),
+              ),
+            ],
+          ),
+        ),
         actions: [
           $room?.builder(
                 (room) {
                   if (room.joined == false) return const SizedBox.shrink();
-                  if (room.group == false) return const SizedBox.shrink();
-                  return IconButton(
-                    onPressed: () {
-                      ChatService.instance
-                          .showChatRoomMenuScreen(context, room);
-                    },
+                  return PopupMenuButton(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Invite Other"),
+                          onTap: () async {
+                            final selectedUser =
+                                await UserService.instance.showUserSearchDialog(
+                              context,
+                              itemBuilder: (user, index) {
+                                return UserListTile(
+                                  user: user,
+                                  onTap: () {
+                                    Navigator.of(context).pop(user);
+                                  },
+                                );
+                              },
+                              exactSearch: true,
+                            );
+                            if (selectedUser == null) return;
+                            $room!.inviteUser(selectedUser.uid);
+                          },
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Leave Chat Room"),
+                          onTap: () {
+                            // TODO leave chat room
+                          },
+                        ),
+                      ),
+
+                      PopupMenuItem(
+                        child: ListTile(
+                          title: const Text("Report"),
+                          onTap: () {
+                            // TODO report
+                          },
+                        ),
+                      ),
+
+                      if ($room!.single)
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Text("Block"),
+                            onTap: () {
+                              /// TODO: block
+                            },
+                          ),
+                        ),
+
+                      if (room.group) ...[
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Text("Members"),
+                            onTap: () {
+                              ///
+                              /*
+                             ListView.builder(
+        itemExtent: 72,
+        itemBuilder: (context, index) {
+          return UserDoc(
+            uid: room.users.keys.toList()[index],
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : UserListTile(user: user),
+          );
+        },
+        itemCount: room.users.length,
+      ),*/
+                            },
+                          ),
+                        ),
+                      ],
+                      // if (room.masterUsers.contains(my.uid)) ...[
+                      //   ListTile(
+                      //     title: const Text("Update Chat Room"),
+                      //     onTap: () {
+                      //       ChatService.instance
+                      //           .showChatRoomEditScreen(context, room: room);
+                      //     },
+                      //   ),
+                    ],
                     icon: const Icon(Icons.more_vert),
                   );
                 },

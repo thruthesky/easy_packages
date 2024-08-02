@@ -1,3 +1,12 @@
+## 0.0.18
+* Fix. Flickering on AuthStateChange
+
+## 0.0.17
+* Update. Submit by entering the input box on search user dialog.
+
+## 0.0.16
+* Update. User search dialog height size: min-height is now equal to max-height.
+
 ## 0.0.15
 * Add. user blocking/un-blocking
 

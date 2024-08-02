@@ -1,5 +1,4 @@
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/chat.room.list_view.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomListScreen extends StatefulWidget {

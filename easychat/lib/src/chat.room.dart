@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:easychat/src/chat.room.user.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -161,7 +160,6 @@ class ChatRoom {
   });
 
   factory ChatRoom.fromSnapshot(DocumentSnapshot doc) {
-    dog("doc: ${doc.data()}");
     return ChatRoom.fromJson(doc.data() as Map<String, dynamic>, doc.id);
   }
 
@@ -442,7 +440,7 @@ class ChatRoom {
     String? lastMessageUrl,
   }) async {
     final serverTimestamp = FieldValue.serverTimestamp();
-    final updateUserData = users.map(
+    final Map<String, Map<String, Object>> updateUserData = users.map(
       (uid, value) {
         if (uid == my.uid) {
           final readOrder = _negatedOrder(DateTime.now());
