@@ -1,0 +1,21 @@
+name: easy_setting
+description: "Provides an easy and nice UI/UX and the logic to manage user's settings in Firestore"
+version: 0.0.1
+homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_setting
+
+environment:
+  sdk: ">=3.4.4 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  cloud_firestore: ^5.0.2
+  flutter:
+    sdk: flutter
+  rxdart: ^0.28.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
