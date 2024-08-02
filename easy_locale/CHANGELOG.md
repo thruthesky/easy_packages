@@ -1,3 +1,6 @@
+## 0.0.6
+* Add. more texts.
+
 ## 0.0.5
 * Add. more texts.
 

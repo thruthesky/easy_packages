@@ -16,10 +16,16 @@ import 'package:easy_locale/easy_locale.dart';
 /// the user registered.
 ///
 class EmailPasswordLogin extends StatefulWidget {
-  const EmailPasswordLogin(
-      {super.key, this.onLogin, this.padding, this.runSpacing});
+  const EmailPasswordLogin({
+    super.key,
+    this.onLogin,
+    this.padding,
+    this.runSpacing,
+    this.beforeLogin,
+  });
 
   final void Function()? onLogin;
+  final void Function()? beforeLogin;
   final EdgeInsets? padding;
   final double? runSpacing;
 
@@ -68,6 +74,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
             children: [
               ElevatedButton(
                 onPressed: () async {
+                  widget.beforeLogin?.call();
                   dog("Email: ${emailController.text}");
                   dog("Password: ${passwordController.text}");
 

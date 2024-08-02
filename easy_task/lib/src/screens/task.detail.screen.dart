@@ -1,4 +1,5 @@
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/widgets/task.doc.dart';
@@ -42,7 +43,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           ? const CircularProgressIndicator.adaptive()
                           : Row(
                               children: [
-                                const Text('Creator: '),
+                                Text('${'Creator'.t} :'),
                                 UserAvatar(
                                   user: creator,
                                   size: 24,
@@ -53,7 +54,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                 ),
                                 const Spacer(),
                                 Text(
-                                  'Created At: ${task.createdAt.short}',
+                                  '${'Created At'.t}: ${task.createdAt.short}',
                                   style: Theme.of(context).textTheme.labelSmall,
                                 ),
                               ],
@@ -90,12 +91,13 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           await task.toggleCompleted(!task.completed);
                         },
                         icon: task.completed ? const Icon(Icons.check) : null,
-                        label: Text(task.completed ? 'Completed' : 'Complete'),
+                        label:
+                            Text(task.completed ? 'Completed'.t : 'Complete'.t),
                       ),
                       ElevatedButton(
                         onPressed: () => TaskService.instance
                             .showTaskUpdateScreen(context, task),
-                        child: const Text('Update Task'),
+                        child: Text('Update Task'.t),
                       ),
                     ],
                   ),

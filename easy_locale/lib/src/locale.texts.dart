@@ -227,6 +227,15 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Input Title',
     'ko': '제목을 입력하세요',
   },
+
+  'description': {
+    'en': 'Description',
+    'ko': '설명',
+  },
+  'input description': {
+    'en': 'Input Description',
+    'ko': '설명을 입력하세요',
+  },
   'content': {
     'en': 'Content',
     'ko': '내용',
