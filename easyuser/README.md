@@ -157,6 +157,13 @@ ElevatedButton(
 
 
 
+
+# linkWithCredential
+
+- The SMS OTP of Phone Auth can be used only one time. So, it needs to know if the phone number is already sign ed in. Use `UserService.instance.isPhoneNumberRegistered()` to know if the phone number is already signed in.
+- When `linkWithCredential` is used to link the current user login, `UserService.instance.initUserLogin` must be called once. Or the `MyDoc` will not update and phone number will not be registered immedately.
+
+
 # Widget
 
 

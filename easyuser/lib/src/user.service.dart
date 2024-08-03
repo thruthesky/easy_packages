@@ -146,7 +146,7 @@ class UserService {
         firestoreMyDocSubscription?.cancel();
 
         /// 사용자 문서 초기화
-        await _initUserDocumentOnLogin(faUser.uid);
+        await initUserLogin(faUser.uid);
 
         firestoreMyDocSubscription = FirebaseFirestore.instance
             .collection('users')
@@ -183,7 +183,20 @@ class UserService {
     await fa.FirebaseAuth.instance.signOut();
   }
 
-  /// 로그인 시, 사용자 문서 초기화
+  /// Initialize(update) user document on login
+  ///
+  /// This method should be called when
+  /// - app restarts
+  /// - user sign in with any method (email, google, phone, etc.)
+  /// - And especially when the user signs-in and does **linkWithCredential()**
+  ///   This method will
+  ///   - record phone number if needed
+  ///   - update lastLoginAt causing the user document to be updated and this
+  ///     will trigger the `MyDoc` will be rebuild. So, if the user signed in
+  ///     as anonymous, the user will be updated to the real user.
+  ///
+  ///
+  ///
   ///
   /// Firebase 로그인을 하고, 사용자 문서가 존재 할 수 있고, 존재하지 않을 수 있다.
   /// 사용자 문서가 존재하지 않거나, createdAt 이 null 이면, createdAt 을 생성한다.
@@ -196,7 +209,7 @@ class UserService {
   ///
   /// Create `createdAt` if it is not exists.
   /// Update `lastLoginAt` on every login.
-  _initUserDocumentOnLogin(String uid) async {
+  initUserLogin(String uid) async {
     _recordPhoneSignInNumber(uid);
 
     /// 나의 정보를 가져온다.
@@ -244,6 +257,23 @@ class UserService {
         );
       }
     }
+  }
+
+  /// Check if the phone number is registered.
+  ///
+  /// This is used to know if the phone number is already in use especially in
+  /// the 'linkWithCredential' with phone sign-in process. Since SMS OTP can be
+  /// used it only one time, if the phone number is already in use, the app
+  /// should use 'signInWithCredential' instead of 'linkWithCredential'. And to
+  /// do this, it needs to know if the phone number is already in use.
+  ///
+  /// See README.md for details
+  Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
+    final doc = FirebaseFirestore.instance
+        .collection('user-phone-sign-in-numbers')
+        .doc(phoneNumber);
+    final snapshot = await doc.get();
+    return snapshot.exists;
   }
 
   // to display public profile user `UserService.intance.showPublicProfile`
