@@ -1,3 +1,6 @@
+## 0.0.20
+* Update. phone number is recorded when the user signed in with phone number.
+
 ## 0.0.19
 * Update. rxdart: ^0.28.0
 
