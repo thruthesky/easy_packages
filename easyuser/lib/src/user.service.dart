@@ -60,6 +60,16 @@ class UserService {
   Widget Function(BuildContext, User?)? $showPublicProfileScreen;
   Widget Function()? $showProfileUpdateScreen;
 
+  /// Current user of Firebase Auth
+  fa.User? get currentUser => fa.FirebaseAuth.instance.currentUser;
+
+  /// True if the user is signed in with phone number.
+  bool get isPhoneSignIn =>
+      currentUser?.providerData
+          .where((e) => e.providerId == 'phone')
+          .isNotEmpty ??
+      false;
+
   init({
     bool enableAnonymousSignIn = false,
     Widget Function(BuildContext, User?)? showPublicProfileScreen,
@@ -78,7 +88,7 @@ class UserService {
 
   initAnonymousSignIn() async {
     if (enableAnonymousSignIn) {
-      final user = fa.FirebaseAuth.instance.currentUser;
+      final user = currentUser;
       if (user == null) {
         dog('initAnonymousSignIn: sign in anonymously');
         await fa.FirebaseAuth.instance.signInAnonymously();
@@ -87,10 +97,9 @@ class UserService {
   }
 
   /// Returns true if user is signed in including anonymous login.
-  bool get signedIn => fa.FirebaseAuth.instance.currentUser != null;
+  bool get signedIn => currentUser != null;
   bool get notSignedIn => !signedIn;
-  bool get anonymous =>
-      fa.FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
+  bool get anonymous => currentUser?.isAnonymous ?? false;
 
   /// Returns true if user is registered and not anonymous.
   ///
@@ -124,8 +133,7 @@ class UserService {
         blockChanges.add(blocks);
         initAnonymousSignIn();
       } else {
-        /// User signed in
-        ///
+        /// User signed in -------------------------------------------------
 
         /// User is anonymous
         if (faUser.isAnonymous) {
@@ -137,7 +145,7 @@ class UserService {
         /// User signed in. Listen to the user's document changes.
         firestoreMyDocSubscription?.cancel();
 
-        // 사용자 문서 초기화
+        /// 사용자 문서 초기화
         await _initUserDocumentOnLogin(faUser.uid);
 
         firestoreMyDocSubscription = FirebaseFirestore.instance
@@ -184,7 +192,13 @@ class UserService {
   ///
   /// lastLoginAt 은 로그인 할 때 마다 업데이트한다.
   ///
+  /// Initialize user document on login
+  ///
+  /// Create `createdAt` if it is not exists.
+  /// Update `lastLoginAt` on every login.
   _initUserDocumentOnLogin(String uid) async {
+    _recordPhoneSignInNumber(uid);
+
     /// 나의 정보를 가져온다.
     final got = await User.get(uid, cache: false);
 
@@ -201,6 +215,35 @@ class UserService {
           data,
           SetOptions(merge: true),
         );
+  }
+
+  /// Record the phone number if the user signed in as Phone sign-in auth.
+  ///
+  /// See README.md for details
+  ///
+  /// Whenever a user signs in with phone number, the phone number is recorded.
+  /// Even if the user signs out and signs in again with the same phone number,
+  /// the phone number is recorded over again.
+  ///
+  /// It will also record again when the app restarts.
+  _recordPhoneSignInNumber(String uid) async {
+    if (isPhoneSignIn) {
+      dog('Phone sign-in user signed in. Record the phone number.');
+
+      /// update the phone number in `/user-phone-sign-in-numbers`.
+      final phoneNumber = currentUser?.phoneNumber;
+      if (phoneNumber != null) {
+        final doc = FirebaseFirestore.instance
+            .collection('user-phone-sign-in-numbers')
+            .doc(phoneNumber);
+        await doc.set(
+          {
+            'lastSignedInAt': FieldValue.serverTimestamp(),
+          },
+          SetOptions(merge: true),
+        );
+      }
+    }
   }
 
   // to display public profile user `UserService.intance.showPublicProfile`

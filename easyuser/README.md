@@ -146,10 +146,12 @@ ElevatedButton(
 
 ### Phone number collections
 
-- `user-phone-sign-in-numbers`: is the collection that all user's phone number used by phone-sign-in are saved.
-  - This is used to know if the phone number is already signed in. if so, it will not try to  `linkWithCredential()` not to waste the SMS OTP credential.
-  - If the phone number is not registered(sign-in), then the phone number login may be linked.
-
+- `user-phone-sign-in-numbers`: is the collection that all the phone numbers of phone-sign-in auth are saved.
+- The reason why it is needed is to know if the phone number is already signed in.
+  - So, when the app links the current login with the login of phone sign-in,
+    - If the phone number is not singed in yet, then it will link
+    - If the phone number is already signed in, then it will sign-in with the phone number.
+    - Since SMS OTP can be used only once, it needs to know if the phone number is alredy signed-in or not.
 - It is protected by security rules that hackers cannot not get all the numbers.
   - They can only get one by one by gussing the phone nubmer and they will not get anthing except the phone number itself.
 
