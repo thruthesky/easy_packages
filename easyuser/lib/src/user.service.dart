@@ -86,16 +86,6 @@ class UserService {
     $showProfileUpdateScreen = showProfileUpdateScreen;
   }
 
-  initAnonymousSignIn() async {
-    if (enableAnonymousSignIn) {
-      final user = currentUser;
-      if (user == null) {
-        dog('initAnonymousSignIn: sign in anonymously');
-        await fa.FirebaseAuth.instance.signInAnonymously();
-      }
-    }
-  }
-
   /// Returns true if user is signed in including anonymous login.
   bool get signedIn => currentUser != null;
   bool get notSignedIn => !signedIn;
@@ -178,6 +168,17 @@ class UserService {
     });
   }
 
+  /// Initialize anonymous sign in if the app is configured to do so.
+  initAnonymousSignIn() async {
+    if (enableAnonymousSignIn) {
+      final user = currentUser;
+      if (user == null) {
+        dog('initAnonymousSignIn: sign in anonymously');
+        await fa.FirebaseAuth.instance.signInAnonymously();
+      }
+    }
+  }
+
   /// Get my user document
   Future<void> signOut() async {
     await fa.FirebaseAuth.instance.signOut();
@@ -195,6 +196,10 @@ class UserService {
   ///     will trigger the `MyDoc` will be rebuild. So, if the user signed in
   ///     as anonymous, the user will be updated to the real user.
   ///
+  /// The purpose of the method is to
+  /// - create the user document if it's not exist
+  /// - create `createdAt` if it is not exists.
+  /// - update `lastLoginAt` on every login.
   ///
   ///
   ///
@@ -224,7 +229,7 @@ class UserService {
       data['createdAt'] = FieldValue.serverTimestamp();
     }
 
-    await User.fromUid(uid).doc.set(
+    await User.fromUid(uid).ref.set(
           data,
           SetOptions(merge: true),
         );
