@@ -5,6 +5,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:easy_storage/easy_storage.dart';
@@ -24,6 +25,10 @@ class UserService {
 
   /// Reference of the block document.
   DocumentReference get blockDoc => metaCol.doc('blocks');
+
+  /// RTDB /mirror-users reference
+  DatabaseReference get mirrorUsersRef =>
+      FirebaseDatabase.instance.ref('mirror-users');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -220,7 +225,7 @@ class UserService {
     /// 나의 정보를 가져온다.
     final got = await User.get(uid, cache: false);
 
-    final data = {
+    final Map<String, dynamic> data = {
       'lastLoginAt': FieldValue.serverTimestamp(),
     };
 
@@ -233,6 +238,13 @@ class UserService {
           data,
           SetOptions(merge: true),
         );
+
+    /// Mirror to RTDB
+    if (data['createdAt'] != null) {
+      data['createdAt'] = ServerValue.timestamp;
+    }
+    data['lastLoginAt'] = ServerValue.timestamp;
+    await User.fromUid(uid).mirrorRef.update(data);
   }
 
   /// Record the phone number if the user signed in as Phone sign-in auth.

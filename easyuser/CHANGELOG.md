@@ -1,3 +1,6 @@
+## 0.0.21
+* Add. Mirroring Firestore to Realtime Database and use for simple list and search. RTDB is more cost-efficient and load data faster.
+
 ## 0.0.20
 * Update. phone number is recorded when the user signed in with phone number.
 

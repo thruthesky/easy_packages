@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:memory_cache/memory_cache.dart';
 
 /// User model
@@ -52,6 +53,10 @@ class User {
   /// [ref] is an alias of [doc].
   DocumentReference get ref => doc;
 
+  /// Current user's mirror reference in the RTDB.
+  DatabaseReference get mirrorRef =>
+      UserService.instance.mirrorUsersRef.child(uid);
+
   User({
     required this.uid,
     this.admin = false,
@@ -90,6 +95,20 @@ class User {
       uid: uid,
       lastLoginAt: DateTime.now(),
     );
+  }
+
+  factory User.fromDatabaseSnapshot(DataSnapshot snapshot) {
+    if (snapshot.exists == false) {
+      throw Exception('User.fromDatabaseSnapshot: value does not exist.');
+    }
+    if (snapshot.value == null) {
+      throw Exception('User.fromDatabaseSnapshot: value is null.');
+    }
+
+    final Map<String, dynamic> data =
+        Map<String, dynamic>.from((snapshot.value as Map?) ?? {});
+
+    return User.fromJson(data, snapshot.key!);
   }
 
   factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -201,6 +220,14 @@ class User {
     throw UnimplementedError('This is not for use.');
   }
 
+  /// Update user data
+  ///
+  /// User `update` method is used to update the user data.
+  ///
+  /// [photoUrl] is dynamic since it can be a string of url or FieldValue.delete().
+  ///
+  /// It mirros the data to the RTDB and it does not use transaction because
+  /// mirroring is not for transaction.
   Future<void> update({
     String? displayName,
     String? name,
@@ -208,28 +235,42 @@ class User {
     int? birthMonth,
     int? birthDay,
     String? gender,
-    String? photoUrl,
+    dynamic photoUrl,
     String? stateMessage,
     String? statePhotoUrl,
   }) async {
-    await doc.set(
-      {
-        'updatedAt': FieldValue.serverTimestamp(),
-        if (displayName != null) 'displayName': displayName,
-        if (displayName != null)
-          'caseIncensitiveDisplayName': displayName.toLowerCase(),
-        if (name != null) 'name': name,
-        if (name != null) 'caseIncensitveName': name.toLowerCase(),
-        if (birthYear != null) 'birthYear': birthYear,
-        if (birthMonth != null) 'birthMonth': birthMonth,
-        if (birthDay != null) 'birthDay': birthDay,
-        if (gender != null) 'gender': gender,
-        if (photoUrl != null) 'photoUrl': photoUrl,
-        if (stateMessage != null) 'stateMessage': stateMessage,
-        if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
-      },
+    final data = <String, dynamic>{
+      'updatedAt': FieldValue.serverTimestamp(),
+      if (displayName != null) 'displayName': displayName,
+      if (displayName != null)
+        'caseIncensitiveDisplayName': displayName.toLowerCase(),
+      if (name != null) 'name': name,
+      if (name != null) 'caseIncensitveName': name.toLowerCase(),
+      if (birthYear != null) 'birthYear': birthYear,
+      if (birthMonth != null) 'birthMonth': birthMonth,
+      if (birthDay != null) 'birthDay': birthDay,
+      if (gender != null) 'gender': gender,
+      if (photoUrl != null) 'photoUrl': photoUrl,
+      if (stateMessage != null) 'stateMessage': stateMessage,
+      if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
+    };
+    final List<Future> futures = [];
+    futures.add(ref.set(
+      data,
       SetOptions(merge: true),
-    );
+    ));
+
+    /// Mirror to RTDB. Update the same data to the RTDB.
+    if (data['updatedAt'] != null) {
+      data['updatedAt'] = ServerValue.timestamp;
+    }
+    if (data['photoUrl'] == FieldValue.delete()) {
+      data['photoUrl'] = null;
+    }
+
+    futures.add(mirrorRef.update(data));
+
+    await Future.wait(futures);
   }
 
   /// delete user
