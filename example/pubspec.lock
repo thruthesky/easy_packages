@@ -242,6 +242,13 @@ packages:
       relative: true
     source: path
     version: "0.0.2"
+  easy_setting_v2:
+    dependency: "direct main"
+    description:
+      path: "../easy_setting"
+      relative: true
+    source: path
+    version: "0.0.1"
   easy_storage:
     dependency: "direct main"
     description:
@@ -263,13 +270,6 @@ packages:
       relative: true
     source: path
     version: "0.0.5"
-  easysetting:
-    dependency: "direct main"
-    description:
-      path: "../easy_setting"
-      relative: true
-    source: path
-    version: "0.0.1"
   easyuser:
     dependency: "direct main"
     description:

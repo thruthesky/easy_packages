@@ -78,7 +78,9 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                label(context: context, text: "Members"),
+                label(
+                    context: context,
+                    text: "Members (${room.userUids.length})"),
                 const SizedBox(height: 8),
                 // TODO see more users.
                 // For now it will only show up to 3 users
@@ -96,8 +98,14 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     );
                   },
                   itemCount:
-                      room.userUids.length > 4 ? 3 : room.userUids.length,
+                      room.userUids.length >= 4 ? 3 : room.userUids.length,
                 ),
+                if (room.userUids.length >= 4) ...[
+                  ListTile(
+                    title: const Text("See All Members"),
+                    onTap: () {},
+                  ),
+                ],
                 ListTile(
                   title: const Text("Invite More Users"),
                   onTap: () async {
