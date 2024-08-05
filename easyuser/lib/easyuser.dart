@@ -13,6 +13,7 @@ export './src/widgets/user.doc.dart';
 export './src/widgets/user.avatar.dart';
 export './src/widgets/user.list_tile.dart';
 export './src/widgets/user.list_view.dart';
+export './src/widgets/firestore.user.list_view.dart';
 export './src/widgets/user.photo.list_view.dart';
 export './src/widgets/user.update_avatar.dart';
 export './src/widgets/user.search.dialog.dart';

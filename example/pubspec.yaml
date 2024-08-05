@@ -43,7 +43,7 @@ dependencies:
   intl: ^0.19.0
   path: ^1.9.0
   path_provider: ^2.1.3
-  phone_sign_in: ^0.0.7
+  phone_sign_in: ^0.0.8
   record: ^5.1.2
   social_design_system: ^0.0.19
   web: ^0.5.1
