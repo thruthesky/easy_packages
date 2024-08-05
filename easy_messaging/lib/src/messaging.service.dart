@@ -26,6 +26,9 @@ class MessagingService {
   bool initialized = false;
   String? token;
 
+  /// Initialize Messaging Service
+  ///
+  /// [onBackgroundMessage] - Function to handle background messages.
   init({
     required Future<void> Function(RemoteMessage)? onBackgroundMessage,
     required Function(RemoteMessage) onForegroundMessage,
@@ -33,9 +36,10 @@ class MessagingService {
     required Function(RemoteMessage) onMessageOpenedFromBackground,
     required Function onNotificationPermissionDenied,
     required Function onNotificationPermissionNotDetermined,
-    String? sendUrl,
   }) {
     initialized = true;
+
+    /// Register the background message handler if provided.
     if (onBackgroundMessage != null) {
       FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
     }
@@ -111,10 +115,11 @@ class MessagingService {
     await _updateToken(token);
   }
 
-  _updateToken(String? token) {
+  ///
+  Future _updateToken(String? token) async {
     if (token == null || token.isEmpty) return;
     if (currentUser == null) return;
-    myTokensRef.child(token).set(true);
+    await myTokensRef.child(token).set(true);
   }
 
   /// Initialize Messaging Event Handlers
