@@ -196,7 +196,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   },
                 ),
               ] else if (room.single) ...[
-                // TODO dry
                 Container(
                   height: 200,
                   width: double.maxFinite,
