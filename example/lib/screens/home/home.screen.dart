@@ -74,10 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // ChatService.instance
-                    //     .showChatRoomListScreen(context);
-
-                    ChatService.instance.showInviteListScreen(context);
+                    ChatService.instance.showChatRoomListScreen(context,
+                        queryOption: ChatRoomListOption.receivedInvites);
                   },
                   child: const Text("Chat Invite List"),
                 ),
