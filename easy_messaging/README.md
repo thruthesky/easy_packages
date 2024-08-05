@@ -17,7 +17,16 @@
   - return success tokens and error tokens in an array.
 
 
-- `fcm tokens` are saved under `fcm_tokens/{uid}` in realtime database.
+- `fcm tokens` are saved under `fcm-tokens/{uid}` in realtime database.
+
+
+
+## Install
+
+
+
+### Security rules
+
 
 
 

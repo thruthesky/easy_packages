@@ -12,7 +12,7 @@ class MessagingService {
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
-  DatabaseReference fcmTokensRef = FirebaseDatabase.instance.ref('fcm_tokens');
+  DatabaseReference fcmTokensRef = FirebaseDatabase.instance.ref('fcm-tokens');
   DatabaseReference get myTokensRef => fcmTokensRef.child(currentUser!.uid);
 
   MessagingService._();
