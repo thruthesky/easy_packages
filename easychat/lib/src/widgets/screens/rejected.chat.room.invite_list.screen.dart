@@ -18,13 +18,6 @@ class RejectedChatRoomInviteListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Rejected Chat Requests"),
       ),
-      // body: FirestoreListView(
-      //   query: query,
-      //   itemBuilder: (context, doc) {
-      //     final room = ChatRoom.fromSnapshot(doc);
-
-      //   },
-      // ),
       body: ChatRoomListView(
         queryOption: ChatRoomListOption.rejectedInvites,
         itemBuilder: (context, room, index) {
