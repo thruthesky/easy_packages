@@ -256,7 +256,12 @@ UserField.statePhotoUrl
 
 ## Exception
 
-- To handle better exception, you can catch the exceptions of each packages.
+- The packages in `easy_packages` should throw exceptions if the exception cannot be handled by the package itself.
+  - For example, if the user is not signed in and the package cannot provide a solution for signing in, then throw a `sign-in-required` exception.
+  - Conversely, if the exception can be handled internally, the package may(or may not) capture and handle it. For instance, if the user tries to sign in but fails because the email is not in use, the package can catch the exception and register the user. This is an example of handling an exception internally.
+
+
+- To handle better exception, you can write the exception class of each packages.
 
 - This is an example of UserException from `easyuser` package.
 
