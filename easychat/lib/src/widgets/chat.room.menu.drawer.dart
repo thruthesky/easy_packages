@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/chat.room.member.list.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -99,11 +100,29 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       room.userUids.length >= 4 ? 3 : room.userUids.length,
                 ),
                 if (room.userUids.length >= 4) ...[
+                  InkWell(
+                    onTap: () {
+                      showMembersDialog(context);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            "... and more.",
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
                   ListTile(
                     title: const Text("See All Members"),
                     onTap: () {
-                      // openMemberListDrawer(context);
-                      onTapSeeMoreMembers?.call();
+                      showMembersDialog(context);
                     },
                   ),
                 ],
@@ -231,6 +250,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  showMembersDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ChatRoomMemberListDialog(room: room);
+      },
     );
   }
 }
