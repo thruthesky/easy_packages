@@ -1,4 +1,5 @@
 import 'package:easy_comment/easy_comment.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class PostCommentTextButton extends StatelessWidget {
     this.clipBehavior,
     this.statesController,
     this.isSemanticButton,
+    this.isCreated,
   });
 
   final Post post;
@@ -23,6 +25,7 @@ class PostCommentTextButton extends StatelessWidget {
   final Clip? clipBehavior;
   final WidgetStatesController? statesController;
   final bool? isSemanticButton;
+  final Function(bool?)? isCreated;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +36,21 @@ class PostCommentTextButton extends StatelessWidget {
       clipBehavior: clipBehavior,
       statesController: statesController,
       isSemanticButton: isSemanticButton,
-      onPressed: () {
-        CommentService.instance.showCommentEditDialog(
-          context: context,
-          documentReference: post.ref,
-          focusOnContent: false,
-        );
+      onPressed: () async {
+        try {
+          final re = await CommentService.instance.showCommentEditDialog(
+            context: context,
+            documentReference: post.ref,
+            focusOnContent: false,
+          );
+
+          isCreated?.call(re);
+        } catch (e) {
+          if (context.mounted) {
+            error(context: context, message: Text('$e'));
+          }
+          rethrow;
+        }
       },
       child: child,
     );
