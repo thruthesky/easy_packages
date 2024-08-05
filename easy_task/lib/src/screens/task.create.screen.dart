@@ -29,56 +29,65 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            CheckboxListTile(
-              value: project,
-              title: Text('Project'.t),
-              subtitle: Text('Is this a project?'.t),
-              onChanged: (v) => setState(() => project = v ?? false),
-            ),
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(labelText: 'Title'.t),
-            ),
-            TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Task Description'.t),
-              minLines: 3,
-              maxLines: 8,
-            ),
-            const SizedBox(height: 20),
-            UploadForm(
-              urls: urls,
-              onUpload: (url) => {},
-              onDelete: (url) => {},
-              button: ElevatedButton(
-                onPressed: () async {
-                  if (_titleController.text.isEmpty) {
-                    toast(context: context, message: Text('input a title'.t));
-                    return;
-                  }
-                  final ref = await Task.create(
-                    title: _titleController.text,
-                    description: _descriptionController.text,
-                    project: project,
-                    urls: urls,
-                  );
-                  final task = await Task.get(ref.id);
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                    if (task!.project) {
-                      TaskService.instance
-                          .showProjectDetailScreen(context, task);
-                    } else {
-                      TaskService.instance.showTaskDetailScreen(context, task);
-                    }
-                  }
-                },
-                child: Text('Create Task'.t),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CheckboxListTile(
+                value: project,
+                title: Text('Project'.t),
+                subtitle: Text('Is this a project?'.t),
+                onChanged: (v) => setState(() => project = v ?? false),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 16,
+              ),
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(labelText: 'Title'.t),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TextField(
+                controller: _descriptionController,
+                decoration: InputDecoration(labelText: 'Task Description'.t),
+                minLines: 3,
+                maxLines: 8,
+              ),
+              const SizedBox(height: 20),
+              UploadForm(
+                urls: urls,
+                onUpload: (url) => {},
+                onDelete: (url) => {},
+                button: ElevatedButton(
+                  onPressed: () async {
+                    if (_titleController.text.isEmpty) {
+                      toast(context: context, message: Text('input a title'.t));
+                      return;
+                    }
+                    final ref = await Task.create(
+                      title: _titleController.text,
+                      description: _descriptionController.text,
+                      project: project,
+                      urls: urls,
+                    );
+                    final task = await Task.get(ref.id);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      if (task!.project) {
+                        TaskService.instance
+                            .showProjectDetailScreen(context, task);
+                      } else {
+                        TaskService.instance
+                            .showTaskDetailScreen(context, task);
+                      }
+                    }
+                  },
+                  child: Text('Create Task'.t),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
