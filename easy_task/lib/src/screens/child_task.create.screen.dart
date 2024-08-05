@@ -32,6 +32,9 @@ class _ChildTaskCreateScreenState extends State<ChildTaskCreateScreen> {
               controller: _titleController,
               decoration: const InputDecoration(labelText: 'Title'),
             ),
+            const SizedBox(
+              height: 16,
+            ),
             TextField(
               controller: _descriptionController,
               decoration: const InputDecoration(labelText: 'Description'),
