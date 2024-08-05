@@ -3,9 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
-/// ImageUpload
+/// ImageUploadCard
 ///
-/// Displays an icon on the top, title, and subtitle as the upload UI widget.
+/// Displays a card style UI for uploading an image. It displays a circle
+/// image, title, and subtitle.
 ///
 /// [ref] is the firestore document reference.
 ///
@@ -14,8 +15,21 @@ import 'package:flutter/material.dart';
 /// If the [ref] and [field] are provided, the uploaded image will be saved to
 /// the firestore.
 ///
-class ImageUpload extends StatefulWidget {
-  const ImageUpload({
+/// [icon] is the icon to display when no image is uploaded.
+///
+/// [title] is the title to display.
+///
+/// [subtitle] is the subtitle to display.
+///
+/// [initialData] is the initial image url to display.
+///
+/// [onUpload] is a callback function that is called when the image is uploaded.
+///
+/// [imageBuilder] is a builder to build image widget. If the image widget is
+/// not circle, the [progressBar] and [progressIndicatorBackdrop] should be
+/// set to false for bettter UI.
+class ImageUploadCard extends StatefulWidget {
+  const ImageUploadCard({
     super.key,
     this.initialData,
     this.icon,
@@ -23,21 +37,30 @@ class ImageUpload extends StatefulWidget {
     this.subtitle,
     this.ref,
     this.field,
+    this.onUpload,
+    this.imageBuilder,
+    this.progressBar = true,
+    this.progressIndicatorBackdrop = true,
   });
 
   final String? initialData;
   final Widget? icon;
   final Widget? title;
   final Widget? subtitle;
+  final Function(String? url)? onUpload;
+  final Widget Function(Widget child)? imageBuilder;
 
   final DocumentReference? ref;
   final String? field;
 
+  final bool progressBar;
+  final bool progressIndicatorBackdrop;
+
   @override
-  State<ImageUpload> createState() => _UploadImageState();
+  State<ImageUploadCard> createState() => _UploadImageState();
 }
 
-class _UploadImageState extends State<ImageUpload> {
+class _UploadImageState extends State<ImageUploadCard> {
   String? url;
   double? progress;
 
@@ -55,6 +78,20 @@ class _UploadImageState extends State<ImageUpload> {
 
   @override
   Widget build(BuildContext context) {
+    Widget child;
+    if (url == null) {
+      child = widget.icon ??
+          Icon(
+            Icons.photo,
+            size: 80,
+            color: Theme.of(context).primaryColor,
+          );
+    } else {
+      child = CachedNetworkImage(
+        imageUrl: url!,
+        fit: BoxFit.cover,
+      );
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () async {
@@ -77,6 +114,9 @@ class _UploadImageState extends State<ImageUpload> {
 
         if (uploadedUrl != null) {
           url = uploadedUrl;
+          if (widget.onUpload != null) {
+            widget.onUpload!(uploadedUrl);
+          }
           setState(() {});
         }
       },
@@ -87,22 +127,23 @@ class _UploadImageState extends State<ImageUpload> {
         children: [
           Stack(
             children: [
-              url == null
-                  ? CircleAvatar(
-                      radius: 64,
-                      child: widget.icon ??
-                          Icon(
-                            Icons.photo,
-                            size: 64,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                    )
-                  : CircleAvatar(
-                      radius: 64,
-                      backgroundImage: CachedNetworkImageProvider(url!),
+              if (widget.imageBuilder != null)
+                widget.imageBuilder!(child)
+              else
+                ClipOval(
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withOpacity(0.3),
+                      shape: BoxShape.circle,
                     ),
+                    child: child,
+                  ),
+                ),
               uploadedPercentageIndicator(),
-              uploadProgressIndicator(color: Colors.blue),
+              if (widget.progressBar)
+                uploadProgressIndicator(color: Colors.blue),
               const Positioned(
                 right: 0,
                 bottom: 0,
@@ -126,10 +167,12 @@ class _UploadImageState extends State<ImageUpload> {
 
     return Positioned.fill(
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.5),
-          shape: BoxShape.circle,
-        ),
+        decoration: widget.progressIndicatorBackdrop
+            ? BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              )
+            : null,
         child: Center(
           child: Text(
             '${((progress ?? 0) * 100).toInt()}%',

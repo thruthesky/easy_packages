@@ -3,6 +3,9 @@ export 'src/post.locales.dart';
 export './src/post.service.dart';
 
 export './src/widgets/post.doc.dart';
+export './src/widgets/buttons/post.comment_text_button.dart';
+export './src/widgets/buttons/post.like_text_button.dart';
+export './src/widgets/buttons/post.popup_menu_button.dart';
 export './src/widgets/post.detail.dart';
 export './src/widgets/post.detail_bottom_action.dart';
 export './src/widgets/post.detail_comment_input_box.dart';

@@ -81,7 +81,7 @@ class FirestoreUserDoc extends StatelessWidget {
     return FutureBuilder(
       /// 캐시된 데이터가 있으면, 캐시된 데이터를 먼저 사용해서 보여준다.
       initialData: MemoryCache.instance.read<User?>(uid),
-      future: User.get(uid, cache: false),
+      future: User.getFromFirestore(uid, cache: false),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             snapshot.hasData == false) {
