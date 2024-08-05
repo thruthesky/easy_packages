@@ -1,8 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easy_post_v2/src/widgets/buttons/post.comment_text_button.dart';
-import 'package:easy_post_v2/src/widgets/buttons/post.like_text_button.dart';
-import 'package:easy_post_v2/src/widgets/buttons/psot.popup_menu_button.dart';
 import 'package:flutter/material.dart';
 
 class PostDetailBottomAction extends StatelessWidget {

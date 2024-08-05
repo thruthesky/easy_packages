@@ -14,7 +14,7 @@ class PostPopupMenuButton extends StatelessWidget {
   ///
   ///
   /// if you want to use this default postpopupmenubutton and customize the rest you can do so
-  /// but if you want to cuztomize this widget itself you can create your  just copy the code
+  /// but if you want to cuztomize this widget itself you can create your just copy the code
   ///
   const PostPopupMenuButton({
     super.key,
