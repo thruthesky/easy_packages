@@ -86,7 +86,11 @@ class _ChatRoomInvitationListTileState
             )
           : UserDoc.sync(
               uid: getOtherUserUidFromRoomId(room.id)!,
-              builder: (user) => Text(user?.stateMessage ?? ""),
+              builder: (user) => Text(
+                user?.stateMessage ?? "",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
