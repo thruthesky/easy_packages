@@ -20,6 +20,7 @@ class _ChatRoomMemberListDialogState extends State<ChatRoomMemberListDialog> {
   void dispose() {
     super.dispose();
   }
+  // padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +29,10 @@ class _ChatRoomMemberListDialogState extends State<ChatRoomMemberListDialog> {
     final width = MediaQuery.of(context).size.width;
     final maxWidth = width * 0.8;
     return AlertDialog(
-      title: const Padding(
-        padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-        child: Text(
-          "Members",
-        ),
+      title: const Text(
+        "Members",
       ),
+      contentPadding: const EdgeInsets.all(8),
       content: SizedBox(
         width: maxWidth,
         height: maxHeight,

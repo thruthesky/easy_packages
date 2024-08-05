@@ -104,6 +104,7 @@ class ChatRoomListView extends StatelessWidget {
             docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
         return ListView.builder(
           padding: padding,
+          physics: const ClampingScrollPhysics(),
           itemCount: chatRooms.length,
           itemBuilder: (context, index) {
             if (index + 1 == snapshot.docs.length && snapshot.hasMore) {

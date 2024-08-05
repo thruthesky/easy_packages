@@ -36,6 +36,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: ListTileTheme(
           data: const ListTileThemeData(),
           child: Column(
