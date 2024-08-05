@@ -29,14 +29,30 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
             children: [
               Text("My UID: ${my.uid}"),
               const Text("Upload Icon"),
+              const SizedBox(height: 24),
               const ImageUploadCard(
                 icon: Icon(
-                  Icons.person,
-                  size: 100,
+                  Icons.photo,
+                  size: 80,
                 ),
-                title: Text('Icon'),
-                subtitle: Text('Upload an Icon'),
+                // imageBuilder: (child) {
+                //   return ClipRRect(
+                //     borderRadius: BorderRadius.circular(48),
+                //     child: Container(
+                //       color: Theme.of(context).primaryColor.withOpacity(0.2),
+                //       width: 120,
+                //       height: 120,
+                //       child: child,
+                //     ),
+                //   );
+                // },
+                // progressBar: false,
+                // progressIndicatorBackdrop: false,
+                // title: Text('ImageUploadCard'),
+                // subtitle: Text('Upload an Icon'),
               ),
+              const SizedBox(height: 24),
+              const Divider(),
               const SizedBox(height: 24),
               const Text("Upload Icon for user profile photo"),
               ImageUploadCard(
@@ -47,9 +63,10 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
                   Icons.image,
                   size: 80,
                 ),
-                title: const Text('Profile Photo'),
+                title: const Text('ImageUploadCard'),
                 subtitle: const Text('Please upload profile photo'),
               ),
+              const Divider(),
               const Text("Upload Icon Button"),
               UploadIconButton(
                 icon: const Icon(
@@ -61,7 +78,10 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
                 },
               ),
               const SizedBox(height: 24),
+              const Divider(),
+              const SizedBox(height: 24),
               const Text("Upload Form"),
+              const SizedBox(height: 24),
               UploadForm(
                 urls: urls,
                 onUpload: (url) {

@@ -77,14 +77,21 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           // since this may save the url first without the other info.
           // For now, using isUpdate to ensure that the doc is already
           // set up before uploading image.
-          if (isUpdate) ...[
-            const SizedBox(height: 24),
-            ImageUploadCard(
-              initialData: room?.iconUrl,
-              ref: room!.ref,
-              field: "iconUrl",
-            ),
-          ],
+          // if (isUpdate) ...[
+          //   const SizedBox(height: 24),
+          //   // 1. you cannot use it when the room does not exist.
+          //   // 2. the UI is not good for the use case.
+          //   ImageUploadCard(
+          //     initialData: room?.iconUrl,
+          //     ref: room!.ref,
+          //     field: "iconUrl",
+          //   ),
+          // ],
+
+          const SizedBox(height: 24),
+          ImageUploadIconButton(onUpload: (url) {
+            // do something with the url
+          }),
 
           //
           Padding(

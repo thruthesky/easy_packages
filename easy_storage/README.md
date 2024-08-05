@@ -123,7 +123,7 @@ StorageService.intance.uploadMultiple(
 IconButton(
     icon: widget.cameraIcon ?? const Icon(Icons.camera_alt),
     onPressed: () async {
-        // This is the upload
+        This is the upload
         final url = await StorageService.instance.upload(
             context: context,
             camera: true,
@@ -185,6 +185,30 @@ ImageUploadCard(
   ),
   title: Text('Icon'),
   subtitle: Text('Upload an Icon'),
+),
+```
+
+- To display an upload UI with custom design, you can do the following.
+
+```dart
+ImageUploadCard(
+  icon: Icon(
+    Icons.photo,
+    size: 80,
+  ),
+  imageBuilder: (child) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(48),
+      child: Container(
+        color: Theme.of(context).primaryColor.withOpacity(0.2),
+        width: 120,
+        height: 120,
+        child: child,
+      ),
+    );
+  },
+  progressBar: false,
+  progressIndicatorBackdrop: false,
 ),
 ```
 

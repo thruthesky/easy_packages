@@ -1,3 +1,6 @@
+## 0.0.12
+* Update. Add custom UI design to `ImageUploadCard`.
+
 ## 0.0.11
 * Refactor. `ImageUpload` -> `ImageUploadCard`.
 * Refacotr. Add `onUpload` in `ImageUploadCard`.
