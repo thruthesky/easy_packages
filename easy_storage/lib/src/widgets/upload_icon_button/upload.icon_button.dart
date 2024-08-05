@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 
 /// General Upload Icon Button
 ///
-/// This widget is displaying an IconButton and is used to upload an image.
+/// This widget is displaying an IconButton and is used to upload an image,
+/// video, or file.
+///
+/// There are widgets that uses this widge to upload specific types of files:
+/// [FileUploadIconButton], [ImageUploadIconButton], [VideoUploadIconButton].
+///
+/// The [onUpload] function is called when the upload is complete.
 class UploadIconButton extends StatelessWidget {
   const UploadIconButton({
     super.key,

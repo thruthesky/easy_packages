@@ -123,7 +123,7 @@ StorageService.intance.uploadMultiple(
 IconButton(
     icon: widget.cameraIcon ?? const Icon(Icons.camera_alt),
     onPressed: () async {
-        // This is the upload
+        This is the upload
         final url = await StorageService.instance.upload(
             context: context,
             camera: true,
@@ -172,13 +172,13 @@ If you want to handle the error yourself, set this false and you should handle t
 
 # Widgets
 
-## ImageUpload
+## ImageUploadCard
 
-- The `ImageUpload` widget simplifies the image uploading process.
-- The difference between `ImageUpload` and `ImageUploadIconButton` is that, you can customize any shape(UI) with `ImageUpload` widget while `ImageUploadIconButton` shows an IconButon to upload an image where you can customize icon only.
+- The `ImageUploadCard` widget simplifies the image uploading process.
+- The difference between `ImageUploadCard` and `ImageUploadIconButton` is that, you can customize any shape(UI) with `ImageUploadCard` widget while `ImageUploadIconButton` shows an IconButon to upload an image where you can customize icon only.
 
 ```dart
-ImageUpload(
+ImageUploadCard(
   icon: Icon(
     Icons.person,
     size: 100,
@@ -188,10 +188,34 @@ ImageUpload(
 ),
 ```
 
+- To display an upload UI with custom design, you can do the following.
+
+```dart
+ImageUploadCard(
+  icon: Icon(
+    Icons.photo,
+    size: 80,
+  ),
+  imageBuilder: (child) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(48),
+      child: Container(
+        color: Theme.of(context).primaryColor.withOpacity(0.2),
+        width: 120,
+        height: 120,
+        child: child,
+      ),
+    );
+  },
+  progressBar: false,
+  progressIndicatorBackdrop: false,
+),
+```
+
 - Upload image and save the url in the Firestore document.
 
 ```dart
-ImageUpload(
+ImageUploadCard(
   initialData: my.photoUrl,
   ref: my.ref,
   field: 'photoUrl',
