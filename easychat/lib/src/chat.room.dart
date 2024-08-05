@@ -291,6 +291,7 @@ class ChatRoom {
         ),
       );
     }
+
     final newRoom = {
       if (name != null) field.name: name,
       if (description != null) field.description: description,
@@ -327,7 +328,7 @@ class ChatRoom {
       group: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      invitedUsers: [otherUid],
+      invitedUsers: otherUid == my.uid ? null : [otherUid],
       users: [my.uid],
       masterUsers: [my.uid],
     );

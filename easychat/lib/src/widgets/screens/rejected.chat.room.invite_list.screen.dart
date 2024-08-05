@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RejectedChatRoomInviteListScreen extends StatelessWidget {
@@ -19,10 +18,9 @@ class RejectedChatRoomInviteListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Rejected Chat Requests"),
       ),
-      body: FirestoreListView(
-        query: query,
-        itemBuilder: (context, doc) {
-          final room = ChatRoom.fromSnapshot(doc);
+      body: ChatRoomListView(
+        queryOption: ChatRoomListOption.rejectedInvites,
+        itemBuilder: (context, room, index) {
           return ChatRoomListTile(
             room: room,
             onTap: (context, room, user) async {
