@@ -3,9 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
-/// ImageUpload
+/// ImageUploadCard
 ///
-/// Displays an icon on the top, title, and subtitle as the upload UI widget.
+/// Displays a card style UI for uploading an image. It displays a circle
+/// image, title, and subtitle.
 ///
 /// [ref] is the firestore document reference.
 ///
@@ -14,8 +15,9 @@ import 'package:flutter/material.dart';
 /// If the [ref] and [field] are provided, the uploaded image will be saved to
 /// the firestore.
 ///
-class ImageUpload extends StatefulWidget {
-  const ImageUpload({
+/// [onUpload] is a callback function that is called when the image is uploaded.
+class ImageUploadCard extends StatefulWidget {
+  const ImageUploadCard({
     super.key,
     this.initialData,
     this.icon,
@@ -36,10 +38,10 @@ class ImageUpload extends StatefulWidget {
   final String? field;
 
   @override
-  State<ImageUpload> createState() => _UploadImageState();
+  State<ImageUploadCard> createState() => _UploadImageState();
 }
 
-class _UploadImageState extends State<ImageUpload> {
+class _UploadImageState extends State<ImageUploadCard> {
   String? url;
   double? progress;
 

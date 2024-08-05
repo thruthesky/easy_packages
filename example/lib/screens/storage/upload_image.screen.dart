@@ -4,7 +4,7 @@ import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class UploadImageScreen extends StatefulWidget {
-  static const String routeName = '/ImageUpload';
+  static const String routeName = '/ImageUploadCard';
   const UploadImageScreen({super.key});
 
   @override
@@ -19,7 +19,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ImageUpload'),
+        title: const Text('ImageUploadCard'),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -29,7 +29,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
             children: [
               Text("My UID: ${my.uid}"),
               const Text("Upload Icon"),
-              const ImageUpload(
+              const ImageUploadCard(
                 icon: Icon(
                   Icons.person,
                   size: 100,
@@ -39,7 +39,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               ),
               const SizedBox(height: 24),
               const Text("Upload Icon for user profile photo"),
-              ImageUpload(
+              ImageUploadCard(
                 initialData: my.photoUrl,
                 ref: my.ref,
                 field: 'photoUrl',

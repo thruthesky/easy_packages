@@ -79,7 +79,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
           // set up before uploading image.
           if (isUpdate) ...[
             const SizedBox(height: 24),
-            ImageUpload(
+            ImageUploadCard(
               initialData: room?.iconUrl,
               ref: room!.ref,
               field: "iconUrl",
