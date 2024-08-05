@@ -182,3 +182,13 @@ class MyAppState extends State<MyApp> {
     });
 ```
 
+
+
+## Chat to admin
+
+- `chatting to admin` is a simple tric.
+  - Create a menu button for `Chat to admin`, then when the button is being pressed, simply open a chat room with uid of the admin. You can pass the admin uid to `ChatService.instance.showChatRoomScreen(uid: ...)`.
+
+
+
+
