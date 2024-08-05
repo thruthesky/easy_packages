@@ -1,6 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_report/easy_report.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +41,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               label(
                   context: context, text: "Members (${room.userUids.length})"),
               const SizedBox(height: 8),
-              // TODO see more users.
-              // For now it will only show up to 3 users
               ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,

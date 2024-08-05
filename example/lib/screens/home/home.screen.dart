@@ -10,7 +10,6 @@ import 'package:example/screens/menu/menu.screen.dart';
 import 'package:example/screens/settings/settings.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
