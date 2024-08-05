@@ -99,7 +99,7 @@ class _ChatRoomInvitationListTileState
             onPressed: () async {
               await widget.room.acceptInvitation();
               if (widget.afterAccept != null) {
-                return widget.afterAccept!(room, user);
+                return widget.afterAccept?.call(room, user);
               }
             },
             style: ElevatedButton.styleFrom(

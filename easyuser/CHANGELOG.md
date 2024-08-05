@@ -1,8 +1,10 @@
+## 0.0.23
+* Fix. `User.get` has replaced with `User.getFromFirestore` in `FirestoreUserDoc`.
+
 ## 0.0.22
 * Update. Using Realtime Database as second data source. User data is mirrored to Realtime Database and easyuser package is getting data from Realtime database.
 * Add. FirestoreUserDoc is added to get data from Firestore.
 * Add. User.getFromFirestore is added to get data from Firestore.
-
 
 ## 0.0.21
 * Add. Mirroring Firestore to Realtime Database and use for simple list and search. RTDB is more cost-efficient and load data faster.

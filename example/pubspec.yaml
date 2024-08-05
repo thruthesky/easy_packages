@@ -20,6 +20,7 @@ dependencies:
   easy_helpers:
   easy_like:
   easy_locale:
+  easy_messaging:
   easy_post_v2:
   easy_report:
   easy_setting_v2:
@@ -54,14 +55,16 @@ dependency_overrides:
     path: ../easy_comment
   easy_engine:
     path: ../easy_engine
-  easy_post_v2:
-    path: ../easy_post
   easy_helpers:
     path: ../easy_helpers
   easy_like:
     path: ../easy_like
   easy_locale:
     path: ../easy_locale
+  easy_messaging:
+    path: ../easy_messaging
+  easy_post_v2:
+    path: ../easy_post
   easy_report:
     path: ../easy_report
   easy_setting_v2:

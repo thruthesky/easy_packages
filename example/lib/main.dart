@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_messaging/easy_messaging.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
@@ -42,6 +43,18 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     UserService.instance.init();
+    MessagingService.instance.init(
+      onMessageOpenedFromBackground: (message) {
+        print('onMessageOpenedFromBackground: $message');
+      },
+      onMessageOpenedFromTerminated: (message) {
+        print('onMessageOpenedFromTerminated: $message');
+      },
+      onForegroundMessage: (message) {
+        print('onForegroundMessage: $message');
+      },
+    );
+
     // PostService.instance.init(
     //   categories: {
     //     'qna': '질문답변',
