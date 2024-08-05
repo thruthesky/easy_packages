@@ -3,6 +3,11 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
+/// Post Comment Text Button
+///
+/// Reason:
+///
+/// Purpose:
 class PostCommentTextButton extends StatelessWidget {
   const PostCommentTextButton({
     super.key,
@@ -37,20 +42,12 @@ class PostCommentTextButton extends StatelessWidget {
       statesController: statesController,
       isSemanticButton: isSemanticButton,
       onPressed: () async {
-        try {
-          final re = await CommentService.instance.showCommentEditDialog(
-            context: context,
-            documentReference: post.ref,
-            focusOnContent: false,
-          );
-
-          onCreated?.call(re);
-        } catch (e) {
-          if (context.mounted) {
-            error(context: context, message: Text('$e'));
-          }
-          rethrow;
-        }
+        final re = await CommentService.instance.showCommentEditDialog(
+          context: context,
+          documentReference: post.ref,
+          focusOnContent: false,
+        );
+        onCreated?.call(re);
       },
       child: child,
     );
