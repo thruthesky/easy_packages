@@ -262,8 +262,13 @@ Widget build(BuildContext context) {
 
 - `PostDetailCommentInputBox` this contains the post comment input box and will open a bottom sheet to input the commnet. 
 
-- `PostDailBottomAction` this contains the post action such as `like`, `comment` and `menu` for `edit`, `delete`, `report`, `block`
+- `PostDetailBottomAction` this contains the post action such as `like`, `comment` and `menu` for `edit`, `delete`, `report`, `block`
 
+- `PostCommentTextButton` this button allows you to open the post comment input box  you can use.
+
+- `PostLikeTextButton` this button allows you to toggle like and unlike button by passing the `post` information. 
+
+- `PostPopupMenuButton` this button allows you to open more menu such report, block, delete and  edit.
 
 # Developer's Tips
 

@@ -85,59 +85,61 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
       child: Dialog(
         child: Padding(
           padding: widget.padding ?? const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search user'.t,
-                  suffixIcon: IconButton(
-                    onPressed: onSubmit,
-                    icon: const Icon(Icons.send),
-                  ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 8,
                 ),
-                controller: searchController,
-                onSubmitted: onSubmit,
-              ),
-              if (searchText != '') ...{
-                ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxHeight: 224,
-                    minHeight: 224,
-                  ),
-                  child: FirestoreUserListView(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(top: 8),
-                    query: query.limit(4),
-                    emptyBuilder: () =>
-                        widget.emptyBuilder?.call(true) ??
-                        SizedBox(
-                          height: 224,
-                          child: Center(
-                            child: Text('No User found'.t),
-                          ),
-                        ),
-                    itemBuilder: (user, index) =>
-                        widget.itemBuilder?.call(user, index) ??
-                        UserListTile(
-                          user: user,
-                          onTap: () => Navigator.of(context).pop(user),
-                        ),
-                  ),
-                )
-              } else ...{
-                widget.emptyBuilder?.call(false) ??
-                    SizedBox(
-                      height: 224,
-                      child: Center(
-                        child: Text('Search user description'.t),
-                      ),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search user'.t,
+                    suffixIcon: IconButton(
+                      onPressed: onSubmit,
+                      icon: const Icon(Icons.send),
                     ),
-              }
-            ],
+                  ),
+                  controller: searchController,
+                  onSubmitted: onSubmit,
+                ),
+                if (searchText != '') ...{
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxHeight: 224,
+                      minHeight: 224,
+                    ),
+                    child: FirestoreUserListView(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(top: 8),
+                      query: query.limit(4),
+                      emptyBuilder: () =>
+                          widget.emptyBuilder?.call(true) ??
+                          SizedBox(
+                            height: 224,
+                            child: Center(
+                              child: Text('No User found'.t),
+                            ),
+                          ),
+                      itemBuilder: (user, index) =>
+                          widget.itemBuilder?.call(user, index) ??
+                          UserListTile(
+                            user: user,
+                            onTap: () => Navigator.of(context).pop(user),
+                          ),
+                    ),
+                  )
+                } else ...{
+                  widget.emptyBuilder?.call(false) ??
+                      SizedBox(
+                        height: 224,
+                        child: Center(
+                          child: Text('Search user description'.t),
+                        ),
+                      ),
+                }
+              ],
+            ),
           ),
         ),
       ),

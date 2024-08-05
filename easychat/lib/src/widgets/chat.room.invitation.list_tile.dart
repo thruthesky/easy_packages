@@ -86,7 +86,11 @@ class _ChatRoomInvitationListTileState
             )
           : UserDoc.sync(
               uid: getOtherUserUidFromRoomId(room.id)!,
-              builder: (user) => Text(user?.stateMessage ?? ""),
+              builder: (user) => Text(
+                user?.stateMessage ?? "",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -95,7 +99,7 @@ class _ChatRoomInvitationListTileState
             onPressed: () async {
               await widget.room.acceptInvitation();
               if (widget.afterAccept != null) {
-                return widget.afterAccept!(room, user);
+                return widget.afterAccept?.call(room, user);
               }
             },
             style: ElevatedButton.styleFrom(

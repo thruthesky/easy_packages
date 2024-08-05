@@ -13,6 +13,8 @@ enum ChatRoomListOption {
   singleByTime,
   group,
   groupByTime,
+  receivedInvites,
+  rejectedInvites,
 }
 
 class ChatRoomListView extends StatelessWidget {
@@ -66,6 +68,14 @@ class ChatRoomListView extends StatelessWidget {
         '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupTimeOrder}',
         descending: true,
       );
+    } else if (queryOption == ChatRoomListOption.receivedInvites) {
+      q = q
+          .where(ChatRoom.field.invitedUsers, arrayContains: my.uid)
+          .orderBy(ChatRoom.field.updatedAt, descending: true);
+    } else if (queryOption == ChatRoomListOption.rejectedInvites) {
+      q = q
+          .where(ChatRoom.field.rejectedUsers, arrayContains: my.uid)
+          .orderBy(ChatRoom.field.updatedAt, descending: true);
     }
     return q;
   }
@@ -94,6 +104,7 @@ class ChatRoomListView extends StatelessWidget {
             docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
         return ListView.builder(
           padding: padding,
+          physics: const ClampingScrollPhysics(),
           itemCount: chatRooms.length,
           itemBuilder: (context, index) {
             if (index + 1 == snapshot.docs.length && snapshot.hasMore) {

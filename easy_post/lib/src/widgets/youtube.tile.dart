@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class YoutubeTile extends StatelessWidget {
@@ -35,14 +34,6 @@ class YoutubeTile extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // UserDoc(
-                //   builder: (user) => user == null
-                //       ? const SizedBox.shrink()
-                //       : UserAvatar(user: user),
-                //   uid: post.uid,
-                // ),
-                UserAvatar.fromUid(uid: post.uid),
-                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

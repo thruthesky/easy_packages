@@ -61,7 +61,7 @@ class ChatRoomListTile extends StatelessWidget {
   Widget? get subtitle => room.lastMessageText != null
       ? Text(
           room.lastMessageText!,
-          maxLines: 2,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
         )
       : null;
