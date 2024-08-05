@@ -149,8 +149,8 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                       ),
                       child: TextField(
                         controller: controller,
-                        // TODO maxlines 2,
-                        // maxLines: 2,
+                        maxLines: 2,
+                        minLines: 1,
                         decoration: InputDecoration(
                           prefixIcon: ImageUploadIconButton(
                             progress: (prog) => uploadProgress.add(prog),

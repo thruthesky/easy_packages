@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_report/easy_report.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/chat.room.member.list.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -37,6 +36,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: ListTileTheme(
           data: const ListTileThemeData(),
           child: Column(
@@ -50,14 +50,40 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.tertiaryContainer,
                   ),
-                  child: room.iconUrl != null && room.iconUrl!.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: room.iconUrl!,
-                          fit: BoxFit.cover,
-                        )
-                      : const SafeArea(
-                          child: Icon(Icons.people, size: 64),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      room.iconUrl != null && room.iconUrl!.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: room.iconUrl!,
+                              fit: BoxFit.cover,
+                            )
+                          : const SafeArea(
+                              child: Icon(Icons.people, size: 64),
+                            ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: IconButton(
+                          icon: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surface
+                                  .withAlpha(220),
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: const Icon(Icons.edit),
+                          ),
+                          onPressed: () {
+                            ChatService.instance
+                                .showChatRoomEditScreen(context, room: room);
+                          },
                         ),
+                      )
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
                 horizontalPadding(
@@ -77,11 +103,20 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                const SizedBox(height: 24),
-                label(context: context, text: "Members"),
-                const SizedBox(height: 8),
-                // TODO see more users.
-                // For now it will only show up to 3 users
+                InkWell(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 24),
+                      label(
+                          context: context,
+                          text: "Members (${room.userUids.length})"),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                  onTap: () {
+                    showMembersDialog(context);
+                  },
+                ),
                 ListView.builder(
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,
@@ -96,8 +131,35 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     );
                   },
                   itemCount:
-                      room.userUids.length > 4 ? 3 : room.userUids.length,
+                      room.userUids.length >= 4 ? 3 : room.userUids.length,
                 ),
+                if (room.userUids.length >= 4) ...[
+                  InkWell(
+                    onTap: () {
+                      showMembersDialog(context);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            "... and more.",
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text("See All Members"),
+                    onTap: () {
+                      showMembersDialog(context);
+                    },
+                  ),
+                ],
                 ListTile(
                   title: const Text("Invite More Users"),
                   onTap: () async {
@@ -134,7 +196,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   },
                 ),
               ] else if (room.single) ...[
-                // TODO dry
                 Container(
                   height: 200,
                   width: double.maxFinite,
@@ -222,6 +283,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  showMembersDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ChatRoomMemberListDialog(room: room);
+      },
     );
   }
 }

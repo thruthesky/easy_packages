@@ -29,6 +29,8 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
 
+  String? iconUrlOnCreate;
+
   @override
   void initState() {
     super.initState();
@@ -39,109 +41,119 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    if (isCreate && iconUrlOnCreate != null) {
+      StorageService.instance.delete(iconUrlOnCreate);
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(isCreate ? 'Chat Room Create' : 'Chat Room Update'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Input room name',
-                helperText:
-                    'This is the chat room name. You can change it later.',
-                label: Text('Name'),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  hintText: 'Input room name',
+                  helperText:
+                      'This is the chat room name. You can change it later.',
+                  label: Text('Name'),
+                ),
+                controller: nameController,
               ),
-              controller: nameController,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Input description',
-                label: Text('Description'),
-                helperText: 'This is the chat room description.',
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  hintText: 'Input description',
+                  label: Text('Description'),
+                  helperText: 'This is the chat room description.',
+                ),
+                controller: descriptionController,
               ),
-              controller: descriptionController,
             ),
-          ),
-
-          // Chat room icon upload
-          //
-          // Passing the ref is needed to upload.
-          // However, there may be a problem in setting up the rules
-          // since this may save the url first without the other info.
-          // For now, using isUpdate to ensure that the doc is already
-          // set up before uploading image.
-          // if (isUpdate) ...[
-          //   const SizedBox(height: 24),
-          //   // 1. you cannot use it when the room does not exist.
-          //   // 2. the UI is not good for the use case.
-          //   ImageUploadCard(
-          //     initialData: room?.iconUrl,
-          //     ref: room!.ref,
-          //     field: "iconUrl",
-          //   ),
-          // ],
-
-          const SizedBox(height: 24),
-          ImageUploadIconButton(onUpload: (url) {
-            // do something with the url
-          }),
-
-          //
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 24, 0, 0),
-            child: CheckboxListTile(
-              title: const Text('Open Chat'),
-              subtitle: const Text('Anyone can join this chat room.'),
-              value: open,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() {
-                  open = value;
-                });
-              },
+            const SizedBox(height: 36),
+            ImageUploadCard(
+              initialData: room?.iconUrl,
+              ref: room?.ref,
+              field: room?.ref != null ? "iconUrl" : null,
+              onUpload: isCreate
+                  ? (url) {
+                      setState(() {
+                        iconUrlOnCreate = url;
+                      });
+                    }
+                  : null,
             ),
-          ),
-          if (isCreate)
-            ElevatedButton(
-              onPressed: () async {
-                final newRoomRef = await ChatRoom.create(
-                  name: nameController.text,
-                  description: descriptionController.text,
-                  iconUrl: '',
-                  open: open,
-                  group: true,
-                  single: false,
-                  users: [my.uid],
-                );
-                final chatRoom = await ChatRoom.get(newRoomRef.id);
-                if (!context.mounted) return;
-                Navigator.of(context).pop(chatRoom!.ref);
-                ChatService.instance
-                    .showChatRoomScreen(context, room: chatRoom);
-              },
-              child: const Text('CREATE'),
-            )
-          else if (isUpdate)
-            ElevatedButton(
-              onPressed: () async {
-                await room!.update(
-                  name: nameController.text,
-                  description: descriptionController.text,
-                  open: open,
-                );
-                if (!context.mounted) return;
-                Navigator.of(context).pop(room!.ref);
-              },
-              child: const Text('UPDATE'),
+
+            //
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 12, 0, 0),
+              child: CheckboxListTile(
+                title: const Text('Open Chat'),
+                subtitle: const Text('Anyone can join this chat room.'),
+                value: open,
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    open = value;
+                  });
+                },
+              ),
             ),
-        ],
+            const SizedBox(
+              height: 24,
+            ),
+            isCreate
+                ? ElevatedButton(
+                    onPressed: () async {
+                      final newRoomRef = await ChatRoom.create(
+                        name: nameController.text,
+                        description: descriptionController.text,
+                        iconUrl: iconUrlOnCreate,
+                        open: open,
+                        group: true,
+                        single: false,
+                        users: [my.uid],
+                      );
+                      final chatRoom = await ChatRoom.get(newRoomRef.id);
+                      iconUrlOnCreate = null;
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop(chatRoom!.ref);
+                      ChatService.instance
+                          .showChatRoomScreen(context, room: chatRoom);
+                    },
+                    child: const Text('CREATE'),
+                  )
+                : ElevatedButton(
+                    onPressed: () async {
+                      await room!.update(
+                        name: nameController.text,
+                        description: descriptionController.text,
+                        open: open,
+                      );
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop(room!.ref);
+                    },
+                    child: const Text('UPDATE'),
+                  ),
+            const SafeArea(
+              child: SizedBox(
+                height: 12,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

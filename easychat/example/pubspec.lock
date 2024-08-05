@@ -197,10 +197,10 @@ packages:
     dependency: transitive
     description:
       name: easy_storage
-      sha256: "6b47fc894f1ba3e170602efc7790cfd0b3320cd9699659ee452581fc0393f4ae"
+      sha256: "6fe1ed4a5eec37382fb1fcd01c5692bc802ba7de0f8a09eee90cc21bbcb95cfe"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.11"
+    version: "0.0.12"
   easychat:
     dependency: "direct main"
     description:
@@ -212,10 +212,10 @@ packages:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "0210f96760283ae5e09ab4a1b6e600769956f9547099d558dd4c00ba7957d105"
+      sha256: "175036525c46823c3768d07eec4e1887c9d5cf4f6ddcfa1c3012c49e0b3b781d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.19"
+    version: "0.0.23"
   fake_async:
     dependency: transitive
     description:
