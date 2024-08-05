@@ -14,7 +14,7 @@ class PostCommentTextButton extends StatelessWidget {
     this.clipBehavior,
     this.statesController,
     this.isSemanticButton,
-    this.isCreated,
+    this.onCreated,
   });
 
   final Post post;
@@ -25,7 +25,7 @@ class PostCommentTextButton extends StatelessWidget {
   final Clip? clipBehavior;
   final WidgetStatesController? statesController;
   final bool? isSemanticButton;
-  final Function(bool?)? isCreated;
+  final Function(bool?)? onCreated;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class PostCommentTextButton extends StatelessWidget {
             focusOnContent: false,
           );
 
-          isCreated?.call(re);
+          onCreated?.call(re);
         } catch (e) {
           if (context.mounted) {
             error(context: context, message: Text('$e'));
