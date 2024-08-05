@@ -184,6 +184,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                     ],
                   ),
                   onUpload: (url) async {
+                    /// TODO: delete existing photo.
                     my.update(statePhotoUrl: url);
                   },
                 ),

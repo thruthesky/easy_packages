@@ -23,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Map<String, int> index = {};
   @override
   void initState() {
     super.initState();
@@ -202,17 +201,12 @@ class _HomeScreenState extends State<HomeScreen> {
             //
             SizedBox(
               height: 180,
-              child: FirestoreListView(
-                query: UserService.instance.col
-                    .orderBy('createdAt', descending: true),
-                itemBuilder: (context, snapshot) {
-                  final user = User.fromSnapshot(snapshot);
-
-                  index.putIfAbsent(user.uid, () => index.length);
+              child: UserListView(
+                itemBuilder: (user, index) {
                   return Row(
                     children: [
                       UserAvatar(user: user),
-                      Text('c: ${index[user.uid]}'),
+                      Text('c: $index'),
                       TextButton(
                         onPressed: () =>
                             ChatService.instance.showChatRoomScreen(

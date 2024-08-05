@@ -11,6 +11,9 @@ class ChatBubble extends StatelessWidget {
 
   final ChatMessage message;
 
+  double maxWidth(BuildContext context) =>
+      MediaQuery.of(context).size.width * 0.56;
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -45,7 +48,7 @@ class ChatBubble extends StatelessWidget {
             ],
             ConstrainedBox(
               constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.56,
+                maxWidth: maxWidth(context),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -88,8 +91,8 @@ class ChatBubble extends StatelessWidget {
                       children: [
                         if (message.url != null) ...[
                           SizedBox(
-                            height: 200,
-                            width: 200,
+                            height: maxWidth(context),
+                            width: maxWidth(context),
                             child: CachedNetworkImage(
                               key: ValueKey(message.url),
                               fadeInDuration: Duration.zero,

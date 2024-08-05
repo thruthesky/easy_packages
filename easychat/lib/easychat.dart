@@ -13,6 +13,7 @@ export './src/widgets/chat.room.input_box.dart';
 export './src/widgets/chat.room.invitation.list_tile.dart';
 export './src/widgets/chat.room.list_view.dart';
 export './src/widgets/chat.room.list_tile.dart';
+export './src/widgets/chat.room.invitation.short.list.dart';
 
 // Screens =====================================================
 export './src/widgets/screens/chat.room.edit.screen.dart';
