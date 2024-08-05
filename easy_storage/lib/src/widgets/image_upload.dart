@@ -23,12 +23,14 @@ class ImageUpload extends StatefulWidget {
     this.subtitle,
     this.ref,
     this.field,
+    this.onUpload,
   });
 
   final String? initialData;
   final Widget? icon;
   final Widget? title;
   final Widget? subtitle;
+  final Function(String? url)? onUpload;
 
   final DocumentReference? ref;
   final String? field;
@@ -77,6 +79,9 @@ class _UploadImageState extends State<ImageUpload> {
 
         if (uploadedUrl != null) {
           url = uploadedUrl;
+          if (widget.onUpload != null) {
+            widget.onUpload!(uploadedUrl);
+          }
           setState(() {});
         }
       },
