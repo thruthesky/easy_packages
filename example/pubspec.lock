@@ -276,7 +276,7 @@ packages:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.19"
+    version: "0.0.21"
   fake_async:
     dependency: transitive
     description:
