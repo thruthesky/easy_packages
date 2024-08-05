@@ -1,8 +1,35 @@
 # Easy User
 
+- The `easyuser` package allows you to manage user accounts and their information securely and easily.
+- It uses Firestore to save user data and perform complex filtering and searches.
+- It mirrors user data into the Realtime Database for listing user data and performing simple searches.
+  - The Realtime Database is more cost-efficient and loads data faster.
 
 
-The `easyuser` package lets you manage user accounts and their information securely and with ease.
+# TODO
+
+- write the unit test for firestore rules in `firebase` folder.
+- write the security rules in `firebase/firestore/firestore.rules` and ask developers to copy this and install.
+- write a script to mirror all the user data from firestore to rtdb in `firebase/mirror` folder.
+
+# Installation
+
+
+## Firebase Database Security Rules
+
+```json
+{
+  "rules": {
+    "mirror-users": {
+      ".read": true,
+      "$uid": {
+        ".write": "$uid === auth.uid",
+      },
+      ".indexOn": ["createdAt"]
+    },
+  }
+}
+```
 
 
 
@@ -41,6 +68,8 @@ This is the nature of Firebase Auth.
 
 
 
+
+
 # How to use
 
 
@@ -50,7 +79,7 @@ The easy package developers might consider adding the `easyuser` package to thei
 
 
 
-## Database structure for user
+# Database structure for user
 
 User database structure customization is no longer supported by v0.0.8. This is because `easyuser` has a security rules to apply `admin` field and other reules. And it often leads more complication when the database structure customization applied.
 
@@ -59,18 +88,42 @@ If you have a different database structure for user data management, you will ne
 
 
 
-### User collection
+## User collection
 
 - Firestore 의 `/users/{uid}` 와 같이 저장됩니다. 컬렉션에 저장되는 문서의 키는 사용자 UID 입니다. 이 문서에는 공개 정보만 저장되어야 합니다. 이메일, 전화번호, 주소, 각종 신용카드, 면허증 번호 등의 연락 가능한 개인 정보, 민감한 정보를 저장해서는 안됩니다.
-- 개인 정보는 `/users/{uid}/user-meta/private` 에 저장됩니다. 연락처 정보, 민감한 정보 등을 이 문서에 보관하면 됩니다.
-- 개인 설정은 `/users/{uid}/user-meta/settings` 에 저장됩니다.
 
 - `/users/{uid}` - The user data is stored in Firestore as `/users/{uid}`.
 - The key for the user document is the user's `uid`.
+
+
+
+## User meta collection
+
+
+- 개인 정보는 `/users/{uid}/user-meta/private` 에 저장됩니다. 연락처 정보, 민감한 정보 등을 이 문서에 보관하면 됩니다.
+- 개인 설정은 `/users/{uid}/user-meta/settings` 에 저장됩니다.
+
 - The user document should only contain public information. User's proviate information should not be store in this document.
   - Private informations are like card number, license number, email, phone number, address and otehr sensitive information.
 - The user's private information is stored in `/users/{uid}/user-meta/private`.
 - The user's settings are stored in `/users/{uid}/user-meta/settings`.
+
+
+
+## 개인정보
+
+예를 들면, 이름, 생년월일, 성별 등은 민감한 개인 정보로 개발자의 선택에 따라 비공개로 할 수 있다. 비공개로 하기 위해서는 Firestore 의 `/users` 컬렉션에 정보를 보관하면 안되고, `/users-private` 컬렉션에 따로 정보를 보관해야 한다. 참고로 email 과 phoneNumber 필드는 `하우스`가 내부적으로 처리를 비공개 처리를 해 주며, 그 외의 필드는 직접 `/user-private` 컬렉션에 저장해야하며, 이와 관련된 라이브러리가 제공된다.
+
+어떤 필드를 비 공개로 할지 초기화 과정에서 지정을 해 주면 된다.
+
+에제
+
+```dart
+my.private.email;
+my.private.phoneNumber;
+my.private.set('field', 'value');
+```
+
 
 
 ### User document fields
@@ -144,6 +197,24 @@ ElevatedButton(
 ```
 
 
+### Phone number collections
+
+- `user-phone-sign-in-numbers`: is the collection that all the phone numbers of phone-sign-in auth are saved.
+- The reason why it is needed is to know if the phone number is already signed in.
+  - So, when the app links the current login with the login of phone sign-in,
+    - If the phone number is not singed in yet, then it will link
+    - If the phone number is already signed in, then it will sign-in with the phone number.
+    - Since SMS OTP can be used only once, it needs to know if the phone number is alredy signed-in or not.
+- It is protected by security rules that hackers cannot not get all the numbers.
+  - They can only get one by one by gussing the phone nubmer and they will not get anthing except the phone number itself.
+
+
+
+
+# linkWithCredential
+
+- The SMS OTP of Phone Auth can be used only one time. So, it needs to know if the phone number is already sign ed in. Use `UserService.instance.isPhoneNumberRegistered()` to know if the phone number is already signed in.
+- When `linkWithCredential` is used to link the current user login, `UserService.instance.initUserLogin` must be called once. Or the `MyDoc` will not update and phone number will not be registered immedately.
 
 
 # Widget
@@ -192,7 +263,10 @@ And to make it short, you can use `MyDocReady`.
 
 ## UserDoc
 
-- You can display a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
+- You can display any user's data using `UserDoc`.
+  - This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
+
+- This widget displays the user data from Realtime Database. If you want to display user data from Firestore, use `FirestoreUserDoc`.
 
 - `uid` is the user's UID. It uses the `MemoryCache` package to cach the data in memory.
 
@@ -218,6 +292,20 @@ UserDoc(
   ),
 ),
 ```
+
+## FirestoreUserDoc
+
+It works just the same as `UserDoc` but gets data from Firestore.
+
+
+
+
+
+
+### Deleting user document
+
+- When the user wants to resign, you can call `User.delete` method. It is recommended to delete the account from FirebaseAuth also. See the `easy_engine` for deleting user account from Firebase Auth.
+
 
 
 
@@ -283,35 +371,115 @@ ElevatedButton(
 # Update document with following
 
 
-# 사용자
 
 
 
-## 설치
+# EasyUser Helpers
 
-## 초기화
+`iam` and `i` are global variables that serve as aliases for `UserService.instance` to make the code shorter. You don't have to use them if you don't need them, but they can be used appropriately.
 
-현재 사용자가 로그인 및 정보 관리를 위해서는 `UserService.instance.init()` 을 통해서 초기화를 해야 한다. 그렇지 않으면 현재 사용자의 로그인 상태나 기타 기능을 사용 할 수 없다. 다만, 로그인 사용자가 아닌, 다른 사용자 정보를 참조할 때에는 초기화가 필요없다.
-
-초기화가 되면, 사용자 문서의 `User` 모델 객체가 `UserService.instance.user` 에 보관되고 실시간 업데이트된다.
+The `my` variable is a global variable that serves as an alias for `UserService.instance.user` to make the code shorter.
 
 
 
-## 데이터베이스
-
-- Firestore 를 기본적으로 사용한다.
-- `/users` 컬렉션이 사용자 문서 이다.
-- `name` 은 사용자 전체 이름(full name)이다.
-- `displayName` 은 사용자 별명이며, 화면에 나타나는 이름이다.
 
 
+# User data mirroring to Realtime Database
 
-## 헬퍼 함수
+- Realtime database is faster and cheaper than Firestore.
+- Whenever user updates his data, the data will be mirrored to `mirror-users` path in Realtime Database.
+- You can use Firestore to filter(search) user data.
+- You can use Realtime database if you don't need to filter.
+- Use `User.update()` method whenever you update user's data. Or the user data may not be mirrored to realtime database.
+  - If you really need to use other way to update user data in firestore, make sure you will call the `User.update()` again with approprivate parameters.
+    - For instance, if you use `StorageService.instance.uploadAt` to update the user field in firestore, then you need to call `User.update` with the url again.
+      - See: `user.update_avartar.dart` for an example.
 
-`iam` 과 `i` 는 글로벌 변수로 단순히 `UserService.instance` 를 짧게 쓰기 위한 alias 이다. 필요없으면 안써도 되고, 적절하게 사용을 하면 된다.
 
 
-`my` 변수는 글로벌 변수로 `UserService.instance.user` 를 짧게 쓰기 위한 alias 이다.
+# Widgets
+
+
+## UserListView
+
+
+It fetches the user list from Realtime Database.
+It supports all the properties of ListView.
+If you want to use Firestore, use `FirestoreUserListView`.
+
+```dart
+UserListView()
+```
+
+You can display users in horizontal like below.
+
+
+```dart
+SizedBox(
+  height: 68,
+  child: UserListView(
+    scrollDirection: Axis.horizontal,
+    itemBuilder: (u, i) => Padding(
+      padding: EdgeInsets.fromLTRB(i == 0 ? 28 : 4, 4, 4, 4),
+      child: UserAvatar(
+        size: 60,
+        radius: 24,
+        uid: u.uid,
+        cacheId: 'user-avatar',
+      ),
+    ),
+  ),
+),
+```
+
+
+## FirestoreUserListView
+
+It fetches the user list from Firestore.
+
+
+
+
+## MyDoc
+
+It uses Firestore only. There is no option to use Realtime Database. This is because it is used only for the login user.
+
+
+
+## UserDoc
+
+It uses Realtime Database only.
+
+
+
+
+
+
+
+
+`---------------  아래 부터 문서 작업을 할 것: 아래는 과거 버전의 문서이다. 작업해서 위로 올린다. ----------------`
+
+
+# Geo query
+
+- TODO: easy_geo_query 패키지를 만들어서 따로 관리 할 것. 아래 링크 방식으로 제작 할 것.
+
+- Here is some tips to better understand about Geo search: [How to perform geoqueries on Firestore (somewhat) efficiently](https://medium.com/firebase-developers/how-to-perform-geoqueries-on-firestore-somewhat-efficiently-6c2f10fd285f)
+
+
+
+- 먼저 앱이 실행되면 사용자의 위/경도 정보를 사용자 문서 필드  `latitude`, `longitude` 에 저장한다.
+    - 그러면 Fireflutter 이 자동으로 geohash4,geohash5,geohash6,geohash7 를 저장한다.
+    - 그리고, 필요에 따라 Firestore 미러링되게 한다.
+
+- 검색을 할 때, 로그인한 사용자의 200 미터 내의 사용자 검색은 로그인을 한 사용자의 geohash7 과 DB 의 geohash7 이 일치하는 사용자를 가져와 보여주면 된다.
+    - geohash6 는 1km 이내, geohash5 는 5km 이내, geohash4 는 20km 이내의 사용자를 검색 할 수 있다.
+
+
+
+
+
+
 
 ## 로그인
 
@@ -319,21 +487,6 @@ ElevatedButton(
 
 
 
-
-
-## 개인정보
-
-예를 들면, 이름, 생년월일, 성별 등은 민감한 개인 정보로 개발자의 선택에 따라 비공개로 할 수 있다. 비공개로 하기 위해서는 Firestore 의 `/users` 컬렉션에 정보를 보관하면 안되고, `/users-private` 컬렉션에 따로 정보를 보관해야 한다. 참고로 email 과 phoneNumber 필드는 `하우스`가 내부적으로 처리를 비공개 처리를 해 주며, 그 외의 필드는 직접 `/user-private` 컬렉션에 저장해야하며, 이와 관련된 라이브러리가 제공된다.
-
-어떤 필드를 비 공개로 할지 초기화 과정에서 지정을 해 주면 된다.
-
-에제
-
-```dart
-my.private.email;
-my.private.phoneNumber;
-my.private.set('field', 'value');
-```
 
 
 
@@ -827,14 +980,6 @@ FirebaseDatabaseListView(
 
 You can use `trailing` to add your own buttons intead of using `onTap`.
 
-### UserListView
-
-Fireflutter provides a widget to display user list. We can use this if we don't have to customize the view.
-
-```dart
-UserListView()
-```
-
 ## 좋아요
 
 - 사용자의 좋아요는 내가 좋아요 한 경우에는 `/who-i-like` 에 저장되고, 다른 사람의 나를 좋아요 한 경우에는 `/who-like-me` 에 저장된다.
@@ -918,33 +1063,6 @@ FirebaseAuth.instance
 });
 ```
 
-## 사용자 목록
-
-아래와 같이 세로로 표시 할 수 있다.
-
-```dart
-UserListView()
-```
-
-아래와 같이 가로로 표시 할 수 있다.
-
-```dart
-SizedBox(
-  height: 68,
-  child: UserListView(
-    scrollDirection: Axis.horizontal,
-    itemBuilder: (u, i) => Padding(
-      padding: EdgeInsets.fromLTRB(i == 0 ? 28 : 4, 4, 4, 4),
-      child: UserAvatar(
-        size: 60,
-        radius: 24,
-        uid: u.uid,
-        cacheId: 'user-avatar',
-      ),
-    ),
-  ),
-),
-```
 
 ## 사용자 정보 listening
 
@@ -1029,33 +1147,6 @@ UserService.instance.init(
 
 
 
-## 사용자 정보 Firestore 미러링
-
-Realtime Database 는 검색 기능이 매우 부족하다. 그래서 사용자 문서를 Firestore 로 미러링(백업)을 해서, Firestore 를 통해서 검색 할 수 있다. 이 미러링 기능은 Cloud functions 의 `userMirror` 함수를 설치하면 된다. 참고, [설치 문서](./install.md).
-
-`userMirror` 함수는 사용자 정보 생성 또는 업데이트를 할 때, 사용자 정보 전체(부분이 아닌 전체 데이터)를 Firestore 의 `/users/<uid>` 로 복사한다. 기존에 존재하는 필드의 경우 덮어 쓸 수 있다.
-
-그 후 필요한 경우, Firestore 의 `users` 컬렉션을 검색하면 된다.
-
-
-## 거리 검색
-
-거리를 검색 할 때 보다 상세한 검색을 하려면, SQL 데이터베이스, Algolia, Typesense 등의 Radius 수식을 적용하여 검색해야 한다. 그러나 Firebase 에서는 Realtime Database 나 Firestore 에서는 DB 차원을 통해서 Radius 검색을 할 수 없다.
-
-Firebase 를 사용하면서, Radius 검색을 꼭 해야겠다면
-
-1. Location 정보를 Algolia 와 같은 3rd party 검색 엔진에 저장을 하던지
-2. 또는 사용자의 모든 Location 정보를 앱 내(SQLite 등)에 보관해 놓고, Radius 검색을 할 수 있다.
-3. 또는 공식문서: [Firebase 지역 쿼리](https://firebase.google.com/docs/firestore/solutions/geoqueries?hl=ko)에서 설명하듯이 Geohash 네자리 수에 해당하는 값을 가진 사용자를 가져와 앱 내에서 보다 정확하게 distance 계산을 하는 것이다. 하지만, 이와 같은 경우 `거짓양성`, `에지케이스`, `필요없는 데이터를 가져오는 비용`을 고려해야 한다.
-
-Fireflutter 에서 기본 제공하는 거리 검색은 위의 세 가지 방법과는 조금 다르지만 매우 편리한 방법이다.
-
-- 먼저 앱이 실행되면 사용자의 위/경도 정보를 사용자 문서 필드  `latitude`, `longitude` 에 저장한다.
-    - 그러면 Fireflutter 이 자동으로 geohash4,geohash5,geohash6,geohash7 를 저장한다.
-    - 그리고, 필요에 따라 Firestore 미러링되게 한다.
-
-- 검색을 할 때, 로그인한 사용자의 200 미터 내의 사용자 검색은 로그인을 한 사용자의 geohash7 과 DB 의 geohash7 이 일치하는 사용자를 가져와 보여주면 된다.
-    - geohash6 는 1km 이내, geohash5 는 5km 이내, geohash4 는 20km 이내의 사용자를 검색 할 수 있다.
 
 ## 좋아요
 

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.functions.dart';
@@ -25,7 +26,13 @@ class ChatRoomListTile extends StatelessWidget {
           ),
           width: 48,
           height: 48,
-          child: const Icon(Icons.people),
+          clipBehavior: Clip.hardEdge,
+          child: room.iconUrl != null && room.iconUrl!.isNotEmpty
+              ? CachedNetworkImage(
+                  imageUrl: room.iconUrl!,
+                  fit: BoxFit.cover,
+                )
+              : const Icon(Icons.people),
         ),
         title: Text(room.name.trim().isNotEmpty ? room.name : room.id),
         subtitle: subtitle,
@@ -51,8 +58,13 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? get subtitle =>
-      room.lastMessageText != null ? Text(room.lastMessageText!) : null;
+  Widget? get subtitle => room.lastMessageText != null
+      ? Text(
+          room.lastMessageText!,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        )
+      : null;
 
   Widget get trailing {
     return Column(

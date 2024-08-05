@@ -119,24 +119,49 @@ class StorageService {
     return url;
   }
 
-  /// Delete the uploaded file in Firebase Storage by the url.
+  /// Delete the uploaded file from Firebase Storage by the url.
   ///
   /// If the url is null or empty, it does nothing.
   ///
+  /// If the [ref] and the [field] are passed, it will delete the field of the
+  /// document when the url is deleted.
   ///
-  /// If the [ref] and the [field] are passed, it will delete the url at the
-  /// field of the document when the url is deleted.
-  Future<void> delete(String? url,
-      {DocumentReference? ref, String? field}) async {
+  /// When the file does not exist in Firebsae Stroage,
+  /// - If the [ref] is null, it will simply returns without firing exception.
+  /// - If the [ref] is set, it will delete the field in the document.
+  ///
+  /// You can use this method especially when the file of the url in Storage is
+  /// deleted already (or not exist). It will not throw an exception and you
+  /// can continue the logic.
+  Future<void> delete(
+    String? url, {
+    DocumentReference? ref,
+    String? field,
+  }) async {
     if (url == null || url == '') return;
     final storageRef = FirebaseStorage.instance.refFromURL(url);
-    await storageRef.delete();
+    try {
+      await storageRef.delete();
+    } on FirebaseException catch (e) {
+      /// Oops! The file does not exist in the Firebase Storage.
+      if (e.code == 'object-not-found') {
+        if (ref == null) {
+          /// Return as if the file is deleted.
+          return;
+        }
+      } else {
+        log('Error deleting file on catch(FirebaseException): $url');
+        log(e.toString());
+        rethrow;
+      }
+    } catch (e) {
+      log('Error deleting file on catch(e): $url');
+      log(e.toString());
+    }
 
     if (ref != null && field != null) {
       await ref.update({field: FieldValue.delete()});
     }
-
-    return;
   }
 
   /// 이미지 업로드 소스(갤러리 또는 카메라) 선택창을 보여주고, 선택된 소스를 반환한다.

@@ -1,13 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 /// UserListView
 ///
 /// Displays a list of users.
+///
+/// It fetches the users from the realtime database
+///
+/// [query] is the firestore query that will be used to fetch the users
+/// from the database.
+///
 /// It support most of the parameters of ListView.separated and GridView.
 ///
 /// Example:
@@ -19,7 +25,7 @@ class UserListView extends StatelessWidget {
   const UserListView({
     super.key,
     this.query,
-    this.pageSize = 40,
+    this.pageSize = 20,
     this.loadingBuilder,
     this.errorBuilder,
     this.separatorBuilder,
@@ -68,11 +74,9 @@ class UserListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FirestoreQueryBuilder(
-      query: query ??
-          UserService.instance.col
-              .orderBy('createdAt', descending: true)
-              .limit(pageSize),
+    return FirebaseDatabaseQueryBuilder(
+      pageSize: pageSize,
+      query: query ?? UserService.instance.mirrorUsersRef,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ??
@@ -118,7 +122,7 @@ class UserListView extends StatelessWidget {
               snapshot.fetchMore();
             }
 
-            final user = User.fromSnapshot(snapshot.docs[index]);
+            final user = User.fromDatabaseSnapshot(snapshot.docs[index]);
 
             return itemBuilder?.call(user, index) ?? UserListTile(user: user);
           },

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:memory_cache/memory_cache.dart';
 
 /// User model
@@ -52,6 +53,10 @@ class User {
   /// [ref] is an alias of [doc].
   DocumentReference get ref => doc;
 
+  /// Current user's mirror reference in the RTDB.
+  DatabaseReference get mirrorRef =>
+      UserService.instance.mirrorUsersRef.child(uid);
+
   User({
     required this.uid,
     this.admin = false,
@@ -90,6 +95,20 @@ class User {
       uid: uid,
       lastLoginAt: DateTime.now(),
     );
+  }
+
+  factory User.fromDatabaseSnapshot(DataSnapshot snapshot) {
+    if (snapshot.exists == false) {
+      throw Exception('User.fromDatabaseSnapshot: value does not exist.');
+    }
+    if (snapshot.value == null) {
+      throw Exception('User.fromDatabaseSnapshot: value is null.');
+    }
+
+    final Map<String, dynamic> data =
+        Map<String, dynamic>.from((snapshot.value as Map?) ?? {});
+
+    return User.fromJson(data, snapshot.key!);
   }
 
   factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
@@ -153,17 +172,39 @@ class User {
     return 'User(${toJson()})';
   }
 
-  /// Get a user with the given [uid].
+  /// Get the user data from Database
+  static Future<User?> get(
+    String uid, {
+    bool cache = true,
+  }) async {
+    return await getData(uid, cache: cache, database: true);
+  }
+
+  /// Get the user data from Firestore
+  static Future<User?> getFromFirestore(
+    String uid, {
+    bool cache = true,
+  }) async {
+    return await getData(uid, cache: cache, firestore: true);
+  }
+
+  /// Get the user data with the given [uid].
   ///
   /// This is a static method that will be used to get a user with the given [uid].
   ///
   /// [cache] if cache is true, it will use the cache data if it exists. If not,
   /// it will get the data from the server.
   ///
-  /// It will return a Future of User?
-  static Future<User?> get(
+  /// If [firestore] is true, it will get the data from Firestore.
+  ///
+  /// if [database] is true, it will get the data from the RTDB.
+  ///
+  /// TODO: unit test is needed.
+  static Future<User?> getData(
     String uid, {
     bool cache = true,
+    bool? firestore,
+    bool? database,
   }) async {
     User? user;
     if (cache) {
@@ -174,19 +215,26 @@ class User {
     }
 
     /// Get the user data from the server
-    final DocumentSnapshot snapshot =
-        await UserService.instance.col.doc(uid).get();
-
-    /// If the snapshot exists, save in memory and return.
-    if (snapshot.exists) {
-      user = User.fromSnapshot(snapshot);
-      MemoryCache.instance.create(uid, user);
-      return user;
+    if (firestore == true) {
+      final DocumentSnapshot snapshot =
+          await UserService.instance.col.doc(uid).get();
+      if (snapshot.exists) {
+        user = User.fromSnapshot(snapshot);
+      }
+    } else if (database == true) {
+      final DataSnapshot snapshot =
+          await UserService.instance.mirrorUsersRef.child(uid).get();
+      if (snapshot.exists) {
+        user = User.fromDatabaseSnapshot(snapshot);
+      }
+    } else {
+      throw UserException(
+          'user/get-data', 'firestore or database must be true.');
     }
 
     /// If the snapshot does not exist, return null.
-    MemoryCache.instance.create<User?>(uid, null);
-    return null;
+    MemoryCache.instance.create<User?>(uid, user);
+    return user;
   }
 
   /// Deprecated
@@ -201,6 +249,14 @@ class User {
     throw UnimplementedError('This is not for use.');
   }
 
+  /// Update user data
+  ///
+  /// User `update` method is used to update the user data.
+  ///
+  /// [photoUrl] is dynamic since it can be a string of url or FieldValue.delete().
+  ///
+  /// It mirros the data to the RTDB and it does not use transaction because
+  /// mirroring is not for transaction.
   Future<void> update({
     String? displayName,
     String? name,
@@ -208,27 +264,53 @@ class User {
     int? birthMonth,
     int? birthDay,
     String? gender,
-    String? photoUrl,
+    dynamic photoUrl,
     String? stateMessage,
     String? statePhotoUrl,
   }) async {
-    await doc.set(
-      {
-        'updatedAt': FieldValue.serverTimestamp(),
-        if (displayName != null) 'displayName': displayName,
-        if (displayName != null)
-          'caseIncensitiveDisplayName': displayName.toLowerCase(),
-        if (name != null) 'name': name,
-        if (name != null) 'caseIncensitveName': name.toLowerCase(),
-        if (birthYear != null) 'birthYear': birthYear,
-        if (birthMonth != null) 'birthMonth': birthMonth,
-        if (birthDay != null) 'birthDay': birthDay,
-        if (gender != null) 'gender': gender,
-        if (photoUrl != null) 'photoUrl': photoUrl,
-        if (stateMessage != null) 'stateMessage': stateMessage,
-        if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
-      },
+    final data = <String, dynamic>{
+      'updatedAt': FieldValue.serverTimestamp(),
+      if (displayName != null) 'displayName': displayName,
+      if (displayName != null)
+        'caseIncensitiveDisplayName': displayName.toLowerCase(),
+      if (name != null) 'name': name,
+      if (name != null) 'caseIncensitveName': name.toLowerCase(),
+      if (birthYear != null) 'birthYear': birthYear,
+      if (birthMonth != null) 'birthMonth': birthMonth,
+      if (birthDay != null) 'birthDay': birthDay,
+      if (gender != null) 'gender': gender,
+      if (photoUrl != null) 'photoUrl': photoUrl,
+      if (stateMessage != null) 'stateMessage': stateMessage,
+      if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
+    };
+    final List<Future> futures = [];
+    futures.add(ref.set(
+      data,
       SetOptions(merge: true),
-    );
+    ));
+
+    /// Mirror to RTDB. Update the same data to the RTDB.
+    ///
+    /// TODO: Make a function in easy_firebase to convert the data for rtdb.
+    if (data['updatedAt'] != null) {
+      data['updatedAt'] = ServerValue.timestamp;
+    }
+    if (data['photoUrl'] == FieldValue.delete()) {
+      data['photoUrl'] = null;
+    }
+
+    futures.add(mirrorRef.update(data));
+
+    await Future.wait(futures);
+  }
+
+  /// delete user
+  ///
+  /// User `delete` delete the user document if its there own uid
+  Future delete() async {
+    if (uid != my.uid) {
+      throw 'user-delete/not-your-document You dont have permission to delete other user';
+    }
+    await doc.delete();
   }
 }

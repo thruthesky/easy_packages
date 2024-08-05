@@ -70,7 +70,8 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             ),
           ),
 
-          /// Chat room icon upload
+          // Chat room icon upload
+          //
           // Passing the ref is needed to upload.
           // However, there may be a problem in setting up the rules
           // since this may save the url first without the other info.
@@ -85,7 +86,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             ),
           ],
 
-          ///
+          //
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 24, 0, 0),
             child: CheckboxListTile(

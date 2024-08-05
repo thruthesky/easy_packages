@@ -1,11 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/chat.room.list_view.dart';
-import 'package:easychat/src/widgets/screens/chat.room.invite_list.screen.dart';
-import 'package:easychat/src/widgets/screens/chat.room.member_list.screen.dart';
-import 'package:easychat/src/widgets/screens/chat.room.menu.screeen.dart';
-import 'package:easychat/src/widgets/screens/received.chat.room.invite_list.screen.dart';
-import 'package:easychat/src/widgets/screens/rejected.chat.room.invite_list.screen.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -105,36 +99,11 @@ class ChatService {
     );
   }
 
-  showChatRoomMenuScreen(BuildContext context, ChatRoom room) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) => ChatRoomMenuScreeen(
-        room: room,
-      ),
-    );
-  }
-
-  showMemberListScreen(BuildContext context, ChatRoom room) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) => ChatRoomMemberListScreen(
-        room: room,
-      ),
-    );
-  }
-
+  @Deprecated('message')
   showInviteListScreen(BuildContext context, {ChatRoom? room}) {
-    if (room == null) {
-      return showGeneralDialog(
-        context: context,
-        pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
-      );
-    }
     return showGeneralDialog(
       context: context,
-      pageBuilder: (_, __, ___) => ChatRoomInviteListScreen(
-        room: room,
-      ),
+      pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
     );
   }
 
@@ -169,9 +138,13 @@ class ChatService {
   ) async {
     if (room.joined) return;
     if (room.open) return await room.join();
-    if (room.invitedUsers.contains(my.uid)) {
+    if (room.invitedUsers.contains(my.uid) ||
+        room.rejectedUsers.contains(my.uid)) {
+      // The user may mistakenly reject the chat room
+      // The user may accept it by replying.
       return await room.acceptInvitation();
     }
+
     throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 }

@@ -63,13 +63,15 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
     return GestureDetector(
       onTap: () async {
         ///
-        await StorageService.instance.uploadAt(
+        final url = await StorageService.instance.uploadAt(
           context: context,
           ref: my.doc,
           field: 'photoUrl',
           progress: (p) => setState(() => progress = p),
           complete: () => setState(() => progress = null),
         );
+        if (url == null) return;
+        my.update(photoUrl: url);
       },
       child: Stack(
         children: [
@@ -136,9 +138,7 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                                           .t));
                               if (re == false) return;
                               StorageService.instance.delete(data['photoUrl']);
-                              UserService.instance.col.doc(my.uid).update({
-                                'photoUrl': FieldValue.delete(),
-                              });
+                              my.update(photoUrl: FieldValue.delete());
                             },
                             padding: EdgeInsets.zero,
                             visualDensity: VisualDensity.compact,

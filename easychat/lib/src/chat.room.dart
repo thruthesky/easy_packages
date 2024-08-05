@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/src/chat.functions.dart';
 import 'package:easychat/src/chat.room.user.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -161,7 +160,6 @@ class ChatRoom {
   });
 
   factory ChatRoom.fromSnapshot(DocumentSnapshot doc) {
-    dog("doc: ${doc.data()}");
     return ChatRoom.fromJson(doc.data() as Map<String, dynamic>, doc.id);
   }
 
@@ -428,6 +426,18 @@ class ChatRoom {
     });
   }
 
+  Future<void> leave() async {
+    // TODO masters should not leave right away
+    await ref.set(
+      {
+        field.users: {
+          my.uid: FieldValue.delete(),
+        },
+      },
+      SetOptions(merge: true),
+    );
+  }
+
   /// This only subtracts about 50 years in time. Using subtraction
   /// will help to preserve order after reading the message.
   /// There is a minimum limit for Timestamp for Firestore, that is why,
@@ -442,7 +452,7 @@ class ChatRoom {
     String? lastMessageUrl,
   }) async {
     final serverTimestamp = FieldValue.serverTimestamp();
-    final updateUserData = users.map(
+    final Map<String, Map<String, Object>> updateUserData = users.map(
       (uid, value) {
         if (uid == my.uid) {
           final readOrder = _negatedOrder(DateTime.now());
@@ -519,6 +529,10 @@ class ChatRoom {
   /// Chat room subscription
   ///
   /// This is used to listen the chat room changes.
+  ///
+  /// The reason why it is not in the service is because each chat room can
+  /// have its own listener for realtime update.
+  ///
   StreamSubscription? chatRoomSubscription;
   BehaviorSubject<ChatRoom> changes = BehaviorSubject();
 

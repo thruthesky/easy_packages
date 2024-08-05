@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.room.user.dart';
-import 'package:easychat/src/widgets/chat.room.list_tile.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +18,17 @@ enum ChatRoomListOption {
 class ChatRoomListView extends StatelessWidget {
   const ChatRoomListView({
     super.key,
-    required this.queryOption,
+    this.queryOption = ChatRoomListOption.allMine,
+    this.itemBuilder,
+    this.emptyBuilder,
+    this.padding,
   });
 
   final ChatRoomListOption queryOption;
+  final Widget Function(BuildContext context, ChatRoom room, int index)?
+      itemBuilder;
+  final Widget Function(BuildContext context)? emptyBuilder;
+  final EdgeInsetsGeometry? padding;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
@@ -67,16 +72,41 @@ class ChatRoomListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FirestoreListView(
+    return FirestoreQueryBuilder(
       query: query,
-      errorBuilder: (context, error, stackTrace) {
-        dog('Something went wrong: $error');
-        return Center(child: Text('Something went wrong: $error'));
-      },
-      itemBuilder: (context, doc) {
-        final room = ChatRoom.fromSnapshot(doc);
-        return ChatRoomListTile(
-          room: room,
+      builder: (context, snapshot, child) {
+        if (snapshot.hasError) {
+          dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
+          return Center(child: Text('Something went wrong: ${snapshot.error}'));
+        }
+        if (snapshot.isFetching && !snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.docs.isEmpty) {
+          return emptyBuilder?.call(context) ??
+              const Center(
+                // TODO t?
+                child: Text("No chat yet."),
+              );
+        }
+        final docs = snapshot.docs;
+        final chatRooms =
+            docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
+        return ListView.builder(
+          padding: padding,
+          itemCount: chatRooms.length,
+          itemBuilder: (context, index) {
+            if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
+              snapshot.fetchMore();
+            }
+            final room = chatRooms[index];
+            if (itemBuilder != null) {
+              return itemBuilder!(context, room, index);
+            }
+            return ChatRoomListTile(
+              room: room,
+            );
+          },
         );
       },
     );

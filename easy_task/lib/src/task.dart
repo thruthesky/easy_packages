@@ -24,26 +24,50 @@ class Task {
     required this.urls,
   });
 
+  /// [i]d is the task id
   final String id;
+
+  /// [creator] is the uid of the user who created this task.
   final String creator;
+
+  /// [title] is the title of the task.
   final String title;
+
+  /// [description] is the description of the task.
   final String description;
+
+  /// [createdAt] is the date and time when the task is created.
   final DateTime createdAt;
+
+  /// [updatedAt] is the date and time when the task is updated. This field
+  /// will be updated when the task is created or updated.
   final DateTime updatedAt;
+
+  /// [completed] is true if the task is completed. Otherwise, it is false.
   final bool completed;
 
+  /// [parent] is the id of the parent task. If the task is a root level task,
+  /// then this field will be null. The parent may be a project or a task.
   final String? parent;
+
+  /// [child] is true if the task is a child task. Otherwise, it is false. If
+  /// the task is a root level task, then this field will be false.
   final bool child;
 
-  /// For Projects
+  /// [project] is true if the task is a project. To list projects only, use
+  /// this field.
   final bool project;
 
+  /// [urls] is the list of urls of uploads in Firebase Stroage that are
+  /// attached to the task.
   final List<String> urls;
 
+  /// Get the task object from the snapshot.
   factory Task.fromSnapshot(DocumentSnapshot snapshot) {
     return Task.fromJson(snapshot.data() as Map<String, dynamic>, snapshot.id);
   }
 
+  /// Get the task object from the json.
   factory Task.fromJson(Map<String, dynamic> json, String id) {
     return Task(
       id: id,
@@ -64,6 +88,7 @@ class Task {
     );
   }
 
+  /// Convert the task object to the json.
   Map<String, dynamic> toJson() {
     return {
       'creator': creator,
@@ -114,6 +139,7 @@ class Task {
     return ref;
   }
 
+  /// Update the task
   Future<void> update({
     required String title,
     required String description,
@@ -129,6 +155,7 @@ class Task {
     });
   }
 
+  /// Delete the task
   Future<void> toggleCompleted(bool isCompleted) async {
     await ref.update({
       'completed': isCompleted,

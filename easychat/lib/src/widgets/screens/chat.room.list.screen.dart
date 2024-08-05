@@ -1,9 +1,7 @@
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/chat.room.list_view.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomListScreen extends StatefulWidget {
-  static const String routeName = '/ChatRoomList';
   const ChatRoomListScreen({
     super.key,
     this.queryOption = ChatRoomListOption.allMine,
@@ -50,7 +48,29 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
           ),
         ],
       ),
-      body: ChatRoomListView(queryOption: queryOption),
+      body: ChatRoomListView(
+        queryOption: queryOption,
+        itemBuilder: (context, room, index) {
+          if (index == 0) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // TODO fix the scroll when changing the query
+                const ChatRoomInvitationShortList(
+                  key: ValueKey("Chat Room Invitation Short List"),
+                ),
+                const SizedBox(height: 8),
+                ChatRoomListTile(
+                  room: room,
+                ),
+              ],
+            );
+          }
+          return ChatRoomListTile(
+            room: room,
+          );
+        },
+      ),
     );
   }
 }
