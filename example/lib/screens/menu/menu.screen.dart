@@ -34,8 +34,7 @@ class _MenuScreenState extends State<MenuScreen> {
           ElevatedButton(
             onPressed: () async {
               try {
-                final re = await engine.deleteAccount();
-                debugPrint(re);
+                await UserService.instance.resign();
               } on FirebaseFunctionsException catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
