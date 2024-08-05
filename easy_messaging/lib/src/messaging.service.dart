@@ -17,11 +17,11 @@ class MessagingService {
 
   MessagingService._();
 
-  late Function(RemoteMessage) onForegroundMessage;
-  late Function(RemoteMessage) onMessageOpenedFromTerminated;
-  late Function(RemoteMessage) onMessageOpenedFromBackground;
-  late Function onNotificationPermissionDenied;
-  late Function onNotificationPermissionNotDetermined;
+  Function(RemoteMessage)? onForegroundMessage;
+  Function(RemoteMessage)? onMessageOpenedFromTerminated;
+  Function(RemoteMessage)? onMessageOpenedFromBackground;
+  Function? onNotificationPermissionDenied;
+  Function? onNotificationPermissionNotDetermined;
 
   bool initialized = false;
   String? token;
@@ -30,12 +30,12 @@ class MessagingService {
   ///
   /// [onBackgroundMessage] - Function to handle background messages.
   init({
-    required Future<void> Function(RemoteMessage)? onBackgroundMessage,
-    required Function(RemoteMessage) onForegroundMessage,
+    Future<void> Function(RemoteMessage)? onBackgroundMessage,
+    Function(RemoteMessage)? onForegroundMessage,
     required Function(RemoteMessage) onMessageOpenedFromTerminated,
     required Function(RemoteMessage) onMessageOpenedFromBackground,
-    required Function onNotificationPermissionDenied,
-    required Function onNotificationPermissionNotDetermined,
+    Function? onNotificationPermissionDenied,
+    Function? onNotificationPermissionNotDetermined,
   }) {
     initialized = true;
 
@@ -74,10 +74,15 @@ class MessagingService {
 
       /// Check if permission had given.
       if (settings.authorizationStatus == AuthorizationStatus.denied) {
-        return onNotificationPermissionDenied();
+        onNotificationPermissionDenied?.call() ??
+            Exception('messaging/permission-denied Permission Denied');
+        return;
       }
       if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
-        return onNotificationPermissionNotDetermined();
+        onNotificationPermissionNotDetermined?.call() ??
+            Exception(
+                'messaging/permission-not-determined Permission Not Determined');
+        return;
       }
     }
 
@@ -132,12 +137,23 @@ class MessagingService {
     RemoteMessage? initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
-      onMessageOpenedFromTerminated(initialMessage);
+      onMessageOpenedFromTerminated?.call(initialMessage);
     }
 
     // Check if the app is opened(running) from the background state.
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      onMessageOpenedFromBackground(message);
+      onMessageOpenedFromBackground?.call(message);
     });
+  }
+
+  send({
+    required List<String> tokens,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
+    int batchSize = 128,
+  }) {
+    // make muliple requests in batches of 128 use `await Future.wait()`
   }
 }
