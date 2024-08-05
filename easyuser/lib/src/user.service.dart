@@ -5,6 +5,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:easy_storage/easy_storage.dart';
@@ -24,6 +25,10 @@ class UserService {
 
   /// Reference of the block document.
   DocumentReference get blockDoc => metaCol.doc('blocks');
+
+  /// RTDB /mirror-users reference
+  DatabaseReference get mirrorUsersRef =>
+      FirebaseDatabase.instance.ref('mirror-users');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -60,6 +65,16 @@ class UserService {
   Widget Function(BuildContext, User?)? $showPublicProfileScreen;
   Widget Function()? $showProfileUpdateScreen;
 
+  /// Current user of Firebase Auth
+  fa.User? get currentUser => fa.FirebaseAuth.instance.currentUser;
+
+  /// True if the user is signed in with phone number.
+  bool get isPhoneSignIn =>
+      currentUser?.providerData
+          .where((e) => e.providerId == 'phone')
+          .isNotEmpty ??
+      false;
+
   init({
     bool enableAnonymousSignIn = false,
     Widget Function(BuildContext, User?)? showPublicProfileScreen,
@@ -76,21 +91,10 @@ class UserService {
     $showProfileUpdateScreen = showProfileUpdateScreen;
   }
 
-  initAnonymousSignIn() async {
-    if (enableAnonymousSignIn) {
-      final user = fa.FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        dog('initAnonymousSignIn: sign in anonymously');
-        await fa.FirebaseAuth.instance.signInAnonymously();
-      }
-    }
-  }
-
   /// Returns true if user is signed in including anonymous login.
-  bool get signedIn => fa.FirebaseAuth.instance.currentUser != null;
+  bool get signedIn => currentUser != null;
   bool get notSignedIn => !signedIn;
-  bool get anonymous =>
-      fa.FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
+  bool get anonymous => currentUser?.isAnonymous ?? false;
 
   /// Returns true if user is registered and not anonymous.
   ///
@@ -124,8 +128,7 @@ class UserService {
         blockChanges.add(blocks);
         initAnonymousSignIn();
       } else {
-        /// User signed in
-        ///
+        /// User signed in -------------------------------------------------
 
         /// User is anonymous
         if (faUser.isAnonymous) {
@@ -137,8 +140,8 @@ class UserService {
         /// User signed in. Listen to the user's document changes.
         firestoreMyDocSubscription?.cancel();
 
-        // 사용자 문서 초기화
-        await _initUserDocumentOnLogin(faUser.uid);
+        /// 사용자 문서 초기화
+        await initUserLogin(faUser.uid);
 
         firestoreMyDocSubscription = FirebaseFirestore.instance
             .collection('users')
@@ -170,12 +173,40 @@ class UserService {
     });
   }
 
+  /// Initialize anonymous sign in if the app is configured to do so.
+  initAnonymousSignIn() async {
+    if (enableAnonymousSignIn) {
+      final user = currentUser;
+      if (user == null) {
+        dog('initAnonymousSignIn: sign in anonymously');
+        await fa.FirebaseAuth.instance.signInAnonymously();
+      }
+    }
+  }
+
   /// Get my user document
   Future<void> signOut() async {
     await fa.FirebaseAuth.instance.signOut();
   }
 
-  /// 로그인 시, 사용자 문서 초기화
+  /// Initialize(update) user document on login
+  ///
+  /// This method should be called when
+  /// - app restarts
+  /// - user sign in with any method (email, google, phone, etc.)
+  /// - And especially when the user signs-in and does **linkWithCredential()**
+  ///   This method will
+  ///   - record phone number if needed
+  ///   - update lastLoginAt causing the user document to be updated and this
+  ///     will trigger the `MyDoc` will be rebuild. So, if the user signed in
+  ///     as anonymous, the user will be updated to the real user.
+  ///
+  /// The purpose of the method is to
+  /// - create the user document if it's not exist
+  /// - create `createdAt` if it is not exists.
+  /// - update `lastLoginAt` on every login.
+  ///
+  ///
   ///
   /// Firebase 로그인을 하고, 사용자 문서가 존재 할 수 있고, 존재하지 않을 수 있다.
   /// 사용자 문서가 존재하지 않거나, createdAt 이 null 이면, createdAt 을 생성한다.
@@ -184,11 +215,17 @@ class UserService {
   ///
   /// lastLoginAt 은 로그인 할 때 마다 업데이트한다.
   ///
-  _initUserDocumentOnLogin(String uid) async {
+  /// Initialize user document on login
+  ///
+  /// Create `createdAt` if it is not exists.
+  /// Update `lastLoginAt` on every login.
+  initUserLogin(String uid) async {
+    _recordPhoneSignInNumber(uid);
+
     /// 나의 정보를 가져온다.
     final got = await User.get(uid, cache: false);
 
-    final data = {
+    final Map<String, dynamic> data = {
       'lastLoginAt': FieldValue.serverTimestamp(),
     };
 
@@ -197,10 +234,63 @@ class UserService {
       data['createdAt'] = FieldValue.serverTimestamp();
     }
 
-    await User.fromUid(uid).doc.set(
+    await User.fromUid(uid).ref.set(
           data,
           SetOptions(merge: true),
         );
+
+    /// Mirror to RTDB
+    if (data['createdAt'] != null) {
+      data['createdAt'] = ServerValue.timestamp;
+    }
+    data['lastLoginAt'] = ServerValue.timestamp;
+    await User.fromUid(uid).mirrorRef.update(data);
+  }
+
+  /// Record the phone number if the user signed in as Phone sign-in auth.
+  ///
+  /// See README.md for details
+  ///
+  /// Whenever a user signs in with phone number, the phone number is recorded.
+  /// Even if the user signs out and signs in again with the same phone number,
+  /// the phone number is recorded over again.
+  ///
+  /// It will also record again when the app restarts.
+  _recordPhoneSignInNumber(String uid) async {
+    if (isPhoneSignIn) {
+      dog('Phone sign-in user signed in. Record the phone number.');
+
+      /// update the phone number in `/user-phone-sign-in-numbers`.
+      final phoneNumber = currentUser?.phoneNumber;
+      if (phoneNumber != null) {
+        final doc = FirebaseFirestore.instance
+            .collection('user-phone-sign-in-numbers')
+            .doc(phoneNumber);
+        await doc.set(
+          {
+            'lastSignedInAt': FieldValue.serverTimestamp(),
+          },
+          SetOptions(merge: true),
+        );
+      }
+    }
+  }
+
+  /// Check if the phone number is registered.
+  ///
+  /// This is used to know if the phone number is already in use especially in
+  /// the 'linkWithCredential' with phone sign-in process. Since SMS OTP can be
+  /// used it only one time, if the phone number is already in use, the app
+  /// should use 'signInWithCredential' instead of 'linkWithCredential'. And to
+  /// do this, it needs to know if the phone number is already in use.
+  ///
+  /// See README.md for details
+  Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
+    final doc = FirebaseFirestore.instance
+        .collection('user-phone-sign-in-numbers')
+        .doc(phoneNumber);
+    final snapshot = await doc.get();
+    return snapshot.exists;
   }
 
   // to display public profile user `UserService.intance.showPublicProfile`

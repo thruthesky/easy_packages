@@ -108,7 +108,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                     maxHeight: 224,
                     minHeight: 224,
                   ),
-                  child: UserListView(
+                  child: FirestoreUserListView(
                     shrinkWrap: true,
                     padding: const EdgeInsets.only(top: 8),
                     query: query.limit(4),
