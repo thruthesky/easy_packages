@@ -263,7 +263,10 @@ And to make it short, you can use `MyDocReady`.
 
 ## UserDoc
 
-- You can display a widget using another user's information(document). This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
+- You can display any user's data using `UserDoc`.
+  - This is handy when you have the user's UID and prefer not to repeatedly access the database, saving time and reducing costs by caching the data in memory.
+
+- This widget displays the user data from Realtime Database. If you want to display user data from Firestore, use `FirestoreUserDoc`.
 
 - `uid` is the user's UID. It uses the `MemoryCache` package to cach the data in memory.
 
@@ -289,6 +292,14 @@ UserDoc(
   ),
 ),
 ```
+
+## FirestoreUserDoc
+
+It works just the same as `UserDoc` but gets data from Firestore.
+
+
+
+
 
 
 ### Deleting user document
