@@ -113,6 +113,7 @@ class MessagingService {
 
     try {
       token = await FirebaseMessaging.instance.getToken() ?? '';
+      dog('token: $token');
     } on FirebaseException catch (e) {
       dog('Error while getting token: code: ${e.code}, message: ${e.message}, e: $e');
       rethrow;
