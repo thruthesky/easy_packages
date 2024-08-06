@@ -104,8 +104,8 @@ class _UploadImageState extends State<ImageUploadCard> {
         if (widget.ref == null || widget.field == null) {
           uploadedUrl = await StorageService.instance.upload(
             context: context,
-            spacing: widget.uploadBottomSheetSpacing, // check
-            padding: widget.uploadBottomSheetPadding, // check
+            spacing: widget.uploadBottomSheetSpacing,
+            padding: widget.uploadBottomSheetPadding,
             progress: (p) => setState(() => progress = p),
             complete: () => setState(() => progress = null),
           );
@@ -114,8 +114,8 @@ class _UploadImageState extends State<ImageUploadCard> {
             context: context,
             ref: widget.ref!,
             field: widget.field!,
-            // spacing: widget.uploadBottomSheetSpacing,
-            // padding: widget.uploadBottomSheetPadding,
+            spacing: widget.uploadBottomSheetSpacing,
+            padding: widget.uploadBottomSheetPadding,
             progress: (p) => setState(() => progress = p),
             complete: () => setState(() => progress = null),
           );
