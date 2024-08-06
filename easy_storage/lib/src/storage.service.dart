@@ -181,8 +181,8 @@ class StorageService {
   /// [videoGallery] default false, indicate whethere to allow the video gallery to be selected
   ///
   ///
-  /// [gallery] default false, indicate whether to allow to select file from gallery
-  /// [file] default false, indicate whether to allow to select file from storage
+  /// [fromGallery] default false, indicate whether to allow to select file from gallery
+  /// [fromFile] default false, indicate whether to allow to select file from storage
   ///
   /// [spacing] default none, spacing between the selection,
   /// [padding] default EdgeInsets.zero, padding of the bottomsheet

@@ -24,11 +24,13 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final double? spacing;
 
+  /// if padding and uploadBottmSheetPadding is not set return `EdgeInsets.zero`
   EdgeInsetsGeometry get getPadding =>
       padding ??
       StorageService.instance.uploadBottomSheetPadding ??
       EdgeInsets.zero;
 
+  /// if spacing and uploadBottomSheetSpacing is not set return `null`
   double? get getSpacing =>
       spacing ?? StorageService.instance.uploadBottomSheetSpacing;
 
