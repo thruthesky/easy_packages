@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 ///
 /// This widget uses the [UploadIconButton] to upload a file. It has a preset
 /// options for uploading files.
+@Deprecated('Use UploadIconButton.file() instead')
 class FileUploadIconButton extends StatelessWidget {
   const FileUploadIconButton({
     super.key,
@@ -46,8 +47,8 @@ class FileUploadIconButton extends StatelessWidget {
       photoGallery: false,
       videoCamera: false,
       videoGallery: false,
-      gallery: gallery,
-      file: file,
+      fromGallery: gallery,
+      fromFile: file,
       progress: progress,
       complete: complete,
       icon: icon,

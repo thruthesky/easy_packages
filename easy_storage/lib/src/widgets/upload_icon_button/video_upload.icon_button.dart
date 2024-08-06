@@ -40,15 +40,11 @@ class VideoUploadIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UploadIconButton(
+    return UploadIconButton.video(
       onUpload: onUpload,
       onUploadSourceSelected: onUploadSourceSelected,
-      photoCamera: false,
-      photoGallery: false,
       videoCamera: camera,
       videoGallery: gallery,
-      gallery: false,
-      file: false,
       progress: progress,
       complete: complete,
       icon: icon,
