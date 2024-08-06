@@ -21,7 +21,6 @@ class ChatMessagesListView extends StatelessWidget {
     return FirebaseDatabaseQueryBuilder(
       query: ref.orderByChild("order"),
       builder: (context, snapshot, _) {
-        dog('ChatMessagesListView Rebuild, hasData: ${snapshot.hasData}');
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');
           return Text('Something went wrong! ${snapshot.error}');
@@ -29,13 +28,11 @@ class ChatMessagesListView extends StatelessWidget {
         if (snapshot.isFetching) {
           return const CircularProgressIndicator.adaptive();
         }
-
         if (snapshot.docs.isEmpty) {
           return const Center(
             child: Text('No messages yet!'),
           );
         }
-
         return ListView.builder(
           reverse: true,
           itemCount: snapshot.docs.length,

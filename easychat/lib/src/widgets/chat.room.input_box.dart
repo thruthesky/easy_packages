@@ -66,7 +66,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: LinearProgressIndicator(
-                  value: snapshot.data,
+                  value: snapshot.data as double,
                 ),
               );
             }
@@ -77,9 +77,11 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
           decoration: BoxDecoration(
             border: Theme.of(context).inputDecorationTheme.enabledBorder != null
                 ? Border.all(
-                    color: enabledBorderSide(context)!.color,
-                    width: enabledBorderSide(context)!.width,
-                    style: enabledBorderSide(context)!.style,
+                    color: enabledBorderSide(context)?.color ??
+                        const Color(0xFF000000),
+                    width: enabledBorderSide(context)?.width ?? 1.0,
+                    style:
+                        enabledBorderSide(context)?.style ?? BorderStyle.solid,
                   )
                 : Border.all(),
             borderRadius: BorderRadius.circular(12),

@@ -217,7 +217,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               top: false,
               child: $room == null
                   ? const SizedBox.shrink()
-                  : ChatRoomInputBox(room: $room!),
+                  : $room!.builder((room) => ChatRoomInputBox(room: room)),
             ),
           ],
         ],

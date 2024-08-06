@@ -95,6 +95,7 @@ class ChatService {
   showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
     return showGeneralDialog(
       context: context,
+      barrierLabel: "Chat Room",
       pageBuilder: (_, __, ___) => ChatRoomScreen(
         user: user,
         room: room,

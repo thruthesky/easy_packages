@@ -91,7 +91,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                 }
                 return ChatRoomInvitationListTile(
                   room: room,
-                  afterAccept: (room, user) async {
+                  onAccept: (room, user) async {
                     dog("User: ${user?.uid}");
                     await ChatService.instance.showChatRoomScreen(
                       context,

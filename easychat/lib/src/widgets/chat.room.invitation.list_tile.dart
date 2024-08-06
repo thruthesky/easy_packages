@@ -8,13 +8,13 @@ class ChatRoomInvitationListTile extends StatefulWidget {
   const ChatRoomInvitationListTile({
     super.key,
     required this.room,
-    this.afterAccept,
-    this.afterReject,
+    this.onAccept,
+    this.onReject,
   });
 
   final ChatRoom room;
-  final Function(ChatRoom room, User? user)? afterAccept;
-  final Function(ChatRoom room, User? user)? afterReject;
+  final Function(ChatRoom room, User? user)? onAccept;
+  final Function(ChatRoom room, User? user)? onReject;
 
   @override
   State<ChatRoomInvitationListTile> createState() =>
@@ -97,10 +97,29 @@ class _ChatRoomInvitationListTileState
         children: [
           ElevatedButton(
             onPressed: () async {
-              await widget.room.acceptInvitation();
-              if (widget.afterAccept != null) {
-                return widget.afterAccept?.call(room, user);
+              if (widget.onAccept != null) {
+                // This widget onAccept must be called before
+                // awaiting the acceptInvitation.
+                // There is an issue in showGeneralDialog.
+                // If we acceptInvite first, there is a
+                // chance that this context is already unmounted,
+                // or this widget maybe disposed.
+                //
+                // This is coming from flutter document:
+                // The useRootNavigator argument is used to
+                // determine whether to push the dialog to
+                // the Navigator furthest from or nearest to
+                // the given context. By default, useRootNavigator
+                // is true and the dialog route created by this
+                // method is pushed to the root navigator.
+                // It can not be null.
+                //
+                // It might be the cause why it throws null error
+                // on showGeneralDialog. (It doesn't have much info
+                // about the error).
+                widget.onAccept!(room, user);
               }
+              await widget.room.acceptInvitation();
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(12),
@@ -110,10 +129,10 @@ class _ChatRoomInvitationListTileState
           const SizedBox(width: 4),
           ElevatedButton(
             onPressed: () async {
-              await widget.room.rejectInvitation();
-              if (widget.afterReject != null) {
-                return widget.afterReject!(room, user);
+              if (widget.onReject != null) {
+                widget.onReject!(room, user);
               }
+              await widget.room.rejectInvitation();
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(12),
