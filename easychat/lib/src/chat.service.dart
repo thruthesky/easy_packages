@@ -117,7 +117,12 @@ class ChatService {
     );
   }
 
-  Future sendMessage(ChatRoom room, {String? photoUrl, String? text}) async {
+  Future sendMessage(
+    ChatRoom room, {
+    String? photoUrl,
+    String? text,
+    ChatMessage? replyTo,
+  }) async {
     if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
     await _shouldBeOrBecomeMember(room);
     List<Future> futures = [
@@ -125,6 +130,7 @@ class ChatService {
         roomId: room.id,
         text: text,
         url: photoUrl,
+        replyTo: replyTo,
       ),
       room.updateNewMessagesMeta(
         lastMessageText: text,

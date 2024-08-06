@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easychat/easychat.dart';
+import 'package:easychat/src/chat.exception.dart';
 import 'package:easychat/src/chat.functions.dart';
-import 'package:easychat/src/chat.room.user.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:flutter/material.dart';
 
 class ChatRoom {
   /// Field names used for the Firestore document
@@ -557,44 +558,29 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  /// Chat room subscription
-  ///
-  /// This is used to listen the chat room changes.
-  ///
-  /// The reason why it is not in the service is because each chat room can
-  /// have its own listener for realtime update.
-  ///
-  // StreamSubscription? chatRoomSubscription;
-  // BehaviorSubject<ChatRoom> changes = BehaviorSubject();
+  // TODO ask for help
+  ValueNotifier<ChatMessage?>? replyValueNotifier;
 
-  // listen() {
-  //   chatRoomSubscription?.cancel();
-  //   changes.add(this);
-  //   chatRoomSubscription = ref.snapshots().listen((snapshot) {
-  //     changes.add(ChatRoom.fromSnapshot(snapshot));
-  //   });
-  // }
+  void initReply() {
+    if (replyValueNotifier != null) disposeReply();
+    replyValueNotifier = ValueNotifier<ChatMessage?>(null);
+  }
 
-  // dispose() {
-  //   chatRoomSubscription?.cancel();
-  // }
+  void disposeReply() {
+    if (replyValueNotifier != null) {
+      replyValueNotifier!.dispose();
+      replyValueNotifier = null;
+      return;
+    }
+    throw ChatException("reply-value-notifier-disposing-null",
+        "Cannot dispose replyValueNotifier if it is null. It may be disposed already.");
+  }
 
-  // StreamBuilder<ChatRoom> builder(Widget Function(ChatRoom room) builder) {
-  //   return StreamBuilder<ChatRoom>(
-  //     initialData: changes.value,
-  //     stream: changes.stream,
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.waiting &&
-  //           !snapshot.hasData) {
-  //         return const CircularProgressIndicator();
-  //       }
-  //       if (snapshot.hasError) {
-  //         debugPrint("Error: ${snapshot.error}");
-  //         return Text("Error: ${snapshot.error}");
-  //       }
-  //       final room = snapshot.data!;
-  //       return builder(room);
-  //     },
-  //   );
-  // }
+  void replyTo(ChatMessage chatMessage) {
+    if (replyValueNotifier == null) {
+      throw ChatException('reply-value-notifier-not-initialized',
+          'replyValueNotifier must be initialized');
+    }
+    replyValueNotifier!.value = chatMessage;
+  }
 }

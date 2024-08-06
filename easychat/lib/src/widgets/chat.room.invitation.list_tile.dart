@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.functions.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
