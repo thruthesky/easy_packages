@@ -41,7 +41,6 @@ Add these entitlements for allowing the app to use Camera and Gallery.
 <string>This app requires access to the camera to share the photo on profile, chat, forum.</string>
 ```
 
-
 # TODO
 
 - Give an option to `init` that if the thumbnails are being used.
@@ -50,9 +49,6 @@ Add these entitlements for allowing the app to use Camera and Gallery.
   - To do this, there must be a code to know if the upload belongs to post, comment, chat, or user photo, etc and there must be a document id also.
     - **Can it be saved in the path of file name??**
   - This way, it is much easier to use the thumbnail since we know that the document(chat, post, comemnt, user, etc) has thumbnail or now.
-
-
-
 
 # Upload
 
@@ -296,20 +292,20 @@ UploadForm(
 ),
 ```
 
-
 # Thumbnails
 
 To add thumbnail support in `easy_storage`, follow these steps:
+
 1. Install the [Image Resize Extension](https://extensions.dev/extensions/firebase/storage-resize-images) three times(instances) with the following configurations;
 
 2. Install three instances of the image resize extension.
-  - Each size of the instance must be 200x200 (small), 600x600 (medium), 1200x1200 (large)
-  - And with the same settings below
-    - Deletion of original file: false (No)
-    - Make resize images public: true (Yes)
-    - Convert images to prefered type: webp
-    - Assign new access token: false (No)
 
+- Each size of the instance must be 200x200 (small), 600x600 (medium), 1200x1200 (large)
+- And with the same settings below
+  - Deletion of original file: false (No)
+  - Make resize images public: true (Yes)
+  - Convert images to prefered type: webp
+  - Assign new access token: false (No)
 
 Keep in mind that the easy packages(like easy user, easy post, etc) should not use thumbnails directly. Thumbnails are for app developers to enhance their apps, not for the packages themselves.
 
@@ -317,30 +313,35 @@ App eevelopers can also adjust image quality, and set maximum width and height t
 
 Note: The `Image Resize` extension keeps the original aspect ratio of images. So, thumbnails might be square or rectangular, depending on the original image.
 
-
 To access thumbnail links:
+
 - Use `url.thumbnail` for a small size.
 - Use `url.thumbnailMedium` for a medium size.
 - Use `url.thumbnailLarge` for a large size.
 
-
 You can also use `ThumbnailImage` widget to display image.
-
-
-
-
 
 ## Custom UI/UX
 
-
 ### Customizing the upload bottom sheet UI
 
-
-- To give spaces between the bottom sheet items, you can use `uploadBottomSheetPadding` and `uploadBottomSheetSpacing`.
+- To give padding on upload source bottomsheet spaces between the bottom sheet items, you can set the `uploadBottomSheetPadding` and `uploadBottomSheetSpacing` during the initialization like below.
 
 ```dart
 StorageService.instance.init(
   uploadBottomSheetPadding: const EdgeInsets.all(16),
   uploadBottomSheetSpacing: 16,
 );
+```
+
+- To give padding on upload source bottomsheet and space between the bottomsheet items, on `specific upload widgets` you can set the `uploadBottomSheetPadding` and `uploadBottomSheetSpacing` inline with the widget.
+
+```dart
+UploadIconButton.image(
+  uploadBottomSheetPadding: const EdgeInsets.all(32),
+  uploadBottomSheetSpacing: 32,
+  onUpload: (url) {
+    debugPrint('Uploaded: $url');
+  },
+)
 ```
