@@ -40,18 +40,24 @@ class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CheckboxListTile(
-              value: project,
-              title: Text('Project'.t),
-              onChanged: (v) => setState(() => project = v ?? false),
-            ),
             TextField(
               controller: titleController,
               decoration: InputDecoration(labelText: 'Title'.t),
             ),
+            const SizedBox(height: 20),
             TextField(
               controller: descriptionController,
-              decoration: InputDecoration(labelText: 'Description'.t),
+              decoration: InputDecoration(
+                labelText: 'Description'.t,
+              ),
+              minLines: 5,
+              maxLines: 10,
+            ),
+            const SizedBox(height: 20),
+            CheckboxListTile(
+              value: project,
+              title: Text('Project'.t),
+              onChanged: (v) => setState(() => project = v ?? false),
             ),
             const SizedBox(height: 20),
             UploadForm(

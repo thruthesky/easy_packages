@@ -14,6 +14,7 @@ export './src/widgets/chat.room.invitation.list_tile.dart';
 export './src/widgets/chat.room.list_view.dart';
 export './src/widgets/chat.room.list_tile.dart';
 export './src/widgets/chat.room.invitation.short.list.dart';
+export './src/widgets/chat.new_message_counter.dart';
 
 // Screens =====================================================
 export 'src/screens/chat.room.edit.screen.dart';

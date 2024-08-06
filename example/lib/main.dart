@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
+import 'package:easy_storage/easy_storage.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
@@ -43,6 +44,12 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     UserService.instance.init();
+
+    StorageService.instance.init(
+      uploadBottomSheetPadding: const EdgeInsets.all(16),
+      uploadBottomSheetSpacing: 16,
+    );
+
     MessagingService.instance.init(
       onMessageOpenedFromBackground: (message) {
         print('onMessageOpenedFromBackground: $message');

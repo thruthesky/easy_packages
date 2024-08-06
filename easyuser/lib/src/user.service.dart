@@ -223,7 +223,7 @@ class UserService {
     _recordPhoneSignInNumber(uid);
 
     /// 나의 정보를 가져온다.
-    final got = await User.get(uid, cache: false);
+    final got = await User.getFromFirestore(uid, cache: false);
 
     final Map<String, dynamic> data = {
       'lastLoginAt': FieldValue.serverTimestamp(),
@@ -234,17 +234,21 @@ class UserService {
       data['createdAt'] = FieldValue.serverTimestamp();
     }
 
-    await User.fromUid(uid).ref.set(
-          data,
-          SetOptions(merge: true),
-        );
+    final u = User.fromUid(uid);
+
+    await u.ref.set(
+      data,
+      SetOptions(merge: true),
+    );
 
     /// Mirror to RTDB
     if (data['createdAt'] != null) {
       data['createdAt'] = ServerValue.timestamp;
     }
     data['lastLoginAt'] = ServerValue.timestamp;
-    await User.fromUid(uid).mirrorRef.update(data);
+
+    dog('Mirror to RTDB at: ${u.mirrorRef.path}');
+    await u.mirrorRef.update(data);
   }
 
   /// Record the phone number if the user signed in as Phone sign-in auth.
