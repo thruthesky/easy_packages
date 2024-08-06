@@ -32,15 +32,6 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              CheckboxListTile(
-                value: project,
-                title: Text('Project'.t),
-                subtitle: Text('Is this a project?'.t),
-                onChanged: (v) => setState(() => project = v ?? false),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
               TextField(
                 controller: _titleController,
                 decoration: InputDecoration(labelText: 'Title'.t),
@@ -54,6 +45,23 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                 minLines: 3,
                 maxLines: 8,
               ),
+              const SizedBox(
+                height: 16,
+              ),
+              CheckboxListTile(
+                value: project,
+                title: Text('Project'.t),
+                subtitle: Text('Is this a project?'.t),
+                onChanged: (v) => setState(() => project = v ?? false),
+              ),
+              // CheckboxListTile(
+              //   value: project,
+              //   title: Text(
+              //     'Is this a project?'.t,
+              //     style: Theme.of(context).textTheme.bodyMedium,
+              //   ),
+              //   onChanged: (v) => setState(() => project = v ?? false),
+              // ),
               const SizedBox(height: 20),
               UploadForm(
                 urls: urls,

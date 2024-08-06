@@ -41,6 +41,8 @@ class ImageUploadCard extends StatefulWidget {
     this.imageBuilder,
     this.progressBar = true,
     this.progressIndicatorBackdrop = true,
+    this.uploadBottomSheetPadding,
+    this.uploadBottomSheetSpacing,
   });
 
   final String? initialData;
@@ -55,6 +57,9 @@ class ImageUploadCard extends StatefulWidget {
 
   final bool progressBar;
   final bool progressIndicatorBackdrop;
+
+  final EdgeInsetsGeometry? uploadBottomSheetPadding;
+  final double? uploadBottomSheetSpacing;
 
   @override
   State<ImageUploadCard> createState() => _UploadImageState();
@@ -99,6 +104,8 @@ class _UploadImageState extends State<ImageUploadCard> {
         if (widget.ref == null || widget.field == null) {
           uploadedUrl = await StorageService.instance.upload(
             context: context,
+            spacing: widget.uploadBottomSheetSpacing,
+            padding: widget.uploadBottomSheetPadding,
             progress: (p) => setState(() => progress = p),
             complete: () => setState(() => progress = null),
           );
@@ -107,6 +114,8 @@ class _UploadImageState extends State<ImageUploadCard> {
             context: context,
             ref: widget.ref!,
             field: widget.field!,
+            spacing: widget.uploadBottomSheetSpacing,
+            padding: widget.uploadBottomSheetPadding,
             progress: (p) => setState(() => progress = p),
             complete: () => setState(() => progress = null),
           );

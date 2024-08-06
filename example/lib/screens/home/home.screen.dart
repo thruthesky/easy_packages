@@ -59,7 +59,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? const Text('Sign-in first')
                   : Column(
                       children: [
-                        UserAvatar.fromUid(uid: user.uid),
+                        ChatNewMessageCounter(builder: (no) {
+                          return Stack(
+                            children: [
+                              UserAvatar.fromUid(uid: user.uid),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: CircleAvatar(
+                                  radius: 12,
+                                  backgroundColor: Colors.red.shade700,
+                                  child: Text(
+                                    '$no',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          );
+                        }),
                         Text('User UID: ${user.uid}'),
                       ],
                     ),

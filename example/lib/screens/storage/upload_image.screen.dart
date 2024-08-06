@@ -2,6 +2,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
+import 'package:social_design_system/social_design_system.dart';
 
 class UploadImageScreen extends StatefulWidget {
   static const String routeName = '/ImageUploadCard';
@@ -13,7 +14,7 @@ class UploadImageScreen extends StatefulWidget {
 
 class _UploadImageScreenState extends State<UploadImageScreen> {
   List<String> urls = List<String>.from([
-    'https://firebasestorage.googleapis.com/v0/b/withcenter-test-5.appspot.com/o/users%2FZpq96ARrWbag4bttq4wOgJ577is2%2Fimage_picker_0D7D6009-3E8D-45EF-8FCA-297DABB66508-72557-00000228C41CA5C5.jpg?alt=media&token=871fdca5-c018-47fe-a35e-a96ee5d4ef32',
+    'https://firebasestorage.googleapis.com/v0/b/withcenter-test-3.appspot.com/o/users%2FRdKOm7K30ggcaH5YzG8AomfRMTe2%2F1000000058.png?alt=media&token=bfd987f0-9757-4e35-8cbc-9c31b6e3ea3f',
   ]);
   @override
   Widget build(BuildContext context) {
@@ -68,14 +69,34 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               ),
               const Divider(),
               const Text("Upload Icon Button"),
-              UploadIconButton(
-                icon: const Icon(
-                  Icons.image,
-                  size: 80,
-                ),
-                onUpload: (url) {
-                  debugPrint('Uploaded: $url');
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  UploadIconButton(
+                    icon: const Icon(
+                      Icons.image,
+                      size: 80,
+                    ),
+                    onUpload: (url) {
+                      debugPrint('Uploaded: $url');
+                    },
+                  ),
+                  UploadIconButton.image(
+                    onUpload: (url) {
+                      debugPrint('Uploaded: $url');
+                    },
+                  ),
+                  UploadIconButton.video(
+                    onUpload: (url) {
+                      debugPrint('Uploaded: $url');
+                    },
+                  ),
+                  UploadIconButton.file(
+                    onUpload: (url) {
+                      debugPrint('Uploaded: $url');
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
               const Divider(),
@@ -96,6 +117,51 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
                     dog(urls);
                   },
                   child: const Text('Submit'),
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Divider(),
+              const Text("Upload Buttons in Comic Theme"),
+              Text(
+                  "uploadBottomSheetPadding: ${StorageService.instance.uploadBottomSheetPadding}"),
+              Text(
+                  "uploadBottomSheetSpacing: ${StorageService.instance.uploadBottomSheetSpacing}"),
+              const SizedBox(height: 24),
+              ComicTheme(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const ImageUploadCard(
+                      icon: Icon(
+                        Icons.photo,
+                        size: 52,
+                      ),
+                    ),
+                    UploadIconButton(
+                      icon: const Icon(
+                        Icons.image,
+                        size: 52,
+                      ),
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                    UploadIconButton.image(
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                    UploadIconButton.video(
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                    UploadIconButton.file(
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
