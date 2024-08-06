@@ -222,14 +222,28 @@ class User {
         user = User.fromSnapshot(snapshot);
       }
     } else if (database == true) {
-      final DataSnapshot snapshot =
-          await UserService.instance.mirrorUsersRef.child(uid).get();
+      DataSnapshot snapshot;
+      final ref = UserService.instance.mirrorUsersRef.child(uid);
+
+      ///
+      try {
+        snapshot = await ref.get();
+      } catch (e) {
+        throw UserException(
+          'user/get-data from database: at: ${ref.path} ',
+          e.toString(),
+        );
+      }
+
+      ///
       if (snapshot.exists) {
         user = User.fromDatabaseSnapshot(snapshot);
       }
     } else {
       throw UserException(
-          'user/get-data', 'firestore or database must be true.');
+        'user/get-data',
+        'firestore or database must be true.',
+      );
     }
 
     /// If the snapshot does not exist, return null.

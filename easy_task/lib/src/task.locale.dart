@@ -61,6 +61,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Complete',
     'ko': '완료',
   },
+  'to complete': {
+    'en': 'Complete',
+    'ko': '완료하기',
+  },
   'update task': {
     'en': 'Update',
     'ko': '업데이트',

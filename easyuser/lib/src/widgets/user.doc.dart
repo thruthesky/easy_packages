@@ -1,4 +1,5 @@
 // import 'package:firebase_core/firebase_core.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:memory_cache/memory_cache.dart';
@@ -85,6 +86,7 @@ class UserDoc extends StatelessWidget {
           return const SizedBox.shrink();
         }
         if (snapshot.hasError) {
+          dog('UserDoc() -> FutureBuilder() -> hasError: ${snapshot.error}');
           return Text(snapshot.error.toString());
         }
         return builder(snapshot.data);
