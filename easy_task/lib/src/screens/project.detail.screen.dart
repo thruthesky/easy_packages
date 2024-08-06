@@ -1,4 +1,8 @@
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_task/easy_task.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,24 +31,62 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('User ID: ${task.creator}',
-                    style: const TextStyle(fontSize: 16)),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: UserDoc(
+                    uid: task.creator,
+                    sync: true,
+                    builder: (creator) => creator == null
+                        ? const CircularProgressIndicator.adaptive()
+                        : Row(
+                            children: [
+                              Text('${'Creator'.t} :'),
+                              UserAvatar(
+                                user: creator,
+                                size: 24,
+                                radius: 8,
+                              ),
+                              Text(
+                                ' ${creator.displayName}',
+                              ),
+                              const Spacer(),
+                              Text(
+                                '${'Created At'.t}: ${task.createdAt.short}',
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                            ],
+                          ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text('Project: ${task.project}'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(task.title,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      subtitle: Text(task.description,
+                          style: const TextStyle(fontSize: 16)),
+                    ),
+                  ),
+                ),
+
                 const SizedBox(height: 8),
-                Text('Project: ${task.project}',
-                    style: const TextStyle(fontSize: 16)),
-                Text('Title: ${task.title}',
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                Text('Description: ${task.description}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Created At: ${task.createdAt}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Updated At: ${task.updatedAt}',
-                    style: const TextStyle(fontSize: 16)),
+                // Text(
+                //   'Updated At: ${task.updatedAt.short}',
+                //   style: Theme.of(context).textTheme.labelSmall,
+                // ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                  child: DisplayPhotos(urls: task.urls),
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
                         onPressed: () {
@@ -53,11 +95,11 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                             parentTask: task,
                           );
                         },
-                        child: const Text('Add Task')),
+                        child: Text('Add Task'.t)),
                     ElevatedButton(
                         onPressed: () => TaskService.instance
                             .showTaskUpdateScreen(context, task),
-                        child: const Text('Update Project')),
+                        child: Text('Update'.t)),
                   ],
                 ),
               ],
