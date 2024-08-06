@@ -77,6 +77,9 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Task updated',
     'ko': '할 일이 업데이트 되었습니다',
   },
+  'add task': {
+    'en': 'Add Task',
+  }
 };
 
 void addPostTranslations() async {
