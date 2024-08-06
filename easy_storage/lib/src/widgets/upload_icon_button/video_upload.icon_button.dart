@@ -1,19 +1,20 @@
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
-/// Upload Image Icon Button
+/// Video upload icon button
 ///
-/// This widget is displaying an IconButton and is used to upload an image.
-class FileUploadIconButton extends StatelessWidget {
-  const FileUploadIconButton({
+/// This widget uses the [UploadIconButton] to upload a file. It has a preset
+/// options for uploading video.
+class VideoUploadIconButton extends StatelessWidget {
+  const VideoUploadIconButton({
     super.key,
     required this.onUpload,
     this.onUploadSourceSelected,
+    this.camera = true,
     this.gallery = true,
-    this.file = true,
     this.progress,
     this.complete,
-    this.icon = const Icon(Icons.attach_file),
+    this.icon = const Icon(Icons.videocam),
     this.iconSize,
     this.visualDensity,
     this.iconPadding,
@@ -28,8 +29,8 @@ class FileUploadIconButton extends StatelessWidget {
   final Function(double)? progress;
   final Function()? complete;
   final VisualDensity? visualDensity;
+  final bool camera;
   final bool gallery;
-  final bool file;
 
   final double? iconSize;
   final EdgeInsetsGeometry? iconPadding;
@@ -43,10 +44,10 @@ class FileUploadIconButton extends StatelessWidget {
       onUploadSourceSelected: onUploadSourceSelected,
       photoCamera: false,
       photoGallery: false,
-      videoCamera: false,
-      videoGallery: false,
-      gallery: gallery,
-      file: file,
+      videoCamera: camera,
+      videoGallery: gallery,
+      gallery: false,
+      file: false,
       progress: progress,
       complete: complete,
       icon: icon,

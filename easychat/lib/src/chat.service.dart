@@ -58,11 +58,14 @@ class ChatService {
       FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
 
   /// Show the chat room list screen.
-  Future showChatRoomListScreen(BuildContext context) {
+  Future showChatRoomListScreen(BuildContext context,
+      {ChatRoomListOption queryOption = ChatRoomListOption.allMine}) {
     return $showChatRoomListScreen?.call() ??
         showGeneralDialog(
           context: context,
-          pageBuilder: (_, __, ___) => const ChatRoomListScreen(),
+          pageBuilder: (_, __, ___) => ChatRoomListScreen(
+            queryOption: queryOption,
+          ),
         );
   }
 
@@ -96,14 +99,6 @@ class ChatService {
         user: user,
         room: room,
       ),
-    );
-  }
-
-  @Deprecated('message')
-  showInviteListScreen(BuildContext context, {ChatRoom? room}) {
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
     );
   }
 

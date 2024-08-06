@@ -1,3 +1,10 @@
+## 0.0.12
+* Update. Add custom UI design to `ImageUploadCard`.
+
+## 0.0.11
+* Refactor. `ImageUpload` -> `ImageUploadCard`.
+* Refacotr. Add `onUpload` in `ImageUploadCard`.
+
 ## 0.0.10
 * Update. `delete` will pass if the file does not exists in Storage.
 
@@ -18,7 +25,7 @@
 
 
 ## 0.0.4
-* Add. ImageUpload widget.
+* Add. ImageUploadCard widget.
 
 ## 0.0.3
 * Flutter Firebase SDK version adjustment.

@@ -55,7 +55,6 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // TODO fix the scroll when changing the query
                 const ChatRoomInvitationShortList(
                   key: ValueKey("Chat Room Invitation Short List"),
                 ),
