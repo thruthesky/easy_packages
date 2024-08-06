@@ -70,14 +70,34 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               const Divider(),
               const Text("Upload Icon Button"),
               ComicTheme(
-                child: UploadIconButton(
-                  icon: const Icon(
-                    Icons.image,
-                    size: 80,
-                  ),
-                  onUpload: (url) {
-                    debugPrint('Uploaded: $url');
-                  },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    UploadIconButton(
+                      icon: const Icon(
+                        Icons.image,
+                        size: 80,
+                      ),
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                    UploadIconButton.image(
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                    UploadIconButton.video(
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                    UploadIconButton.file(
+                      onUpload: (url) {
+                        debugPrint('Uploaded: $url');
+                      },
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),

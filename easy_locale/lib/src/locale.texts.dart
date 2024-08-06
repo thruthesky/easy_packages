@@ -283,6 +283,22 @@ final Map<String, dynamic> localeTexts = {
     'en': 'Upload from',
     'ko': '업로드 방법 선택',
   },
+  'Select video from gallery': {
+    'en': 'Select video from gallery',
+    'ko': '갤러리에서 동영상 선택',
+  },
+  'Take video from camera': {
+    'en': 'Take video from camera',
+    'ko': '카메라로 동영상 찍기',
+  },
+  'Take file from gallery': {
+    'en': 'Take file from gallery',
+    'ko': '갤러리에서 파일 선택',
+  },
+  'Choose file': {
+    'en': 'Choose file',
+    'ko': '파일 선택',
+  },
 
   /// ----------------------- Report -----------------------
   ///

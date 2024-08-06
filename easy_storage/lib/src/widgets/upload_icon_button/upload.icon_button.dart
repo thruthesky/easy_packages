@@ -6,8 +6,13 @@ import 'package:flutter/material.dart';
 /// This widget is displaying an IconButton and is used to upload an image,
 /// video, or file.
 ///
-/// There are widgets that uses this widge to upload specific types of files:
-/// [FileUploadIconButton], [ImageUploadIconButton], [VideoUploadIconButton].
+/// You can change the following `photoCamera,photoGallery,videoCamera,videoGallery,fromGallery,fromFile` upload source property
+/// with bool value true/false if you want to limit the upload source.
+///
+/// Or Simply use the following named constructor to:
+///
+/// Upload specific types of files you can use the name constructor:
+/// [UploadIconButton.image], [UploadIconButton.video],  [UploadIconButton.file].
 ///
 /// The [onUpload] function is called when the upload is complete.
 class UploadIconButton extends StatelessWidget {
@@ -17,10 +22,10 @@ class UploadIconButton extends StatelessWidget {
     this.onUploadSourceSelected,
     this.photoCamera = true,
     this.photoGallery = true,
-    this.videoCamera = false,
-    this.videoGallery = false,
-    this.gallery = false,
-    this.file = false,
+    this.videoCamera = true,
+    this.videoGallery = true,
+    this.fromGallery = true,
+    this.fromFile = true,
     this.progress,
     this.complete,
     this.icon = const Icon(Icons.add),
@@ -45,18 +50,61 @@ class UploadIconButton extends StatelessWidget {
   final bool videoCamera;
   final bool videoGallery;
 
-  final bool gallery;
-  final bool file;
+  final bool fromGallery;
+  final bool fromFile;
 
   final double? iconSize;
   final EdgeInsetsGeometry? iconPadding;
   final EdgeInsetsGeometry? uploadBottomSheetPadding;
   final double? uploadBottomSheetSpacing;
 
-  const UploadIconButton.file(
-    this.onUpload, {
+  /// Upload Icon Button for Image from Galery and Camera
+  const UploadIconButton.image({
+    required this.onUpload,
     super.key,
     this.onUploadSourceSelected,
+    this.photoCamera = true,
+    this.photoGallery = true,
+    this.progress,
+    this.complete,
+    this.icon = const Icon(Icons.camera_alt),
+    this.iconSize,
+    this.visualDensity,
+    this.iconPadding,
+    this.uploadBottomSheetPadding,
+    this.uploadBottomSheetSpacing,
+  })  : videoCamera = false,
+        videoGallery = false,
+        fromGallery = false,
+        fromFile = false;
+
+  /// Upload Icon Button for Video from Galery and Camera
+  const UploadIconButton.video({
+    required this.onUpload,
+    super.key,
+    this.onUploadSourceSelected,
+    this.videoCamera = true,
+    this.videoGallery = true,
+    this.progress,
+    this.complete,
+    this.icon = const Icon(Icons.videocam),
+    this.iconSize,
+    this.visualDensity,
+    this.iconPadding,
+    this.uploadBottomSheetPadding,
+    this.uploadBottomSheetSpacing,
+  })  : photoCamera = false,
+        photoGallery = false,
+        fromGallery = false,
+        fromFile = false;
+
+  /// Upload Icon Button for files from Gallery and file storage
+  const UploadIconButton.file({
+    required this.onUpload,
+    super.key,
+    this.onUploadSourceSelected,
+    this.fromGallery = true,
+    this.fromFile = true,
     this.progress,
     this.complete,
     this.icon = const Icon(Icons.attach_file),
@@ -68,9 +116,7 @@ class UploadIconButton extends StatelessWidget {
   })  : photoCamera = false,
         photoGallery = false,
         videoCamera = false,
-        videoGallery = false,
-        gallery = true,
-        file = true;
+        videoGallery = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,14 +132,12 @@ class UploadIconButton extends StatelessWidget {
           photoCamera: photoCamera,
           videoGallery: videoGallery,
           videoCamera: videoCamera,
-          gallery: gallery,
-          file: file,
+          fromGallery: fromGallery,
+          fromFile: fromFile,
           progress: progress,
           complete: complete,
-          spacing: uploadBottomSheetSpacing ??
-              StorageService.instance.uploadBottomSheetSpacing,
-          padding: uploadBottomSheetPadding ??
-              StorageService.instance.uploadBottomSheetPadding,
+          spacing: uploadBottomSheetSpacing,
+          padding: uploadBottomSheetPadding,
           onUploadSourceSelected: onUploadSourceSelected,
         );
         if (uploadedUrl != null) {
