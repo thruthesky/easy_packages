@@ -328,3 +328,19 @@ You can also use `ThumbnailImage` widget to display image.
 
 
 
+
+
+## Custom UI/UX
+
+
+### Customizing the upload bottom sheet UI
+
+
+- To give spaces between the bottom sheet items, you can use `uploadBottomSheetPadding` and `uploadBottomSheetSpacing`.
+
+```dart
+StorageService.instance.init(
+  uploadBottomSheetPadding: const EdgeInsets.all(16),
+  uploadBottomSheetSpacing: 16,
+);
+```
