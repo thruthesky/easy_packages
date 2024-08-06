@@ -104,6 +104,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 ],
               ),
             ),
+            const SliverPadding(padding: EdgeInsets.all(16)),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -116,6 +117,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 ),
               ),
             ),
+            const SliverPadding(padding: EdgeInsets.all(16)),
             CommentListTreeView(documentReference: task.ref),
           ],
         ),
