@@ -230,7 +230,9 @@ class User {
         snapshot = await ref.get();
       } catch (e) {
         throw UserException(
-            'user/get-data from database: at: ${ref.path} ', e.toString());
+          'user/get-data from database: at: ${ref.path} ',
+          e.toString(),
+        );
       }
 
       ///
