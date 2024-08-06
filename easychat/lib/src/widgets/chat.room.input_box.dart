@@ -23,8 +23,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   bool get canSubmit => controller.text.isNotEmpty || url != null;
   bool submitable = false;
   BehaviorSubject<double?> uploadProgress = BehaviorSubject.seeded(null);
-  ChatRoom? room;
-  StreamSubscription? docUpdateStream;
+  ChatRoom get room => widget.room;
 
   String? url;
 
@@ -35,22 +34,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
 
   @override
-  void initState() {
-    super.initState();
-    room = widget.room;
-    docUpdateStream = room!.changes.listen((room) {
-      this.room = room;
-    });
-  }
-
-  @override
   void dispose() {
     uploadProgress.close();
     controller.dispose();
     if (url != null) {
       StorageService.instance.delete(url);
     }
-    docUpdateStream?.cancel();
     super.dispose();
   }
 
@@ -202,7 +191,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     if (controller.text.isEmpty && url == null) return;
     setState(() => submitable = false);
     final sendMessageFuture = ChatService.instance.sendMessage(
-      room!,
+      room,
       text: controller.text,
       photoUrl: url,
     );
