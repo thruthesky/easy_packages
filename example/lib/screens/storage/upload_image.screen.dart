@@ -2,6 +2,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
+import 'package:social_design_system/social_design_system.dart';
 
 class UploadImageScreen extends StatefulWidget {
   static const String routeName = '/ImageUploadCard';
@@ -68,14 +69,16 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               ),
               const Divider(),
               const Text("Upload Icon Button"),
-              UploadIconButton(
-                icon: const Icon(
-                  Icons.image,
-                  size: 80,
+              ComicTheme(
+                child: UploadIconButton(
+                  icon: const Icon(
+                    Icons.image,
+                    size: 80,
+                  ),
+                  onUpload: (url) {
+                    debugPrint('Uploaded: $url');
+                  },
                 ),
-                onUpload: (url) {
-                  debugPrint('Uploaded: $url');
-                },
               ),
               const SizedBox(height: 24),
               const Divider(),

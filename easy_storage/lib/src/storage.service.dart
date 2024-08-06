@@ -17,6 +17,9 @@ class StorageService {
 
   String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
+  EdgeInsetsGeometry? uploadBottomSheetPadding;
+  double? uploadBottomSheetSpacing;
+
   ///
   StorageService._();
 
@@ -32,6 +35,8 @@ class StorageService {
   init({
     // StorageCustomize? customize,
     bool? enableFilePickerExceptionHandler,
+    EdgeInsetsGeometry? uploadBottomSheetPadding,
+    double? uploadBottomSheetSpacing,
   }) {
     // if (customize != null) {
     //   this.customize = customize;
@@ -39,6 +44,9 @@ class StorageService {
     if (enableFilePickerExceptionHandler != null) {
       this.enableFilePickerExceptionHandler = enableFilePickerExceptionHandler;
     }
+
+    this.uploadBottomSheetPadding = uploadBottomSheetPadding;
+    this.uploadBottomSheetSpacing = uploadBottomSheetSpacing;
   }
 
   /// Upload a file (or an image) to Firebase Storage.

@@ -27,8 +27,8 @@ class UploadIconButton extends StatelessWidget {
     this.iconSize,
     this.visualDensity,
     this.iconPadding,
-    this.padding,
-    this.spacing,
+    this.uploadBottomSheetPadding,
+    this.uploadBottomSheetSpacing,
   });
 
   final void Function(String url) onUpload;
@@ -50,8 +50,27 @@ class UploadIconButton extends StatelessWidget {
 
   final double? iconSize;
   final EdgeInsetsGeometry? iconPadding;
-  final EdgeInsetsGeometry? padding;
-  final double? spacing;
+  final EdgeInsetsGeometry? uploadBottomSheetPadding;
+  final double? uploadBottomSheetSpacing;
+
+  const UploadIconButton.file(
+    this.onUpload, {
+    super.key,
+    this.onUploadSourceSelected,
+    this.progress,
+    this.complete,
+    this.icon = const Icon(Icons.attach_file),
+    this.iconSize,
+    this.visualDensity,
+    this.iconPadding,
+    this.uploadBottomSheetPadding,
+    this.uploadBottomSheetSpacing,
+  })  : photoCamera = false,
+        photoGallery = false,
+        videoCamera = false,
+        videoGallery = false,
+        gallery = true,
+        file = true;
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +90,10 @@ class UploadIconButton extends StatelessWidget {
           file: file,
           progress: progress,
           complete: complete,
-          spacing: spacing,
-          padding: padding,
+          spacing: uploadBottomSheetSpacing ??
+              StorageService.instance.uploadBottomSheetSpacing,
+          padding: uploadBottomSheetPadding ??
+              StorageService.instance.uploadBottomSheetPadding,
           onUploadSourceSelected: onUploadSourceSelected,
         );
         if (uploadedUrl != null) {

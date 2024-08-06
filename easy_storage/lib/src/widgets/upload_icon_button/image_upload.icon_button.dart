@@ -18,8 +18,8 @@ class ImageUploadIconButton extends StatelessWidget {
     this.iconSize,
     this.visualDensity,
     this.iconPadding,
-    this.padding,
-    this.spacing,
+    this.uploadBottomSheetPadding,
+    this.uploadBottomSheetSpacing,
   });
 
   final void Function(String url) onUpload;
@@ -34,8 +34,8 @@ class ImageUploadIconButton extends StatelessWidget {
 
   final double? iconSize;
   final EdgeInsetsGeometry? iconPadding;
-  final EdgeInsetsGeometry? padding;
-  final double? spacing;
+  final EdgeInsetsGeometry? uploadBottomSheetPadding;
+  final double? uploadBottomSheetSpacing;
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +54,8 @@ class ImageUploadIconButton extends StatelessWidget {
       iconSize: iconSize,
       visualDensity: visualDensity,
       iconPadding: iconPadding,
-      padding: padding,
-      spacing: spacing,
+      uploadBottomSheetPadding: uploadBottomSheetPadding,
+      uploadBottomSheetSpacing: uploadBottomSheetSpacing,
     );
   }
 }

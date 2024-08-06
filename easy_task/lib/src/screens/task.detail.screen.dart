@@ -65,11 +65,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                     child: Card(
                       child: ListTile(
-                        title: Text(task.title,
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
-                        subtitle: Text(task.description,
-                            style: const TextStyle(fontSize: 16)),
+                        title: Text(
+                          task.title,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          task.description,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
                     ),
                   ),
@@ -82,24 +86,26 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
                     child: DisplayPhotos(urls: task.urls),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // complete button
-                      TextButton.icon(
-                        onPressed: () async {
-                          await task.toggleCompleted(!task.completed);
-                        },
-                        icon: task.completed ? const Icon(Icons.check) : null,
-                        label:
-                            Text(task.completed ? 'Completed'.t : 'Complete'.t),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => TaskService.instance
-                            .showTaskUpdateScreen(context, task),
-                        child: Text('Update Task'.t),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                    child: Row(
+                      children: [
+                        // complete button
+                        TextButton.icon(
+                          onPressed: () async {
+                            await task.toggleCompleted(!task.completed);
+                          },
+                          icon: task.completed ? const Icon(Icons.check) : null,
+                          label: Text(
+                              task.completed ? 'Completed'.t : 'To complete'.t),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => TaskService.instance
+                              .showTaskUpdateScreen(context, task),
+                          child: Text('Update Task'.t),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
