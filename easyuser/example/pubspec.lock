@@ -26,7 +26,7 @@ packages:
     source: hosted
     version: "2.1.1"
   cached_network_image:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cached_network_image
       sha256: "4a5d8d2c728b0f3d0245f69f921d7be90cae4c2fd5288f773088672c0893f819"
@@ -66,7 +66,7 @@ packages:
     source: hosted
     version: "1.1.1"
   cloud_firestore:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cloud_firestore
       sha256: a31eec60eadaa859f0677bf661d9f86ed15961c716512f64884e59edcb341472
@@ -137,6 +137,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  cupertino_icons:
+    dependency: "direct main"
+    description:
+      name: cupertino_icons
+      sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.8"
   date_picker_v2:
     dependency: transitive
     description:
@@ -162,7 +170,7 @@ packages:
     source: hosted
     version: "0.0.4"
   easy_helpers:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: easy_helpers
       sha256: "3623428aa7cfd11836b868f80b457ac47d4da91a5ad94f5fd4152b71439bd0b6"
@@ -172,21 +180,12 @@ packages:
   easy_locale:
     dependency: "direct main"
     description:
-      name: easy_locale
-      sha256: eb3a31e55e6126d65d0c56daae3f9c6d4c483dd93f254530b3b6d1ae85b90a70
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../easy_locale"
+      relative: true
+    source: path
     version: "0.0.6"
-  easy_report:
-    dependency: "direct main"
-    description:
-      name: easy_report
-      sha256: "521d8730cf31f9bd43a8b823e51ad52bc3baa4938f11c034faae9c6582ea1bec"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   easy_storage:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: easy_storage
       sha256: "6fe1ed4a5eec37382fb1fcd01c5692bc802ba7de0f8a09eee90cc21bbcb95cfe"
@@ -196,10 +195,9 @@ packages:
   easyuser:
     dependency: "direct main"
     description:
-      name: easyuser
-      sha256: "175036525c46823c3768d07eec4e1887c9d5cf4f6ddcfa1c3012c49e0b3b781d"
-      url: "https://pub.dev"
-    source: hosted
+      path: ".."
+      relative: true
+    source: path
     version: "0.0.23"
   fake_async:
     dependency: transitive
@@ -290,7 +288,7 @@ packages:
     source: hosted
     version: "5.12.5"
   firebase_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core
       sha256: "3187f4f8e49968573fd7403011dca67ba95aae419bc0d8131500fae160d94f92"
@@ -314,7 +312,7 @@ packages:
     source: hosted
     version: "2.17.4"
   firebase_database:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_database
       sha256: e758ef2be8530ba84cf9a483255a9bb1bf0df458884196155a0e643972db730c
@@ -362,7 +360,7 @@ packages:
     source: hosted
     version: "3.9.12"
   firebase_ui_database:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_ui_database
       sha256: bbe6a6b03ecb89aed9ccd182c0258935e2d26440e3bfab1bb48e0bb404e91282
@@ -370,7 +368,7 @@ packages:
     source: hosted
     version: "1.4.4"
   firebase_ui_firestore:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_ui_firestore
       sha256: de7f184194b20f544d259091b1b3125886572acb08fbd68d97178d25fa394fd6
@@ -694,7 +692,7 @@ packages:
     source: hosted
     version: "2.1.8"
   rxdart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: rxdart
       sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
@@ -843,5 +841,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.4 <4.0.0"
+  dart: ">=3.4.3 <4.0.0"
   flutter: ">=3.22.0"
