@@ -121,6 +121,8 @@ class ChatMessage {
         'You can only delete your own message.',
       );
     }
+    // TODO check if the message to be deleted is the one in the chat room list tile last message
+    // It should be updated.
     List<Future> futures = [
       if (url != null) StorageService.instance.delete(url!),
       if (replyTo?.url != null) StorageService.instance.delete(replyTo!.url!),

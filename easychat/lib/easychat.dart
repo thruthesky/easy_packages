@@ -15,6 +15,7 @@ export './src/chat.exception.dart';
 // Widgets ====================================================
 export './src/widgets/chat.bubble.dart';
 export './src/widgets/chat.bubble.long_press.popup_menu.dart';
+export './src/widgets/chat.bubble.reply.dart';
 export './src/widgets/chat.messages.list_view.dart';
 export './src/widgets/chat.room.input_box.dart';
 export './src/widgets/chat.room.invitation.list_tile.dart';
