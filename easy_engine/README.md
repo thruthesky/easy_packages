@@ -1,6 +1,11 @@
 # Easy Extensions
 
-This package is the counter part of the [easy-engine](https://github.com/thruthesky/easy-engine) of the firebase cloud functions project
+The `easy_engine` package is the counter part of the [easy-engine](https://github.com/thruthesky/easy-engine) built as the firebase cloud functions to support various essential features that cannot be done from font-end applications like enabling and disabling user account, sending push notifications, and more.
+
+
+# Why the cloud functions?
+
+- Refer [Why cloud functions?](https://github.com/thruthesky/easy-engine?tab=readme-ov-file#why-cloud-functions) at the `easy-engine` cloud function project.
 
 
 
