@@ -42,6 +42,23 @@
 ### Security rules
 
 
+```json
+    "fcm-tokens": {
+      ".read": true,
+      "$token": {
+        ".write": "newData.val() === auth.uid",
+      },
+      ".indexOn": [".value"],
+    },
+    "fcm-subscriptions": {
+      ".read": true,
+      "$subscriptionId": {
+        "$uid": {
+          ".write": "newData.val() === auth.uid"
+        }
+      }
+    },
+```
 
 
 
