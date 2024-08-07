@@ -58,11 +58,11 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
 
     if (value != null) {
       if (value == items.reply) {
-        dog("Replying to: ${message.id}");
         room.replyTo(message);
       } else if (value == items.delete) {
-        dog("Deleting: ${message.id}");
-        // TODO review
+        // Need to get here because room is not latest.
+        // However, deleting happens occasionally and
+        // wont cost much read counts.
         final latestRoom = await ChatRoom.get(room.id);
         await latestRoom!.mayDeleteLastMessage(message.id);
         await message.delete();
