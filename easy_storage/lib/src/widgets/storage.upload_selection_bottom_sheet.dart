@@ -1,5 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_storage/src/enum/source_type.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
 class StorageUploadSelectionBottomSheet extends StatelessWidget {
@@ -9,8 +9,8 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
     this.photoCamera = true,
     this.videoGallery = false,
     this.videoCamera = false,
-    this.gallery = false,
-    this.file = false,
+    this.fromGallery = false,
+    this.fromFile = false,
     this.padding,
     this.spacing,
   });
@@ -19,16 +19,26 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
   final bool? photoCamera;
   final bool? videoGallery;
   final bool? videoCamera;
-  final bool? gallery;
-  final bool? file;
+  final bool? fromGallery;
+  final bool? fromFile;
   final EdgeInsetsGeometry? padding;
   final double? spacing;
+
+  /// if padding and uploadBottmSheetPadding is not set return `EdgeInsets.zero`
+  EdgeInsetsGeometry get getPadding =>
+      padding ??
+      StorageService.instance.uploadBottomSheetPadding ??
+      EdgeInsets.zero;
+
+  /// if spacing and uploadBottomSheetSpacing is not set return `null`
+  double? get getSpacing =>
+      spacing ?? StorageService.instance.uploadBottomSheetSpacing;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: padding ?? EdgeInsets.zero,
+        padding: getPadding,
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
@@ -68,7 +78,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                   Navigator.pop(context, SourceType.photoGallery);
                 },
               ),
-              if (spacing != null) SizedBox(height: spacing),
+              if (getSpacing != null) SizedBox(height: getSpacing),
             ],
             if (photoCamera == true) ...[
               ListTile(
@@ -79,7 +89,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                   Navigator.pop(context, SourceType.photoCamera);
                 },
               ),
-              if (spacing != null) SizedBox(height: spacing),
+              if (getSpacing != null) SizedBox(height: getSpacing),
             ],
             if (videoGallery == true) ...[
               ListTile(
@@ -90,7 +100,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                   Navigator.pop(context, SourceType.videoGallery);
                 },
               ),
-              if (spacing != null) SizedBox(height: spacing),
+              if (getSpacing != null) SizedBox(height: getSpacing),
             ],
             if (videoCamera == true) ...[
               ListTile(
@@ -101,9 +111,9 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                   Navigator.pop(context, SourceType.videoCamera);
                 },
               ),
-              if (spacing != null) SizedBox(height: spacing),
+              if (getSpacing != null) SizedBox(height: getSpacing),
             ],
-            if (gallery == true) ...[
+            if (fromGallery == true) ...[
               ListTile(
                 leading: const Icon(Icons.file_present_rounded),
                 title: Text('Take file from gallery'.t),
@@ -112,9 +122,9 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                   Navigator.pop(context, SourceType.mediaGallery);
                 },
               ),
-              if (spacing != null) SizedBox(height: spacing),
+              if (getSpacing != null) SizedBox(height: getSpacing),
             ],
-            if (file == true) ...[
+            if (fromFile == true) ...[
               ListTile(
                 leading: const Icon(Icons.snippet_folder_rounded),
                 title: Text('Choose file'.t),
@@ -123,9 +133,9 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                   Navigator.pop(context, SourceType.file);
                 },
               ),
-              if (spacing != null) SizedBox(height: spacing),
+              if (getSpacing != null) SizedBox(height: getSpacing),
             ],
-            SizedBox(height: spacing != null && spacing! >= 8 ? 8 : 16),
+            SizedBox(height: getSpacing != null && getSpacing! >= 8 ? 8 : 16),
             TextButton(
               child: Text('Close'.t,
                   style: TextStyle(color: Theme.of(context).primaryColor)),

@@ -113,6 +113,7 @@ class MessagingService {
 
     try {
       token = await FirebaseMessaging.instance.getToken() ?? '';
+      dog('token: $token');
     } on FirebaseException catch (e) {
       dog('Error while getting token: code: ${e.code}, message: ${e.message}, e: $e');
       rethrow;
@@ -125,6 +126,30 @@ class MessagingService {
     if (token == null || token.isEmpty) return;
     if (currentUser == null) return;
     await myTokensRef.child(token).set(true);
+
+    _subscribeToTopics();
+  }
+
+  Future _subscribeToTopics() async {
+    if(kIsWeb) return;
+
+    FirebaseMessaging.instance.subscribeToTopic('allUsersTopic');
+    if (Platform.isAndroid) {
+      FirebaseMessaging.instance.subscribeToTopic('androidTopic');
+    } else if (Platform.isIOS) {
+      FirebaseMessaging.instance.subscribeToTopic('iosTopic');
+    } else if (Platform.isMacOS) {
+      FirebaseMessaging.instance.subscribeToTopic('macTopic');
+    } else if (Platform.isLinux) {
+      FirebaseMessaging.instance.subscribeToTopic('linuxTopic');
+    } else if (Platform.isWindows) {
+      FirebaseMessaging.instance.subscribeToTopic('windowsTopic');
+    } else if (Platform.isFuchsia) {
+      FirebaseMessaging.instance.subscribeToTopic('fuchsiaTopic');
+    } 
+
+
+    
   }
 
   /// Initialize Messaging Event Handlers
