@@ -1,3 +1,7 @@
+## 0.0.11
+* Add. media query extension.
+* Add. theme extension.
+
 ## 0.0.10
 * Update. `dog` can take any type of variables.
 
