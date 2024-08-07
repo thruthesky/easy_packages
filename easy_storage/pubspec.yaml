@@ -10,7 +10,7 @@ environment:
 dependencies:
   cached_network_image: ^3.3.1
   cloud_firestore: ^5.0.2
-  easy_helpers: ^0.0.9
+  easy_helpers: ^0.0.11
   easy_locale: ^0.0.6
   file_picker: ^8.0.6
   firebase_auth: ^5.1.1
