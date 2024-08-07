@@ -69,4 +69,37 @@ class EngineService {
       rethrow;
     }
   }
+
+  /// Send a message to the users
+  Future<List<String>> sendMessage({
+    required List<String> tokens,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
+  }) async {
+    return [];
+  }
+
+  /// Send a message to the users
+  Future<List<String>> sendMessageToUid({
+    required List<String> uids,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
+  }) async {
+    return [];
+  }
+
+  /// Send a message to the users
+  Future<List<String>> sendMessageToSubscription({
+    required String subscription,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
+  }) async {
+    return [];
+  }
 }

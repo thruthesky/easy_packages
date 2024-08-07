@@ -213,19 +213,19 @@ class MessagingService {
     ///
     ///
 
-    /// Send messages in batches
-    Uri url =
-        Uri.https('fcm.googleapis.com', 'v1/projects/$projectId/messages:send');
-    for (String token in tokens) {
-      http.Response response = await http.post(
-        url,
-        body: getPayload(token: token, title: title, body: body, data: data)
-            .toString(),
-      );
+    // /// Send messages in batches
+    // Uri url =
+    //     Uri.https('fcm.googleapis.com', 'v1/projects/$projectId/messages:send');
+    // for (String token in tokens) {
+    //   http.Response response = await http.post(
+    //     url,
+    //     body: getPayload(token: token, title: title, body: body, data: data)
+    //         .toString(),
+    //   );
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
+    // print('Response status: ${response.statusCode}');
+    // print('Response body: ${response.body}');
+    // }
   }
 
   /// Get tokens of the users
@@ -258,5 +258,38 @@ class MessagingService {
         }
       }
     };
+  }
+
+  /// Send a message to the users
+  Future<List<String>> sendMessage({
+    required List<String> tokens,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
+  }) async {
+    return [];
+  }
+
+  /// Send a message to the users
+  Future<List<String>> sendMessageToUid({
+    required List<String> uids,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
+  }) async {
+    return [];
+  }
+
+  /// Send a message to the users
+  Future<List<String>> sendMessageToSubscription({
+    required String subscription,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
+  }) async {
+    return [];
   }
 }
