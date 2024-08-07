@@ -57,7 +57,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       (doc) {
         $room!.copyFromSnapshot(doc);
         $room!.updateMyReadMeta();
-        roomNotifier.value = $room.hashCode;
+        roomNotifier.value = $room!.updatedAt.millisecondsSinceEpoch;
       },
     );
   }
@@ -168,10 +168,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
-        builder: (_, room, __) => ChatRoomMenuDrawer(
-          room: $room!,
-          user: $user,
-        ),
+        builder: (_, hc, __) {
+          dog('Chat Room Screen: End Drawer');
+          return ChatRoomMenuDrawer(
+            room: $room!,
+            user: $user,
+          );
+        },
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

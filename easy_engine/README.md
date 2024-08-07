@@ -79,3 +79,9 @@ ElevatedButton(
   child: const Text('Delete Account'),
 ),
 ```
+
+
+# Push notifications
+
+- This package does not handle the push notifications, see the `easy_messaging` for sending messages using easy engine.
+

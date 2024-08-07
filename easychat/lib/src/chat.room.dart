@@ -451,6 +451,7 @@ class ChatRoom {
         // but actually wants to accept it, then we should
         // also remove the uid from rejeceted users.
         field.rejectedUsers: FieldValue.arrayRemove([my.uid]),
+        field.updatedAt: FieldValue.serverTimestamp(),
       },
       SetOptions(merge: true),
     );

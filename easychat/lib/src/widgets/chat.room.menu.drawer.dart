@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.member.list.dialog.dart';
 import 'package:easyuser/easyuser.dart';
@@ -34,6 +35,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    dog('ChatRoomMenuDrawer.build');
     return Drawer(
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
@@ -76,9 +78,11 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                             padding: const EdgeInsets.all(8),
                             child: const Icon(Icons.edit),
                           ),
-                          onPressed: () {
-                            ChatService.instance
-                                .showChatRoomEditScreen(context, room: room);
+                          onPressed: () async {
+                            await ChatService.instance.showChatRoomEditScreen(
+                              context,
+                              room: room,
+                            );
                           },
                         ),
                       )
