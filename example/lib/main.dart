@@ -53,6 +53,7 @@ class MyAppState extends State<MyApp> {
     );
 
     MessagingService.instance.init(
+      projectId: DefaultFirebaseOptions.currentPlatform.projectId,
       onMessageOpenedFromBackground: (message) {
         print('onMessageOpenedFromBackground: $message');
       },
@@ -137,6 +138,25 @@ class MyAppState extends State<MyApp> {
       //       .showPostDetailScreen(context: globalContext, post: post);
       // })();
       // LikeTestService.instance.runTests();
+
+      // MessagingService.instance.getTokens([
+      //   'vysiFTQS1ZXSnvS3UnxfeJEpCWN2',
+      //   'Jkihj9GMRoNeZ1WXQ5FHMOr3E4c2',
+      // ]);
+
+      // MessagingService.instance.send(
+      //     uids: [
+      //       'vysiFTQS1ZXSnvS3UnxfeJEpCWN2',
+      //       'Jkihj9GMRoNeZ1WXQ5FHMOr3E4c2',
+      //     ],
+      //     title: 'Test from MyApp',
+      //     body: 'Test body',
+      //     data: {
+      //       'key': 'value',
+      //     });
+
+      // MessagingService.instance.send(
+      //   uids: ['vysiFTQS1ZXSnvS3UnxfeJEpCWN2'],
     });
   }
 
