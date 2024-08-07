@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -16,27 +18,71 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
   double maxWidth(BuildContext context) =>
       MediaQuery.of(context).size.width * 0.56;
 
+  ChatMessage get message => widget.message;
+
   ChatMessage? replyTo;
 
+  StreamSubscription? subscription;
+
+  // Check if this is the correct way.
+  // Review because this might be wrong.
+  // If multiple people is looking at a reply then
+  // the true source was deleted, suddenly these multiple
+  // devices will update the chat reply to.
   @override
   void initState() {
     super.initState();
-    replyTo = widget.message.replyTo;
+    replyTo = message.replyTo;
+    if (replyTo == null) return;
+    // No need to listen if it is deleted
+    if (replyTo?.deleted == true) return;
     // Listen to the reply message
+    final ref =
+        ChatService.instance.messageRef(message.roomId!).child(replyTo!.id);
+    subscription = ref.onValue.listen((event) {
+      final replySource = ChatMessage.fromSnapshot(event.snapshot);
+      if (isDifferentText(replyTo!.text ?? "", replySource.text ?? "")) {
+        message.update(replyTo: replyTo);
+      }
+      replyTo = replySource;
+      if (message.url != replyTo?.url || message.deleted != replyTo?.deleted) {
+        message.update(replyTo: replyTo);
+      }
+      if (replyTo!.deleted == true) {
+        subscription?.cancel();
+      }
+    });
+  }
+
+  /// Check if two strings are different until 77th character.
+  ///
+  /// Reason: Only saving until 77th characters in RTDB for reply to.
+  /// So that it will only save a part of text.
+  isDifferentText(String text1, String text2) {
+    final string1 = text1.length > 77 ? text1.substring(0, 77) : text1;
+    final string2 = text2.length > 77 ? text2.substring(0, 77) : text2;
+    return string1 != string2;
+  }
+
+  @override
+  dispose() {
+    subscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (replyTo == null) return const SizedBox.shrink();
     return Opacity(
       opacity: 0.6,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.message.uid != myUid
+        crossAxisAlignment: message.uid != myUid
             ? CrossAxisAlignment.start
             : CrossAxisAlignment.end,
         children: [
           UserDoc(
-            uid: widget.message.replyTo!.uid!,
+            uid: message.replyTo!.uid!,
             builder: (user) {
               if (user == null) {
                 return Text(
@@ -47,87 +93,109 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                 );
               }
               return Text(
-                "Replying to ${user.displayName}${user.uid == widget.message.uid ? ' (self)' : ''}",
+                "Replying to ${user.displayName}${user.uid == message.uid ? ' (self)' : ''}",
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
               );
             },
           ),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: widget.message.uid != my.uid
-                  ? CrossAxisAlignment.start
-                  : CrossAxisAlignment.end,
-              children: [
-                UserDoc(
-                  uid: widget.message.replyTo!.uid!,
-                  builder: (user) {
-                    if (user == null) {
-                      return const SizedBox.shrink();
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: widget.message.replyTo!.uid == my.uid
-                                ? Theme.of(context).colorScheme.primaryContainer
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(12),
+          if (replyTo?.deleted == true) ...[
+            Opacity(
+              opacity: 0.6,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                ),
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  "This message has been deleted.",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ),
+            )
+          ] else
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: message.uid != my.uid
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.end,
+                children: [
+                  UserDoc(
+                    uid: message.replyTo!.uid!,
+                    builder: (user) {
+                      if (user == null) {
+                        return const SizedBox.shrink();
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: message.replyTo!.uid == my.uid
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .tertiaryContainer,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(12),
+                              ),
+                            ),
+                            constraints: BoxConstraints(
+                              maxWidth: maxWidth(context),
+                            ),
+                            clipBehavior: Clip.hardEdge,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (replyTo?.url != null) ...[
+                                  SizedBox(
+                                    height: maxWidth(context) / 3,
+                                    width: maxWidth(context),
+                                    child: CachedNetworkImage(
+                                      key: ValueKey("reply_${message.url}"),
+                                      fadeInDuration: Duration.zero,
+                                      fadeOutDuration: Duration.zero,
+                                      fit: BoxFit.cover,
+                                      imageUrl: replyTo!.url!,
+                                    ),
+                                  ),
+                                ],
+                                if (replyTo?.text != null &&
+                                    replyTo!.text!.isNotEmpty) ...[
+                                  Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Text(
+                                      replyTo!.text!,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
-                          constraints: BoxConstraints(
-                            maxWidth: maxWidth(context),
-                          ),
-                          clipBehavior: Clip.hardEdge,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (widget.message.replyTo!.url != null) ...[
-                                SizedBox(
-                                  height: maxWidth(context) / 3,
-                                  width: maxWidth(context),
-                                  child: CachedNetworkImage(
-                                    key:
-                                        ValueKey("reply_${widget.message.url}"),
-                                    fadeInDuration: Duration.zero,
-                                    fadeOutDuration: Duration.zero,
-                                    fit: BoxFit.cover,
-                                    imageUrl: widget.message.replyTo!.url!,
-                                  ),
-                                ),
-                              ],
-                              if (widget.message.replyTo!.text != null &&
-                                  widget.message.replyTo!.text!.isNotEmpty) ...[
-                                Padding(
-                                  padding: const EdgeInsets.all(12),
-                                  child: Text(
-                                    widget.message.replyTo!.text!,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

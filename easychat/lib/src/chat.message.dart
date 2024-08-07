@@ -29,6 +29,9 @@ class ChatMessage {
   ChatMessage? replyTo;
   final bool deleted;
 
+  DatabaseReference get ref =>
+      ChatService.instance.messageRef(roomId!).child(id);
+
   ChatMessage({
     required this.id,
     required this.roomId,
@@ -87,6 +90,7 @@ class ChatMessage {
             if (replyTo.url != null) ChatMessageField.url: replyTo.url,
             ChatMessageField.uid: replyTo.uid,
             ChatMessageField.createdAt: replyTo.createdAt,
+            ChatMessageField.deleted: replyTo.deleted,
           };
     final newMessageData = {
       ChatMessageField.roomId: roomId,
@@ -114,6 +118,36 @@ class ChatMessage {
     );
   }
 
+  update({
+    String? text,
+    String? url,
+    ChatMessage? replyTo,
+  }) async {
+    final updateData = {
+      if (text != null) ChatMessageField.text: text,
+      if (url != null) ChatMessageField.uid: uid,
+      if (replyTo != null)
+        ChatMessageField.replyTo: {
+          ChatMessageField.id: replyTo.id,
+          // Save only upto 20 characters in text
+          // This is reply anyway, we don't have to
+          // show and save the whole text.
+          if (replyTo.text != null)
+            ChatMessageField.text: replyTo.text!.length > 80
+                ? "${replyTo.text?.substring(0, 77)}..."
+                : replyTo.text,
+          if (replyTo.url != null) ChatMessageField.url: replyTo.url,
+          ChatMessageField.uid: replyTo.uid,
+          ChatMessageField.createdAt: replyTo.createdAt,
+          ChatMessageField.deleted: replyTo.deleted,
+        },
+    };
+    await ref.update(updateData);
+    this.text = text;
+    this.url = url;
+    this.replyTo = replyTo;
+  }
+
   delete() async {
     if (uid != myUid) {
       throw ChatException(
@@ -121,18 +155,18 @@ class ChatMessage {
         'You can only delete your own message.',
       );
     }
-    // TODO check if the message to be deleted is the one in the chat room list tile last message
-    // It should be updated.
+
     List<Future> futures = [
       if (url != null) StorageService.instance.delete(url!),
       if (replyTo?.url != null) StorageService.instance.delete(replyTo!.url!),
-      ChatService.instance.messageRef(roomId!).child(id).update({
+      ref.update({
         ChatMessageField.text: null,
         ChatMessageField.url: null,
         ChatMessageField.replyTo: null,
         ChatMessageField.deleted: true,
       }),
     ];
+    // If error is caught here, check all the futures.
     await Future.wait(futures);
   }
 }
