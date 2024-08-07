@@ -1,7 +1,7 @@
 name: easy_youtube
 description: "A new Flutter package project."
 version: 0.0.1
-homepage:
+homepage: https://github.com/thruthesky/easy-packages/main/tree/easy_youtube
 
 environment:
   sdk: ^3.5.0
@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.2.2
+  youtube_parser: ^2.1.4
 
 dev_dependencies:
   flutter_test:

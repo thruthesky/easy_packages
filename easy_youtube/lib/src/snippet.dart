@@ -53,16 +53,16 @@
 
 class Snippet {
   final DateTime publishedAt;
-  final String channelId;
-  final String title;
-  final String description;
+  final String? channelId;
+  final String? title;
+  final String? description;
   final Map<String, Thumbnail> thumbnails;
-  final String channelTitle;
+  final String? channelTitle;
   final List<String> tags;
-  final String categoryId;
-  final String liveBroadcastContent;
+  final String? categoryId;
+  final String? liveBroadcastContent;
   final Localized localized;
-  final String defaultAudioLanguage;
+  final String? defaultAudioLanguage;
 
   Snippet({
     required this.publishedAt,
@@ -79,25 +79,39 @@ class Snippet {
   });
 
   factory Snippet.fromJson(Map<String, dynamic> json) {
+    if (json['items'] == null || json['items'].length == 0) {
+      throw Exception('No youtube items found');
+    }
+    final snippet = json['items'][0]['snippet'];
     return Snippet(
-      publishedAt: DateTime.parse(json['publishedAt']),
-      channelId: json['channelId'],
-      title: json['title'],
-      description: json['description'],
+      publishedAt: DateTime.parse(snippet['publishedAt']),
+      channelId: snippet['channelId'],
+      title: snippet['title'],
+      description: snippet['description'],
       thumbnails: {
-        'default': Thumbnail.fromJson(json['thumbnails']['default']),
-        'medium': Thumbnail.fromJson(json['thumbnails']['medium']),
-        'high': Thumbnail.fromJson(json['thumbnails']['high']),
-        'standard': Thumbnail.fromJson(json['thumbnails']['standard']),
-        'maxres': Thumbnail.fromJson(json['thumbnails']['maxres']),
+        if (snippet['thumbnails']['default'] != null)
+          'default': Thumbnail.fromJson(snippet['thumbnails']['default']),
+        if (snippet['thumbnails']['medium'] != null)
+          'medium': Thumbnail.fromJson(snippet['thumbnails']['medium']),
+        if (snippet['thumbnails']['high'] != null)
+          'high': Thumbnail.fromJson(snippet['thumbnails']['high']),
+        if (snippet['thumbnails']['standard'] != null)
+          'standard': Thumbnail.fromJson(snippet['thumbnails']['standard']),
+        if (snippet['thumbnails']['maxres'] != null)
+          'maxres': Thumbnail.fromJson(snippet['thumbnails']['maxres']),
       },
-      channelTitle: json['channelTitle'],
-      tags: List<String>.from(json['tags']),
-      categoryId: json['categoryId'],
-      liveBroadcastContent: json['liveBroadcastContent'],
-      localized: Localized.fromJson(json['localized']),
-      defaultAudioLanguage: json['defaultAudioLanguage'],
+      channelTitle: snippet['channelTitle'],
+      tags: List<String>.from(snippet['tags']),
+      categoryId: snippet['categoryId'],
+      liveBroadcastContent: snippet['liveBroadcastContent'],
+      localized: Localized.fromJson(snippet['localized']),
+      defaultAudioLanguage: snippet['defaultAudioLanguage'],
     );
+  }
+
+  @override
+  String toString() {
+    return 'publishedAt: $publishedAt, channelId: $channelId, title: $title, description: $description, thumbnails: $thumbnails, channelTitle: $channelTitle, tags: $tags, categoryId: $categoryId, liveBroadcastContent: $liveBroadcastContent, localized: $localized, defaultAudioLanguage: $defaultAudioLanguage';
   }
 }
 
@@ -119,6 +133,11 @@ class Thumbnail {
       height: json['height'],
     );
   }
+
+  @override
+  String toString() {
+    return 'url: $url, width: $width, height: $height';
+  }
 }
 
 class Localized {
@@ -135,5 +154,10 @@ class Localized {
       title: json['title'],
       description: json['description'],
     );
+  }
+
+  @override
+  String toString() {
+    return 'title: $title, description: $description';
   }
 }
