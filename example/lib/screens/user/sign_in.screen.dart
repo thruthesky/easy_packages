@@ -1,7 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:example/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

@@ -54,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            Text('isSamllScreen: ${context.isSmallScreen}'),
             AuthStateChanges(
               builder: (user) => user == null
                   ? const Text('Sign-in first')
@@ -258,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context,
                           user: user,
                         ),
-                        child: const Text('Public Profile'),
+                        child: const Text('Public'),
                       ),
                     ],
                   );

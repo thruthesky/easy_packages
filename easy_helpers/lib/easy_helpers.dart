@@ -1,4 +1,6 @@
-export './src/extensions/build_context.extension.dart';
+export 'src/extensions/build_context/build_context.platform.extension.dart';
+export 'src/extensions/build_context/build_context.theme.extension.dart';
+export 'src/extensions/build_context/build_context.media_query.extension.dart';
 export './src/extensions/datetime.extension.dart';
 export './src/extensions/iterable.extension.dart';
 export './src/extensions/string.extensions.dart';
