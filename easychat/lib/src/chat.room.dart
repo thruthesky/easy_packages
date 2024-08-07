@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easychat/src/chat.functions.dart';
-import 'package:easychat/src/chat.room.user.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easychat/easychat.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:flutter/material.dart';
 
 class ChatRoom {
   /// Field names used for the Firestore document
@@ -28,6 +28,8 @@ class ChatRoom {
     lastMessageAt: 'lastMessageAt',
     lastMessageUid: 'lastMessageUid',
     lastMessageUrl: 'lastMessageUrl',
+    lastMessageId: 'lastMessageId',
+    lastMessageDeleted: 'lastMessageDeleted',
     verifiedUserOnly: 'verifiedUserOnly',
     urlForVerifiedUserOnly: 'urlForVerifiedUserOnly',
     uploadForVerifiedUserOnly: 'uploadForVerifiedUserOnly',
@@ -85,13 +87,12 @@ class ChatRoom {
   /// [group] is true if the chat room is group chat.
   bool group;
 
+  String? lastMessageId;
   String? lastMessageText;
-
   DateTime? lastMessageAt;
-
   String? lastMessageUid;
-
   String? lastMessageUrl;
+  bool? lastMessageDeleted;
 
   /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
   ///
@@ -146,10 +147,12 @@ class ChatRoom {
     this.rejectedUsers = const [],
     required this.createdAt,
     required this.updatedAt,
+    this.lastMessageId,
     this.lastMessageText,
     this.lastMessageAt,
     this.lastMessageUid,
     this.lastMessageUrl,
+    this.lastMessageDeleted,
     this.verifiedUserOnly = false,
     this.urlForVerifiedUserOnly = false,
     this.uploadForVerifiedUserOnly = false,
@@ -186,12 +189,14 @@ class ChatRoom {
       updatedAt: json[field.updatedAt] is Timestamp
           ? (json[field.updatedAt] as Timestamp).toDate()
           : DateTime.now(),
+      lastMessageId: json[field.lastMessageId],
       lastMessageText: json[field.lastMessageText],
       lastMessageAt: json[field.lastMessageAt] is Timestamp
           ? (json[field.lastMessageAt] as Timestamp).toDate()
           : DateTime.now(),
       lastMessageUid: json[field.lastMessageUid],
       lastMessageUrl: json[field.lastMessageUrl],
+      lastMessageDeleted: json[field.lastMessageDeleted],
       verifiedUserOnly: json[field.verifiedUserOnly],
       urlForVerifiedUserOnly: json[field.urlForVerifiedUserOnly],
       uploadForVerifiedUserOnly: json[field.uploadForVerifiedUserOnly],
@@ -218,10 +223,12 @@ class ChatRoom {
       field.rejectedUsers: rejectedUsers,
       field.createdAt: createdAt,
       field.updatedAt: updatedAt,
+      field.lastMessageId: lastMessageId,
       field.lastMessageText: lastMessageText,
       field.lastMessageAt: lastMessageAt,
       field.lastMessageUid: lastMessageUid,
       field.lastMessageUrl: lastMessageUrl,
+      field.lastMessageDeleted: lastMessageDeleted,
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
       field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
@@ -383,6 +390,7 @@ class ChatRoom {
     Object? lastMessageAt,
     String? lastMessageUid,
     String? lastMessageUrl,
+    bool? lastMessageDeleted,
   }) async {
     if (single == true && (group == true || open == true)) {
       throw 'chat-room-update/single-cannot-be-group-or-open Single chat room cannot be group or open';
@@ -401,6 +409,8 @@ class ChatRoom {
       if (lastMessageAt != null) field.lastMessageAt: lastMessageAt,
       if (lastMessageUid != null) field.lastMessageUid: lastMessageUid,
       if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
+      if (lastMessageDeleted != null)
+        field.lastMessageDeleted: lastMessageDeleted,
       field.updatedAt: FieldValue.serverTimestamp(),
     };
 
@@ -441,6 +451,7 @@ class ChatRoom {
         // but actually wants to accept it, then we should
         // also remove the uid from rejeceted users.
         field.rejectedUsers: FieldValue.arrayRemove([my.uid]),
+        field.updatedAt: FieldValue.serverTimestamp(),
       },
       SetOptions(merge: true),
     );
@@ -479,6 +490,7 @@ class ChatRoom {
   /// [updateNewMessagesMeta] is used to update all unread data for all
   /// users inside the chat room.
   Future<void> updateNewMessagesMeta({
+    String? lastMessageId,
     String? lastMessageText,
     String? lastMessageUrl,
   }) async {
@@ -523,10 +535,12 @@ class ChatRoom {
       },
     );
     await ref.set({
+      field.lastMessageId: lastMessageId,
       if (lastMessageText != null) field.lastMessageText: lastMessageText,
       field.lastMessageAt: FieldValue.serverTimestamp(),
       field.lastMessageUid: my.uid,
       if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
+      field.lastMessageDeleted: false,
       field.users: {
         ...updateUserData,
       }
@@ -557,44 +571,48 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  /// Chat room subscription
-  ///
-  /// This is used to listen the chat room changes.
-  ///
-  /// The reason why it is not in the service is because each chat room can
-  /// have its own listener for realtime update.
-  ///
-  // StreamSubscription? chatRoomSubscription;
-  // BehaviorSubject<ChatRoom> changes = BehaviorSubject();
+  Future<void> mayDeleteLastMessage(String deletedMessageId) async {
+    dog("lastMessageId: $lastMessageId");
+    dog("deletedMessageId: $deletedMessageId");
+    if (lastMessageId == deletedMessageId) {
+      await ref.set({
+        field.lastMessageText: FieldValue.delete(),
+        field.lastMessageUrl: FieldValue.delete(),
+        field.lastMessageDeleted: true,
+      }, SetOptions(merge: true));
+    }
+  }
 
-  // listen() {
-  //   chatRoomSubscription?.cancel();
-  //   changes.add(this);
-  //   chatRoomSubscription = ref.snapshots().listen((snapshot) {
-  //     changes.add(ChatRoom.fromSnapshot(snapshot));
-  //   });
-  // }
+  /// To reply, it must be set here.
+  ///
+  /// Reason: Input box is the widget that sends the message
+  ///         with or without reply to. Since popup menu is
+  ///         separate widget and is the ui of the reply button,
+  ///         it needs to store it somewhere accessible
+  ///         by input box. So that the input box can know if we
+  ///         are replying.
+  ValueNotifier<ChatMessage?>? replyValueNotifier;
 
-  // dispose() {
-  //   chatRoomSubscription?.cancel();
-  // }
+  void initReply() {
+    if (replyValueNotifier != null) disposeReply();
+    replyValueNotifier = ValueNotifier<ChatMessage?>(null);
+  }
 
-  // StreamBuilder<ChatRoom> builder(Widget Function(ChatRoom room) builder) {
-  //   return StreamBuilder<ChatRoom>(
-  //     initialData: changes.value,
-  //     stream: changes.stream,
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.waiting &&
-  //           !snapshot.hasData) {
-  //         return const CircularProgressIndicator();
-  //       }
-  //       if (snapshot.hasError) {
-  //         debugPrint("Error: ${snapshot.error}");
-  //         return Text("Error: ${snapshot.error}");
-  //       }
-  //       final room = snapshot.data!;
-  //       return builder(room);
-  //     },
-  //   );
-  // }
+  void disposeReply() {
+    if (replyValueNotifier != null) {
+      replyValueNotifier!.dispose();
+      replyValueNotifier = null;
+      return;
+    }
+    throw ChatException("reply-value-notifier-disposing-null",
+        "Cannot dispose replyValueNotifier if it is null. It may be disposed already.");
+  }
+
+  void replyTo(ChatMessage chatMessage) {
+    if (replyValueNotifier == null) {
+      throw ChatException('reply-value-notifier-not-initialized',
+          'replyValueNotifier must be initialized');
+    }
+    replyValueNotifier!.value = chatMessage;
+  }
 }

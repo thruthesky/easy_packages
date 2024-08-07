@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.functions.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -58,13 +57,20 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? get subtitle => room.lastMessageText != null
-      ? Text(
-          room.lastMessageText!,
+  Widget? get subtitle => room.lastMessageDeleted == true
+      ? const Text(
+          'The last message was deleted.',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontStyle: FontStyle.italic),
         )
-      : null;
+      : room.lastMessageText != null
+          ? Text(
+              room.lastMessageText!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )
+          : null;
 
   Widget get trailing {
     return Column(
