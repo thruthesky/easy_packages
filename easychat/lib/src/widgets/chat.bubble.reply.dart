@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -41,15 +42,14 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
         ChatService.instance.messageRef(message.roomId!).child(replyTo!.id);
     subscription = ref.onValue.listen((event) {
       final replySource = ChatMessage.fromSnapshot(event.snapshot);
-      if (isDifferentText(replyTo!.text ?? "", replySource.text ?? "")) {
+      if (isDifferentText(replySource.text ?? "", replyTo!.text ?? "") ||
+          replySource.url != replyTo!.url ||
+          replySource.deleted != replyTo!.deleted) {
+        dog("Updating replyTo, The true source is updated");
+        replyTo = replySource;
         message.update(replyTo: replyTo);
-      }
-      replyTo = replySource;
-      if (message.url != replyTo?.url || message.deleted != replyTo?.deleted) {
-        message.update(replyTo: replyTo);
-      }
-      if (replyTo!.deleted == true) {
-        subscription?.cancel();
+        if (replyTo!.deleted == true) subscription?.cancel();
+        return;
       }
     });
   }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
@@ -125,19 +126,18 @@ class ChatService {
   }) async {
     if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
     await _shouldBeOrBecomeMember(room);
-    List<Future> futures = [
-      ChatMessage.create(
-        roomId: room.id,
-        text: text,
-        url: photoUrl,
-        replyTo: replyTo,
-      ),
-      room.updateNewMessagesMeta(
-        lastMessageText: text,
-        lastMessageUrl: photoUrl,
-      ),
-    ];
-    await Future.wait(futures);
+    final newMessage = await ChatMessage.create(
+      roomId: room.id,
+      text: text,
+      url: photoUrl,
+      replyTo: replyTo,
+    );
+    dog("newMessage: ${newMessage.id}");
+    await room.updateNewMessagesMeta(
+      lastMessageId: newMessage.id,
+      lastMessageText: text,
+      lastMessageUrl: photoUrl,
+    );
   }
 
   _shouldBeOrBecomeMember(

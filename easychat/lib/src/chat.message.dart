@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -103,6 +104,7 @@ class ChatMessage {
     };
     final ref = ChatService.instance.messageRef(roomId).push();
     await ref.set(newMessageData);
+    dog("ID key upon push is ${ref.key}");
     return ChatMessage(
       id: ref.key!,
       roomId: roomId,
@@ -148,7 +150,7 @@ class ChatMessage {
     this.replyTo = replyTo;
   }
 
-  delete() async {
+  Future<void> delete() async {
     if (uid != myUid) {
       throw ChatException(
         'delete-only-own-message',
