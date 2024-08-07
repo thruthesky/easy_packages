@@ -15,7 +15,7 @@ class ChatMessageField {
   static const order = 'order';
   static const replyTo = 'replyTo';
   static const deleted = 'deleted';
-
+  // static const editedAt = 'editedAt';
   ChatMessageField._();
 }
 
@@ -29,6 +29,7 @@ class ChatMessage {
   int? order;
   ChatMessage? replyTo;
   final bool deleted;
+  // int? editedAt;
 
   DatabaseReference get ref =>
       ChatService.instance.messageRef(roomId!).child(id);
@@ -119,14 +120,18 @@ class ChatMessage {
     );
   }
 
+  /// To delete url, update it into empty string
   update({
     String? text,
     String? url,
     ChatMessage? replyTo,
+    // TODO review
+    // bool isEdit = false,
   }) async {
     final updateData = {
       if (text != null) ChatMessageField.text: text,
-      if (url != null) ChatMessageField.uid: uid,
+      if (url != null) ChatMessageField.url: url,
+      if (url?.isEmpty == true) ChatMessageField.url: null,
       if (replyTo != null)
         ChatMessageField.replyTo: {
           ChatMessageField.id: replyTo.id,
@@ -141,6 +146,7 @@ class ChatMessage {
           ChatMessageField.uid: replyTo.uid,
           ChatMessageField.createdAt: replyTo.createdAt,
           ChatMessageField.deleted: replyTo.deleted,
+          // if (isEdit) ChatMessageField.editedAt: ServerValue.timestamp,
         },
     };
     await ref.update(updateData);

@@ -18,21 +18,30 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
   static const items = (
     reply: 'Reply',
     delete: 'Delete',
+    edit: 'Edit',
   );
 
   List<PopupMenuItem<String>> get menuItems => [
-        if (room.replyValueNotifier != null)
+        if (room.replyValueNotifier != null && message.deleted == false)
           PopupMenuItem<String>(
             value: items.reply,
             height: 40,
             child: Text(items.reply),
           ),
-        if (message.uid == myUid)
+        // TODO review conditions
+        if (message.uid == myUid && message.deleted == false) ...[
+          // TODO hide edit after 3 minutes
+          PopupMenuItem<String>(
+            value: items.edit,
+            height: 40,
+            child: Text(items.edit),
+          ),
           PopupMenuItem<String>(
             value: items.delete,
             height: 40,
             child: Text(items.delete),
           ),
+        ],
       ];
 
   @override
@@ -57,6 +66,9 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
     if (value != null) {
       if (value == items.reply) {
         room.replyTo(message);
+      } else if (value == items.edit) {
+        if (!context.mounted) return;
+        await ChatService.instance.editMessage(context, message);
       } else if (value == items.delete) {
         // Need to get here because room is not latest.
         // However, deleting happens occasionally and

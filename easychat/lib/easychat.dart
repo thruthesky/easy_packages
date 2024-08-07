@@ -23,6 +23,8 @@ export './src/widgets/chat.room.list_view.dart';
 export './src/widgets/chat.room.list_tile.dart';
 export './src/widgets/chat.room.invitation.short.list.dart';
 export './src/widgets/chat.new_message_counter.dart';
+export './src/widgets/edit.chat.message.dialog.dart';
+export './src/widgets/chat.room.replying_to.dart';
 
 // Screens =====================================================
 export 'src/screens/chat.room.edit.screen.dart';

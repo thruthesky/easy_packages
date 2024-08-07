@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/edit.chat.message.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -152,5 +153,14 @@ class ChatService {
     }
 
     throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
+  }
+
+  Future<void> editMessage(BuildContext context, ChatMessage message) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return EditChatMessageDialog(message: message);
+      },
+    );
   }
 }

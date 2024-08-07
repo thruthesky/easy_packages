@@ -582,7 +582,14 @@ class ChatRoom {
     }
   }
 
-  // TODO ask for help
+  /// To reply, it must be set here.
+  ///
+  /// Reason: Input box is the widget that sends the message
+  ///         with or without reply to. Since popup menu is
+  ///         separate widget and is the ui of the reply button,
+  ///         it needs to store it somewhere accessible
+  ///         by input box. So that the input box can know if we
+  ///         are replying.
   ValueNotifier<ChatMessage?>? replyValueNotifier;
 
   void initReply() {
