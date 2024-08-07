@@ -25,14 +25,15 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
 
   StreamSubscription? subscription;
 
-  // Check if this is the correct way.
-  // Review because this might be wrong.
-  // If multiple people is looking at a reply then
-  // the true source was deleted, suddenly these multiple
-  // devices will update the chat reply to.
   @override
   void initState() {
     super.initState();
+    // Check if this is the correct way.
+    // Review because this might be wrong.
+    // If multiple people is looking at a reply then
+    // the true source was deleted, suddenly these multiple
+    // devices will update the chat reply to.
+    // But it works.
     replyTo = message.replyTo;
     if (replyTo == null) return;
     // No need to listen if it is deleted
