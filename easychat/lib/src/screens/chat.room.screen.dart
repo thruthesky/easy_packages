@@ -26,7 +26,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? $room;
   User? $user;
 
-  StreamSubscription? docUpdateStream;
+  StreamSubscription? roomSubscription;
+  ValueNotifier<int> roomNotifier = ValueNotifier(0);
 
   @override
   void initState() {
@@ -49,15 +50,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
 
     setState(() {});
-    $room!.listen();
     $room!.updateMyReadMeta();
-    onUpdateRoom();
+
+    // listen to the chat room
+    roomSubscription =
+        ChatService.instance.roomCol.doc($room!.id).snapshots().listen(
+      (doc) {
+        $room!.copyFromSnapshot(doc);
+        $room!.updateMyReadMeta();
+        roomNotifier.value = $room.hashCode;
+      },
+    );
   }
 
   @override
   dispose() {
-    docUpdateStream?.cancel();
-    $room?.dispose();
+    roomSubscription?.cancel();
+    // $room?.dispose();
     super.dispose();
   }
 
@@ -71,16 +80,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // other user opens the chat room.
     final newRoomRef = await ChatRoom.createSingle($user!.uid);
     $room = await ChatRoom.get(newRoomRef.id);
-  }
-
-  onUpdateRoom() {
-    // This will update the current user's read if
-    // there is a new message.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      docUpdateStream = $room!.changes.listen(
-        (room) => room.updateMyReadMeta(),
-      );
-    });
   }
 
   String title(ChatRoom room) {
@@ -117,54 +116,61 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: $room?.builder(
-          (room) => Row(
-            children: [
-              if (room.group) ...[
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  width: 36,
-                  height: 36,
-                  clipBehavior: Clip.hardEdge,
-                  child: room.iconUrl != null && room.iconUrl!.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: room.iconUrl!,
-                          fit: BoxFit.cover,
-                          errorWidget: (context, url, error) {
-                            dog("Error in Image Chat Room Screen: $error");
-                            return const Icon(Icons.error);
-                          },
-                        )
-                      : const Icon(Icons.people),
+        title: ValueListenableBuilder(
+          valueListenable: roomNotifier,
+          builder: (_, hc, __) => $room == null
+              ? const SizedBox.shrink()
+              : Row(
+                  children: [
+                    if ($room!.group) ...[
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color:
+                              Theme.of(context).colorScheme.tertiaryContainer,
+                        ),
+                        width: 36,
+                        height: 36,
+                        clipBehavior: Clip.hardEdge,
+                        child:
+                            $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: $room!.iconUrl!,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) {
+                                      dog("Error in Image Chat Room Screen: $error");
+                                      return const Icon(Icons.error);
+                                    },
+                                  )
+                                : const Icon(Icons.people),
+                      ),
+                      const SizedBox(width: 12),
+                    ] else if ($room!.single) ...[
+                      GestureDetector(
+                        child: UserAvatar(
+                          user: $user!,
+                          size: 36,
+                          radius: 15,
+                        ),
+                        onTap: () =>
+                            UserService.instance.showPublicProfileScreen(
+                          context,
+                          user: $user!,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: Text(title($room!)),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-              ] else if (room.single) ...[
-                GestureDetector(
-                  child: UserAvatar(
-                    user: $user!,
-                    size: 36,
-                    radius: 15,
-                  ),
-                  onTap: () => UserService.instance.showPublicProfileScreen(
-                    context,
-                    user: $user!,
-                  ),
-                ),
-                const SizedBox(width: 12),
-              ],
-              Expanded(
-                child: Text(title(room)),
-              ),
-            ],
-          ),
         ),
       ),
-      endDrawer: $room?.builder(
-        (room) => ChatRoomMenuDrawer(
-          room: room,
+      endDrawer: ValueListenableBuilder(
+        valueListenable: roomNotifier,
+        builder: (_, room, __) => ChatRoomMenuDrawer(
+          room: $room!,
           user: $user,
         ),
       ),
@@ -193,25 +199,27 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             // There is a chance for user to open the chat room
             // if the user is not a member of the chat room
             if (!$room!.joined) ...[
-              $room!.builder((room) {
-                if (room.joined) return const SizedBox.shrink();
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  margin: const EdgeInsets.only(
-                    bottom: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                  ),
-                  child: Text(
-                    notMemberMessage(room),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                );
-              }),
+              ValueListenableBuilder(
+                  valueListenable: roomNotifier,
+                  builder: (_, hc, __) {
+                    if ($room!.joined) return const SizedBox.shrink();
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      margin: const EdgeInsets.only(
+                        bottom: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                      ),
+                      child: Text(
+                        notMemberMessage($room!),
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    );
+                  }),
             ],
             SafeArea(
               top: false,

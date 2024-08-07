@@ -17,6 +17,9 @@ class StorageService {
 
   String? get myUid => FirebaseAuth.instance.currentUser?.uid;
 
+  EdgeInsetsGeometry? uploadBottomSheetPadding;
+  double? uploadBottomSheetSpacing;
+
   ///
   StorageService._();
 
@@ -32,6 +35,8 @@ class StorageService {
   init({
     // StorageCustomize? customize,
     bool? enableFilePickerExceptionHandler,
+    EdgeInsetsGeometry? uploadBottomSheetPadding,
+    double? uploadBottomSheetSpacing,
   }) {
     // if (customize != null) {
     //   this.customize = customize;
@@ -39,6 +44,9 @@ class StorageService {
     if (enableFilePickerExceptionHandler != null) {
       this.enableFilePickerExceptionHandler = enableFilePickerExceptionHandler;
     }
+
+    this.uploadBottomSheetPadding = uploadBottomSheetPadding;
+    this.uploadBottomSheetSpacing = uploadBottomSheetSpacing;
   }
 
   /// Upload a file (or an image) to Firebase Storage.
@@ -173,8 +181,8 @@ class StorageService {
   /// [videoGallery] default false, indicate whethere to allow the video gallery to be selected
   ///
   ///
-  /// [gallery] default false, indicate whether to allow to select file from gallery
-  /// [file] default false, indicate whether to allow to select file from storage
+  /// [fromGallery] default false, indicate whether to allow to select file from gallery
+  /// [fromFile] default false, indicate whether to allow to select file from storage
   ///
   /// [spacing] default none, spacing between the selection,
   /// [padding] default EdgeInsets.zero, padding of the bottomsheet
@@ -188,8 +196,8 @@ class StorageService {
     bool? photoCamera,
     bool? videoGallery,
     bool? videoCamera,
-    bool? gallery,
-    bool? file,
+    bool? fromGallery,
+    bool? fromFile,
     double? spacing,
     EdgeInsetsGeometry? padding,
   }) async {
@@ -200,8 +208,8 @@ class StorageService {
         photoCamera: photoCamera,
         videoGallery: videoGallery,
         videoCamera: videoCamera,
-        gallery: gallery,
-        file: file,
+        fromGallery: fromGallery,
+        fromFile: fromFile,
         spacing: spacing,
         padding: padding,
       ),
@@ -239,9 +247,9 @@ class StorageService {
   /// [videoGallery] is a flag to allow the user to choose the gallery as the video source.
   ///
   ///
-  /// [gallery] is a flag to allow the user to choose the gallery as the file source.
+  /// [fromGallery] is a flag to allow the user to choose the gallery as the file source.
   ///
-  /// [file] is a flag to allow the user to choose the storage as the file source.
+  /// [fromFile] is a flag to allow the user to choose the storage as the file source.
   ///
   /// [maxHeight] is the maximum height of the image to upload.
   ///
@@ -265,8 +273,8 @@ class StorageService {
     bool? photoGallery = true,
     bool? videoCamera = false,
     bool? videoGallery = false,
-    bool? gallery = false,
-    bool? file = false,
+    bool? fromGallery = false,
+    bool? fromFile = false,
     double? spacing,
     EdgeInsetsGeometry? padding,
     double maxHeight = 1024,
@@ -279,8 +287,8 @@ class StorageService {
       photoGallery: photoGallery,
       videoCamera: videoCamera,
       videoGallery: videoGallery,
-      gallery: gallery,
-      file: file,
+      fromGallery: fromGallery,
+      fromFile: fromFile,
       spacing: spacing,
       padding: padding,
     );
@@ -331,6 +339,8 @@ class StorageService {
     double maxHeight = 1024,
     double maxWidth = 1024,
     int imageQuality = 95,
+    double? spacing,
+    EdgeInsetsGeometry? padding,
   }) async {
     String? oldUrl;
     String? url;
@@ -356,6 +366,8 @@ class StorageService {
         maxHeight: maxHeight,
         maxWidth: maxWidth,
         imageQuality: imageQuality,
+        spacing: spacing,
+        padding: padding,
       );
     }
 

@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
 
 /// Chat Service
@@ -21,13 +21,13 @@ class ChatService {
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;
-  Future<DocumentReference> Function({BuildContext context})?
+  Future<fs.DocumentReference> Function({BuildContext context})?
       $showChatRoomEditScreen;
 
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
-    Future<DocumentReference> Function({BuildContext context})?
+    Future<fs.DocumentReference> Function({BuildContext context})?
         $showChatRoomEditScreen,
   }) {
     UserService.instance.init();
@@ -41,21 +41,26 @@ class ChatService {
   }
 
   /// Firebase CollectionReference for Chat Room docs
-  CollectionReference get roomCol =>
-      FirebaseFirestore.instance.collection('chat-rooms');
+  fs.CollectionReference get roomCol =>
+      fs.FirebaseFirestore.instance.collection('chat-rooms');
+
+  /// Firebase chat collection query by new message counter for the current user.
+  fs.Query get myRoomQuery => roomCol.orderBy(
+      '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.newMessageCounter}');
 
   /// CollectionReference for Chat Room Meta docs
-  CollectionReference roomMetaCol(String roomId) => FirebaseFirestore.instance
-      .collection('chat-rooms')
-      .doc(roomId)
-      .collection('chat-room-meta');
+  fs.CollectionReference roomMetaCol(String roomId) =>
+      fs.FirebaseFirestore.instance
+          .collection('chat-rooms')
+          .doc(roomId)
+          .collection('chat-room-meta');
 
   /// DocumentReference for chat room private settings.
-  DocumentReference roomPrivateDoc(String roomId) =>
+  fs.DocumentReference roomPrivateDoc(String roomId) =>
       roomMetaCol(roomId).doc('private');
 
-  DatabaseReference messageRef(String roomId) =>
-      FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
+  db.DatabaseReference messageRef(String roomId) =>
+      db.FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
 
   /// Show the chat room list screen.
   Future showChatRoomListScreen(BuildContext context,
@@ -83,10 +88,10 @@ class ChatService {
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
-  Future<DocumentReference?> showChatRoomEditScreen(BuildContext context,
+  Future<fs.DocumentReference?> showChatRoomEditScreen(BuildContext context,
       {ChatRoom? room}) {
     return $showChatRoomEditScreen?.call(context: context) ??
-        showGeneralDialog<DocumentReference>(
+        showGeneralDialog<fs.DocumentReference>(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomEditScreen(room: room),
         );

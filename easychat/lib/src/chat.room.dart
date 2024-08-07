@@ -6,8 +6,6 @@ import 'package:easychat/src/chat.room.user.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ChatRoom {
   /// Field names used for the Firestore document
@@ -38,7 +36,7 @@ class ChatRoom {
   );
 
   /// [id] is the chat room id.
-  final String id;
+  String id;
 
   static CollectionReference col = ChatService.instance.roomCol;
 
@@ -50,74 +48,74 @@ class ChatRoom {
   DocumentReference get ref => col.doc(id);
 
   /// [name] is the chat room name. If it does not exist, it is empty.
-  final String name;
+  String name;
 
   /// [description] is the chat room description. If it does not exist, it is empty.
-  final String description;
+  String description;
 
   /// The icon url of the chat room. optinal.
-  final String? iconUrl;
+  String? iconUrl;
 
   /// [users] is the uid list of users who are join the room
-  final Map<String, ChatRoomUser> users;
+  Map<String, ChatRoomUser> users;
 
   List<String> get userUids => users.keys.toList();
 
   bool get joined => userUids.contains(my.uid);
 
-  final List<String> invitedUsers;
-  final List<String> rejectedUsers;
-  final List<String> blockedUsers;
-  final List<String> masterUsers;
+  List<String> invitedUsers;
+  List<String> rejectedUsers;
+  List<String> blockedUsers;
+  List<String> masterUsers;
 
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   /// [hasPassword] is true if the chat room has password
   ///
   /// Note, this is not implemented yet.
-  final bool hasPassword;
+  bool hasPassword;
 
   /// [open] is true if the chat room is open chat
-  final bool open;
+  bool open;
 
   /// [single] is true if the chat room is single chat or 1:1.
-  final bool single;
+  bool single;
 
   /// [group] is true if the chat room is group chat.
-  final bool group;
+  bool group;
 
-  final String? lastMessageText;
+  String? lastMessageText;
 
-  final DateTime? lastMessageAt;
+  DateTime? lastMessageAt;
 
-  final String? lastMessageUid;
+  String? lastMessageUid;
 
-  final String? lastMessageUrl;
+  String? lastMessageUrl;
 
   /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
   ///
   /// Note that, [verifiedUserOnly] is not supported at this time.
-  final bool verifiedUserOnly;
+  bool verifiedUserOnly;
 
   /// [urlForVerifiedUserOnly] is true if only the verified users can sent the
   /// url (or include any url in the text).
   ///
   /// Note that, [urlForVerifiedUserOnly] is not supported at this time.
-  final bool urlForVerifiedUserOnly;
+  bool urlForVerifiedUserOnly;
 
   /// [uploadForVerifiedUserOnly] is true if only the verified users can sent the
   /// photo.
   ///
   /// Note that, [uploadForVerifiedUserOnly] is not supported at this time.
-  final bool uploadForVerifiedUserOnly;
+  bool uploadForVerifiedUserOnly;
 
   /// [gender] to filter the chat room by user's gender.
   /// If it's M, then only male can enter the chat room. And if it's F,
   /// only female can enter the chat room.
   ///
   /// Note that, [gender] is not supported at this time.
-  final String gender;
+  String gender;
 
   /// [noOfUsers] is the number of users in the chat room.
   int get noOfUsers => users.length;
@@ -130,7 +128,7 @@ class ChatRoom {
   /// In the other way, that some apps want to share the same chat rooms and
   /// some other apps don't want to share the chat rooms. In this case, the
   /// domain can be used to filter the chat rooms by the app.
-  final String domain;
+  String domain;
 
   ChatRoom({
     required this.id,
@@ -230,6 +228,38 @@ class ChatRoom {
       field.gender: gender,
       field.domain: domain,
     };
+  }
+
+  copyFromSnapshot(DocumentSnapshot doc) {
+    copyFrom(ChatRoom.fromSnapshot(doc));
+  }
+
+  copyFrom(ChatRoom room) {
+    // copy all the fields from the room
+    id = room.id;
+    name = room.name;
+    description = room.description;
+    iconUrl = room.iconUrl;
+    open = room.open;
+    single = room.single;
+    group = room.group;
+    hasPassword = room.hasPassword;
+    users = room.users;
+    masterUsers = room.masterUsers;
+    invitedUsers = room.invitedUsers;
+    blockedUsers = room.blockedUsers;
+    rejectedUsers = room.rejectedUsers;
+    createdAt = room.createdAt;
+    updatedAt = room.updatedAt;
+    lastMessageText = room.lastMessageText;
+    lastMessageAt = room.lastMessageAt;
+    lastMessageUid = room.lastMessageUid;
+    lastMessageUrl = room.lastMessageUrl;
+    verifiedUserOnly = room.verifiedUserOnly;
+    urlForVerifiedUserOnly = room.urlForVerifiedUserOnly;
+    uploadForVerifiedUserOnly = room.uploadForVerifiedUserOnly;
+    gender = room.gender;
+    domain = room.domain;
   }
 
   /// toString
@@ -534,37 +564,37 @@ class ChatRoom {
   /// The reason why it is not in the service is because each chat room can
   /// have its own listener for realtime update.
   ///
-  StreamSubscription? chatRoomSubscription;
-  BehaviorSubject<ChatRoom> changes = BehaviorSubject();
+  // StreamSubscription? chatRoomSubscription;
+  // BehaviorSubject<ChatRoom> changes = BehaviorSubject();
 
-  listen() {
-    chatRoomSubscription?.cancel();
-    changes.add(this);
-    chatRoomSubscription = ref.snapshots().listen((snapshot) {
-      changes.add(ChatRoom.fromSnapshot(snapshot));
-    });
-  }
+  // listen() {
+  //   chatRoomSubscription?.cancel();
+  //   changes.add(this);
+  //   chatRoomSubscription = ref.snapshots().listen((snapshot) {
+  //     changes.add(ChatRoom.fromSnapshot(snapshot));
+  //   });
+  // }
 
-  dispose() {
-    chatRoomSubscription?.cancel();
-  }
+  // dispose() {
+  //   chatRoomSubscription?.cancel();
+  // }
 
-  StreamBuilder<ChatRoom> builder(Widget Function(ChatRoom room) builder) {
-    return StreamBuilder<ChatRoom>(
-      initialData: changes.value,
-      stream: changes.stream,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            !snapshot.hasData) {
-          return const CircularProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          debugPrint("Error: ${snapshot.error}");
-          return Text("Error: ${snapshot.error}");
-        }
-        final room = snapshot.data!;
-        return builder(room);
-      },
-    );
-  }
+  // StreamBuilder<ChatRoom> builder(Widget Function(ChatRoom room) builder) {
+  //   return StreamBuilder<ChatRoom>(
+  //     initialData: changes.value,
+  //     stream: changes.stream,
+  //     builder: (context, snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.waiting &&
+  //           !snapshot.hasData) {
+  //         return const CircularProgressIndicator();
+  //       }
+  //       if (snapshot.hasError) {
+  //         debugPrint("Error: ${snapshot.error}");
+  //         return Text("Error: ${snapshot.error}");
+  //       }
+  //       final room = snapshot.data!;
+  //       return builder(room);
+  //     },
+  //   );
+  // }
 }

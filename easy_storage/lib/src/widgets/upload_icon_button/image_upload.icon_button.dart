@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 ///
 /// This widget uses the [UploadIconButton] to upload a file. It has a preset
 /// options for uploading images.
+@Deprecated('Use UploadIconButton.image() instead')
 class ImageUploadIconButton extends StatelessWidget {
   const ImageUploadIconButton({
     super.key,
@@ -18,8 +19,8 @@ class ImageUploadIconButton extends StatelessWidget {
     this.iconSize,
     this.visualDensity,
     this.iconPadding,
-    this.padding,
-    this.spacing,
+    this.uploadBottomSheetPadding,
+    this.uploadBottomSheetSpacing,
   });
 
   final void Function(String url) onUpload;
@@ -34,8 +35,8 @@ class ImageUploadIconButton extends StatelessWidget {
 
   final double? iconSize;
   final EdgeInsetsGeometry? iconPadding;
-  final EdgeInsetsGeometry? padding;
-  final double? spacing;
+  final EdgeInsetsGeometry? uploadBottomSheetPadding;
+  final double? uploadBottomSheetSpacing;
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +47,16 @@ class ImageUploadIconButton extends StatelessWidget {
       photoGallery: gallery,
       videoCamera: false,
       videoGallery: false,
-      gallery: false,
-      file: false,
+      fromGallery: false,
+      fromFile: false,
       progress: progress,
       complete: complete,
       icon: icon,
       iconSize: iconSize,
       visualDensity: visualDensity,
       iconPadding: iconPadding,
-      padding: padding,
-      spacing: spacing,
+      uploadBottomSheetPadding: uploadBottomSheetPadding,
+      uploadBottomSheetSpacing: uploadBottomSheetSpacing,
     );
   }
 }
