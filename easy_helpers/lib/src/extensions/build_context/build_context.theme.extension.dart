@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-extension AppContextExtension on BuildContext {
+extension EasyHelperThemeExtension on BuildContext {
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
   Color get primary => colorScheme.primary;
   Color get outline => colorScheme.outline;

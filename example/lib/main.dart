@@ -7,7 +7,7 @@ import 'package:easy_storage/easy_storage.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -21,8 +21,8 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
       lo.init();
       await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+          // options: DefaultFirebaseOptions.currentPlatform,
+          );
 
       UserService.instance.init();
       runApp(const MyApp());
@@ -52,23 +52,24 @@ class MyAppState extends State<MyApp> {
       uploadBottomSheetSpacing: 16,
     );
 
-    MessagingService.instance.init(
-      onMessageOpenedFromBackground: (message) {
-        print('onMessageOpenedFromBackground: $message');
-      },
-      onMessageOpenedFromTerminated: (RemoteMessage message) {
-        print(
-            'onMessageOpenedFromTerminated: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
-        alert(
-          context: context,
-          title: Text(message.notification?.title ?? ''),
-          message: Text(message.notification?.body ?? ''),
-        );
-      },
-      onForegroundMessage: (message) {
-        print('onForegroundMessage: $message');
-      },
-    );
+    // MessagingService.instance.init(
+    //   projectId: DefaultFirebaseOptions.currentPlatform.projectId,
+    //   onMessageOpenedFromBackground: (message) {
+    //     print('onMessageOpenedFromBackground: $message');
+    //   },
+    //   onMessageOpenedFromTerminated: (RemoteMessage message) {
+    //     print(
+    //         'onMessageOpenedFromTerminated: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
+    //     alert(
+    //       context: context,
+    //       title: Text(message.notification?.title ?? ''),
+    //       message: Text(message.notification?.body ?? ''),
+    //     );
+    //   },
+    //   onForegroundMessage: (message) {
+    //     print('onForegroundMessage: $message');
+    //   },
+    // );
 
     // PostService.instance.init(
     //   categories: {
@@ -137,6 +138,25 @@ class MyAppState extends State<MyApp> {
       //       .showPostDetailScreen(context: globalContext, post: post);
       // })();
       // LikeTestService.instance.runTests();
+
+      // MessagingService.instance.getTokens([
+      //   'vysiFTQS1ZXSnvS3UnxfeJEpCWN2',
+      //   'Jkihj9GMRoNeZ1WXQ5FHMOr3E4c2',
+      // ]);
+
+      // MessagingService.instance.send(
+      //     uids: [
+      //       'vysiFTQS1ZXSnvS3UnxfeJEpCWN2',
+      //       'Jkihj9GMRoNeZ1WXQ5FHMOr3E4c2',
+      //     ],
+      //     title: 'Test from MyApp',
+      //     body: 'Test body',
+      //     data: {
+      //       'key': 'value',
+      //     });
+
+      // MessagingService.instance.send(
+      //   uids: ['vysiFTQS1ZXSnvS3UnxfeJEpCWN2'],
     });
   }
 

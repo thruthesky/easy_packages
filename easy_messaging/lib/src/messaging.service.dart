@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_messaging/easy_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:http/http.dart' as http;
 
 class MessagingService {
   static MessagingService? _instance;
@@ -13,7 +16,8 @@ class MessagingService {
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
   DatabaseReference fcmTokensRef = FirebaseDatabase.instance.ref('fcm-tokens');
-  DatabaseReference get myTokensRef => fcmTokensRef.child(currentUser!.uid);
+  Query get myTokenQuery =>
+      fcmTokensRef.orderByChild('uid').equalTo(currentUser!.uid);
 
   MessagingService._();
 
@@ -22,6 +26,8 @@ class MessagingService {
   Function(RemoteMessage)? onMessageOpenedFromBackground;
   Function? onNotificationPermissionDenied;
   Function? onNotificationPermissionNotDetermined;
+
+  late final String projectId;
 
   bool initialized = false;
   String? token;
@@ -36,8 +42,11 @@ class MessagingService {
     required Function(RemoteMessage) onMessageOpenedFromBackground,
     Function? onNotificationPermissionDenied,
     Function? onNotificationPermissionNotDetermined,
-  }) {
+    required String projectId,
+  }) async {
     initialized = true;
+
+    this.projectId = projectId;
 
     /// Register the background message handler if provided.
     if (onBackgroundMessage != null) {
@@ -52,10 +61,13 @@ class MessagingService {
         onNotificationPermissionNotDetermined;
 
     _initializeEventHandlers();
+
+    await _getPermission();
+    _subscribeToTopics();
     _initializeToken();
   }
 
-  _initializeToken() async {
+  _getPermission() async {
     /// Get permission
     ///
     /// Permission request for iOS only. For Android, the permission is granted by default.
@@ -85,7 +97,9 @@ class MessagingService {
         return;
       }
     }
+  }
 
+  _initializeToken() async {
     /// Save token to database when user logs in (or signs up)
     ///
     /// Subscribe the user auth changes for updating the token for the user.
@@ -97,7 +111,7 @@ class MessagingService {
     /// Save(or update) token
     FirebaseAuth.instance
         .authStateChanges()
-        .listen((user) => _updateToken(token));
+        .listen((user) => _saveToken(token));
 
     /// Token refreshed. update it.
     ///
@@ -105,7 +119,7 @@ class MessagingService {
     ///
     // Any time the token refreshes, store this in the database too.
     FirebaseMessaging.instance.onTokenRefresh
-        .listen((token) => _updateToken(token));
+        .listen((token) => _saveToken(token));
 
     /// Get token from device and save it into Firestore
     ///
@@ -118,38 +132,37 @@ class MessagingService {
       dog('Error while getting token: code: ${e.code}, message: ${e.message}, e: $e');
       rethrow;
     }
-    await _updateToken(token);
+    await _saveToken(token);
   }
 
+  /// Save token to database
   ///
-  Future _updateToken(String? token) async {
+  /// Even if the same token exists in the database, it will be overwritten.
+  Future _saveToken(String? token) async {
     if (token == null || token.isEmpty) return;
     if (currentUser == null) return;
-    await myTokensRef.child(token).set(true);
-
-    _subscribeToTopics();
+    final ref = fcmTokensRef.child(token);
+    await ref.set(currentUser!.uid);
   }
 
   Future _subscribeToTopics() async {
-    if(kIsWeb) return;
+    // web does not support topics: https://firebase.google.com/docs/cloud-messaging/flutter/topic-messaging#subscribe_the_client_app_to_a_topic
+    if (kIsWeb) return;
 
-    FirebaseMessaging.instance.subscribeToTopic('allUsersTopic');
+    await FirebaseMessaging.instance.subscribeToTopic(Topic.allUsers);
     if (Platform.isAndroid) {
-      FirebaseMessaging.instance.subscribeToTopic('androidTopic');
+      await FirebaseMessaging.instance.subscribeToTopic(Topic.android);
     } else if (Platform.isIOS) {
-      FirebaseMessaging.instance.subscribeToTopic('iosTopic');
+      await FirebaseMessaging.instance.subscribeToTopic(Topic.ios);
     } else if (Platform.isMacOS) {
-      FirebaseMessaging.instance.subscribeToTopic('macTopic');
+      await FirebaseMessaging.instance.subscribeToTopic(Topic.mac);
     } else if (Platform.isLinux) {
-      FirebaseMessaging.instance.subscribeToTopic('linuxTopic');
+      await FirebaseMessaging.instance.subscribeToTopic(Topic.linux);
     } else if (Platform.isWindows) {
-      FirebaseMessaging.instance.subscribeToTopic('windowsTopic');
+      await FirebaseMessaging.instance.subscribeToTopic(Topic.windows);
     } else if (Platform.isFuchsia) {
-      FirebaseMessaging.instance.subscribeToTopic('fuchsiaTopic');
-    } 
-
-
-    
+      await FirebaseMessaging.instance.subscribeToTopic(Topic.fuchsia);
+    }
   }
 
   /// Initialize Messaging Event Handlers
@@ -171,14 +184,69 @@ class MessagingService {
     });
   }
 
+  /// TODO - send the actual message by calling Cloud functions since the access token for HTTP v1 API is required. and it's not easy to get from flutter client.
+  /// Create a cloud function that accepts user uid list and title, body, data, and imageUrl.
+  /// Then, send the message to the users.
+  /// then, return the result of success or failure to the client.
   send({
-    required List<String> tokens,
+    required List<String> uids,
     required String title,
     required String body,
     required Map<String, dynamic> data,
     String? imageUrl,
     int batchSize = 128,
+  }) async {
+    /// Get tokens of the users
+    final List<String> tokens = await getTokens(uids);
+
+    /// Remove duplicated tokens.
+    ///
+    ///
+
+    /// Send messages in batches
+    Uri url =
+        Uri.https('fcm.googleapis.com', 'v1/projects/$projectId/messages:send');
+    for (String token in tokens) {
+      http.Response response = await http.post(
+        url,
+        body: getPayload(token: token, title: title, body: body, data: data)
+            .toString(),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  }
+
+  /// Get tokens of the users
+  ///
+  /// [uids] - List of user ids
+  Future<List<String>> getTokens(List<String> uids) async {
+    final List<String> tokens = [];
+    for (var uid in uids) {
+      final snapshot = await fcmTokensRef.orderByValue().equalTo(uid).get();
+      for (DataSnapshot node in snapshot.children) {
+        tokens.add(node.value as String);
+      }
+    }
+    return tokens;
+  }
+
+  Map<String, dynamic> getPayload({
+    required String token,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    String? imageUrl,
   }) {
-    // make muliple requests in batches of 128 use `await Future.wait()`
+    return {
+      "message": {
+        "token": token,
+        "notification": {
+          "title": title,
+          "body": body,
+        }
+      }
+    };
   }
 }
