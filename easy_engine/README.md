@@ -3,6 +3,11 @@
 The `easy_engine` package is the counter part of the [easy-engine](https://github.com/thruthesky/easy-engine) built as the firebase cloud functions to support various essential features that cannot be done from font-end applications like enabling and disabling user account, sending push notifications, and more.
 
 
+# Terms
+
+
+- `easy-engin` (with a hyphen) is the cloud function project. Meanwhile, `easy_engine` (with an underscore) is the Flutter package that supports access to the cloud functions of the `easy-engine`.
+
 # Why the cloud functions?
 
 - Refer [Why cloud functions?](https://github.com/thruthesky/easy-engine?tab=readme-ov-file#why-cloud-functions) at the `easy-engine` cloud function project.
@@ -88,5 +93,5 @@ ElevatedButton(
 
 # Push notifications
 
-- This package does not handle the push notifications, see the `easy_messaging` for sending messages using easy engine.
+- The `easy-engine` cloud function project supports push notifications. But this `easy_egine` of easy_packages does not support these functions because the `easy_messaging` package is already supporting the push notification of `easy-engine`.
 
