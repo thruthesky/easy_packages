@@ -197,7 +197,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 ),
               ] else if (room.single) ...[
                 Container(
-                  height: 200,
+                  height: 200 + MediaQuery.of(context).viewInsets.top,
                   width: double.maxFinite,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primaryContainer,

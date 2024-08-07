@@ -16,7 +16,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: ChatService.instance.roomCol
-          .where('invitedUsers', arrayContains: my.uid)
+          .where('invitedUsers', arrayContains: myUid)
           .orderBy(ChatRoom.field.updatedAt, descending: true)
           .limit(4)
           .snapshots(),
@@ -91,7 +91,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                 }
                 return ChatRoomInvitationListTile(
                   room: room,
-                  afterAccept: (room, user) async {
+                  onAccept: (room, user) async {
                     dog("User: ${user?.uid}");
                     await ChatService.instance.showChatRoomScreen(
                       context,

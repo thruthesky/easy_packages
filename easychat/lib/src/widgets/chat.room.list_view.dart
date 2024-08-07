@@ -36,12 +36,12 @@ class ChatRoomListView extends StatelessWidget {
     Query q = ChatService.instance.roomCol;
     if (queryOption == ChatRoomListOption.allMine) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.order}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.order}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.allMineByTime) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.timeOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.timeOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.open) {
@@ -50,31 +50,31 @@ class ChatRoomListView extends StatelessWidget {
           .orderBy(ChatRoom.field.updatedAt, descending: true);
     } else if (queryOption == ChatRoomListOption.single) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.singleByTime) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleTimeOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleTimeOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.group) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.groupByTime) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupTimeOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupTimeOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.receivedInvites) {
       q = q
-          .where(ChatRoom.field.invitedUsers, arrayContains: my.uid)
+          .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
           .orderBy(ChatRoom.field.updatedAt, descending: true);
     } else if (queryOption == ChatRoomListOption.rejectedInvites) {
       q = q
-          .where(ChatRoom.field.rejectedUsers, arrayContains: my.uid)
+          .where(ChatRoom.field.rejectedUsers, arrayContains: myUid)
           .orderBy(ChatRoom.field.updatedAt, descending: true);
     }
     return q;
