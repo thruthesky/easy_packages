@@ -132,7 +132,6 @@ class ChatService {
       url: photoUrl,
       replyTo: replyTo,
     );
-    dog("newMessage: ${newMessage.id}");
     await room.updateNewMessagesMeta(
       lastMessageId: newMessage.id,
       lastMessageText: text,

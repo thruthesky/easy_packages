@@ -48,8 +48,6 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
   }
 
   void showPopupMenu(BuildContext context, Offset offset) async {
-    dog("Popup message id: ${message.id}, text: ${message.text}");
-    dog("Room's last Message id: ${room.lastMessageId}, text: ${room.lastMessageText}");
     final value = await showMenu(
       context: context,
       position: RelativeRect.fromLTRB(offset.dx, offset.dy, offset.dx, 0),

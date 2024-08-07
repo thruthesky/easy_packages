@@ -104,7 +104,6 @@ class ChatMessage {
     };
     final ref = ChatService.instance.messageRef(roomId).push();
     await ref.set(newMessageData);
-    dog("ID key upon push is ${ref.key}");
     return ChatMessage(
       id: ref.key!,
       roomId: roomId,
