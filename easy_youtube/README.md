@@ -1,6 +1,6 @@
 # Easy Youtube
 
-This package provide an easy way to handle youtube video.
+This package provides a simple and convenient solution for working with YouTube in your Flutter applications. It offers a range of functionalities to handle YouTube videos effortlessly.
 
 
 
