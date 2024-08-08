@@ -19,6 +19,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: child,
       );
+  double photoHeight(BuildContext context) =>
+      200 + MediaQuery.of(context).padding.top;
 
   Widget label({required BuildContext context, required String text}) => Row(
         children: [
@@ -35,7 +37,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dog('ChatRoomMenuDrawer.build');
+    dog('ChatRoomMenuDrawer.build: MediaQuery.of(context).padding.top: ${MediaQuery.of(context).padding.top}');
     return Drawer(
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
@@ -47,7 +49,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
             children: [
               if (room.group) ...[
                 Container(
-                  height: 200,
+                  height: photoHeight(context),
                   width: double.maxFinite,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -63,29 +65,30 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           : const SafeArea(
                               child: Icon(Icons.people, size: 64),
                             ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: IconButton(
-                          icon: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surface
-                                  .withAlpha(220),
-                              borderRadius: BorderRadius.circular(40),
+                      if (room.masterUsers.contains(myUid))
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surface
+                                    .withAlpha(220),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              child: const Icon(Icons.edit),
                             ),
-                            padding: const EdgeInsets.all(8),
-                            child: const Icon(Icons.edit),
+                            onPressed: () async {
+                              await ChatService.instance.showChatRoomEditScreen(
+                                context,
+                                room: room,
+                              );
+                            },
                           ),
-                          onPressed: () async {
-                            await ChatService.instance.showChatRoomEditScreen(
-                              context,
-                              room: room,
-                            );
-                          },
-                        ),
-                      )
+                        )
                     ],
                   ),
                 ),
@@ -201,7 +204,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 ),
               ] else if (room.single) ...[
                 Container(
-                  height: 200 + MediaQuery.of(context).viewInsets.top,
+                  height: photoHeight(context),
                   width: double.maxFinite,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primaryContainer,

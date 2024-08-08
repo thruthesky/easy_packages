@@ -1,4 +1,3 @@
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -15,7 +14,7 @@ class ChatMessageField {
   static const order = 'order';
   static const replyTo = 'replyTo';
   static const deleted = 'deleted';
-  // static const editedAt = 'editedAt';
+  static const editedAt = 'editedAt';
   ChatMessageField._();
 }
 
@@ -29,7 +28,9 @@ class ChatMessage {
   int? order;
   ChatMessage? replyTo;
   final bool deleted;
-  // int? editedAt;
+  int? editedAt;
+
+  bool get isEdited => editedAt != null;
 
   DatabaseReference get ref =>
       ChatService.instance.messageRef(roomId!).child(id);
@@ -44,6 +45,7 @@ class ChatMessage {
     required this.order,
     this.replyTo,
     required this.deleted,
+    this.editedAt,
   });
 
   factory ChatMessage.fromSnapshot(DataSnapshot snapshot) {
@@ -69,6 +71,7 @@ class ChatMessage {
       // Added '?? false' because this it RTDB
       // Reason: There is no use for saving false in deleted.
       deleted: json[ChatMessageField.deleted] ?? false,
+      editedAt: json[ChatMessageField.editedAt],
     );
   }
 
@@ -121,12 +124,16 @@ class ChatMessage {
   }
 
   /// To delete url, update it into empty string
-  update({
+  ///
+  /// NOTE: Should not be used directly, use
+  /// updateMessage in chat service instead.
+  ///
+  /// ChatService.instance.updateMessage.
+  Future update({
     String? text,
     String? url,
     ChatMessage? replyTo,
-    // TODO review
-    // bool isEdit = false,
+    bool isEdit = false,
   }) async {
     final updateData = {
       if (text != null) ChatMessageField.text: text,
@@ -135,7 +142,7 @@ class ChatMessage {
       if (replyTo != null)
         ChatMessageField.replyTo: {
           ChatMessageField.id: replyTo.id,
-          // Save only upto 20 characters in text
+          // Save only upto 80 characters in text
           // This is reply anyway, we don't have to
           // show and save the whole text.
           if (replyTo.text != null)
@@ -146,8 +153,8 @@ class ChatMessage {
           ChatMessageField.uid: replyTo.uid,
           ChatMessageField.createdAt: replyTo.createdAt,
           ChatMessageField.deleted: replyTo.deleted,
-          // if (isEdit) ChatMessageField.editedAt: ServerValue.timestamp,
         },
+      if (isEdit) ChatMessageField.editedAt: ServerValue.timestamp,
     };
     await ref.update(updateData);
     this.text = text;
@@ -155,6 +162,10 @@ class ChatMessage {
     this.replyTo = replyTo;
   }
 
+  /// To delete the message
+  ///
+  /// NOTE: Pleaase use Chat Service in deleting message.
+  /// ChatService.instance.deleteMessage
   Future<void> delete() async {
     if (uid != myUid) {
       throw ChatException(
