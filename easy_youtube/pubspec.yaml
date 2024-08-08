@@ -1,12 +1,7 @@
 name: easy_youtube
 description: "Provides various features to handle YouTube videos easily."
-<<<<<<< HEAD
-version: 0.0.1
-homepage: https://github.com/thruthesky/easy-packages
-=======
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/thruthesky/easy-packages/main/tree/easy_youtube
->>>>>>> 4f1f55fba5373172749ba010112a822279fa6912
 
 environment:
   sdk: ^3.5.0
