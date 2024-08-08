@@ -48,7 +48,7 @@ class ChatRoomListTile extends StatelessWidget {
               ? Text(room.id)
               : Text(user.displayName.trim().isNotEmpty
                   ? user.displayName
-                  : user.uid),
+                  : '...'),
           subtitle: subtitle,
           trailing: trailing,
           onTap: () => onTapTile(context, room, user),

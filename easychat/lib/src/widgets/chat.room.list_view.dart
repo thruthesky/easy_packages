@@ -23,6 +23,7 @@ class ChatRoomListView extends StatelessWidget {
     super.key,
     this.queryOption = ChatRoomListOption.allMine,
     this.itemBuilder,
+    this.itemExtent,
     this.emptyBuilder,
     this.padding,
   });
@@ -30,6 +31,7 @@ class ChatRoomListView extends StatelessWidget {
   final ChatRoomListOption queryOption;
   final Widget Function(BuildContext context, ChatRoom room, int index)?
       itemBuilder;
+  final double? itemExtent;
   final Widget Function(BuildContext context)? emptyBuilder;
   final EdgeInsetsGeometry? padding;
 
@@ -103,6 +105,7 @@ class ChatRoomListView extends StatelessWidget {
         final chatRooms =
             docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
         return ListView.builder(
+          itemExtent: itemExtent,
           padding: padding,
           physics: const ClampingScrollPhysics(),
           itemCount: chatRooms.length,
@@ -123,3 +126,4 @@ class ChatRoomListView extends StatelessWidget {
     );
   }
 }
+// 
