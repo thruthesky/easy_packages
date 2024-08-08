@@ -28,7 +28,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   String? url;
 
   double photoWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56 / 2;
+      MediaQuery.of(context).size.width * 0.24;
 
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
@@ -87,7 +87,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: LinearProgressIndicator(
-                  value: snapshot.data as double,
+                  value: snapshot.data as double == 1.0 ? null : snapshot.data,
                 ),
               );
             }
@@ -177,7 +177,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                         decoration: InputDecoration(
                           prefixIcon: ImageUploadIconButton(
                             progress: (prog) => uploadProgress.add(prog),
-                            complete: () => uploadProgress.add(null),
                             onUpload: (url) async {
                               if (this.url != null) {
                                 // This means the photo before sending is being
@@ -190,6 +189,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                                 StorageService.instance.delete(url);
                                 return;
                               }
+                              uploadProgress.add(null);
                               setState(() {
                                 this.url = url;
                                 submitable = canSubmit;
