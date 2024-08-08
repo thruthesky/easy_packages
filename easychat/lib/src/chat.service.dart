@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/edit.chat.message.dialog.dart';
+import 'package:easychat/src/chat.locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -13,7 +12,9 @@ class ChatService {
   static ChatService? _instance;
   static ChatService get instance => _instance ??= ChatService._();
 
-  ChatService._();
+  ChatService._() {
+    applyChatLocales();
+  }
 
   /// Whether the service is initialized or not.
   ///

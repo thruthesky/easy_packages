@@ -4,6 +4,7 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_locale/easy_locale.dart';
 
 enum ChatRoomListOption {
   allMine,
@@ -94,9 +95,8 @@ class ChatRoomListView extends StatelessWidget {
         }
         if (snapshot.docs.isEmpty) {
           return emptyBuilder?.call(context) ??
-              const Center(
-                // TODO t?
-                child: Text("No chat yet."),
+              Center(
+                child: Text("chat list is empty".t),
               );
         }
         final docs = snapshot.docs;
