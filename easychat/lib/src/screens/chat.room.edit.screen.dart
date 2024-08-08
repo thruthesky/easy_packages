@@ -124,7 +124,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                         open: open,
                         group: true,
                         single: false,
-                        users: [my.uid],
+                        users: [myUid!],
                       );
                       final chatRoom = await ChatRoom.get(newRoomRef.id);
                       iconUrlOnCreate = null;

@@ -127,8 +127,11 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
               ),
+              constraints: BoxConstraints(
+                maxWidth: maxWidth(context),
+              ),
               child: Column(
-                crossAxisAlignment: message.uid != my.uid
+                crossAxisAlignment: message.uid != myUid
                     ? CrossAxisAlignment.start
                     : CrossAxisAlignment.end,
                 children: [
@@ -144,7 +147,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: message.replyTo!.uid == my.uid
+                              color: message.replyTo!.uid == myUid
                                   ? Theme.of(context)
                                       .colorScheme
                                       .primaryContainer
@@ -154,9 +157,6 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(12),
                               ),
-                            ),
-                            constraints: BoxConstraints(
-                              maxWidth: maxWidth(context),
                             ),
                             clipBehavior: Clip.hardEdge,
                             child: Column(
