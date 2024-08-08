@@ -28,71 +28,106 @@ class _MessagingScreenState extends State<MessagingScreen> {
       appBar: AppBar(
         title: const Text('Messaging'),
       ),
-      body: Column(
-        children: [
-          TextField(
-            controller: uidController,
-            decoration: const InputDecoration(hintText: 'uid'),
-          ),
-          TextField(
-            controller: tokenController,
-            decoration: const InputDecoration(hintText: 'token'),
-          ),
-          TextField(
-            controller: subscriptionController,
-            decoration: const InputDecoration(hintText: 'subscription'),
-          ),
-          TextField(
-            controller: titleController,
-            decoration: const InputDecoration(hintText: 'title'),
-          ),
-          TextField(
-            controller: bodyController,
-            decoration: const InputDecoration(hintText: 'body'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (uidController.text.isEmpty) {
-                return;
-              }
-              MessagingService.instance.sendMessageToUid(
-                uids: uidController.text.split(','),
-                title: 'From uid ${titleController.text}',
-                body: 'From uid ${bodyController.text}',
-                data: {},
-              );
-            },
-            child: const Text('sendMessageToUid'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (tokenController.text.isEmpty) {
-                return;
-              }
-              MessagingService.instance.sendMessage(
-                tokens: tokenController.text.split(','),
-                title: 'From token ${titleController.text}',
-                body: 'From token ${bodyController.text}',
-                data: {},
-              );
-            },
-            child: const Text('sendMessageToToken'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (subscriptionController.text.isEmpty) {
-                return;
-              }
-              MessagingService.instance.sendMessageToSubscription(
-                subscription: subscriptionController.text,
-                title: 'From Subscription ${titleController.text}',
-                body: 'From Subscription ${bodyController.text}',
-                data: {},
-              );
-            },
-            child: const Text('sendMessageToSubscription'),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            TextField(
+              controller: uidController,
+              decoration: const InputDecoration(
+                labelText: 'uid',
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              ),
+            ),
+            TextField(
+              controller: tokenController,
+              decoration: const InputDecoration(
+                labelText: 'token',
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              ),
+            ),
+            TextField(
+              controller: subscriptionController,
+              decoration: const InputDecoration(
+                labelText: 'subscription',
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              ),
+            ),
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(
+                labelText: 'title',
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              ),
+            ),
+            TextField(
+              controller: bodyController,
+              decoration: const InputDecoration(
+                labelText: 'body',
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (uidController.text.isEmpty) {
+                      return;
+                    }
+                    MessagingService.instance.sendMessageToUid(
+                      uids: uidController.text.split(','),
+                      title: 'From uid ${titleController.text}',
+                      body: 'From uid ${bodyController.text}',
+                      data: {},
+                    );
+                  },
+                  child: const Text('Send To Uids'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (tokenController.text.isEmpty) {
+                      return;
+                    }
+                    MessagingService.instance.sendMessage(
+                      tokens: tokenController.text.split(','),
+                      title: 'From token ${titleController.text}',
+                      body: 'From token ${bodyController.text}',
+                      data: {},
+                    );
+                  },
+                  child: const Text('Send To Tokens'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (subscriptionController.text.isEmpty) {
+                      return;
+                    }
+                    MessagingService.instance.sendMessageToSubscription(
+                      subscription: subscriptionController.text,
+                      title: 'From Subscription ${titleController.text}',
+                      body: 'From Subscription ${bodyController.text}',
+                      data: {},
+                    );
+                  },
+                  child: const Text('Send To Subscription'),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+          ],
+        ),
       ),
     );
   }
