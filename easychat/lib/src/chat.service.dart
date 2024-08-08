@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:easychat/easychat.dart';
-<<<<<<< HEAD
 import 'package:easychat/src/chat.locale.dart';
-=======
->>>>>>> a8b05e9b435cab66b47b660195f3ef176b202775
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
