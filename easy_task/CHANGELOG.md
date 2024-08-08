@@ -1,3 +1,7 @@
+## 0.0.6
+* Update. Document update.
+* Update. UI/UX.
+
 ## 0.0.5
 * Refactor. Update some of the widgets for better UI/UX.
 

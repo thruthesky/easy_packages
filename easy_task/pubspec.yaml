@@ -1,6 +1,6 @@
 name: easy_task
 description: "A complete and easy to use task management system from the personal tasks to school and office works"
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/thruthesky/easy-packages/
 
 environment:
