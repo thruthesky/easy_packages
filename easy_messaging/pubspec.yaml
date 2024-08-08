@@ -1,6 +1,6 @@
 name: easy_messaging
 description: "Provides an easy way of handling Firebase Cloud Messaging service"
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/thruthesky/easy-packages/main/tree/easy_messaging
 
 environment:
