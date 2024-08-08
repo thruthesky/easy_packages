@@ -107,7 +107,7 @@ class ChatRoomListView extends StatelessWidget {
         return ListView.builder(
           itemExtent: itemExtent,
           padding: padding,
-          physics: const ClampingScrollPhysics(),
+          // physics: const BouncingScrollPhysics(),
           itemCount: chatRooms.length,
           itemBuilder: (context, index) {
             if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
