@@ -1,4 +1,3 @@
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -74,12 +73,7 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
           room: room,
         );
       } else if (value == items.delete) {
-        // Need to get here because room is not latest.
-        // However, deleting happens occasionally and
-        // wont cost much read counts.
-        final latestRoom = await ChatRoom.get(room.id);
-        await latestRoom!.mayDeleteLastMessage(message.id);
-        await message.delete();
+        ChatService.instance.deleteMessage(message);
       }
     }
   }

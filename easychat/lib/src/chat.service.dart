@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/edit.chat.message.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -138,6 +136,44 @@ class ChatService {
       lastMessageText: text,
       lastMessageUrl: photoUrl,
     );
+  }
+
+  Future updateMessage({
+    required ChatMessage message,
+    String? text,
+    String? url,
+    bool isEdit = false,
+  }) async {
+    // Need to review this. Review how can we simply pass by reference
+    // Need to get room here because room may not be latest.
+    // However, updating happens occasionally and
+    // wont cost much read counts.
+    final latestRoom = await ChatRoom.get(message.roomId!);
+
+    final futures = [
+      latestRoom!.mayUpdateLastMessage(
+        messageId: message.id,
+        updatedMessageText: text,
+        updatedMessageUrl: url,
+      ),
+      message.update(
+        text: text,
+        url: url,
+        isEdit: isEdit,
+      )
+    ];
+    await Future.wait(futures);
+  }
+
+  Future deleteMessage(
+    ChatMessage message,
+  ) async {
+    // Need to get room here because room may not be latest.
+    // However, deleting happens occasionally and
+    // wont cost much read counts.
+    final latestRoom = await ChatRoom.get(message.roomId!);
+    await latestRoom!.mayDeleteLastMessage(message.id);
+    await message.delete();
   }
 
   _shouldBeOrBecomeMember(

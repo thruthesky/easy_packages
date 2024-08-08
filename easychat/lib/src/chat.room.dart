@@ -543,7 +543,7 @@ class ChatRoom {
       field.lastMessageDeleted: false,
       field.users: {
         ...updateUserData,
-      }
+      },
     }, SetOptions(merge: true));
   }
 
@@ -579,6 +579,21 @@ class ChatRoom {
         field.lastMessageText: FieldValue.delete(),
         field.lastMessageUrl: FieldValue.delete(),
         field.lastMessageDeleted: true,
+      }, SetOptions(merge: true));
+    }
+  }
+
+  Future<void> mayUpdateLastMessage({
+    required String messageId,
+    String? updatedMessageText,
+    String? updatedMessageUrl,
+  }) async {
+    dog("lastMessageId: $lastMessageId");
+    dog("updatedMessageId: $messageId");
+    if (lastMessageId == messageId) {
+      await ref.set({
+        field.lastMessageText: updatedMessageText,
+        field.lastMessageUrl: updatedMessageUrl,
       }, SetOptions(merge: true));
     }
   }

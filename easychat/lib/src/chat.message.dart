@@ -124,7 +124,12 @@ class ChatMessage {
   }
 
   /// To delete url, update it into empty string
-  update({
+  ///
+  /// NOTE: Should not be used directly, use
+  /// updateMessage in chat service instead.
+  ///
+  /// ChatService.instance.updateMessage.
+  Future update({
     String? text,
     String? url,
     ChatMessage? replyTo,
@@ -137,7 +142,7 @@ class ChatMessage {
       if (replyTo != null)
         ChatMessageField.replyTo: {
           ChatMessageField.id: replyTo.id,
-          // Save only upto 20 characters in text
+          // Save only upto 80 characters in text
           // This is reply anyway, we don't have to
           // show and save the whole text.
           if (replyTo.text != null)
@@ -157,6 +162,10 @@ class ChatMessage {
     this.replyTo = replyTo;
   }
 
+  /// To delete the message
+  ///
+  /// NOTE: Pleaase use Chat Service in deleting message.
+  /// ChatService.instance.deleteMessage
   Future<void> delete() async {
     if (uid != myUid) {
       throw ChatException(

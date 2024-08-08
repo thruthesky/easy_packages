@@ -215,17 +215,12 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                     dog("[Edit Message] Deleted original image.");
                   },
                 ),
-              // Update the last message in chat room if it is the same message.
-              if (widget.room.lastMessageId == message.id)
-                widget.room.update(
-                  lastMessageText: textController.text.trim(),
-                  lastMessageUrl: url,
-                ),
-              message.update(
+              ChatService.instance.updateMessage(
+                message: message,
                 text: textController.text.trim(),
                 url: url,
                 isEdit: true,
-              ),
+              )
             ];
             // This will prevent deleting the new photo
             url = null;
