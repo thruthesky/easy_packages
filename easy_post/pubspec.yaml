@@ -1,7 +1,7 @@
 name: easy_post_v2
 description: "An easy to use post(forum) package for Flutter and Firebase."
 version: 0.0.3
-homepage: https://github.com/thruthesky/easy_packages/tree/main/easy_post
+homepage: https://github.com/thruthesky/easy_packages
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -31,3 +31,12 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
+
+repository: https://github.com/thruthesky/easy-packages/main/tree/easy_post
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - firebase
+  - post
+  - forum
+  - blog
+  - easy-packages

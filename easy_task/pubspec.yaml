@@ -1,7 +1,7 @@
 name: easy_task
 description: "A complete and easy to use task management system from the personal tasks to school and office works"
 version: 0.0.5
-homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_task
+homepage: https://github.com/thruthesky/easy-packages/
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -27,3 +27,12 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
+
+repository: https://github.com/thruthesky/easy-packages/main/tree/easy_task
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - task
+  - todo
+  - issue-tracking-system
+  - firebase
+  - easy-packages

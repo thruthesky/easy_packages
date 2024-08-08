@@ -1,7 +1,7 @@
 name: easy_engine
 description: "The counter part of the easy_engine project."
 version: 0.0.4
-homepage: https://github.com/thruthesky/easy_extensions
+homepage: https://github.com/thruthesky/easy-packages/
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -19,3 +19,12 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
+
+repository: https://github.com/thruthesky/easy-packages/main/tree/easy_engine
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - firebase
+  - cloud-functions
+  - functions
+  - push-notifications
+  - easy-packages

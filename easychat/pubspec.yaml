@@ -1,7 +1,7 @@
 name: easychat
 description: "Full featured and complete chat package for Flutter and Firebase"
 version: 0.0.11
-homepage: https://github.com/thruthesky/easy_frame/tree/main/easychat
+homepage: https://github.com/thruthesky/easy-packages
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -29,3 +29,12 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
+
+repository: https://github.com/thruthesky/easy-packages/main/tree/easychat
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - chat
+  - chat-room
+  - chat-ui
+  - firebase
+  - easy-packages
