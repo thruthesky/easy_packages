@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -30,12 +31,11 @@ class MessagingService {
 
   late final String projectId;
 
-  late final String sendMessageUrl =
-      'https://sendmessage-mkxv2itpca-uc.a.run.app';
-  late final String sendMessageToUidsUrl =
-      'https://sendmessagetouids-mkxv2itpca-uc.a.run.app';
-  late final String sendMessageToSubscriptionsUrl =
-      'https://sendmessagetosubscription-mkxv2itpca-uc.a.run.app';
+  late final String sendMessageApi = 'sendmessage-mkxv2itpca-uc.a.run.app';
+  late final String sendMessageToUidsApi =
+      'sendmessagetouids-mkxv2itpca-uc.a.run.app';
+  late final String sendMessageToSubscriptionsApi =
+      'sendmessagetosubscription-mkxv2itpca-uc.a.run.app';
 
   bool initialized = false;
   String? token;
@@ -157,19 +157,19 @@ class MessagingService {
     // web does not support topics: https://firebase.google.com/docs/cloud-messaging/flutter/topic-messaging#subscribe_the_client_app_to_a_topic
     if (kIsWeb) return;
 
-    // Don't subscribe for Simulator.
-    // It looks like there an issue of subscribing to topics in the simulator.
-    // https://github.com/firebase/flutterfire/issues/9822
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-    if (iosInfo.isPhysicalDevice == false) {
-      return;
-    }
-
     await FirebaseMessaging.instance.subscribeToTopic(Topic.allUsers);
     if (Platform.isAndroid) {
       await FirebaseMessaging.instance.subscribeToTopic(Topic.android);
     } else if (Platform.isIOS) {
+      // Don't subscribe for Simulator.
+      // It looks like there an issue of subscribing to topics in the simulator.
+      // https://github.com/firebase/flutterfire/issues/9822
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      if (iosInfo.isPhysicalDevice == false) {
+        return;
+      }
+
       await FirebaseMessaging.instance.subscribeToTopic(Topic.ios);
     } else if (Platform.isMacOS) {
       await FirebaseMessaging.instance.subscribeToTopic(Topic.mac);
@@ -267,6 +267,16 @@ class MessagingService {
     };
   }
 
+  preResponse(http.Response response) {
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    final decode = jsonDecode(response.body);
+    if (decode is Map && decode['error'] is String) {
+      throw Exception(decode['error']);
+    }
+    return List<String>.from(decode);
+  }
+
   /// Send a message to the users
   Future<List<String>> sendMessage({
     required List<String> tokens,
@@ -275,15 +285,15 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
-    Uri url = Uri.https(sendMessageUrl);
+    Uri url = Uri.https(sendMessageApi);
     http.Response response = await http.post(
       url,
-      body: {title: title, body: body, tokens: tokens},
+      body: {"title": title, "body": body, "tokens": tokens.join(',')},
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-    return [];
+    final res = preResponse(response);
+
+    return res;
   }
 
   /// Send a message to the users
@@ -295,16 +305,14 @@ class MessagingService {
     String? imageUrl,
   }) async {
     // /// Send messages in batches
-    Uri url = Uri.https(sendMessageToUidsUrl);
+    Uri url = Uri.https(sendMessageToUidsApi);
     http.Response response = await http.post(
       url,
-      body: {title: title, body: body, uids: uids},
+      body: {"title": title, "body": body, "uids": uids.join(',')},
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return [];
+    final res = preResponse(response);
+    return res;
   }
 
   /// Send a message to the users
@@ -316,15 +324,13 @@ class MessagingService {
     String? imageUrl,
   }) async {
     // /// Send messages in batches
-    Uri url = Uri.https(sendMessageToSubscriptionsUrl);
+    Uri url = Uri.https(sendMessageToSubscriptionsApi);
     http.Response response = await http.post(
       url,
-      body: {title: title, body: body, subscription: subscription},
+      body: {"title": title, "body": body, "subscription": subscription},
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return [];
+    final res = preResponse(response);
+    return res;
   }
 }
