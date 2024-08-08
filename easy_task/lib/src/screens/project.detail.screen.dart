@@ -1,8 +1,4 @@
-import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_task/easy_task.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
