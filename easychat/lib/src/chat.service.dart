@@ -155,11 +155,18 @@ class ChatService {
     throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 
-  Future<void> editMessage(BuildContext context, ChatMessage message) async {
+  Future<void> editMessage(
+    BuildContext context, {
+    required ChatMessage message,
+    required ChatRoom room,
+  }) async {
     await showDialog(
       context: context,
       builder: (context) {
-        return EditChatMessageDialog(message: message);
+        return EditChatMessageDialog(
+          message: message,
+          room: room,
+        );
       },
     );
   }

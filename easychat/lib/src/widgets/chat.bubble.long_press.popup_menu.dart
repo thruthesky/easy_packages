@@ -68,7 +68,11 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
         room.replyTo(message);
       } else if (value == items.edit) {
         if (!context.mounted) return;
-        await ChatService.instance.editMessage(context, message);
+        await ChatService.instance.editMessage(
+          context,
+          message: message,
+          room: room,
+        );
       } else if (value == items.delete) {
         // Need to get here because room is not latest.
         // However, deleting happens occasionally and

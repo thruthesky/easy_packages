@@ -9,9 +9,11 @@ class EditChatMessageDialog extends StatefulWidget {
   const EditChatMessageDialog({
     super.key,
     required this.message,
+    required this.room,
   });
 
   final ChatMessage message;
+  final ChatRoom room;
 
   @override
   State<EditChatMessageDialog> createState() => _EditChatMessageDialogState();
@@ -208,11 +210,19 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
             final List<Future> futures = [
               // Should delete the old url if it is different.
               if (message.url != url && url != null && message.url != null)
-                StorageService.instance.delete(message.url!).then((v) {
-                  dog("[Edit Message] Deleted original image.");
-                }),
+                StorageService.instance.delete(message.url!).then(
+                  (v) {
+                    dog("[Edit Message] Deleted original image.");
+                  },
+                ),
+              // Update the last message in chat room if it is the same message.
+              if (widget.room.lastMessageId == message.id)
+                widget.room.update(
+                  lastMessageText: textController.text.trim(),
+                  lastMessageUrl: url,
+                ),
               message.update(
-                text: textController.text,
+                text: textController.text.trim(),
                 url: url,
                 isEdit: true,
               ),
