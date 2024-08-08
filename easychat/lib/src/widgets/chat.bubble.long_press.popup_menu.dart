@@ -27,9 +27,7 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
             height: 40,
             child: Text(items.reply),
           ),
-        // TODO review conditions
         if (message.uid == myUid && message.deleted == false) ...[
-          // TODO hide edit after 3 minutes
           PopupMenuItem<String>(
             value: items.edit,
             height: 40,
