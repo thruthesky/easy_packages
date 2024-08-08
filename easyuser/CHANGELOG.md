@@ -1,3 +1,6 @@
+## 0.0.24
+* Update. Document update.
+
 ## 0.0.23
 * Fix. `User.get` has replaced with `User.getFromFirestore` in `FirestoreUserDoc`.
 
