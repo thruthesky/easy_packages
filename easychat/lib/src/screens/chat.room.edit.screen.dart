@@ -83,6 +83,9 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
               ),
             ),
             const SizedBox(height: 36),
+            // NOTE: If Image is uploaded, it is automatically saved
+            //       However, chat room will be reactive if updatedAt is
+            //       changed. Using ImageUploadCard won't update it.
             ImageUploadCard(
               initialData: room?.iconUrl,
               ref: room?.ref,
