@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/src/widgets/chat.room.menu.drawer.dart';
 import 'package:easyuser/easyuser.dart';
@@ -58,7 +57,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       (doc) {
         $room!.copyFromSnapshot(doc);
         $room!.updateMyReadMeta();
-        roomNotifier.value = $room.hashCode;
+        roomNotifier.value = $room!.updatedAt.millisecondsSinceEpoch;
       },
     );
   }
@@ -169,10 +168,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
-        builder: (_, room, __) => ChatRoomMenuDrawer(
-          room: $room!,
-          user: $user,
-        ),
+        builder: (_, hc, __) {
+          dog('Chat Room Screen: End Drawer');
+          return ChatRoomMenuDrawer(
+            room: $room!,
+            user: $user,
+          );
+        },
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

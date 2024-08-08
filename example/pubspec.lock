@@ -286,6 +286,13 @@ packages:
       relative: true
     source: path
     version: "0.0.5"
+  easy_youtube:
+    dependency: "direct main"
+    description:
+      path: "../easy_youtube"
+      relative: true
+    source: path
+    version: "0.0.1"
   easychat:
     dependency: "direct main"
     description:

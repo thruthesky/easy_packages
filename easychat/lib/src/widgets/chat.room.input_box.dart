@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -33,10 +35,20 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
 
+  double maxWidth(BuildContext context) =>
+      MediaQuery.of(context).size.width * 0.56;
+
+  @override
+  void initState() {
+    super.initState();
+    room.initReply();
+  }
+
   @override
   void dispose() {
     uploadProgress.close();
     controller.dispose();
+    room.disposeReply();
     if (url != null) {
       StorageService.instance.delete(url);
     }
@@ -47,6 +59,17 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        ValueListenableBuilder(
+          valueListenable: room.replyValueNotifier!,
+          builder: (context, message, child) {
+            if (message != null) {
+              return ChatRoomReplyingTo(
+                replyTo: message,
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
         StreamBuilder<double?>(
           initialData: uploadProgress.value,
           stream: uploadProgress,
@@ -66,7 +89,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: LinearProgressIndicator(
-                  value: snapshot.data,
+                  value: snapshot.data as double,
                 ),
               );
             }
@@ -77,9 +100,11 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
           decoration: BoxDecoration(
             border: Theme.of(context).inputDecorationTheme.enabledBorder != null
                 ? Border.all(
-                    color: enabledBorderSide(context)!.color,
-                    width: enabledBorderSide(context)!.width,
-                    style: enabledBorderSide(context)!.style,
+                    color: enabledBorderSide(context)?.color ??
+                        const Color(0xFF000000),
+                    width: enabledBorderSide(context)?.width ?? 1.0,
+                    style:
+                        enabledBorderSide(context)?.style ?? BorderStyle.solid,
                   )
                 : Border.all(),
             borderRadius: BorderRadius.circular(12),
@@ -156,6 +181,9 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                             progress: (prog) => uploadProgress.add(prog),
                             complete: () => uploadProgress.add(null),
                             onUpload: (url) async {
+                              if (this.url != null) {
+                                StorageService.instance.delete(this.url);
+                              }
                               setState(() {
                                 this.url = url;
                                 submitable = canSubmit;
@@ -192,9 +220,15 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
       room,
       text: controller.text,
       photoUrl: url,
+      replyTo: room.replyValueNotifier!.value,
     );
     url = null;
+    if (room.replyValueNotifier!.value != null) clearReplyTo();
     if (controller.text.isNotEmpty) controller.clear();
     await sendMessageFuture;
+  }
+
+  void clearReplyTo() {
+    room.replyValueNotifier!.value = null;
   }
 }

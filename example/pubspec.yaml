@@ -26,6 +26,7 @@ dependencies:
   easy_setting_v2:
   easy_storage:
   easy_task:
+  easy_youtube:
   easychat:
   easyuser:
   firebase_auth: 5.1.1
@@ -73,6 +74,8 @@ dependency_overrides:
     path: ../easy_storage
   easy_task:
     path: ../easy_task
+  easy_youtube:
+    path: ../easy_youtube
   easychat:
     path: ../easychat
   easyuser:

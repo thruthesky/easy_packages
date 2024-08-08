@@ -27,22 +27,25 @@ class ChatBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (message.uid != my.uid) ...[
-              UserDoc.sync(
-                uid: message.uid!,
-                builder: (user) {
-                  if (user == null) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                      ),
-                      width: 48,
-                      height: 48,
-                      child: const CircularProgressIndicator(),
-                    );
-                  }
-                  return UserAvatar(user: user);
-                },
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: UserDoc.sync(
+                  uid: message.uid!,
+                  builder: (user) {
+                    if (user == null) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                        width: 48,
+                        height: 48,
+                        child: const CircularProgressIndicator(),
+                      );
+                    }
+                    return UserAvatar(user: user);
+                  },
+                ),
               ),
               const SizedBox(width: 8),
             ],
@@ -67,6 +70,34 @@ class ChatBubble extends StatelessWidget {
                       },
                     ),
                     const SizedBox(width: 8),
+                  ],
+                  if (message.deleted) ...[
+                    Opacity(
+                      opacity: 0.6,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          "This message has been deleted.",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                        ),
+                      ),
+                    )
+                  ],
+                  if (message.replyTo != null) ...[
+                    ChatBubbleReply(message: message),
+                    const SizedBox(height: 2),
                   ],
                   Container(
                     decoration: BoxDecoration(

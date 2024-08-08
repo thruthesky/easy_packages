@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/edit.chat.message.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -100,6 +102,7 @@ class ChatService {
   showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
     return showGeneralDialog(
       context: context,
+      barrierLabel: "Chat Room",
       pageBuilder: (_, __, ___) => ChatRoomScreen(
         user: user,
         room: room,
@@ -116,21 +119,25 @@ class ChatService {
     );
   }
 
-  Future sendMessage(ChatRoom room, {String? photoUrl, String? text}) async {
+  Future sendMessage(
+    ChatRoom room, {
+    String? photoUrl,
+    String? text,
+    ChatMessage? replyTo,
+  }) async {
     if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
     await _shouldBeOrBecomeMember(room);
-    List<Future> futures = [
-      ChatMessage.create(
-        roomId: room.id,
-        text: text,
-        url: photoUrl,
-      ),
-      room.updateNewMessagesMeta(
-        lastMessageText: text,
-        lastMessageUrl: photoUrl,
-      ),
-    ];
-    await Future.wait(futures);
+    final newMessage = await ChatMessage.create(
+      roomId: room.id,
+      text: text,
+      url: photoUrl,
+      replyTo: replyTo,
+    );
+    await room.updateNewMessagesMeta(
+      lastMessageId: newMessage.id,
+      lastMessageText: text,
+      lastMessageUrl: photoUrl,
+    );
   }
 
   _shouldBeOrBecomeMember(
@@ -146,5 +153,14 @@ class ChatService {
     }
 
     throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
+  }
+
+  Future<void> editMessage(BuildContext context, ChatMessage message) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return EditChatMessageDialog(message: message);
+      },
+    );
   }
 }
