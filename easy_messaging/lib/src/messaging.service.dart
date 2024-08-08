@@ -30,6 +30,13 @@ class MessagingService {
 
   late final String projectId;
 
+  late final String sendMessageUrl =
+      'https://sendmessage-mkxv2itpca-uc.a.run.app';
+  late final String sendMessageToUidsUrl =
+      'https://sendmessagetouids-mkxv2itpca-uc.a.run.app';
+  late final String sendMessageToSubscriptionsUrl =
+      'https://sendmessagetosubscription-mkxv2itpca-uc.a.run.app';
+
   bool initialized = false;
   String? token;
 
@@ -268,6 +275,14 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
+    Uri url = Uri.https(sendMessageUrl);
+    http.Response response = await http.post(
+      url,
+      body: {title: title, body: body, tokens: tokens},
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
     return [];
   }
 
@@ -279,6 +294,16 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
+    // /// Send messages in batches
+    Uri url = Uri.https(sendMessageToUidsUrl);
+    http.Response response = await http.post(
+      url,
+      body: {title: title, body: body, uids: uids},
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
     return [];
   }
 
@@ -290,6 +315,16 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
+    // /// Send messages in batches
+    Uri url = Uri.https(sendMessageToSubscriptionsUrl);
+    http.Response response = await http.post(
+      url,
+      body: {title: title, body: body, subscription: subscription},
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
     return [];
   }
 }
