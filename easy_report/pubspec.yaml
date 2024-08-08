@@ -1,6 +1,6 @@
 name: easy_report
 description: "An easy report management system for various type of data for Flutter and Firebase"
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:
