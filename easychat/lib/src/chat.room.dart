@@ -63,7 +63,7 @@ class ChatRoom {
 
   List<String> get userUids => users.keys.toList();
 
-  bool get joined => userUids.contains(my.uid);
+  bool get joined => userUids.contains(myUid);
 
   List<String> invitedUsers;
   List<String> rejectedUsers;
@@ -339,7 +339,7 @@ class ChatRoom {
       field.hasPassword: false,
       if (invitedUsers != null) field.invitedUsers: invitedUsers,
       field.users: usersMap,
-      field.masterUsers: [my.uid],
+      field.masterUsers: [myUid],
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
       field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
@@ -365,9 +365,9 @@ class ChatRoom {
       group: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      invitedUsers: otherUid == my.uid ? null : [otherUid],
-      users: [my.uid],
-      masterUsers: [my.uid],
+      invitedUsers: otherUid == myUid ? null : [otherUid],
+      users: [myUid!],
+      masterUsers: [myUid!],
     );
   }
 
@@ -430,9 +430,9 @@ class ChatRoom {
         : FieldValue.serverTimestamp();
     await ref.set(
       {
-        field.invitedUsers: FieldValue.arrayRemove([my.uid]),
+        field.invitedUsers: FieldValue.arrayRemove([myUid!]),
         field.users: {
-          my.uid: {
+          myUid!: {
             if (single) ...{
               ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
               ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
@@ -450,7 +450,7 @@ class ChatRoom {
         // In case, the user rejected the invitation
         // but actually wants to accept it, then we should
         // also remove the uid from rejeceted users.
-        field.rejectedUsers: FieldValue.arrayRemove([my.uid]),
+        field.rejectedUsers: FieldValue.arrayRemove([myUid!]),
         field.updatedAt: FieldValue.serverTimestamp(),
       },
       SetOptions(merge: true),
@@ -463,8 +463,8 @@ class ChatRoom {
 
   Future<void> rejectInvitation() async {
     await ref.update({
-      field.invitedUsers: FieldValue.arrayRemove([my.uid]),
-      field.rejectedUsers: FieldValue.arrayUnion([my.uid]),
+      field.invitedUsers: FieldValue.arrayRemove([myUid!]),
+      field.rejectedUsers: FieldValue.arrayUnion([myUid!]),
     });
   }
 
@@ -473,7 +473,7 @@ class ChatRoom {
     await ref.set(
       {
         field.users: {
-          my.uid: FieldValue.delete(),
+          myUid!: FieldValue.delete(),
         },
       },
       SetOptions(merge: true),
@@ -497,7 +497,7 @@ class ChatRoom {
     final serverTimestamp = FieldValue.serverTimestamp();
     final Map<String, Map<String, Object>> updateUserData = users.map(
       (uid, value) {
-        if (uid == my.uid) {
+        if (uid == myUid!) {
           final readOrder = _negatedOrder(DateTime.now());
           return MapEntry(
             uid,
@@ -538,7 +538,7 @@ class ChatRoom {
       field.lastMessageId: lastMessageId,
       if (lastMessageText != null) field.lastMessageText: lastMessageText,
       field.lastMessageAt: FieldValue.serverTimestamp(),
-      field.lastMessageUid: my.uid,
+      field.lastMessageUid: myUid!,
       if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
       field.lastMessageDeleted: false,
       field.users: {
@@ -555,9 +555,9 @@ class ChatRoom {
   /// The Chat Room must be updated or else, it may not proceed
   /// when old room data is 0, since newMessageCounter maybe inaccurate.
   Future<void> updateMyReadMeta() async {
-    if (!userUids.contains(my.uid)) return;
-    if (users[my.uid]!.newMessageCounter == 0) return;
-    final myReadOrder = users[my.uid]!.timeOrder;
+    if (!userUids.contains(myUid!)) return;
+    if (users[myUid!]!.newMessageCounter == 0) return;
+    final myReadOrder = users[myUid!]!.timeOrder;
     final updatedOrder = _negatedOrder(myReadOrder!);
     await ref.set({
       field.users: {

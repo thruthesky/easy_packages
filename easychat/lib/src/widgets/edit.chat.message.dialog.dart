@@ -3,6 +3,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class EditChatMessageDialog extends StatefulWidget {
   const EditChatMessageDialog({
@@ -18,8 +19,10 @@ class EditChatMessageDialog extends StatefulWidget {
 
 class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
   TextEditingController textController = TextEditingController();
+  FocusNode textFocus = FocusNode();
 
   ChatMessage get message => widget.message;
+  BehaviorSubject<double?> uploadProgress = BehaviorSubject.seeded(null);
 
   String? url;
 
@@ -34,6 +37,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
     super.initState();
     textController.text = message.text ?? '';
     url = message.url;
+    textFocus.requestFocus();
   }
 
   @override
@@ -44,6 +48,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
       StorageService.instance.delete(url);
       dog("[Edit Message] Deleting unsaved image.");
     }
+    textFocus.dispose();
     super.dispose();
   }
 
@@ -57,6 +62,32 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            StreamBuilder<double?>(
+              initialData: uploadProgress.value,
+              stream: uploadProgress,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting &&
+                    !snapshot.hasData) {
+                  return const Padding(
+                    padding: EdgeInsets.only(bottom: 8.0),
+                    child: LinearProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  debugPrint("Error: ${snapshot.error}");
+                  return Text("Error: ${snapshot.error}");
+                }
+                if (snapshot.data != null) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: LinearProgressIndicator(
+                      value: snapshot.data as double,
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
             if (url != null && url!.isNotEmpty) ...[
               Align(
                 alignment: Alignment.centerRight,
@@ -116,12 +147,13 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
               ),
               child: TextField(
                 controller: textController,
+                focusNode: textFocus,
                 maxLines: 2,
                 minLines: 1,
                 decoration: InputDecoration(
                   prefixIcon: ImageUploadIconButton(
-                    // progress: (prog) => uploadProgress.add(prog),
-                    // complete: () => uploadProgress.add(null),
+                    progress: (prog) => uploadProgress.add(prog),
+                    complete: () => uploadProgress.add(null),
                     onUpload: (url) async {
                       if (this.url != null && this.url != message.url) {
                         // let message.update() handle deleting the
@@ -129,9 +161,14 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                         dog("[Edit Message] Deleting replaced image.");
                         StorageService.instance.delete(this.url);
                       }
+                      if (!mounted) {
+                        // We should delete the uploaded url if the user
+                        // suddenly went back while it is still uploading.
+                        StorageService.instance.delete(url);
+                        return;
+                      }
                       setState(() {
                         this.url = url;
-                        // submitable = canSubmit;
                       });
                     },
                   ),
@@ -152,6 +189,22 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
         ),
         ElevatedButton(
           onPressed: () async {
+            if ((url == null || url.isEmpty) && textController.text.isEmpty) {
+              final re = await confirm(
+                context: context,
+                title: const Text("Empty Message"),
+                message: const Text(
+                  "Saving empty message. Do you want to delete the message instead?",
+                ),
+              );
+              if (re == true) {
+                await message.delete();
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+              }
+              return;
+            }
+
             final List<Future> futures = [
               // Should delete the old url if it is different.
               if (message.url != url && url != null && message.url != null)
@@ -161,6 +214,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
               message.update(
                 text: textController.text,
                 url: url,
+                isEdit: true,
               ),
             ];
             // This will prevent deleting the new photo

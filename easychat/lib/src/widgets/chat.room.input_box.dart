@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -182,7 +180,15 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                             complete: () => uploadProgress.add(null),
                             onUpload: (url) async {
                               if (this.url != null) {
+                                // This means the photo before sending is being
+                                // replaced. Must delete the previous one.
                                 StorageService.instance.delete(this.url);
+                              }
+                              if (!mounted) {
+                                // We should delete the uploaded url if the user
+                                // suddenly went back while it is still uploading.
+                                StorageService.instance.delete(url);
+                                return;
                               }
                               setState(() {
                                 this.url = url;
@@ -218,7 +224,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     setState(() => submitable = false);
     final sendMessageFuture = ChatService.instance.sendMessage(
       room,
-      text: controller.text,
+      text: controller.text.trim(),
       photoUrl: url,
       replyTo: room.replyValueNotifier!.value,
     );

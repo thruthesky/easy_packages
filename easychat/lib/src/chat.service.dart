@@ -145,8 +145,8 @@ class ChatService {
   ) async {
     if (room.joined) return;
     if (room.open) return await room.join();
-    if (room.invitedUsers.contains(my.uid) ||
-        room.rejectedUsers.contains(my.uid)) {
+    if (room.invitedUsers.contains(myUid!) ||
+        room.rejectedUsers.contains(myUid!)) {
       // The user may mistakenly reject the chat room
       // The user may accept it by replying.
       return await room.acceptInvitation();
