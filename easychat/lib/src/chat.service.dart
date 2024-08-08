@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/edit.chat.message.dialog.dart';
+import 'package:easychat/src/chat.locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -13,7 +12,9 @@ class ChatService {
   static ChatService? _instance;
   static ChatService get instance => _instance ??= ChatService._();
 
-  ChatService._();
+  ChatService._() {
+    applyChatLocales();
+  }
 
   /// Whether the service is initialized or not.
   ///
@@ -140,13 +141,51 @@ class ChatService {
     );
   }
 
+  Future updateMessage({
+    required ChatMessage message,
+    String? text,
+    String? url,
+    bool isEdit = false,
+  }) async {
+    // Need to review this. Review how can we simply pass by reference
+    // Need to get room here because room may not be latest.
+    // However, updating happens occasionally and
+    // wont cost much read counts.
+    final latestRoom = await ChatRoom.get(message.roomId!);
+
+    final futures = [
+      latestRoom!.mayUpdateLastMessage(
+        messageId: message.id,
+        updatedMessageText: text,
+        updatedMessageUrl: url,
+      ),
+      message.update(
+        text: text,
+        url: url,
+        isEdit: isEdit,
+      )
+    ];
+    await Future.wait(futures);
+  }
+
+  Future deleteMessage(
+    ChatMessage message,
+  ) async {
+    // Need to get room here because room may not be latest.
+    // However, deleting happens occasionally and
+    // wont cost much read counts.
+    final latestRoom = await ChatRoom.get(message.roomId!);
+    await latestRoom!.mayDeleteLastMessage(message.id);
+    await message.delete();
+  }
+
   _shouldBeOrBecomeMember(
     ChatRoom room,
   ) async {
     if (room.joined) return;
     if (room.open) return await room.join();
-    if (room.invitedUsers.contains(my.uid) ||
-        room.rejectedUsers.contains(my.uid)) {
+    if (room.invitedUsers.contains(myUid!) ||
+        room.rejectedUsers.contains(myUid!)) {
       // The user may mistakenly reject the chat room
       // The user may accept it by replying.
       return await room.acceptInvitation();
@@ -155,11 +194,18 @@ class ChatService {
     throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
   }
 
-  Future<void> editMessage(BuildContext context, ChatMessage message) async {
+  Future<void> editMessage(
+    BuildContext context, {
+    required ChatMessage message,
+    required ChatRoom room,
+  }) async {
     await showDialog(
       context: context,
       builder: (context) {
-        return EditChatMessageDialog(message: message);
+        return EditChatMessageDialog(
+          message: message,
+          room: room,
+        );
       },
     );
   }

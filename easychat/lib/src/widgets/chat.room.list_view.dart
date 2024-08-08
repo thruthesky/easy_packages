@@ -4,6 +4,7 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_locale/easy_locale.dart';
 
 enum ChatRoomListOption {
   allMine,
@@ -22,15 +23,19 @@ class ChatRoomListView extends StatelessWidget {
     super.key,
     this.queryOption = ChatRoomListOption.allMine,
     this.itemBuilder,
+    this.itemExtent,
     this.emptyBuilder,
     this.padding,
+    this.physics = const ClampingScrollPhysics(),
   });
 
   final ChatRoomListOption queryOption;
   final Widget Function(BuildContext context, ChatRoom room, int index)?
       itemBuilder;
+  final double? itemExtent;
   final Widget Function(BuildContext context)? emptyBuilder;
   final EdgeInsetsGeometry? padding;
+  final ScrollPhysics? physics;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
@@ -94,17 +99,17 @@ class ChatRoomListView extends StatelessWidget {
         }
         if (snapshot.docs.isEmpty) {
           return emptyBuilder?.call(context) ??
-              const Center(
-                // TODO t?
-                child: Text("No chat yet."),
+              Center(
+                child: Text("chat list is empty".t),
               );
         }
         final docs = snapshot.docs;
         final chatRooms =
             docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
         return ListView.builder(
+          itemExtent: itemExtent,
           padding: padding,
-          physics: const ClampingScrollPhysics(),
+          physics: physics,
           itemCount: chatRooms.length,
           itemBuilder: (context, index) {
             if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
@@ -123,3 +128,4 @@ class ChatRoomListView extends StatelessWidget {
     );
   }
 }
+// 

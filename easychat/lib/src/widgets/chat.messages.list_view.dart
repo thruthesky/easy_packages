@@ -9,17 +9,19 @@ class ChatMessagesListView extends StatelessWidget {
     super.key,
     required this.room,
     this.itemBuilder,
+    this.padding = const EdgeInsets.only(bottom: 8),
   });
 
   final ChatRoom room;
   final Widget Function(BuildContext context, ChatMessage message)? itemBuilder;
+  final EdgeInsetsGeometry padding;
 
   DatabaseReference get ref => room.messageRef;
 
   @override
   Widget build(BuildContext context) {
     return FirebaseDatabaseQueryBuilder(
-      query: ref.orderByChild("order"),
+      query: ref.orderByChild(ChatMessageField.order),
       builder: (context, snapshot, _) {
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');
@@ -36,6 +38,7 @@ class ChatMessagesListView extends StatelessWidget {
         return ListView.builder(
           reverse: true,
           itemCount: snapshot.docs.length,
+          padding: padding,
           itemBuilder: (context, index) {
             // if we reached the end of the currently obtained items, we try to
             // obtain more items

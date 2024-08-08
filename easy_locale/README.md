@@ -11,11 +11,14 @@ The features of this package are:
 For reference, this `easy_locale` can be used together with other multilingual packages.
 
 
-## 설치
+## Install
 
-본 `easy_locale` 패키지는 플러터 앱에서 로케일을 설정하지는 않지만, 앱에서 locale 설정을 해 주어야 합니다. 에를 들면, 아이폰이 한국어로 설정된 경우, 앱에서도 한글로 표시하는 것이 자연스러울 것입니다. 즉, 장치의 언어 설정을 따라서 표시하기 위해서는 iOS 의 `Info.plist` 에 지원한 언어 목록을 `CFBundleLocalizations` 에 추가를 해 주어야 합니다.
 
-아래는 `ios/Runner/Info.plist` 파일에 언어 설정을 추가한 예제입니다.
+- This `easy_locale` package does not set the locale in a Flutter app.
+
+- For an iOS app, you need to add the list of supported languages to `CFBundleLocalizations` in the iOS `Info.plist` to support the locales. Or the app may display only English even if the device set a different language in its setting.
+
+- Below is an example of adding language settings to the `ios/Runner/Info.plist` file.
 
 ```xml
 <key>CFBundleLocalizations</key>
@@ -27,8 +30,9 @@ For reference, this `easy_locale` can be used together with other multilingual p
 </array>
 ```
 
+- There is nothing to configure in Android.
 
-안드로이드에서는 따로 설정 할 것이 없습니다.
+
 
 ## Examples
 
@@ -70,10 +74,102 @@ TranslationService.instance.init(
 
 
 
+## How to use
 
-## 사용법
 
-`.t` 와 `.tr` 두개의 다국어 함수가 있다.
+### Localization extension
+
+There are two localization functions: `.t` and `.tr`.
+
+
+### Places to set locale texts
+
+By default, the translation texts are saved in `easy_locales/lib/src/locale.texts.dart`. This file should have the most common text translation only. This is called `default translation text file`.
+
+If you are developing a package and you are using `easy_locale` for the internationalization of the package, you should not touch the default translation text file. Instead, you should create your own translation text in your package and apply it to `easy_locale`'s text object by calling `lo.set()`.
+
+If you are developing an app, you should create a text translation file somewhere in the app project, and apply it to `easy_local`'s text object by calling `lo.set()`.
+
+
+
+
+
+`TranslationService.instance.set()` 를 사용하면 기존의 존재하는 번역 문자열을 다른 것 변경 할 수 있다. 또는 기존에 존재하지 않는다면 추가를 하는 것이다. 따라서 앱에서 사용할 번역 문자열을 하우스 다국어 기능을 활용해 번역 할 수 있다.
+
+```dart
+TranslationService.instance.set(
+key: 'hello',
+locale: 'en',
+value: 'Hello',
+);
+
+expect('hello'.t == 'Hello', true);
+```
+
+
+
+#### Adding custom translations
+
+- You can use `lo.set()` to add or update your own translations.
+
+- Below is an example of adding custom translations.
+
+```dart
+import 'package:easy_locale/easy_locale.dart';
+
+final localeTexts = <String, Map<String, String>>{
+  'todo': {
+    'en': 'Todo',
+    'ko': '할일',
+  },
+  'game': {
+    'en': 'Games',
+    'ko': '게임',
+  },
+  'Must login first': {
+    'en': 'Must login first',
+    'ko': '로그인이 필요합니다',
+  },
+  'you have reached the upload limit': {
+    'en': 'You have reached the upload limit',
+    'ko': '업로드 제한에 도달했습니다',
+  },
+};
+
+void addLocaleTexts() async {
+  final locale = await currentLocale;
+  if (locale == null) return;
+
+  for (var entry in localeTexts.entries) {
+    lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
+  }
+}
+```
+
+
+
+
+
+
+위와 같이 하면 `name` 이라는 언어 키에 아래와 같이 저장하면 된다. 특히, 단수/복수 처리를 잘 보면 된다.
+
+```dart
+final localeTexts = {
+    'name': {
+        'en': 'Name',
+        'ko': '이름',
+    },
+    'there are {n} apple': {
+        'en': {
+            'none': 'There is no apple',
+            'one': 'There is only {n} apple',
+            'many': 'There are {n} apples',
+        },
+        'ko': '사과가 {n}개 있어요',
+    }
+}
+```
+
 
 
 ### 번역 문자열
@@ -138,44 +234,6 @@ expect('apple'.tr(args: {'name': 'J', 'n': n}, form: n), 'J has 3 apples.');
 
 
 
-### 번역 문장 추가 또는 업데이트
-
-`TranslationService.instance.set()` 를 사용하면 기존의 존재하는 번역 문자열을 다른 것 변경 할 수 있다. 또는 기존에 존재하지 않는다면 추가를 하는 것이다. 따라서 앱에서 사용할 번역 문자열을 하우스 다국어 기능을 활용해 번역 할 수 있다.
-
-```dart
-TranslationService.instance.set(
-key: 'hello',
-locale: 'en',
-value: 'Hello',
-);
-
-expect('hello'.t == 'Hello', true);
-```
-
-
-
-
-위와 같이 하면 `name` 이라는 언어 키에 아래와 같이 저장하면 된다. 특히, 단수/복수 처리를 잘 보면 된다.
-
-```dart
-final localeTexts = {
-    'name': {
-        'en': 'Name',
-        'ko': '이름',
-    },
-    'there are {n} apple': {
-        'en': {
-            'none': 'There is no apple',
-            'one': 'There is only {n} apple',
-            'many': 'There are {n} apples',
-        },
-        'ko': '사과가 {n}개 있어요',
-    }
-}
-```
-
-
-
 ### lo
 
 참고로 `LocalService.instance` 를 줄여서 `lo` 로 사용 할 수 있습니다.
@@ -198,45 +256,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       // ...
     );
-  }
-}
-```
-
-
-# Adding custom translations
-
-- You can use `lo.set()` to add or update your own translations.
-
-- Below is an example of adding custom translations.
-
-```dart
-import 'package:easy_locale/easy_locale.dart';
-
-final localeTexts = <String, Map<String, String>>{
-  'todo': {
-    'en': 'Todo',
-    'ko': '할일',
-  },
-  'game': {
-    'en': 'Games',
-    'ko': '게임',
-  },
-  'Must login first': {
-    'en': 'Must login first',
-    'ko': '로그인이 필요합니다',
-  },
-  'you have reached the upload limit': {
-    'en': 'You have reached the upload limit',
-    'ko': '업로드 제한에 도달했습니다',
-  },
-};
-
-void addLocaleTexts() async {
-  final locale = await currentLocale;
-  if (locale == null) return;
-
-  for (var entry in localeTexts.entries) {
-    lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
   }
 }
 ```

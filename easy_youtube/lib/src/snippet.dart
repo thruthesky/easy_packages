@@ -50,7 +50,6 @@
 }
 
  */
-
 class Snippet {
   final DateTime publishedAt;
   final String? channelId;
@@ -63,6 +62,8 @@ class Snippet {
   final String? liveBroadcastContent;
   final Localized localized;
   final String? defaultAudioLanguage;
+  final Statistics statistics;
+  final ContentDetails contentDetails;
 
   Snippet({
     required this.publishedAt,
@@ -76,6 +77,8 @@ class Snippet {
     required this.liveBroadcastContent,
     required this.localized,
     required this.defaultAudioLanguage,
+    required this.statistics,
+    required this.contentDetails,
   });
 
   factory Snippet.fromJson(Map<String, dynamic> json) {
@@ -83,6 +86,8 @@ class Snippet {
       throw Exception('No youtube items found');
     }
     final snippet = json['items'][0]['snippet'];
+    final statistics = json['items'][0]['statistics'];
+    final contentDetails = json['items'][0]['contentDetails'];
     return Snippet(
       publishedAt: DateTime.parse(snippet['publishedAt']),
       channelId: snippet['channelId'],
@@ -106,12 +111,14 @@ class Snippet {
       liveBroadcastContent: snippet['liveBroadcastContent'],
       localized: Localized.fromJson(snippet['localized']),
       defaultAudioLanguage: snippet['defaultAudioLanguage'],
+      statistics: Statistics.fromJson(statistics),
+      contentDetails: ContentDetails.fromJson(contentDetails),
     );
   }
 
   @override
   String toString() {
-    return 'publishedAt: $publishedAt, channelId: $channelId, title: $title, description: $description, thumbnails: $thumbnails, channelTitle: $channelTitle, tags: $tags, categoryId: $categoryId, liveBroadcastContent: $liveBroadcastContent, localized: $localized, defaultAudioLanguage: $defaultAudioLanguage';
+    return 'publishedAt: $publishedAt, channelId: $channelId, title: $title, description: $description, thumbnails: $thumbnails, channelTitle: $channelTitle, tags: $tags, categoryId: $categoryId, liveBroadcastContent: $liveBroadcastContent, localized: $localized, defaultAudioLanguage: $defaultAudioLanguage, statistics: $statistics, contentDetails: $contentDetails';
   }
 }
 
@@ -159,5 +166,68 @@ class Localized {
   @override
   String toString() {
     return 'title: $title, description: $description';
+  }
+}
+
+/// Statistics  model contains like count , view count favorit count,
+class Statistics {
+  final String viewCount;
+  final String likeCount;
+  final String favoriteCount;
+  final String commentCount;
+
+  Statistics({
+    required this.viewCount,
+    required this.likeCount,
+    required this.favoriteCount,
+    required this.commentCount,
+  });
+
+  factory Statistics.fromJson(Map<String, dynamic> json) {
+    return Statistics(
+        viewCount: json['viewCount'],
+        likeCount: json['likeCount'],
+        favoriteCount: json['favoriteCount'],
+        commentCount: json['commentCount']);
+  }
+
+  @override
+  String toString() {
+    return 'viewCount: $viewCount, likeCount: $likeCount, favoriteCount: $favoriteCount, commentCount: $commentCount';
+  }
+}
+
+/// ContentDetails model
+class ContentDetails {
+  final String duration;
+  final String dimension;
+  final String definition;
+  final String caption;
+  final bool licensedContent;
+  final String projection;
+
+  ContentDetails({
+    required this.duration,
+    required this.dimension,
+    required this.definition,
+    required this.caption,
+    required this.licensedContent,
+    required this.projection,
+  });
+
+  factory ContentDetails.fromJson(Map<String, dynamic> json) {
+    return ContentDetails(
+      duration: json['duration'],
+      dimension: json['dimension'],
+      definition: json['definition'],
+      caption: json['caption'],
+      licensedContent: json['licensedContent'],
+      projection: json['projection'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'duration: $duration, dimension: $dimension, definition: $definition, caption: $caption, licensedContent: $licensedContent, projection: $projection';
   }
 }

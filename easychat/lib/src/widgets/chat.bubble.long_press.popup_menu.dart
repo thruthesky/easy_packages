@@ -1,4 +1,3 @@
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +27,7 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
             height: 40,
             child: Text(items.reply),
           ),
-        // TODO review conditions
         if (message.uid == myUid && message.deleted == false) ...[
-          // TODO hide edit after 3 minutes
           PopupMenuItem<String>(
             value: items.edit,
             height: 40,
@@ -68,14 +65,13 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
         room.replyTo(message);
       } else if (value == items.edit) {
         if (!context.mounted) return;
-        await ChatService.instance.editMessage(context, message);
+        await ChatService.instance.editMessage(
+          context,
+          message: message,
+          room: room,
+        );
       } else if (value == items.delete) {
-        // Need to get here because room is not latest.
-        // However, deleting happens occasionally and
-        // wont cost much read counts.
-        final latestRoom = await ChatRoom.get(room.id);
-        await latestRoom!.mayDeleteLastMessage(message.id);
-        await message.delete();
+        ChatService.instance.deleteMessage(message);
       }
     }
   }
