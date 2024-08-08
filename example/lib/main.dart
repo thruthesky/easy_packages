@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
@@ -10,6 +11,8 @@ import 'package:example/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
+import 'package:easy_youtube/easy_youtube.dart';
 
 void main() async {
   /// Uncaught Exception 핸들링
@@ -154,6 +157,17 @@ class MyAppState extends State<MyApp> {
 
       // MessagingService.instance.send(
       //   uids: ['vysiFTQS1ZXSnvS3UnxfeJEpCWN2'],
+
+      final youtube =
+          Youtube(url: 'https://www.youtube.com/watch?v=YBmFxBb9U6g');
+
+      print('youtube id: ${youtube.getVideoId()}');
+
+      final snippet = await youtube.getSnippet(
+        apiKey: 'AIzaSyDguL0DVfgQQ8YJHfSAJm1t8gCetR0-TdY',
+      );
+
+      print('snippet: $snippet');
     });
   }
 
