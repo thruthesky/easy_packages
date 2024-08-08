@@ -29,7 +29,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   String? url;
 
   double photoWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.24;
+      MediaQuery.of(context).size.width * 0.20;
 
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
@@ -120,7 +120,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                   child: Container(
                     height: photoWidth(context),
                     width: photoWidth(context),
-                    margin: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),

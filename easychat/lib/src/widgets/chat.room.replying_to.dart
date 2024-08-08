@@ -9,17 +9,19 @@ class ChatRoomReplyingTo extends StatelessWidget {
     required this.replyTo,
     this.margin = const EdgeInsets.fromLTRB(12, 0, 12, 8),
     this.onPressClose,
+    this.maxWidth,
   });
 
   final ChatMessage replyTo;
   final EdgeInsetsGeometry margin;
   final Function()? onPressClose;
+  final double? maxWidth;
 
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
 
-  double maxWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.70 - 24;
+  double _maxWidth(BuildContext context) =>
+      maxWidth ?? MediaQuery.of(context).size.width * 0.70 - 24;
 
   @override
   Widget build(BuildContext context) {
@@ -83,29 +85,31 @@ class ChatRoomReplyingTo extends StatelessWidget {
                       children: [
                         if (replyTo.text != null &&
                             replyTo.text!.isNotEmpty) ...[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: replyTo.uid == my.uid
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .tertiaryContainer,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(12)),
-                            ),
-                            constraints: BoxConstraints(
-                              minWidth: 0,
-                              maxWidth: maxWidth(context),
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Text(
-                                replyTo.text!,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                          Flexible(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: replyTo.uid == my.uid
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .tertiaryContainer,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(12)),
+                              ),
+                              // constraints: BoxConstraints(
+                              //   minWidth: 0,
+                              //   maxWidth: _maxWidth(context),
+                              // ),
+                              clipBehavior: Clip.hardEdge,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Text(
+                                  replyTo.text!,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
                           ),

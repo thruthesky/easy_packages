@@ -69,6 +69,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                 ChatRoomReplyingTo(
                   replyTo: message.replyTo!,
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                  maxWidth: 165,
                 ),
               StreamBuilder<double?>(
                 initialData: uploadProgress.value,
