@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -30,7 +28,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   String? url;
 
   double photoWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56 / 2;
+      MediaQuery.of(context).size.width * 0.24;
 
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
@@ -89,7 +87,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: LinearProgressIndicator(
-                  value: snapshot.data as double,
+                  value: snapshot.data as double == 1.0 ? null : snapshot.data,
                 ),
               );
             }
@@ -179,11 +177,19 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                         decoration: InputDecoration(
                           prefixIcon: ImageUploadIconButton(
                             progress: (prog) => uploadProgress.add(prog),
-                            complete: () => uploadProgress.add(null),
                             onUpload: (url) async {
                               if (this.url != null) {
+                                // This means the photo before sending is being
+                                // replaced. Must delete the previous one.
                                 StorageService.instance.delete(this.url);
                               }
+                              if (!mounted) {
+                                // We should delete the uploaded url if the user
+                                // suddenly went back while it is still uploading.
+                                StorageService.instance.delete(url);
+                                return;
+                              }
+                              uploadProgress.add(null);
                               setState(() {
                                 this.url = url;
                                 submitable = canSubmit;
@@ -218,7 +224,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     setState(() => submitable = false);
     final sendMessageFuture = ChatService.instance.sendMessage(
       room,
-      text: controller.text,
+      text: controller.text.trim(),
       photoUrl: url,
       replyTo: room.replyValueNotifier!.value,
     );

@@ -48,7 +48,7 @@ class ChatRoomListTile extends StatelessWidget {
               ? Text(room.id)
               : Text(user.displayName.trim().isNotEmpty
                   ? user.displayName
-                  : user.uid),
+                  : '...'),
           subtitle: subtitle,
           trailing: trailing,
           onTap: () => onTapTile(context, room, user),
@@ -78,9 +78,9 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text((room.lastMessageAt ?? room.updatedAt).short),
-        if ((room.users[my.uid]?.newMessageCounter ?? 0) > 0)
+        if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
           Badge(
-            label: Text("${room.users[my.uid]!.newMessageCounter}"),
+            label: Text("${room.users[myUid!]!.newMessageCounter}"),
           ),
       ],
     );

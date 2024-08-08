@@ -94,13 +94,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   String notMemberMessage(ChatRoom room) {
-    if (room.invitedUsers.contains(my.uid)) {
+    if (room.invitedUsers.contains(myUid!)) {
       // The user has a chance to open the chat room with message
       // when the other user sent a message (1:1) but the user
       // haven't accepted yet.
       return "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.";
     }
-    if (room.rejectedUsers.contains(my.uid)) {
+    if (room.rejectedUsers.contains(myUid!)) {
       return "You have rejected this chat. However, if you sent a reply, the chat is automatically accepted.";
     }
     if (room.group) {
