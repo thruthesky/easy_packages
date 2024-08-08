@@ -619,8 +619,6 @@ class ChatRoom {
       replyValueNotifier = null;
       return;
     }
-    throw ChatException("reply-value-notifier-disposing-null",
-        "Cannot dispose replyValueNotifier if it is null. It may be disposed already.");
   }
 
   void replyTo(ChatMessage chatMessage) {

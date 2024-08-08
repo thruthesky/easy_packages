@@ -183,6 +183,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             const Center(child: CircularProgressIndicator.adaptive())
           else ...[
             Expanded(
+              flex: 5,
               child: $room!.joined ||
                       $room!.open ||
                       $room!.invitedUsers.contains(my.uid) ||
@@ -223,11 +224,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     );
                   }),
             ],
-            SafeArea(
-              top: false,
-              child: $room == null
-                  ? const SizedBox.shrink()
-                  : ChatRoomInputBox(room: $room!),
+            SingleChildScrollView(
+              child: SafeArea(
+                top: false,
+                child: $room == null
+                    ? const SizedBox.shrink()
+                    : ChatRoomInputBox(room: $room!),
+              ),
             ),
           ],
         ],

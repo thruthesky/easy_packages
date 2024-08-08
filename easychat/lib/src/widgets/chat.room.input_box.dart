@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ChatRoomInputBox extends StatefulWidget {
@@ -63,6 +64,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
             if (message != null) {
               return ChatRoomReplyingTo(
                 replyTo: message,
+                onPressClose: () => clearReplyTo(),
               );
             }
             return const SizedBox.shrink();
@@ -84,10 +86,11 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               return Text("Error: ${snapshot.error}");
             }
             if (snapshot.data != null) {
+              final value = double.parse(snapshot.data.toString());
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: LinearProgressIndicator(
-                  value: snapshot.data as double == 1.0 ? null : snapshot.data,
+                  value: value == 1.0 ? null : value,
                 ),
               );
             }
