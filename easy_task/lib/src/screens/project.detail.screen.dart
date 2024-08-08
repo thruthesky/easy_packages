@@ -31,62 +31,24 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                  child: UserDoc(
-                    uid: task.creator,
-                    sync: true,
-                    builder: (creator) => creator == null
-                        ? const CircularProgressIndicator.adaptive()
-                        : Row(
-                            children: [
-                              Text('${'Creator'.t} :'),
-                              UserAvatar(
-                                user: creator,
-                                size: 24,
-                                radius: 8,
-                              ),
-                              Text(
-                                ' ${creator.displayName}',
-                              ),
-                              const Spacer(),
-                              Text(
-                                '${'Created At'.t}: ${task.createdAt.short}',
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
-                            ],
-                          ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Text('Project: ${task.project}'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                  child: Card(
-                    child: ListTile(
-                      title: Text(task.title,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      subtitle: Text(task.description,
-                          style: const TextStyle(fontSize: 16)),
-                    ),
-                  ),
-                ),
-
+                Text('User ID: ${task.creator}',
+                    style: const TextStyle(fontSize: 16)),
                 const SizedBox(height: 8),
-                // Text(
-                //   'Updated At: ${task.updatedAt.short}',
-                //   style: Theme.of(context).textTheme.labelSmall,
-                // ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-                  child: DisplayPhotos(urls: task.urls),
-                ),
+                Text('Project: ${task.project}',
+                    style: const TextStyle(fontSize: 16)),
+                Text('Title: ${task.title}',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                Text('Description: ${task.description}',
+                    style: const TextStyle(fontSize: 16)),
+                const SizedBox(height: 8),
+                Text('Created At: ${task.createdAt}',
+                    style: const TextStyle(fontSize: 16)),
+                const SizedBox(height: 8),
+                Text('Updated At: ${task.updatedAt}',
+                    style: const TextStyle(fontSize: 16)),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
                         onPressed: () {
@@ -95,11 +57,11 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                             parentTask: task,
                           );
                         },
-                        child: Text('Add Task'.t)),
+                        child: const Text('Add Task')),
                     ElevatedButton(
                         onPressed: () => TaskService.instance
                             .showTaskUpdateScreen(context, task),
-                        child: Text('Update'.t)),
+                        child: const Text('Update Project')),
                   ],
                 ),
               ],
