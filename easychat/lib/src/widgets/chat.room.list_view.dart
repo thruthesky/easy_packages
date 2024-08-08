@@ -26,6 +26,7 @@ class ChatRoomListView extends StatelessWidget {
     this.itemExtent,
     this.emptyBuilder,
     this.padding,
+    this.physics = const ClampingScrollPhysics(),
   });
 
   final ChatRoomListOption queryOption;
@@ -34,6 +35,7 @@ class ChatRoomListView extends StatelessWidget {
   final double? itemExtent;
   final Widget Function(BuildContext context)? emptyBuilder;
   final EdgeInsetsGeometry? padding;
+  final ScrollPhysics? physics;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
@@ -107,7 +109,7 @@ class ChatRoomListView extends StatelessWidget {
         return ListView.builder(
           itemExtent: itemExtent,
           padding: padding,
-          // physics: const BouncingScrollPhysics(),
+          physics: physics,
           itemCount: chatRooms.length,
           itemBuilder: (context, index) {
             if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
