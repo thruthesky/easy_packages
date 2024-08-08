@@ -33,42 +33,132 @@ class _MessagingScreenState extends State<MessagingScreen> {
           children: [
             TextField(
               controller: uidController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'uid',
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (uidController.text.isNotEmpty)
+                      InkWell(
+                        onTap: () => {
+                          setState(() {
+                            uidController.clear();
+                          })
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          color:
+                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
             TextField(
               controller: tokenController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'token',
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (tokenController.text.isNotEmpty)
+                      InkWell(
+                        onTap: () => {
+                          setState(() {
+                            tokenController.clear();
+                          })
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          color:
+                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
             TextField(
               controller: subscriptionController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'subscription',
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (subscriptionController.text.isNotEmpty)
+                      InkWell(
+                        onTap: () => {
+                          setState(() {
+                            subscriptionController.clear();
+                          })
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          color:
+                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'title',
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (titleController.text.isNotEmpty)
+                      InkWell(
+                        onTap: () => {
+                          setState(() {
+                            titleController.clear();
+                          })
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          color:
+                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
             TextField(
               controller: bodyController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'body',
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (bodyController.text.isNotEmpty)
+                      InkWell(
+                        onTap: () => {
+                          setState(() {
+                            bodyController.clear();
+                          })
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          color:
+                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(
