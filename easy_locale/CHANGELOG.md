@@ -1,3 +1,6 @@
+## 0.0.7
+* Update. Document update.
+
 ## 0.0.6
 * Add. more texts.
 
