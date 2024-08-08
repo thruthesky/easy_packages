@@ -65,29 +65,30 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           : const SafeArea(
                               child: Icon(Icons.people, size: 64),
                             ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: IconButton(
-                          icon: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surface
-                                  .withAlpha(220),
-                              borderRadius: BorderRadius.circular(40),
+                      if (room.masterUsers.contains(myUid))
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surface
+                                    .withAlpha(220),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              child: const Icon(Icons.edit),
                             ),
-                            padding: const EdgeInsets.all(8),
-                            child: const Icon(Icons.edit),
+                            onPressed: () async {
+                              await ChatService.instance.showChatRoomEditScreen(
+                                context,
+                                room: room,
+                              );
+                            },
                           ),
-                          onPressed: () async {
-                            await ChatService.instance.showChatRoomEditScreen(
-                              context,
-                              room: room,
-                            );
-                          },
-                        ),
-                      )
+                        )
                     ],
                   ),
                 ),
