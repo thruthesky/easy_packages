@@ -1,7 +1,7 @@
 name: easy_storage
 description: "File upload package for Firebase Storage. Supports photo, video, and other files."
 version: 0.0.13
-homepage: hhttps://github.com/thruthesky/easy-packages
+homepage: https://github.com/thruthesky/easy-packages
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
