@@ -20,11 +20,21 @@ class TaskService {
 
   TaskService._() {
     dog('TaskService is created');
-    addPostTranslations();
+    addTaskLocaleTexts();
   }
 
   CollectionReference col = FirebaseFirestore.instance.collection('tasks');
   User? get currentUser => FirebaseAuth.instance.currentUser;
+
+  Function? setLocaleTexts;
+
+  bool initialized = false;
+  init({
+    Function? setLocaleTexts,
+  }) {
+    initialized = true;
+    this.setLocaleTexts = setLocaleTexts;
+  }
 
   /// Show the task create screen. It can be a project creation.
   showTaskCreateScreen(BuildContext context) {
