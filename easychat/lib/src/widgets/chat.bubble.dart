@@ -8,9 +8,11 @@ class ChatBubble extends StatelessWidget {
   const ChatBubble({
     super.key,
     required this.message,
+    this.onTapReplyTo,
   });
 
   final ChatMessage message;
+  final Function(ChatMessage message)? onTapReplyTo;
 
   double maxWidth(BuildContext context) =>
       // 48 is the size of the user avatar
@@ -104,7 +106,12 @@ class ChatBubble extends StatelessWidget {
                   )
                 ],
                 if (message.replyTo != null) ...[
-                  ChatBubbleReply(message: message),
+                  GestureDetector(
+                    child: ChatBubbleReply(message: message),
+                    onTap: () {
+                      onTapReplyTo?.call(message.replyTo!);
+                    },
+                  ),
                   const SizedBox(height: 4),
                 ],
                 Row(
