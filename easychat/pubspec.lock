@@ -173,10 +173,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_locale
-      sha256: "96bb070b6e10cda5246e62bba9afdc591430a257519a1aa01279fddd612feead"
+      sha256: "03b629b7786afa196d109607494c6ab8ade08796ad29f83fefe62eceaf0bbbfb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.8"
+    version: "0.0.9"
   easy_report:
     dependency: "direct main"
     description:
