@@ -7,7 +7,7 @@ import 'package:easy_storage/easy_storage.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
 import 'package:example/screens/messaging/messaging.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -168,7 +168,7 @@ class MyAppState extends State<MyApp> {
 
   messagingInit() async {
     MessagingService.instance.init(
-      projectId: DefaultFirebaseOptions.currentPlatform.projectId,
+      projectId: '', //DefaultFirebaseOptions.currentPlatform.projectId,
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
           dog('onMessageOpenedFromBackground: $message');
