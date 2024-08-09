@@ -11,11 +11,13 @@ class ChatMessagesListView extends StatelessWidget {
     required this.room,
     this.itemBuilder,
     this.padding = const EdgeInsets.only(bottom: 8),
+    this.controller,
   });
 
   final ChatRoom room;
   final Widget Function(BuildContext context, ChatMessage message)? itemBuilder;
   final EdgeInsetsGeometry padding;
+  final ScrollController? controller;
 
   DatabaseReference get ref => room.messageRef;
 
@@ -39,6 +41,7 @@ class ChatMessagesListView extends StatelessWidget {
         return ListView.builder(
           reverse: true,
           itemCount: snapshot.docs.length,
+          controller: controller,
           padding: padding,
           itemBuilder: (context, index) {
             // if we reached the end of the currently obtained items, we try to
@@ -57,7 +60,7 @@ class ChatMessagesListView extends StatelessWidget {
               room: room,
               child: itemBuilder?.call(context, message) ??
                   ChatBubble(
-                    key: ValueKey("${message.id}_message"),
+                    key: ValueKey("chatBubble_${message.id}"),
                     message: message,
                   ),
             );
