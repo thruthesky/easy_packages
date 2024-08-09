@@ -49,7 +49,6 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
     if (url != null && url != message.url) {
       // deletes the url if we uploaded but not saved
       StorageService.instance.delete(url);
-      dog("[Edit Message] Deleting unsaved image.");
     }
     textFocus.dispose();
     super.dispose();
@@ -59,7 +58,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: AlertDialog(
-        title: const Text("Edit Message"),
+        title: Text('edit message'.t),
         content: SizedBox(
           width: 500,
           child: Column(
@@ -155,7 +154,6 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                       if (this.url != null && this.url != message.url) {
                         // let message.update() handle deleting the
                         // original image. Delete only others that are replaced.
-                        dog("[Edit Message] Deleting replaced image.");
                         StorageService.instance.delete(this.url);
                       }
                       if (!mounted) {
@@ -184,9 +182,9 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
               if ((url == null || url.isEmpty) && textController.text.isEmpty) {
                 final re = await confirm(
                   context: context,
-                  title: const Text("Empty Message"),
-                  message: const Text(
-                    "Saving empty message. Do you want to delete the message instead?",
+                  title: Text('empty message'.t),
+                  message: Text(
+                    "saving empty message, confirm if delete instead".t,
                   ),
                 );
                 if (re == true) {

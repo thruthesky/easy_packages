@@ -5,18 +5,6 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Chat',
     'ko': '채팅',
   },
-  'cancel': {
-    'en': 'Cancel',
-    'ko': '취소',
-  },
-  'save': {
-    'en': 'Save',
-    'ko': '저장',
-  },
-  'saving empty message, confirm if delete instead': {
-    'en': "Saving empty message. Do you want to delete the message instead?",
-    'ko': "빈 메시지를 저장 중입니다. 대신 메시지를 삭제하시겠습니까?"
-  },
   'send': {
     'en': 'Send',
     'ko': '보내기',
@@ -145,6 +133,35 @@ final localeTexts = <String, Map<String, String>>{
   'replying to': {
     'en': 'Replying to:',
     'ko': '답글:',
+  },
+
+  // edit.chat.message.dialog.dart
+  'edit message': {
+    'en': 'Edit Message',
+    'ko': '메시지 수정',
+  },
+  'cancel': {
+    'en': 'Cancel',
+    'ko': '취소',
+  },
+  'empty message': {
+    'en': 'Empty Message',
+    'ko': '빈 메시지',
+  },
+  'saving empty message, confirm if delete instead': {
+    'en': "Saving empty message. Do you want to delete the message instead?",
+    'ko': "빈 메시지를 저장 중입니다. 대신 메시지를 삭제하시겠습니까?"
+  },
+  'save': {
+    'en': 'Save',
+    'ko': '저장',
+  },
+
+  // chat.service.dart
+  'can only send message if member, invited or open chat': {
+    'en':
+        'You can only send a message to a chat room where you are a member or an invited user, or the room is an open group chat room',
+    'ko': "회원이거나 초대된 사용자이거나, 방이 오픈 그룹 채팅방인 경우에만 메시지를 보낼 수 있습니다."
   }
 };
 
