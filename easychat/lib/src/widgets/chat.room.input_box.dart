@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ChatRoomInputBox extends StatefulWidget {
@@ -20,6 +19,7 @@ class ChatRoomInputBox extends StatefulWidget {
 
 class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   final TextEditingController controller = TextEditingController();
+  final FocusNode textFocus = FocusNode();
 
   bool get canSubmit => controller.text.isNotEmpty || url != null;
   bool submitable = false;
@@ -48,6 +48,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     uploadProgress.close();
     controller.dispose();
     room.disposeReply();
+    textFocus.dispose();
     if (url != null) {
       StorageService.instance.delete(url);
     }
@@ -85,7 +86,8 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
               debugPrint("Error: ${snapshot.error}");
               return Text("Error: ${snapshot.error}");
             }
-            if (snapshot.data != null) {
+            final value = snapshot.data;
+            if (value is double && value.isFinite && !value.isNaN) {
               final value = double.parse(snapshot.data.toString());
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
@@ -97,125 +99,131 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
             return const SizedBox.shrink();
           },
         ),
-        Container(
-          decoration: BoxDecoration(
-            border: Theme.of(context).inputDecorationTheme.enabledBorder != null
-                ? Border.all(
-                    color: enabledBorderSide(context)?.color ??
-                        const Color(0xFF000000),
-                    width: enabledBorderSide(context)?.width ?? 1.0,
-                    style:
-                        enabledBorderSide(context)?.style ?? BorderStyle.solid,
-                  )
-                : Border.all(),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (url != null) ...[
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    height: photoWidth(context),
-                    width: photoWidth(context),
-                    margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: url!,
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: IconButton(
-                            color: Theme.of(context).colorScheme.onError,
-                            icon: Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.error,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              padding: const EdgeInsets.all(4),
-                              child: const Icon(Icons.close),
-                            ),
-                            onPressed: () {
-                              StorageService.instance.delete(url);
-                              setState(
-                                () {
-                                  url = null;
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        inputDecorationTheme: InputDecorationTheme(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
+        GestureDetector(
+          onTap: () => textFocus.requestFocus(),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            decoration: BoxDecoration(
+              border:
+                  Theme.of(context).inputDecorationTheme.enabledBorder != null
+                      ? Border.all(
+                          color: enabledBorderSide(context)?.color ??
+                              const Color(0xFF000000),
+                          width: enabledBorderSide(context)?.width ?? 1.0,
+                          style: enabledBorderSide(context)?.style ??
+                              BorderStyle.solid,
+                        )
+                      : Border.all(),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (url != null) ...[
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      height: photoWidth(context),
+                      width: photoWidth(context),
+                      margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: TextField(
-                        controller: controller,
-                        maxLines: 2,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                          prefixIcon: ImageUploadIconButton(
-                            progress: (prog) => uploadProgress.add(prog),
-                            onUpload: (url) async {
-                              if (this.url != null) {
-                                // This means the photo before sending is being
-                                // replaced. Must delete the previous one.
-                                StorageService.instance.delete(this.url);
-                              }
-                              if (!mounted) {
-                                // We should delete the uploaded url if the user
-                                // suddenly went back while it is still uploading.
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: url!,
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: IconButton(
+                              color: Theme.of(context).colorScheme.onError,
+                              icon: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.error,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                padding: const EdgeInsets.all(4),
+                                child: const Icon(Icons.close),
+                              ),
+                              onPressed: () {
                                 StorageService.instance.delete(url);
-                                return;
-                              }
-                              uploadProgress.add(null);
-                              setState(() {
-                                this.url = url;
-                                submitable = canSubmit;
-                              });
-                            },
+                                setState(
+                                  () {
+                                    url = null;
+                                  },
+                                );
+                              },
+                            ),
                           ),
-                          suffixIcon: IconButton(
-                            onPressed:
-                                submitable ? () => sendTextMessage() : null,
-                            icon: const Icon(Icons.send),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          if (submitable == canSubmit) return;
-                          setState(() => submitable = canSubmit);
-                        },
-                        onSubmitted: (value) => sendTextMessage(),
+                        ],
                       ),
                     ),
                   ),
                 ],
-              ),
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          inputDecorationTheme: InputDecorationTheme(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        child: TextField(
+                          controller: controller,
+                          focusNode: textFocus,
+                          maxLines: 2,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            prefixIcon: ImageUploadIconButton(
+                              progress: (prog) => uploadProgress.add(prog),
+                              onUpload: (url) async {
+                                if (this.url != null) {
+                                  // This means the photo before sending is being
+                                  // replaced. Must delete the previous one.
+                                  StorageService.instance.delete(this.url);
+                                }
+                                if (!mounted) {
+                                  // We should delete the uploaded url if the user
+                                  // suddenly went back while it is still uploading.
+                                  StorageService.instance.delete(url);
+                                  return;
+                                }
+                                uploadProgress.add(null);
+                                setState(() {
+                                  this.url = url;
+                                  submitable = canSubmit;
+                                });
+                              },
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed:
+                                  submitable ? () => sendTextMessage() : null,
+                              icon: const Icon(Icons.send),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            if (submitable == canSubmit) return;
+                            setState(() => submitable = canSubmit);
+                          },
+                          onSubmitted: (value) => sendTextMessage(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],
