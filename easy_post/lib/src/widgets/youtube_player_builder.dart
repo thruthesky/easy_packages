@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+// copied this code from the packages because the thier widget has some missing code
+// and cause error on naviation
+
 /// A wrapper for [YoutubePlayer].
 class YoutubePlayerBuilder extends StatefulWidget {
   /// Builder for [YoutubePlayer] that supports switching between fullscreen and normal mode.
