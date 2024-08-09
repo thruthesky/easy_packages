@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
 
-class ChatMessagesListView extends StatefulWidget {
+class ChatMessagesListView extends StatelessWidget {
   const ChatMessagesListView({
     super.key,
     required this.room,
@@ -19,20 +19,7 @@ class ChatMessagesListView extends StatefulWidget {
   final EdgeInsetsGeometry padding;
   final ScrollController? controller;
 
-  @override
-  State<ChatMessagesListView> createState() => _ChatMessagesListViewState();
-}
-
-class _ChatMessagesListViewState extends State<ChatMessagesListView> {
-  DatabaseReference get ref => widget.room.messageRef;
-  final ScrollController controller = ScrollController();
-
-  final Map<String, GlobalKey> keyMap = {};
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
+  DatabaseReference get ref => room.messageRef;
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +42,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
           reverse: true,
           itemCount: snapshot.docs.length,
           // controller: widget.controller,
-          controller: controller,
-          padding: widget.padding,
+          padding: padding,
           itemBuilder: (context, index) {
             // if we reached the end of the currently obtained items, we try to
             // obtain more items
@@ -67,34 +53,18 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
             }
             final doc = snapshot.docs[index];
             final message = ChatMessage.fromSnapshot(doc);
-            final key = keyMap[message.id] ??= GlobalKey();
             return ChatBubbleLongPressPopupMenu(
               message: message,
-              room: widget.room,
-              child: widget.itemBuilder?.call(context, message) ??
+              room: room,
+              child: itemBuilder?.call(context, message) ??
                   ChatBubble(
-                    key: key,
+                    key: ValueKey("chatBubble_${message.id}"),
                     message: message,
-                    onTapReplyTo: (ChatMessage replyTo) {
-                      dog("Tapped ReplyTo: ${replyTo.id}");
-                      scrollToMessage(replyTo.id);
-                    },
                   ),
             );
           },
         );
       },
     );
-  }
-
-  void scrollToMessage(String messageId) {
-    final key = keyMap[messageId];
-    if (key != null && key.currentContext != null) {
-      Scrollable.ensureVisible(
-        key.currentContext!,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
   }
 }
