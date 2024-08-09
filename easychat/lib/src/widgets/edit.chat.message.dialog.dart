@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
@@ -146,9 +147,10 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                 maxLines: 2,
                 minLines: 1,
                 decoration: InputDecoration(
-                  prefixIcon: ImageUploadIconButton(
-                    progress: (prog) => uploadProgress.add(prog),
-                    complete: () => uploadProgress.add(null),
+                  prefixIcon: UploadIconButton.image(
+                    progress: (prog) =>
+                        mounted ? uploadProgress.add(prog) : null,
+                    complete: () => mounted ? uploadProgress.add(null) : null,
                     onUpload: (url) async {
                       if (this.url != null && this.url != message.url) {
                         // let message.update() handle deleting the
@@ -175,7 +177,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
         actions: [
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text("Cancel"),
+            child: Text("cancel".t),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -198,11 +200,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
               final List<Future> futures = [
                 // Should delete the old url if it is different.
                 if (message.url != url && url != null && message.url != null)
-                  StorageService.instance.delete(message.url!).then(
-                    (v) {
-                      dog("[Edit Message] Deleted original image.");
-                    },
-                  ),
+                  StorageService.instance.delete(message.url!),
                 ChatService.instance.updateMessage(
                   message: message,
                   text: textController.text.trim(),
@@ -216,7 +214,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
               // If error occured here check the futures.
               await Future.wait(futures);
             },
-            child: const Text("Save"),
+            child: Text("save".t),
           ),
         ],
       ),

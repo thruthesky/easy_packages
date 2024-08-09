@@ -598,6 +598,7 @@ class ChatRoom {
     }
   }
 
+  // TODO need advise
   /// To reply, it must be set here.
   ///
   /// Reason: Input box is the widget that sends the message

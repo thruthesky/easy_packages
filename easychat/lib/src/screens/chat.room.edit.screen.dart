@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -54,7 +55,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isCreate ? 'Chat Room Create' : 'Chat Room Update'),
+        title: Text(isCreate ? 'chat room create'.t : 'chat room update'.t),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -62,11 +63,10 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
               child: TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Input room name',
-                  helperText:
-                      'This is the chat room name. You can change it later.',
-                  label: Text('Name'),
+                decoration: InputDecoration(
+                  hintText: 'enter room name'.t,
+                  helperText: 'you can change this chat room name later'.t,
+                  label: Text('group chat name'.t),
                 ),
                 controller: nameController,
               ),
@@ -74,10 +74,10 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
               child: TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Input description',
-                  label: Text('Description'),
-                  helperText: 'This is the chat room description.',
+                decoration: InputDecoration(
+                  hintText: 'enter description'.t,
+                  label: Text('description'.t),
+                  helperText: 'this is chat room description'.t,
                 ),
                 controller: descriptionController,
               ),
@@ -103,8 +103,8 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 12, 0, 0),
               child: CheckboxListTile(
-                title: const Text('Open Chat'),
-                subtitle: const Text('Anyone can join this chat room.'),
+                title: Text('open chat'.t),
+                subtitle: Text('anyone can join this chat room'.t),
                 value: open,
                 onChanged: (value) {
                   if (value == null) return;
@@ -136,7 +136,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                       ChatService.instance
                           .showChatRoomScreen(context, room: chatRoom);
                     },
-                    child: const Text('CREATE'),
+                    child: Text('create'.t),
                   )
                 : ElevatedButton(
                     onPressed: () async {
@@ -148,7 +148,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                       if (!context.mounted) return;
                       Navigator.of(context).pop(room!.ref);
                     },
-                    child: const Text('UPDATE'),
+                    child: Text('update'.t),
                   ),
             const SafeArea(
               child: SizedBox(

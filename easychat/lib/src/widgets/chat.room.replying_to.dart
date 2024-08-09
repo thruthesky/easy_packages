@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,6 @@ class ChatRoomReplyingTo extends StatelessWidget {
 
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
-
-  double _maxWidth(BuildContext context) =>
-      maxWidth ?? MediaQuery.of(context).size.width * 0.70 - 24;
 
   @override
   Widget build(BuildContext context) {
@@ -49,30 +47,31 @@ class ChatRoomReplyingTo extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'Replying to:',
+                      'replying to'.t,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                     ),
                     const SizedBox(width: 8),
                     UserDoc(
-                        uid: replyTo.uid!,
-                        builder: (user) {
-                          if (user == null) return const SizedBox.shrink();
-                          return Row(
-                            children: [
-                              UserAvatar(
-                                user: user,
-                                size: 24,
-                                radius: 10,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '${user.displayName}${user.uid == myUid ? ' (yourself)' : ''}',
-                              ),
-                            ],
-                          );
-                        }),
+                      uid: replyTo.uid!,
+                      builder: (user) {
+                        if (user == null) return const SizedBox.shrink();
+                        return Row(
+                          children: [
+                            UserAvatar(
+                              user: user,
+                              size: 24,
+                              radius: 10,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              user.displayName,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
