@@ -154,15 +154,20 @@ class _PostEditScreenState extends State<PostEditScreen> {
                             onPressed: () async {
                               setState(() => inProgress = true);
                               if (isCreate) {
-                                final ref = await Post.create(
-                                  category: category ?? '',
-                                  title: titleController.text,
-                                  content: contentController.text,
-                                  youtubeUrl: youtubeController.text,
-                                  urls: urls,
-                                );
-                                if (context.mounted) {
-                                  Navigator.of(context).pop(ref);
+                                try {
+                                  final ref = await Post.create(
+                                    category: category ?? '',
+                                    title: titleController.text,
+                                    content: contentController.text,
+                                    youtubeUrl: youtubeController.text,
+                                    urls: urls,
+                                  );
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop(ref);
+                                  }
+                                } catch (e) {
+                                  setState(() => inProgress = false);
+                                  rethrow;
                                 }
                               } else if (isUpdate) {
                                 await widget.post!.update(

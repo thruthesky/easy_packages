@@ -175,7 +175,7 @@ class Post {
       'deleted': false,
     };
 
-    final youtube = await getYoutubeConfig(youtubeUrl);
+    final youtube = await getYoutubeSnippet(youtubeUrl);
 
     return await PostService.instance.col.add({
       ...data,
@@ -206,7 +206,7 @@ class Post {
       {
         ...data,
         if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
-          'youtube': await getYoutubeConfig(youtubeUrl),
+          'youtube': await getYoutubeSnippet(youtubeUrl),
         'updateAt': FieldValue.serverTimestamp(),
         ...?extra,
       },
