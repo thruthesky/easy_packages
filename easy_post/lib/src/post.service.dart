@@ -20,17 +20,21 @@ class PostService {
   Future<DocumentReference?> Function(BuildContext, Post)?
       $showPostUpdateScreen;
 
+  String? youtubeDataApi;
   init({
     Future Function(BuildContext, Post)? showPostDetailScreen,
     Future<DocumentReference?> Function(BuildContext, String?)?
         showPostCreateScreen,
     Future<DocumentReference?> Function(BuildContext, Post)?
         showPostUpdateScreen,
+    String? youtubeDataApi,
   }) {
     initialized = true;
     $showPostDetailScreen = showPostDetailScreen;
     $showPostCreateScreen = showPostCreateScreen;
     $showPostUpdateScreen = showPostUpdateScreen;
+    this.youtubeDataApi = youtubeDataApi;
+
     addPostTranslations();
   }
 

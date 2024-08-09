@@ -11,9 +11,8 @@ class YoutubeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () async {
-        await PostService.instance
-            .showPostDetailScreen(context: context, post: post);
+      onTap: () {
+        PostService.instance.showPostDetailScreen(context: context, post: post);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -26,7 +25,7 @@ class YoutubeTile extends StatelessWidget {
               width: double.infinity,
               height: 200,
               child: CachedNetworkImage(
-                imageUrl: post.youtube['hd'],
+                imageUrl: getThumbnailUrl(post),
                 fit: BoxFit.cover,
               ),
             ),
@@ -39,24 +38,26 @@ class YoutubeTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        post.youtube['title'],
+                        post.youtube['title'] ?? '',
                         style: Theme.of(context).textTheme.titleMedium,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        post.youtube['name'],
+                        post.youtube['name'] ?? '',
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                       Text(
-                        '${abbreviateNumber(post.youtube['viewCount'])} views',
+                        abbrivateStringOrNumber(
+                            post.youtube['statistics']['viewCount'] ?? 0),
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ],
                   ),
                 ),
                 Text(
-                  formatDuration(post.youtube['duration']),
+                  formatISO8601ToDuration(
+                      post.youtube['contentDetails']['duration'] ?? 0),
                 )
               ],
             ),
