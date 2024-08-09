@@ -105,7 +105,7 @@ class ChatBubble extends StatelessWidget {
                 ],
                 if (message.replyTo != null) ...[
                   ChatBubbleReply(message: message),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
                 ],
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,

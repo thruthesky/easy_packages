@@ -199,7 +199,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       // not showing if user rejected the invitation.
                       throw 'chat-room/already-invited The user is already invited.';
                     }
-                    room.inviteUser(selectedUser.uid);
+                    await room.inviteUser(selectedUser.uid);
+                    if (!context.mounted) return;
+                    alert(
+                      context: context,
+                      title: const Text("Invited User"),
+                      message: Text(
+                        "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
+                      ),
+                    );
                   },
                 ),
               ] else if (room.single) ...[
