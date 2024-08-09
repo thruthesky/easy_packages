@@ -97,10 +97,6 @@ class ChatRoomReplyingTo extends StatelessWidget {
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(12)),
                               ),
-                              // constraints: BoxConstraints(
-                              //   minWidth: 0,
-                              //   maxWidth: _maxWidth(context),
-                              // ),
                               clipBehavior: Clip.hardEdge,
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
@@ -161,7 +157,6 @@ class ChatRoomReplyingTo extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  // clearReplyTo();
                   onPressClose?.call();
                 },
               ),

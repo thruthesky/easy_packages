@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Room List: ${queryOption.name}'),
+        title: Text('chat room list: ${queryOption.name}'.t),
         actions: [
           IconButton(
             onPressed: () {

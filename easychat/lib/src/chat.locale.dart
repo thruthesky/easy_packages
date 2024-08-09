@@ -157,12 +157,21 @@ final localeTexts = <String, Map<String, String>>{
     'ko': '저장',
   },
 
+  // chat.exception.dart
+  // Nothing to translate
+
+  // chat.functions.dart
+  'login to get the single chat room id': {
+    'en': 'Login to get the single chat room id',
+    'ko': '1:1 채팅방 ID를 얻으려면 로그인하세요.',
+  },
+
   // chat.service.dart
   'can only send message if member, invited or open chat': {
     'en':
         'You can only send a message to a chat room where you are a member or an invited user, or the room is an open group chat room',
     'ko': "회원이거나 초대된 사용자이거나, 방이 오픈 그룹 채팅방인 경우에만 메시지를 보낼 수 있습니다."
-  }
+  },
 };
 
 applyChatLocales() async {
