@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
       if (isDifferentText(replySource.text ?? "", replyTo!.text ?? "") ||
           replySource.url != replyTo!.url ||
           replySource.deleted != replyTo!.deleted) {
-        dog("Updating replyTo, The true source is updated");
+        // Updating replyTo, The true source is updated
         replyTo = replySource;
         message.update(replyTo: replyTo);
         if (replyTo!.deleted == true) subscription?.cancel();
@@ -87,14 +87,20 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
             builder: (user) {
               if (user == null) {
                 return Text(
-                  "Replying to",
+                  "replying to".t,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                 );
               }
               return Text(
-                "Replying to ${user.displayName}${user.uid == message.uid ? ' (self)' : ''}",
+                "replying to user".tr(
+                  args: {
+                    "username": user.displayName.isNotEmpty
+                        ? user.displayName
+                        : user.name
+                  },
+                ),
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -114,7 +120,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                 ),
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                  "This message has been deleted.",
+                  'this message has been deleted'.t,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),

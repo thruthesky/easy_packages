@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.member.list.dialog.dart';
 import 'package:easyuser/easyuser.dart';
@@ -37,7 +38,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dog('ChatRoomMenuDrawer.build: MediaQuery.of(context).padding.top: ${MediaQuery.of(context).padding.top}');
     return Drawer(
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
@@ -115,8 +115,10 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     children: [
                       const SizedBox(height: 24),
                       label(
-                          context: context,
-                          text: "Members (${room.userUids.length})"),
+                        context: context,
+                        text: "members counted"
+                            .tr(args: {'num': room.userUids.length}),
+                      ),
                       const SizedBox(height: 8),
                     ],
                   ),
@@ -152,7 +154,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            "... and more.",
+                            'and more members'.t,
                             style: Theme.of(context).textTheme.labelSmall,
                           ),
                         ),
@@ -161,14 +163,14 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     ),
                   ),
                   ListTile(
-                    title: const Text("See All Members"),
+                    title: Text('see all members'.t),
                     onTap: () {
                       showMembersDialog(context);
                     },
                   ),
                 ],
                 ListTile(
-                  title: const Text("Invite More Users"),
+                  title: Text('invite more users'.t),
                   onTap: () async {
                     final selectedUser =
                         await UserService.instance.showUserSearchDialog(
@@ -185,21 +187,47 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     );
                     if (selectedUser == null) return;
                     if (selectedUser.uid == my.uid) {
-                      throw 'chat-room/inviting-yourself You cannot invite yourself.';
+                      throw ChatException(
+                        'inviting-yourself',
+                        'you cannot invite yourself'.t,
+                      );
                     }
                     if (room.invitedUsers.contains(selectedUser.uid)) {
-                      throw 'chat-room/already-invited The user is already invited.';
+                      throw ChatException(
+                        'already-invited',
+                        'the user is already invited'.t,
+                      );
                     }
                     if (room.userUids.contains(selectedUser.uid)) {
-                      throw 'chat-room/already-member The user is already a member.';
+                      throw ChatException(
+                        'already-member',
+                        'the user is already a member'.t,
+                      );
                     }
                     if (room.rejectedUsers.contains(selectedUser.uid)) {
-                      // throw 'chat-room/rejected The user has been rejected.';
                       // The chat room is already rejected by the other user, we are
                       // not showing if user rejected the invitation.
-                      throw 'chat-room/already-invited The user is already invited.';
+                      throw ChatException(
+                        'already-invited',
+                        'the user is already invited'.t,
+                      );
                     }
-                    room.inviteUser(selectedUser.uid);
+                    await room.inviteUser(selectedUser.uid);
+                    if (!context.mounted) return;
+                    alert(
+                      context: context,
+                      title: Text('invited user'.t),
+                      message: Text(
+                        // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
+                        'user has been invited.'.tr(
+                          args: {
+                            'username': selectedUser.displayName.isEmpty
+                                ? selectedUser.name
+                                : selectedUser.displayName,
+                          },
+                        ),
+                      ),
+                    );
                   },
                 ),
               ] else if (room.single) ...[
@@ -243,12 +271,12 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 ],
               ],
               const SizedBox(height: 24),
-              label(context: context, text: "Options"),
+              label(context: context, text: "options".t),
               const SizedBox(height: 8),
               if (room.joined) ...[
                 if (room.group && room.masterUsers.contains(my.uid))
                   ListTile(
-                    title: const Text("Update"),
+                    title: Text("update".t),
                     onTap: () {
                       ChatService.instance
                           .showChatRoomEditScreen(context, room: room);
@@ -256,16 +284,19 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   ),
                 if (room.group)
                   ListTile(
-                      title: const Text("Leave"),
-                      onTap: () {
-                        room.leave();
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      }),
+                    title: Text("leave".t),
+                    onTap: () {
+                      room.leave();
+                      // two pops since we are opening both
+                      // drawer and room screen.
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                  ),
               ],
               if (room.single)
                 ListTile(
-                  title: const Text("Block"),
+                  title: Text("block".t),
                   onTap: () {
                     // TODO review if this is the correct way
                     UserService.instance
@@ -273,7 +304,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   },
                 ),
               // ListTile(
-              //   title: const Text("Report"),
+              //   title: Text('report'.t),
               //   onTap: () {
               // TODO review if is this the correct way
               // ReportService.instance.report(

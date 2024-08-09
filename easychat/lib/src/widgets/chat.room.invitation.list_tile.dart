@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _ChatRoomInvitationListTileState
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(12),
             ),
-            child: const Text("Accept"),
+            child: Text("accept".t),
           ),
           const SizedBox(width: 4),
           ElevatedButton(
@@ -136,7 +137,7 @@ class _ChatRoomInvitationListTileState
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(12),
             ),
-            child: const Text("Reject"),
+            child: Text("reject".t),
           ),
         ],
       ),

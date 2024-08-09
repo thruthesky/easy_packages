@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/chat.locale.dart';
 import 'package:easyuser/easyuser.dart';
@@ -190,8 +191,10 @@ class ChatService {
       // The user may accept it by replying.
       return await room.acceptInvitation();
     }
-
-    throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
+    throw ChatException(
+      "uninvited-chat",
+      'can only send message if member, invited or open chat'.t,
+    );
   }
 
   Future<void> editMessage(

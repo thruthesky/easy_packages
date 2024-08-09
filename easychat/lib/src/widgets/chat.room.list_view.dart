@@ -92,7 +92,9 @@ class ChatRoomListView extends StatelessWidget {
       builder: (context, snapshot, child) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
-          return Center(child: Text('Something went wrong: ${snapshot.error}'));
+          return Center(
+            child: Text('${'something went wrong'.t}: ${snapshot.error}'),
+          );
         }
         if (snapshot.isFetching && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
