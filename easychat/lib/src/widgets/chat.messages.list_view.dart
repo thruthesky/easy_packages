@@ -1,4 +1,5 @@
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
@@ -27,12 +28,12 @@ class ChatMessagesListView extends StatelessWidget {
           dog('Error: ${snapshot.error}');
           return Text('Something went wrong! ${snapshot.error}');
         }
-        if (snapshot.isFetching) {
+        if (snapshot.isFetching && !snapshot.hasData) {
           return const CircularProgressIndicator.adaptive();
         }
         if (snapshot.docs.isEmpty) {
-          return const Center(
-            child: Text('No messages yet!'),
+          return Center(
+            child: Text('no chat message in room yet'.t),
           );
         }
         return ListView.builder(
