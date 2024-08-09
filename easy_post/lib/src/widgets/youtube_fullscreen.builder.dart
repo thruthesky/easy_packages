@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_post_v2/src/widgets/youtube_player_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart'
+    hide YoutubePlayerBuilder;
 
 /// To support fullscreen on youtube video you need to wrap your whole scaffold
 /// with the `YoutubeFullscreenBuilder` this widget will create a youtube player
@@ -92,9 +94,9 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
               color: Colors.white,
             ),
           ),
-          CurrentPosition(),
-          ProgressBar(
-            colors: const ProgressBarColors(
+          const CurrentPosition(),
+          const ProgressBar(
+            colors: ProgressBarColors(
                 playedColor: Colors.white,
                 handleColor: Colors.white,
                 backgroundColor: Colors.grey),
@@ -103,8 +105,8 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
           const SizedBox(
             width: 8,
           ),
-          RemainingDuration(),
-          FullScreenButton(),
+          const RemainingDuration(),
+          const FullScreenButton(),
         ],
         topActions: const [],
         controller: youtubeController!,

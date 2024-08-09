@@ -15,7 +15,7 @@ class PostDetailYoutubeMeta extends StatelessWidget {
       children: [
         const SizedBox(height: 16),
         Text(
-          post.youtube['title'],
+          post.youtube['title'] ?? '',
           style: Theme.of(context).textTheme.titleMedium,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -24,11 +24,11 @@ class PostDetailYoutubeMeta extends StatelessWidget {
           height: 8,
         ),
         Text(
-          post.youtube['name'],
+          post.youtube['name'] ?? '',
           style: Theme.of(context).textTheme.labelMedium,
         ),
         Text(
-          '${abbreviateNumber(post.youtube['viewCount'])} views',
+          '${abbrivateStringOrNumber(post.youtube['statistics']['viewCount'] ?? 0)} views',
           style: Theme.of(context).textTheme.labelMedium,
         ),
       ],
