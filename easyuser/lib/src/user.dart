@@ -123,6 +123,9 @@ class User {
     return User.fromJson(data, snapshot.id);
   }
 
+  /// Serialize the user data to the json format.
+  ///
+  /// TODO: the date time can be Firestore Timestamp or Realtime Database integer.
   factory User.fromJson(Map<String, dynamic> json, String uid) {
     return User(
       uid: uid,
