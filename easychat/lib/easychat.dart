@@ -1,7 +1,7 @@
 // Models =====================================================
-export './src/chat.message.dart';
-export './src/chat.room.dart';
-export './src/chat.room.user.dart';
+export 'src/models/chat.message.dart';
+export 'src/models/chat.room.dart';
+export 'src/models/chat.room.user.dart';
 
 // Service ====================================================
 export './src/chat.service.dart';
