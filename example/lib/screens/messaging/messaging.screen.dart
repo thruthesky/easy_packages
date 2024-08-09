@@ -171,9 +171,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    if (uidController.text.isEmpty) {
-                      return;
-                    }
+                    // if (uidController.text.isEmpty) {
+                    //   return;
+                    // }
                     MessagingService.instance.sendMessageToUid(
                       uids: uidController.text.split(','),
                       title: 'From uid ${titleController.text}',
@@ -185,9 +185,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (tokenController.text.isEmpty) {
-                      return;
-                    }
+                    // if (tokenController.text.isEmpty) {
+                    //   return;
+                    // }
                     MessagingService.instance.sendMessage(
                       tokens: tokenController.text.split(','),
                       title: 'From token ${titleController.text}',
@@ -199,9 +199,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (subscriptionController.text.isEmpty) {
-                      return;
-                    }
+                    // if (subscriptionController.text.isEmpty) {
+                    //   return;
+                    // }
                     MessagingService.instance.sendMessageToSubscription(
                       subscription: subscriptionController.text,
                       title: 'From Subscription ${titleController.text}',

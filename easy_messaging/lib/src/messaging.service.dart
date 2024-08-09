@@ -286,20 +286,19 @@ class MessagingService {
     String? imageUrl,
   }) async {
     Uri url = Uri.https(sendMessageApi);
+    final re = {
+      "title": title,
+      "body": body,
+      "data": jsonEncode(data),
+      if (imageUrl != null) "imageUrl": imageUrl,
+      "tokens": tokens.join(',')
+    };
     http.Response response = await http.post(
       url,
-      body: {
-        "title": title,
-        "body": body,
-        "data": data,
-        "imageUrl": imageUrl,
-        "tokens": tokens.join(',')
-      },
+      body: re,
     );
 
-    final res = preResponse(response);
-
-    return res;
+    return preResponse(response);
   }
 
   /// Send a message to the users
@@ -317,14 +316,13 @@ class MessagingService {
       body: {
         "title": title,
         "body": body,
-        "data": data,
-        "imageUrl": imageUrl,
+        "data": jsonEncode(data),
+        if (imageUrl != null) "imageUrl": imageUrl,
         "uids": uids.join(',')
       },
     );
 
-    final res = preResponse(response);
-    return res;
+    return preResponse(response);
   }
 
   /// Send a message to the users
@@ -337,18 +335,18 @@ class MessagingService {
   }) async {
     // /// Send messages in batches
     Uri url = Uri.https(sendMessageToSubscriptionsApi);
-    http.Response response = await http.post(
+
+    final response = await http.post(
       url,
       body: {
         "title": title,
         "body": body,
-        "data": data,
-        "imageUrl": imageUrl,
+        "data": jsonEncode(data),
+        if (imageUrl != null) "imageUrl": imageUrl,
         "subscription": subscription
       },
     );
 
-    final res = preResponse(response);
-    return res;
+    return preResponse(response);
   }
 }
