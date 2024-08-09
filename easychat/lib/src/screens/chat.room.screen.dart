@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/src/widgets/chat.room.menu.drawer.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({
@@ -90,9 +90,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
     //
     if ($user != null) {
-      return $user!.displayName.or('No name');
+      return $user!.displayName.or('no name'.t);
     }
-    return 'Chat Room';
+    return 'chat room'.t;
   }
 
   String notMemberMessage(ChatRoom room) {
@@ -100,17 +100,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       // The user has a chance to open the chat room with message
       // when the other user sent a message (1:1) but the user
       // haven't accepted yet.
-      return "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.";
+      return 'unaccepted yet, once you sent a message, the chat is automatically accepted'
+          .t;
     }
     if (room.rejectedUsers.contains(myUid!)) {
-      return "You have rejected this chat. However, if you sent a reply, the chat is automatically accepted.";
+      return 'rejected chat, if replied, the chat will be accepted'.t;
     }
     if (room.group) {
       // For open chat rooms, the rooms can be seen by users.
-      return "This is an open group. Once you sent a message, you will automatically join the group.";
+      return 'this is open chat, if sent a message, you join the room'.t;
     }
     // Else, it should be handled by the Firestore rulings.
-    return "The Chat Room may be private and/or deleted.";
+    return 'the chat room mau be private or deleted'.t;
   }
 
   @override
@@ -171,7 +172,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
         builder: (_, hc, __) {
-          dog('Chat Room Screen: End Drawer');
           return ChatRoomMenuDrawer(
             room: $room!,
             user: $user,
@@ -197,10 +197,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         room: $room!,
                       ),
                     )
-                  : const Center(
+                  : Center(
                       child: Padding(
-                        padding: EdgeInsets.all(24.0),
-                        child: Text("Unable to show chat messages."),
+                        padding: const EdgeInsets.all(24.0),
+                        child: Text('unable to show chat messages'.t),
                       ),
                     ),
             ),

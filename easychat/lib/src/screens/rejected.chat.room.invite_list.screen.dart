@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class RejectedChatRoomInviteListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Rejected Chat Requests"),
+        title: Text('rejected chat requests'.t),
       ),
       body: ChatRoomListView(
         queryOption: ChatRoomListOption.rejectedInvites,
@@ -26,9 +27,10 @@ class RejectedChatRoomInviteListScreen extends StatelessWidget {
             onTap: (context, room, user) async {
               final re = await confirm(
                 context: context,
-                title: const Text("Rejected Chat"),
+                title: Text('rejected chat'.t),
                 message: const Text(
-                    "You have rejected the chat already. Accept and continue chat?"),
+                  "You have rejected the chat already. Accept and continue chat?",
+                ),
               );
               if (re ?? false) {
                 await room.acceptInvitation();

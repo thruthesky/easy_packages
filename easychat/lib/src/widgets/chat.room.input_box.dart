@@ -188,7 +188,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                           maxLines: 2,
                           minLines: 1,
                           decoration: InputDecoration(
-                            prefixIcon: ImageUploadIconButton(
+                            prefixIcon: UploadIconButton.image(
                               progress: (prog) =>
                                   mounted ? uploadProgress.add(prog) : null,
                               onUpload: (url) async {

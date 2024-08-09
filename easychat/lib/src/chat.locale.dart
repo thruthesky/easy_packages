@@ -1,4 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easychat/easychat.dart';
 
 final localeTexts = <String, Map<String, String>>{
   'chat': {
@@ -58,6 +59,102 @@ final localeTexts = <String, Map<String, String>>{
   'update': {
     'en': 'Update',
     'ko': '수정',
+  },
+
+  // chat.room.list.screen.dart
+  'chat room list': {
+    'en': 'Chat Room List',
+    'ko': '채팅방 목록',
+  },
+  'chat room list: ${ChatRoomListOption.allMine.name}': {
+    'en': 'My Chats',
+    'ko': '내 채팅',
+  },
+  'chat room list: ${ChatRoomListOption.allMineByTime.name}': {
+    'en': 'My Chats Ordered by Time',
+    'ko': '내 채팅 시간 순',
+  },
+  'chat room list: ${ChatRoomListOption.single.name}': {
+    'en': '1:1 Chats',
+    'ko': '1:1 채팅',
+  },
+  'chat room list: ${ChatRoomListOption.singleByTime.name}': {
+    'en': '1:1 Chats Ordered by Time',
+    'ko': '1:1 채팅 시간 순',
+  },
+  'chat room list: ${ChatRoomListOption.group.name}': {
+    'en': 'Group Chats',
+    'ko': '그룹 채팅',
+  },
+  'chat room list: ${ChatRoomListOption.groupByTime.name}': {
+    'en': 'Group Chats Ordered by Time',
+    'ko': '그룹 채팅 시간 순',
+  },
+  'chat room list: ${ChatRoomListOption.receivedInvites.name}': {
+    'en': 'Received Chat Invitations',
+    'ko': '받은 채팅 초대',
+  },
+  'chat room list: ${ChatRoomListOption.rejectedInvites.name}': {
+    'en': 'Rejected Chat Invitations',
+    'ko': '반려된 채팅 초대',
+  },
+  'chat room list: ${ChatRoomListOption.open.name}': {
+    'en': 'Open Chats',
+    'ko': '공개 채팅'
+  },
+
+  // chat.room.screen.dart
+  'no name': {
+    'en': 'No name',
+    'ko': '이름 없음',
+  },
+  'chat room': {
+    'en': 'Chat Room',
+    'ko': '채팅방',
+  },
+  'unaccepted yet, once you sent a message, the chat is automatically accepted':
+      {
+    'en':
+        "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
+    'ko': "아직 이 채팅을 수락하지 않았습니다. 메시지를 보내면 채팅이 자동으로 수락됩니다.",
+  },
+  'rejected chat, if replied, the chat will be accepted': {
+    'en':
+        "You have rejected this chat. However, if you sent a reply, the chat is automatically accepted.",
+    'ko': "이 채팅을 거절하셨습니다. 그러나 답장을 보내면 채팅이 자동으로 수락됩니다.",
+  },
+  'this is open chat, if sent a message, you join the room': {
+    'en':
+        "This is an open group. Once you sent a message, you will automatically join the group.",
+    'ko': "이것은 오픈 그룹입니다. 메시지를 보내면 자동으로 그룹에 가입됩니다.",
+  },
+  'the chat room mau be private or deleted': {
+    'en': "The Chat Room may be private and/or deleted.",
+    'ko': "채팅방은 비공개 또는 삭제될 수 있습니다.",
+  },
+  'unable to show chat messages': {
+    'en': "Unable to show chat messages.",
+    'ko': "채팅 메시지를 보여줄 수 없습니다.",
+  },
+
+  // received.chat.room.invite_list.screen.dart
+  'accept/reject chat requests': {
+    'en': 'Accept/Reject Chat Requests',
+    'ko': '채팅 요청 수락/반려',
+  },
+
+  // rejected.chat.room.invite_list.screen.dart
+  'rejected chat requests': {
+    'en': 'Rejected Chat Requests',
+    'ko': '반려된 채팅 요청',
+  },
+  'rejected chat': {
+    'en': 'Rejected Chat',
+    'ko': '반려된 채팅',
+  },
+  'you have rejected chat already, accept the chat instead?': {
+    'en': "You have rejected the chat already. Accept and continue chat?",
+    'ko': "이미 이 채팅을 거절하셨습니다. 수락하고 계속 채팅하시겠습니까?"
   },
 
   // chat.bubble.dart
