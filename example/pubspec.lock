@@ -231,98 +231,98 @@ packages:
       path: "../easy_comment"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.6"
   easy_engine:
     dependency: "direct main"
     description:
       path: "../easy_engine"
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   easy_helpers:
     dependency: "direct main"
     description:
       path: "../easy_helpers"
       relative: true
     source: path
-    version: "0.0.11"
+    version: "0.0.12"
   easy_like:
     dependency: "direct main"
     description:
       path: "../easy_like"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.6"
   easy_locale:
     dependency: "direct main"
     description:
       path: "../easy_locale"
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.7"
   easy_messaging:
     dependency: "direct main"
     description:
       path: "../easy_messaging"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   easy_post_v2:
     dependency: "direct main"
     description:
       path: "../easy_post"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   easy_report:
     dependency: "direct main"
     description:
       path: "../easy_report"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   easy_setting_v2:
     dependency: "direct main"
     description:
       path: "../easy_setting"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   easy_storage:
     dependency: "direct main"
     description:
       path: "../easy_storage"
       relative: true
     source: path
-    version: "0.0.12"
+    version: "0.0.13"
   easy_task:
     dependency: "direct main"
     description:
       path: "../easy_task"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.7"
   easy_youtube:
     dependency: "direct main"
     description:
       path: "../easy_youtube"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.3"
   easychat:
     dependency: "direct main"
     description:
       path: "../easychat"
       relative: true
     source: path
-    version: "0.0.11"
+    version: "0.0.12"
   easyuser:
     dependency: "direct main"
     description:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.23"
+    version: "0.0.24"
   fake_async:
     dependency: transitive
     description:
@@ -1323,14 +1323,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
-  youtube:
-    dependency: transitive
-    description:
-      name: youtube
-      sha256: "1c414ad17c83eba1ff87399c9f89f7ce85396a714810cffcd8adb8dc453598c7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   youtube_parser:
     dependency: transitive
     description:

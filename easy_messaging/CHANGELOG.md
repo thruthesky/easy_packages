@@ -1,3 +1,6 @@
+## 0.0.3
+* Update. Enhance messaging functionality.
+
 ## 0.0.2
 * Update. Document update.
 
