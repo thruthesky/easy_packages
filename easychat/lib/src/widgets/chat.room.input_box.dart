@@ -188,7 +188,8 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                           minLines: 1,
                           decoration: InputDecoration(
                             prefixIcon: ImageUploadIconButton(
-                              progress: (prog) => uploadProgress.add(prog),
+                              progress: (prog) =>
+                                  mounted ? uploadProgress.add(prog) : null,
                               onUpload: (url) async {
                                 if (this.url != null) {
                                   // This means the photo before sending is being
