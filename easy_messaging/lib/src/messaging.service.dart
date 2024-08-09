@@ -268,11 +268,11 @@ class MessagingService {
   }
 
   preResponse(http.Response response) {
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    dog('Response status: ${response.statusCode}');
+    dog('Response body: ${response.body}');
     final decode = jsonDecode(response.body);
     if (decode is Map && decode['error'] is String) {
-      throw Exception(decode['error']);
+      throw "messaging/response-error ${decode['error']}";
     }
     return List<String>.from(decode);
   }
@@ -288,7 +288,13 @@ class MessagingService {
     Uri url = Uri.https(sendMessageApi);
     http.Response response = await http.post(
       url,
-      body: {"title": title, "body": body, "tokens": tokens.join(',')},
+      body: {
+        "title": title,
+        "body": body,
+        "data": data,
+        "imageUrl": imageUrl,
+        "tokens": tokens.join(',')
+      },
     );
 
     final res = preResponse(response);
@@ -308,7 +314,13 @@ class MessagingService {
     Uri url = Uri.https(sendMessageToUidsApi);
     http.Response response = await http.post(
       url,
-      body: {"title": title, "body": body, "uids": uids.join(',')},
+      body: {
+        "title": title,
+        "body": body,
+        "data": data,
+        "imageUrl": imageUrl,
+        "uids": uids.join(',')
+      },
     );
 
     final res = preResponse(response);
@@ -327,7 +339,13 @@ class MessagingService {
     Uri url = Uri.https(sendMessageToSubscriptionsApi);
     http.Response response = await http.post(
       url,
-      body: {"title": title, "body": body, "subscription": subscription},
+      body: {
+        "title": title,
+        "body": body,
+        "data": data,
+        "imageUrl": imageUrl,
+        "subscription": subscription
+      },
     );
 
     final res = preResponse(response);
