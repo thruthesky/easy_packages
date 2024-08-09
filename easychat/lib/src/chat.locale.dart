@@ -352,6 +352,8 @@ applyChatLocales() async {
   if (locale == null) return;
 
   for (var entry in localeTexts.entries) {
+    String? v = lo.get(key: entry.key, locale: locale);
+    if (v != null && v.isNotEmpty) continue;
     lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
   }
 }
