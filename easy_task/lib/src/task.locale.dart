@@ -1,4 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_task/easy_task.dart';
 
 final localeTexts = <String, Map<String, String>>{
   'project': {
@@ -83,11 +84,12 @@ final localeTexts = <String, Map<String, String>>{
   },
 };
 
-void addPostTranslations() async {
+void addTaskLocaleTexts() async {
   final locale = await currentLocale;
   if (locale == null) return;
 
   for (var entry in localeTexts.entries) {
     lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
   }
+  TaskService.instance.setLocaleTexts?.call();
 }
