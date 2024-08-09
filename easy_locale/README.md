@@ -171,6 +171,10 @@ final localeTexts = {
 ```
 
 
+### Get local text
+
+Use this to check if the text exists.
+
 
 ### Local Transation Texts
 

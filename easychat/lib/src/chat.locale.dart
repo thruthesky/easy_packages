@@ -353,7 +353,7 @@ applyChatLocales() async {
 
   for (var entry in localeTexts.entries) {
     String? v = lo.get(key: entry.key, locale: locale);
-    if (v != null && v.isNotEmpty) continue;
+    if (v.isNotEmpty) continue;
     lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
   }
 }
