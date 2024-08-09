@@ -9,14 +9,6 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Send',
     'ko': '보내기',
   },
-  'edited': {
-    'en': 'Edited',
-    'ko': '편집됨',
-  },
-  'chat list is empty': {
-    'en': 'You have no chat friends. Start chatting with someone.',
-    'ko': '채팅 친구가 없습니다. 누군가와 채팅을 시작하세요.',
-  },
 
   // chat.room.edit.screen.dart
   'chat room create': {
@@ -68,14 +60,100 @@ final localeTexts = <String, Map<String, String>>{
     'ko': '수정',
   },
 
+  // chat.bubble.dart
+  'edited': {
+    'en': 'Edited',
+    'ko': '편집됨',
+  },
+  'this message has been deleted': {
+    'en': 'This message has been deleted.',
+    'ko': '이 메시지는 삭제되었습니다.',
+  },
+
+  // chat.bubble.long_press.popup_menu.dart
+  'reply': {
+    'en': 'Reply',
+    'ko': '답장',
+  },
+  'edit': {
+    'en': 'Edit',
+    'ko': '수정',
+  },
+  'delete': {
+    'en': 'Delete',
+    'ko': '삭제',
+  },
+
+  // chat.bubble.reply.dart
+  'replying to': {
+    'en': 'Replying to',
+    'ko': '답글',
+  },
+  'replying to user': {
+    'en': 'Replying to {username}',
+    'ko': '{username}에게 답장 중',
+  },
+  // 'this message has been deleted' -> chat.bubble.dart
+
   // chat.messages.list_view.dart
+  'something went wrong': {
+    'en': 'Something went wrong',
+    'ko': '오류가 발생했습니다',
+  },
   'no chat message in room yet': {
     'en': 'No chat message yet!',
     'ko': '채팅 메시지가 없습니다!',
   },
 
-  // chat.room.menu.drawer.dart
+  // chat.new_message_counter.dart
+  // Nothing to translate
+
+  // chat.room.input_box.dart
+  // 'something went wrong' -> chat.messages.list_view.dart
+  // Nothing else to translate
+
+  // chat.room.invitation.list_tile.dart
+  'accept': {
+    'en': 'Accept',
+    'ko': '수락',
+  },
+  'reject': {
+    'en': 'Reject',
+    'ko': '반려',
+  },
+
+  // chat.room.invitation.short.list.dart
+  // 'something went wrong' -> chat.room.input_box.dart
+  'message request/invitations': {
+    'en': "Message Requests/Invitations!",
+    'ko': "메시지 요청/초대!",
+  },
+  'see more requests': {
+    'en': "See more requests...",
+    'ko': "더 많은 요청 보기...",
+  },
+
+  // chat.room.list_tile.dart
+  'last message was deleted': {
+    'en': 'The last message was deleted',
+    'ko': '마지막 메시지가 삭제되었습니다',
+  },
+
+  // chat.room.list_view.dart
+  // 'something went wrong' -> chat.room.invitation.short.list.dart
+  'chat list is empty': {
+    'en': 'You have no chat friends. Start chatting with someone.',
+    'ko': '채팅 친구가 없습니다. 누군가와 채팅을 시작하세요.',
+  },
+
+  // chat.room.member.list.dialog.dart
   'members': {
+    'en': 'Members',
+    'ko': '멤버',
+  },
+
+  // chat.room.menu.drawer.dart
+  'members counted': {
     'en': 'Members ({num})',
     'ko': '멤버 ({num})',
   },
@@ -115,7 +193,7 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Options',
     'ko': '옵션',
   },
-  // update -> chat.room.edit.screen.dart
+  // 'update' -> chat.room.edit.screen.dart
   'leave': {
     'en': 'Leave',
     'ko': '나가기',
@@ -130,10 +208,8 @@ final localeTexts = <String, Map<String, String>>{
   },
 
   // chat.room.replying_to
-  'replying to': {
-    'en': 'Replying to:',
-    'ko': '답글:',
-  },
+  // 'replying to' -> chat.bubble.reply.dart
+  // Nothing else to translate
 
   // edit.chat.message.dialog.dart
   'edit message': {

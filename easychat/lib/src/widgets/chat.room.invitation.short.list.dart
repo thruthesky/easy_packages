@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
-          return Text('Something went wrong: ${snapshot.error}');
+          return Text('${'something went wrong'.t}: ${snapshot.error}');
         }
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
@@ -50,9 +51,9 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                         "${chatRooms.length < 4 ? chatRooms.length : '3+'}"),
                   ),
                   const SizedBox(width: 8),
-                  const Flexible(
+                  Flexible(
                     child: Text(
-                      "Message Requests/Invitations!",
+                      "message request/invitations".t,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -72,11 +73,11 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                 if (index == 3 && chatRooms.length == 4) {
                   return TextButton(
                     style: TextButton.styleFrom(),
-                    child: const Align(
+                    child: Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text("See more requests..."),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text('see more requests'.t),
                       ),
                     ),
                     onPressed: () {
@@ -92,7 +93,6 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                 return ChatRoomInvitationListTile(
                   room: room,
                   onAccept: (room, user) async {
-                    dog("User: ${user?.uid}");
                     await ChatService.instance.showChatRoomScreen(
                       context,
                       room: room,

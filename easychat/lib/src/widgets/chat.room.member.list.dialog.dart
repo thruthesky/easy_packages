@@ -29,8 +29,8 @@ class _ChatRoomMemberListDialogState extends State<ChatRoomMemberListDialog> {
     final width = MediaQuery.of(context).size.width;
     final maxWidth = width * 0.8;
     return AlertDialog(
-      title: const Text(
-        "Members",
+      title:  Text(
+        "Members".,
       ),
       contentPadding: const EdgeInsets.all(8),
       content: SizedBox(

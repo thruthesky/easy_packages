@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
             }
             if (snapshot.hasError) {
               debugPrint("Error: ${snapshot.error}");
-              return Text("Error: ${snapshot.error}");
+              return Text("${'something went wrong'.t}: ${snapshot.error}");
             }
             final value = snapshot.data;
             if (value is double && value.isFinite && !value.isNaN) {

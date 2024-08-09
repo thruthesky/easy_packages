@@ -116,7 +116,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       const SizedBox(height: 24),
                       label(
                         context: context,
-                        text: "members".tr(args: {'num': room.userUids.length}),
+                        text: "members counted"
+                            .tr(args: {'num': room.userUids.length}),
                       ),
                       const SizedBox(height: 8),
                     ],

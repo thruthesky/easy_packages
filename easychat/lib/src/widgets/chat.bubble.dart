@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -97,7 +96,7 @@ class ChatBubble extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.all(12),
                       child: Text(
-                        "This message has been deleted.",
+                        'this message has been deleted'.t,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
@@ -185,7 +184,7 @@ class ChatBubble extends StatelessWidget {
           children: [
             if (message.isEdited)
               Text(
-                "${'Edited'.t} • ${DateTime.fromMillisecondsSinceEpoch(message.editedAt!).shortDateTime}",
+                "${'edited'.t} • ${DateTime.fromMillisecondsSinceEpoch(message.editedAt!).shortDateTime}",
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: Theme.of(context)
                           .colorScheme

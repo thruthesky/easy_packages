@@ -47,7 +47,7 @@ class ChatRoomReplyingTo extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'replying to'.t,
+                      '${'replying to'.t}:',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                           ),

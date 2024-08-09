@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -38,7 +39,9 @@ String singleChatRoomId(String otherUserUid) {
   if (FirebaseAuth.instance.currentUser?.uid == null) {
     // throw 'chat/auth-required Loign to get the sing chat room id';
     throw ChatException(
-        'auth-required', 'login to get the single chat room id');
+      'auth-required',
+      'login to get the single chat room id'.t,
+    );
   }
   final uids = [FirebaseAuth.instance.currentUser!.uid, otherUserUid];
   uids.sort();

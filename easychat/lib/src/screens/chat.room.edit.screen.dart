@@ -136,7 +136,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                       ChatService.instance
                           .showChatRoomScreen(context, room: chatRoom);
                     },
-                    child: Text('create'.t),
+                    child: Text('create'.t.toUpperCase()),
                   )
                 : ElevatedButton(
                     onPressed: () async {
@@ -148,7 +148,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                       if (!context.mounted) return;
                       Navigator.of(context).pop(room!.ref);
                     },
-                    child: Text('update'.t),
+                    child: Text('update'.t.toUpperCase()),
                   ),
             const SafeArea(
               child: SizedBox(
