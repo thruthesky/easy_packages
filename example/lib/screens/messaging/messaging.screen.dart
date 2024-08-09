@@ -178,7 +178,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                       uids: uidController.text.split(','),
                       title: 'From uid ${titleController.text}',
                       body: 'From uid ${bodyController.text}',
-                      data: {},
+                      data: {'action': 'uid', 'extra': 'rice'},
                     );
                   },
                   child: const Text('Send To Uids'),
@@ -192,7 +192,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                       tokens: tokenController.text.split(','),
                       title: 'From token ${titleController.text}',
                       body: 'From token ${bodyController.text}',
-                      data: {},
+                      data: {'action': 'uid', 'extra': 'fries'},
                     );
                   },
                   child: const Text('Send To Tokens'),
@@ -206,7 +206,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                       subscription: subscriptionController.text,
                       title: 'From Subscription ${titleController.text}',
                       body: 'From Subscription ${bodyController.text}',
-                      data: {},
+                      data: {'action': 'uid', 'extra': 'dice'},
                     );
                   },
                   child: const Text('Send To Subscription'),
