@@ -1,3 +1,6 @@
+## 0.0.12
+* Update. Document update.
+
 ## 0.0.6
 * Docuemnt update.
 

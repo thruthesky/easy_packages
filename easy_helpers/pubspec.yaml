@@ -1,7 +1,7 @@
 name: easy_helpers
 description: "Provides helper classes, functions, and extensions for easy to build flutter apps."
-version: 0.0.11
-homepage: https://github.com/thruthesky/easy_frame/tree/main/easy_helpers
+version: 0.0.12
+homepage: https://github.com/thruthesky/easy_frame
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -21,3 +21,12 @@ dev_dependencies:
   test: ^1.25.2
 
 flutter:
+
+repository: https://github.com/thruthesky/easy-packages/tree/main/easy_helpers
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - extensions
+  - flutter-extensions
+  - utility
+  - string-extensions
+  - easy-packages
