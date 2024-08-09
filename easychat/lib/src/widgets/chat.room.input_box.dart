@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     uploadProgress.close();
     controller.dispose();
     room.disposeReply();
+    dog("Input box being disposed");
     textFocus.dispose();
     if (url != null) {
       StorageService.instance.delete(url);

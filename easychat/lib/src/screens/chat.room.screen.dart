@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/src/widgets/chat.room.menu.drawer.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({
@@ -176,8 +177,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           );
         },
       ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
+      body: NotificationListener<UserScrollNotification>(
+        onNotification: (UserScrollNotification notification) {
+          if (notification.direction == ScrollDirection.idle) return true;
+          if (!FocusScope.of(context).hasFocus) return true;
+          FocusScope.of(context).unfocus();
+          return true;
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
