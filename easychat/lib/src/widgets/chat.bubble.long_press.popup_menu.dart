@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,9 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
   final Widget child;
 
   static const items = (
-    reply: 'Reply',
-    delete: 'Delete',
-    edit: 'Edit',
+    reply: 'reply',
+    delete: 'delete',
+    edit: 'edit',
   );
 
   List<PopupMenuItem<String>> get menuItems => [
@@ -25,18 +26,18 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
           PopupMenuItem<String>(
             value: items.reply,
             height: 40,
-            child: Text(items.reply),
+            child: Text(items.reply.t),
           ),
         if (message.uid == myUid && message.deleted == false) ...[
           PopupMenuItem<String>(
             value: items.edit,
             height: 40,
-            child: Text(items.edit),
+            child: Text(items.edit.t),
           ),
           PopupMenuItem<String>(
             value: items.delete,
             height: 40,
-            child: Text(items.delete),
+            child: Text(items.delete.t),
           ),
         ],
       ];
