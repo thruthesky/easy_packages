@@ -5,6 +5,7 @@ import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
+import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_storage/easy_storage.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
@@ -231,6 +232,10 @@ class MyAppState extends State<MyApp> {
             await CommentService.instance.getAncestorsUid(ref.id);
 
         /// you can also attached the uid of the post author before sending the notification
+        Post post = await Post.get(ref.id);
+        if (myUid != null && post.uid != myUid) {
+          ancestorUids.add(post.uid);
+        }
 
         if (ancestorUids.isEmpty) return;
 
