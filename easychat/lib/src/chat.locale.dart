@@ -158,16 +158,6 @@ final localeTexts = <String, Map<String, String>>{
   },
 
   // chat.bubble.dart
-  'edited': {
-    'en': 'Edited',
-    'ko': '편집됨',
-  },
-  'this message has been deleted': {
-    'en': 'This message has been deleted.',
-    'ko': '이 메시지는 삭제되었습니다.',
-  },
-
-  // chat.bubble.long_press.popup_menu.dart
   'reply': {
     'en': 'Reply',
     'ko': '답장',
@@ -179,6 +169,14 @@ final localeTexts = <String, Map<String, String>>{
   'delete': {
     'en': 'Delete',
     'ko': '삭제',
+  },
+  'edited': {
+    'en': 'Edited',
+    'ko': '편집됨',
+  },
+  'this message has been deleted': {
+    'en': 'This message has been deleted.',
+    'ko': '이 메시지는 삭제되었습니다.',
   },
 
   // chat.bubble.reply.dart
