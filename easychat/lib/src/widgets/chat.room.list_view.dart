@@ -4,6 +4,7 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_locale/easy_locale.dart';
 
 enum ChatRoomListOption {
   allMine,
@@ -22,26 +23,30 @@ class ChatRoomListView extends StatelessWidget {
     super.key,
     this.queryOption = ChatRoomListOption.allMine,
     this.itemBuilder,
+    this.itemExtent,
     this.emptyBuilder,
     this.padding,
+    this.physics = const ClampingScrollPhysics(),
   });
 
   final ChatRoomListOption queryOption;
   final Widget Function(BuildContext context, ChatRoom room, int index)?
       itemBuilder;
+  final double? itemExtent;
   final Widget Function(BuildContext context)? emptyBuilder;
   final EdgeInsetsGeometry? padding;
+  final ScrollPhysics? physics;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
     if (queryOption == ChatRoomListOption.allMine) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.order}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.order}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.allMineByTime) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.timeOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.timeOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.open) {
@@ -50,31 +55,31 @@ class ChatRoomListView extends StatelessWidget {
           .orderBy(ChatRoom.field.updatedAt, descending: true);
     } else if (queryOption == ChatRoomListOption.single) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.singleByTime) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.singleTimeOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleTimeOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.group) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.groupByTime) {
       q = q.orderBy(
-        '${ChatRoom.field.users}.${my.uid}.${ChatRoomUser.field.groupTimeOrder}',
+        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupTimeOrder}',
         descending: true,
       );
     } else if (queryOption == ChatRoomListOption.receivedInvites) {
       q = q
-          .where(ChatRoom.field.invitedUsers, arrayContains: my.uid)
+          .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
           .orderBy(ChatRoom.field.updatedAt, descending: true);
     } else if (queryOption == ChatRoomListOption.rejectedInvites) {
       q = q
-          .where(ChatRoom.field.rejectedUsers, arrayContains: my.uid)
+          .where(ChatRoom.field.rejectedUsers, arrayContains: myUid)
           .orderBy(ChatRoom.field.updatedAt, descending: true);
     }
     return q;
@@ -87,24 +92,26 @@ class ChatRoomListView extends StatelessWidget {
       builder: (context, snapshot, child) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
-          return Center(child: Text('Something went wrong: ${snapshot.error}'));
+          return Center(
+            child: Text('${'something went wrong'.t}: ${snapshot.error}'),
+          );
         }
         if (snapshot.isFetching && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.docs.isEmpty) {
           return emptyBuilder?.call(context) ??
-              const Center(
-                // TODO t?
-                child: Text("No chat yet."),
+              Center(
+                child: Text("chat list is empty".t),
               );
         }
         final docs = snapshot.docs;
         final chatRooms =
             docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
         return ListView.builder(
+          itemExtent: itemExtent,
           padding: padding,
-          physics: const ClampingScrollPhysics(),
+          physics: physics,
           itemCount: chatRooms.length,
           itemBuilder: (context, index) {
             if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
@@ -123,3 +130,4 @@ class ChatRoomListView extends StatelessWidget {
     );
   }
 }
+// 

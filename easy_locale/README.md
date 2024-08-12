@@ -11,11 +11,14 @@ The features of this package are:
 For reference, this `easy_locale` can be used together with other multilingual packages.
 
 
-## 설치
+## Install
 
-본 `easy_locale` 패키지는 플러터 앱에서 로케일을 설정하지는 않지만, 앱에서 locale 설정을 해 주어야 합니다. 에를 들면, 아이폰이 한국어로 설정된 경우, 앱에서도 한글로 표시하는 것이 자연스러울 것입니다. 즉, 장치의 언어 설정을 따라서 표시하기 위해서는 iOS 의 `Info.plist` 에 지원한 언어 목록을 `CFBundleLocalizations` 에 추가를 해 주어야 합니다.
 
-아래는 `ios/Runner/Info.plist` 파일에 언어 설정을 추가한 예제입니다.
+- This `easy_locale` package does not set the locale in a Flutter app.
+
+- For an iOS app, you need to add the list of supported languages to `CFBundleLocalizations` in the iOS `Info.plist` to support the locales. Or the app may display only English even if the device set a different language in its setting.
+
+- Below is an example of adding language settings to the `ios/Runner/Info.plist` file.
 
 ```xml
 <key>CFBundleLocalizations</key>
@@ -27,8 +30,9 @@ For reference, this `easy_locale` can be used together with other multilingual p
 </array>
 ```
 
+- There is nothing to configure in Android.
 
-안드로이드에서는 따로 설정 할 것이 없습니다.
+
 
 ## Examples
 
@@ -36,11 +40,14 @@ For reference, this `easy_locale` can be used together with other multilingual p
 - Refer the [example code](https://github.com/thruthesky/easy_frame/blob/main/example/lib/screens/locale/locale.screen.dart) to know more about it.
 
 
-## 초기화
+## Initialization
 
-- 초기화는 `main()` 함수에서 `runApp` 을 호출하기 전에 할 것을 권한다. 만약 이 위치에 하지 못하는 경우, 앱의  첫 페이지 스크린 위젯의 `initState` 에서 할 수 있다.
 
-- 아래와 같이 init 을 호출하면 핸드폰(장치) 설정의 언어를 사용 할 수 있다. 상황에 따라서 `TranslationService.instance.init()` 앞에 `await` 키워드를 추가해도 된다.
+- It is recommended to initialize before calling `runApp` in the `main()` function. If this is not possible, you can do it in the `initState` of the first page screen widget of the app.
+
+
+- By calling `init` as shown below, you can use the language settings of the phone (device). Depending on the situation, you may add the `await` keyword before `TranslationService.instance.init()`.
+
 
 ```dart
 void main() async {
@@ -50,7 +57,8 @@ void main() async {
 }
 ```
 
-- 아래와 같이 좀 더 자세히 초기화를 할 수 있다.
+- You can initialize in more detail as shown below.
+
 
 ```dart
 TranslationService.instance.init(
@@ -61,92 +69,73 @@ TranslationService.instance.init(
 );
 ```
 
-위 코드에서 `deviceLocale` 에 true 를 지정하면, 현재 장치의 설정에 적용된 언어를 사용하라는 것이다. 기본 값은 `true` 이다.
-그리고 만약, `deviceLocale` 에서 언어를 설정하지 못하거나, `deviceLocale` 일 false 인 경우, 기본적으로 `defaultLanguage` 를 사용하게 할 수 있다. 즉, 핸드폰 기본 설정 언어를 사용하지 않고, 내 마음대로 언어를 지정하고 싶다면, `deviceLocale` 에 false 를 주고, `defaultLanguage` 에 "ko" 등의 값을 주어 내가 원하는 언어가 기본 선택되게 할 수 있다.
+In the code above, setting `deviceLocale` to true. It means it will use the language applied to the current device settings. The default value is `true`.
 
-만약, 다국어에서 번역된 문자열을 찾지 못하면 `fallbackLocale` 의 언어에서 번역된 문자열이 있는지 찾아서 있으면 그 번역 문자열을 사용한다. 기본 값은 `en` 이다.
-그리고 `useKeyAsDefaultText` 가 true 이면, 번역된 문자열을 못찾은 경우 언어 코드(키)를 그대로 사용하라는 것이다. 만약, 이 값이 false 이면, 언어 코드(키)를 사용하되 맨 끝에 `.t` 를 붙여서 화면에 표시한다.
+If `deviceLocale` is set to false, the `defaultLanguage` will be used. In other words, if you do not want to use the phone's default language settings and want to specify a language of your choice, you can set `deviceLocale` to false and provide a value like "ko" to `defaultLanguage` to select your desired language as the default.
 
+If a translated string cannot be found in the multilingual settings, it will look for a translated string in the language specified by `fallbackLocale` and use it if found. The default value is `en`.
 
-
-
-
-## 사용법
-
-`.t` 와 `.tr` 두개의 다국어 함수가 있다.
+If `useKeyAsDefaultText` is true, it means using the language code (key) as is when a translated string cannot be found. If this value is false, the language code (key) will be used with `.t` appended to the end and displayed on the screen.
 
 
-### 번역 문자열
-
-번역 문자열은 `./lib/translation/translation.text.dart` 의 `localeTexts` 변수에 저장한다.
 
 
-### 단순 문자열 번역 - t
 
-`.t` 은 단순히 다국어로 표시하는 함수이다.
+## How to use
 
+
+### Localization extension
+
+There are two localization functions: `.t` and `.tr`.
+
+
+### Places to set locale texts
+
+By default, the translation texts are saved in `easy_locales/lib/src/locale.texts.dart`. This file should have the most common text translation only. This is called `default translation text file`.
+
+If you are developing a package and you are using `easy_locale` for the internationalization of the package, you should not touch the default translation text file. Instead, you should create your own translation text in your package and apply it to `easy_locale`'s text object by calling `lo.set()`.
+See the example below especially how it supports the translations from the app.
+
+Example:
 ```dart
-Translation.instance.setLocale('ko');
-'name'.t // 결과: 이름
-```
-
-### 문자열 치환 및 단수와 복수 처리 - tr
-
-`.t` 에 비해서 `.tr` 은 문자열 치환이 가능하며, 단수/복수 처리도 할 수 있다.
-
-기본적인 사용 방법은 `'apple'.tr(args: {'name': 'J', 'n': n}, form: n)` 와 같다.
-
-arg 파라메타에는 `arg: { 키: 값, ... }` 와 같은 형태로 번역 문자열에서 치환하고자 할 키/값을 지정한다.
-
-form 파라메타에는 null 또는 0의 값이면 개체가 없고, 1의 값이면 단수, 2 이상의 값이면 복수로 표현한다.
-
-번역 문자열을 저장 할 때에는 아래와 같은 형식으로 저장되어야 한다.
-
-```dart
-final localeTexts = {
-    'apple': {
-        'en': {
-            'zero': '{name} has no apple.',
-            'one': '{name} has one apple.',
-            'many': '{name} has {n} apples.',
-        }
-    }
-};
-```
-
-예제
-
-```dart
-TranslationService.instance.set(
-  key: 'apple',
-  locale: 'en',
-  value: {
-    'zero': '{name} has no apple.',
-    'one': '{name} has one apple.',
-    'many': '{name} has {n} apples.',
+final localeTexts = <String, Map<String, String>>{
+  'chat room create': {
+    'en': 'Chat Room Create',
+    'ko': '채팅방 생성',
   },
-);
+  'chat room update': {
+    'en': 'Chat Room Update',
+    'ko': '채팅방 수정',
+  },
+};
 
-int n = 0;
-expect('apple'.tr(args: {'name': 'J'}, form: n), 'J has no apple.');
-n = 1;
-expect('apple'.tr(args: {'name': 'J'}, form: n), 'J has one apple.');
-n = 3;
-expect('apple'.tr(args: {'name': 'J', 'n': n}, form: n), 'J has 3 apples.');
+applyChatLocales() async {
+  final locale = await currentLocale; // get current locale of the app
+  if (locale == null) return;
+
+  for (var entry in localeTexts.entries) {
+    // If the app has set the text, then don't apply the text from the package.
+    // By prioritize app's translation.
+    if (lo.get(key: entry.key, locale: locale) != null) continue;
+
+    // Set the translation
+    lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
+  }
+}
+
 ```
 
 
+If you are developing an app, you should create a text translation file somewhere in the app project, and apply it to `easy_local`'s text object by calling `lo.set()`.
 
 
-### 번역 문장 추가 또는 업데이트
-
-`TranslationService.instance.set()` 를 사용하면 기존의 존재하는 번역 문자열을 다른 것 변경 할 수 있다. 또는 기존에 존재하지 않는다면 추가를 하는 것이다. 따라서 앱에서 사용할 번역 문자열을 하우스 다국어 기능을 활용해 번역 할 수 있다.
+By using `TranslationService.instance.set()`, you can change existing translation strings to something else or add new ones if they do not already exist. Therefore, you can use the in-house multilingual feature to translate the strings used in the app.
 
 ```dart
 TranslationService.instance.set(
-key: 'hello',
-locale: 'en',
-value: 'Hello',
+  key: 'hello',
+  locale: 'en',
+  value: 'Hello',
 );
 
 expect('hello'.t == 'Hello', true);
@@ -154,56 +143,7 @@ expect('hello'.t == 'Hello', true);
 
 
 
-
-위와 같이 하면 `name` 이라는 언어 키에 아래와 같이 저장하면 된다. 특히, 단수/복수 처리를 잘 보면 된다.
-
-```dart
-final localeTexts = {
-    'name': {
-        'en': 'Name',
-        'ko': '이름',
-    },
-    'there are {n} apple': {
-        'en': {
-            'none': 'There is no apple',
-            'one': 'There is only {n} apple',
-            'many': 'There are {n} apples',
-        },
-        'ko': '사과가 {n}개 있어요',
-    }
-}
-```
-
-
-
-### lo
-
-참고로 `LocalService.instance` 를 줄여서 `lo` 로 사용 할 수 있습니다.
-
-```dart
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-    lo.init();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    lo.set(key: 'home title', locale: 'ko', value: '다국어 설정');
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('home title'.t),
-      ),
-      // ...
-    );
-  }
-}
-```
-
-
-# Adding custom translations
+#### Adding custom translations
 
 - You can use `lo.set()` to add or update your own translations.
 
@@ -237,6 +177,122 @@ void addLocaleTexts() async {
 
   for (var entry in localeTexts.entries) {
     lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
+  }
+}
+```
+
+
+By doing as below, you can save it to the language key called `name` as shown below. Pay special attention to handling singular/plural forms.
+
+```dart
+final localeTexts = {
+    'name': {
+        'en': 'Name',
+        'ko': '이름',
+    },
+    'there are {n} apple': {
+        'en': {
+            'none': 'There is no apple',
+            'one': 'There is only {n} apple',
+            'many': 'There are {n} apples',
+        },
+        'ko': '사과가 {n}개 있어요',
+    }
+}
+```
+
+
+### Get local text
+
+Use this to check if the text exists.
+
+
+### Local Transation Texts
+
+Translation strings are stored in the `localeTexts` variable in `./lib/translation/translation.text.dart`.
+
+
+
+### Simple translation - t
+
+`.t` is an extension method that simply displays text in multiple languages.
+
+```dart
+Translation.instance.setLocale('ko');
+'name'.t // result: 이름
+```
+
+### Translation with Replacement and Forms - tr
+
+Compared to `.t`, `.tr` allows for string substitution and can handle singular/plural forms.
+
+The basic usage is:
+`'apple'.tr(args: {'name': 'J', 'n': n}, form: n)`.
+
+In the `args` parameter, specify the key/value pairs you want to substitute in the translation string in the form `args: { key: value, ... }`.
+
+For the `form` parameter, It can have 3 different values; a value of null or 0 means no items, 1 means singular, and 2 or more means plural.
+
+When storing translation strings, they should be saved in the following format.
+
+```dart
+final localeTexts = {
+    'apple': {
+        'en': {
+            'zero': '{name} has no apple.',
+            'one': '{name} has one apple.',
+            'many': '{name} has {n} apples.',
+        }
+    }
+};
+```
+
+Example:
+
+```dart
+TranslationService.instance.set(
+  key: 'apple',
+  locale: 'en',
+  value: {
+    'zero': '{name} has no apple.',
+    'one': '{name} has one apple.',
+    'many': '{name} has {n} apples.',
+  },
+);
+
+int n = 0;
+expect('apple'.tr(args: {'name': 'J'}, form: n), 'J has no apple.');
+n = 1;
+expect('apple'.tr(args: {'name': 'J'}, form: n), 'J has one apple.');
+n = 3;
+expect('apple'.tr(args: {'name': 'J', 'n': n}, form: n), 'J has 3 apples.');
+```
+
+
+
+
+### lo
+
+참고로 `LocalService.instance` 를 줄여서 `lo` 로 사용 할 수 있습니다.
+
+```dart
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    lo.init();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    lo.set(key: 'home title', locale: 'ko', value: '다국어 설정');
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('home title'.t),
+      ),
+      // ...
+    );
   }
 }
 ```

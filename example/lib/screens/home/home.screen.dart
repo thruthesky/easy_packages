@@ -7,6 +7,7 @@ import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:example/screens/locale/locale.screen.dart';
 import 'package:example/screens/forum/forum.screen.dart';
 import 'package:example/screens/menu/menu.screen.dart';
+import 'package:example/screens/messaging/messaging.screen.dart';
 import 'package:example/screens/settings/settings.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
@@ -214,7 +215,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             return const SettingsScreen();
                           });
                     },
-                    child: const Text('Setting'))
+                    child: const Text('Setting')),
+                ElevatedButton(
+                  onPressed: () {
+                    showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) {
+                          return const MessagingScreen();
+                        });
+                  },
+                  child: const Text('Messaging'),
+                ),
               ],
             ),
             //

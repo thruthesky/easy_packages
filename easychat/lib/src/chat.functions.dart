@@ -1,3 +1,5 @@
+import 'package:easy_locale/easy_locale.dart';
+import 'package:easychat/easychat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 const String chatRoomDivider = '---';
@@ -35,8 +37,11 @@ String? getOtherUserUidFromRoomId(String roomId) {
 /// 로그인 사용자의 uid 와 [otherUserUid] 를 정렬해서 합친다.
 String singleChatRoomId(String otherUserUid) {
   if (FirebaseAuth.instance.currentUser?.uid == null) {
-    throw 'chat/auth-required Loign to get the sing chat room id';
-    // Exception('chat.function.dart::singleChatRoomId() -> Login first');
+    // throw 'chat/auth-required Loign to get the sing chat room id';
+    throw ChatException(
+      'auth-required',
+      'login to get the single chat room id'.t,
+    );
   }
   final uids = [FirebaseAuth.instance.currentUser!.uid, otherUserUid];
   uids.sort();

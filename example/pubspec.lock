@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.38"
+  args:
+    dependency: transitive
+    description:
+      name: args
+      sha256: "7cf60b9f0cc88203c5a190b4cd62a99feea42759a7fa695010eb5de1c0b2252a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   async:
     dependency: transitive
     description:
@@ -161,6 +169,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.4"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "365c771ac3b0e58845f39ec6deebc76e3276aa9922b0cc60840712094d9047ac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.10"
+  device_info_plus:
+    dependency: transitive
+    description:
+      name: device_info_plus
+      sha256: "93429694c9253d2871b3af80cf11b3cbb5c65660d402ed7bf69854ce4a089f82"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.1.1"
+  device_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: device_info_plus_platform_interface
+      sha256: "282d3cf731045a2feb66abfe61bbc40870ae50a3ed10a4d3d217556c35c8c2ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.1"
   devicelocale:
     dependency: transitive
     description:
@@ -199,91 +231,98 @@ packages:
       path: "../easy_comment"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.6"
   easy_engine:
     dependency: "direct main"
     description:
       path: "../easy_engine"
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   easy_helpers:
     dependency: "direct main"
     description:
       path: "../easy_helpers"
       relative: true
     source: path
-    version: "0.0.11"
+    version: "0.0.12"
   easy_like:
     dependency: "direct main"
     description:
       path: "../easy_like"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.6"
   easy_locale:
     dependency: "direct main"
     description:
       path: "../easy_locale"
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.7"
   easy_messaging:
     dependency: "direct main"
     description:
       path: "../easy_messaging"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   easy_post_v2:
     dependency: "direct main"
     description:
       path: "../easy_post"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   easy_report:
     dependency: "direct main"
     description:
       path: "../easy_report"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   easy_setting_v2:
     dependency: "direct main"
     description:
       path: "../easy_setting"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   easy_storage:
     dependency: "direct main"
     description:
       path: "../easy_storage"
       relative: true
     source: path
-    version: "0.0.12"
+    version: "0.0.13"
   easy_task:
     dependency: "direct main"
     description:
       path: "../easy_task"
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.0.7"
+  easy_youtube:
+    dependency: "direct main"
+    description:
+      path: "../easy_youtube"
+      relative: true
+    source: path
+    version: "0.0.3"
   easychat:
     dependency: "direct main"
     description:
       path: "../easychat"
       relative: true
     source: path
-    version: "0.0.11"
+    version: "0.0.12"
   easyuser:
     dependency: "direct main"
     description:
       path: "../easyuser"
       relative: true
     source: path
-    version: "0.0.23"
+    version: "0.0.24"
   fake_async:
     dependency: transitive
     description:
@@ -622,6 +661,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      sha256: dd6676d8c2926537eccdf9f72128bbb2a9d0814689527b17f92c248ff192eaf3
+      url: "https://pub.dev"
+    source: hosted
+    version: "17.2.1+2"
+  flutter_local_notifications_linux:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_linux
+      sha256: c49bd06165cad9beeb79090b18cd1eb0296f4bf4b23b84426e37dd7c027fc3af
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      sha256: "85f8d07fe708c1bdcf45037f2c0109753b26ae077e9d9e899d55971711a4ea66"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.2.0"
   flutter_localizations:
     dependency: transitive
     description: flutter
@@ -927,6 +990,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      sha256: c15605cd28af66339f8eb6fbe0e541bfe2d1b72d5825efc6598f3e0a31b9ad27
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.2"
   phone_sign_in:
     dependency: "direct main"
     description:
@@ -1156,6 +1227,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.2"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      sha256: "2236ec079a174ce07434e89fcd3fcda430025eb7692244139a9cf54fdcf1fc7d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.4"
   typed_data:
     dependency: transitive
     description:
@@ -1220,6 +1299,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.5.3"
+  win32_registry:
+    dependency: transitive
+    description:
+      name: win32_registry
+      sha256: "723b7f851e5724c55409bb3d5a32b203b3afe8587eaf5dafb93a5fed8ecda0d6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   xdg_directories:
     dependency: transitive
     description:
@@ -1228,14 +1315,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  youtube:
+  xml:
     dependency: transitive
     description:
-      name: youtube
-      sha256: "1c414ad17c83eba1ff87399c9f89f7ce85396a714810cffcd8adb8dc453598c7"
+      name: xml
+      sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "6.5.0"
   youtube_parser:
     dependency: transitive
     description:

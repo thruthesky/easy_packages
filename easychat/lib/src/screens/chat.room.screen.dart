@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easychat/src/widgets/chat.room.menu.drawer.dart';
 import 'package:easyuser/easyuser.dart';
@@ -58,7 +58,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       (doc) {
         $room!.copyFromSnapshot(doc);
         $room!.updateMyReadMeta();
-        roomNotifier.value = $room.hashCode;
+        roomNotifier.value = $room!.updatedAt.millisecondsSinceEpoch;
       },
     );
   }
@@ -66,6 +66,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   dispose() {
     roomSubscription?.cancel();
+    roomNotifier.dispose();
     // $room?.dispose();
     super.dispose();
   }
@@ -89,27 +90,28 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
     //
     if ($user != null) {
-      return $user!.displayName.or('No name');
+      return $user!.displayName.or('no name'.t);
     }
-    return 'Chat Room';
+    return 'chat room'.t;
   }
 
   String notMemberMessage(ChatRoom room) {
-    if (room.invitedUsers.contains(my.uid)) {
+    if (room.invitedUsers.contains(myUid!)) {
       // The user has a chance to open the chat room with message
       // when the other user sent a message (1:1) but the user
       // haven't accepted yet.
-      return "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.";
+      return 'unaccepted yet, once you sent a message, the chat is automatically accepted'
+          .t;
     }
-    if (room.rejectedUsers.contains(my.uid)) {
-      return "You have rejected this chat. However, if you sent a reply, the chat is automatically accepted.";
+    if (room.rejectedUsers.contains(myUid!)) {
+      return 'rejected chat, if replied, the chat will be accepted'.t;
     }
     if (room.group) {
       // For open chat rooms, the rooms can be seen by users.
-      return "This is an open group. Once you sent a message, you will automatically join the group.";
+      return 'this is open chat, if sent a message, you join the room'.t;
     }
     // Else, it should be handled by the Firestore rulings.
-    return "The Chat Room may be private and/or deleted.";
+    return 'the chat room mau be private or deleted'.t;
   }
 
   @override
@@ -169,10 +171,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
-        builder: (_, room, __) => ChatRoomMenuDrawer(
-          room: $room!,
-          user: $user,
-        ),
+        builder: (_, hc, __) {
+          return ChatRoomMenuDrawer(
+            room: $room!,
+            user: $user,
+          );
+        },
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -181,18 +185,22 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             const Center(child: CircularProgressIndicator.adaptive())
           else ...[
             Expanded(
+              flex: 5,
               child: $room!.joined ||
                       $room!.open ||
                       $room!.invitedUsers.contains(my.uid) ||
                       $room!.rejectedUsers.contains(my.uid)
                   ? Align(
                       alignment: Alignment.bottomCenter,
-                      child: ChatMessagesListView(room: $room!),
+                      child: ChatMessagesListView(
+                        key: const ValueKey("Chat Message List View"),
+                        room: $room!,
+                      ),
                     )
-                  : const Center(
+                  : Center(
                       child: Padding(
-                        padding: EdgeInsets.all(24.0),
-                        child: Text("Unable to show chat messages."),
+                        padding: const EdgeInsets.all(24.0),
+                        child: Text('unable to show chat messages'.t),
                       ),
                     ),
             ),

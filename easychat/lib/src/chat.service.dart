@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/chat.locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -11,7 +13,9 @@ class ChatService {
   static ChatService? _instance;
   static ChatService get instance => _instance ??= ChatService._();
 
-  ChatService._();
+  ChatService._() {
+    applyChatLocales();
+  }
 
   /// Whether the service is initialized or not.
   ///
@@ -100,6 +104,7 @@ class ChatService {
   showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
     return showGeneralDialog(
       context: context,
+      barrierLabel: "Chat Room",
       pageBuilder: (_, __, ___) => ChatRoomScreen(
         user: user,
         room: room,
@@ -116,21 +121,63 @@ class ChatService {
     );
   }
 
-  Future sendMessage(ChatRoom room, {String? photoUrl, String? text}) async {
+  Future sendMessage(
+    ChatRoom room, {
+    String? photoUrl,
+    String? text,
+    ChatMessage? replyTo,
+  }) async {
     if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
     await _shouldBeOrBecomeMember(room);
-    List<Future> futures = [
-      ChatMessage.create(
-        roomId: room.id,
+    final newMessage = await ChatMessage.create(
+      roomId: room.id,
+      text: text,
+      url: photoUrl,
+      replyTo: replyTo,
+    );
+    await room.updateNewMessagesMeta(
+      lastMessageId: newMessage.id,
+      lastMessageText: text,
+      lastMessageUrl: photoUrl,
+    );
+  }
+
+  Future updateMessage({
+    required ChatMessage message,
+    String? text,
+    String? url,
+    bool isEdit = false,
+  }) async {
+    // Need to review this. Review how can we simply pass by reference
+    // Need to get room here because room may not be latest.
+    // However, updating happens occasionally and
+    // wont cost much read counts.
+    final latestRoom = await ChatRoom.get(message.roomId!);
+
+    final futures = [
+      latestRoom!.mayUpdateLastMessage(
+        messageId: message.id,
+        updatedMessageText: text,
+        updatedMessageUrl: url,
+      ),
+      message.update(
         text: text,
-        url: photoUrl,
-      ),
-      room.updateNewMessagesMeta(
-        lastMessageText: text,
-        lastMessageUrl: photoUrl,
-      ),
+        url: url,
+        isEdit: isEdit,
+      )
     ];
     await Future.wait(futures);
+  }
+
+  Future deleteMessage(
+    ChatMessage message,
+  ) async {
+    // Need to get room here because room may not be latest.
+    // However, deleting happens occasionally and
+    // wont cost much read counts.
+    final latestRoom = await ChatRoom.get(message.roomId!);
+    await latestRoom!.mayDeleteLastMessage(message.id);
+    await message.delete();
   }
 
   _shouldBeOrBecomeMember(
@@ -138,13 +185,31 @@ class ChatService {
   ) async {
     if (room.joined) return;
     if (room.open) return await room.join();
-    if (room.invitedUsers.contains(my.uid) ||
-        room.rejectedUsers.contains(my.uid)) {
+    if (room.invitedUsers.contains(myUid!) ||
+        room.rejectedUsers.contains(myUid!)) {
       // The user may mistakenly reject the chat room
       // The user may accept it by replying.
       return await room.acceptInvitation();
     }
+    throw ChatException(
+      "uninvited-chat",
+      'can only send message if member, invited or open chat'.t,
+    );
+  }
 
-    throw "chat-room/uninvited-chat You can only send a message to a chat room where you are a member or an invited user.";
+  Future<void> editMessage(
+    BuildContext context, {
+    required ChatMessage message,
+    required ChatRoom room,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return EditChatMessageDialog(
+          message: message,
+          room: room,
+        );
+      },
+    );
   }
 }

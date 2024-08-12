@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.functions.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +49,7 @@ class ChatRoomListTile extends StatelessWidget {
               ? Text(room.id)
               : Text(user.displayName.trim().isNotEmpty
                   ? user.displayName
-                  : user.uid),
+                  : '...'),
           subtitle: subtitle,
           trailing: trailing,
           onTap: () => onTapTile(context, room, user),
@@ -58,13 +58,20 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? get subtitle => room.lastMessageText != null
+  Widget? get subtitle => room.lastMessageDeleted == true
       ? Text(
-          room.lastMessageText!,
+          'last message was deleted'.t,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontStyle: FontStyle.italic),
         )
-      : null;
+      : room.lastMessageText != null
+          ? Text(
+              room.lastMessageText!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )
+          : null;
 
   Widget get trailing {
     return Column(
@@ -72,9 +79,9 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text((room.lastMessageAt ?? room.updatedAt).short),
-        if ((room.users[my.uid]?.newMessageCounter ?? 0) > 0)
+        if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
           Badge(
-            label: Text("${room.users[my.uid]!.newMessageCounter}"),
+            label: Text("${room.users[myUid!]!.newMessageCounter}"),
           ),
       ],
     );

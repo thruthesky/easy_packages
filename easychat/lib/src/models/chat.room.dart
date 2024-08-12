@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easychat/src/chat.functions.dart';
-import 'package:easychat/src/chat.room.user.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easychat/easychat.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:flutter/material.dart';
 
 class ChatRoom {
   /// Field names used for the Firestore document
@@ -28,6 +28,8 @@ class ChatRoom {
     lastMessageAt: 'lastMessageAt',
     lastMessageUid: 'lastMessageUid',
     lastMessageUrl: 'lastMessageUrl',
+    lastMessageId: 'lastMessageId',
+    lastMessageDeleted: 'lastMessageDeleted',
     verifiedUserOnly: 'verifiedUserOnly',
     urlForVerifiedUserOnly: 'urlForVerifiedUserOnly',
     uploadForVerifiedUserOnly: 'uploadForVerifiedUserOnly',
@@ -61,7 +63,7 @@ class ChatRoom {
 
   List<String> get userUids => users.keys.toList();
 
-  bool get joined => userUids.contains(my.uid);
+  bool get joined => userUids.contains(myUid);
 
   List<String> invitedUsers;
   List<String> rejectedUsers;
@@ -85,13 +87,12 @@ class ChatRoom {
   /// [group] is true if the chat room is group chat.
   bool group;
 
+  String? lastMessageId;
   String? lastMessageText;
-
   DateTime? lastMessageAt;
-
   String? lastMessageUid;
-
   String? lastMessageUrl;
+  bool? lastMessageDeleted;
 
   /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
   ///
@@ -146,10 +147,12 @@ class ChatRoom {
     this.rejectedUsers = const [],
     required this.createdAt,
     required this.updatedAt,
+    this.lastMessageId,
     this.lastMessageText,
     this.lastMessageAt,
     this.lastMessageUid,
     this.lastMessageUrl,
+    this.lastMessageDeleted,
     this.verifiedUserOnly = false,
     this.urlForVerifiedUserOnly = false,
     this.uploadForVerifiedUserOnly = false,
@@ -186,12 +189,14 @@ class ChatRoom {
       updatedAt: json[field.updatedAt] is Timestamp
           ? (json[field.updatedAt] as Timestamp).toDate()
           : DateTime.now(),
+      lastMessageId: json[field.lastMessageId],
       lastMessageText: json[field.lastMessageText],
       lastMessageAt: json[field.lastMessageAt] is Timestamp
           ? (json[field.lastMessageAt] as Timestamp).toDate()
           : DateTime.now(),
       lastMessageUid: json[field.lastMessageUid],
       lastMessageUrl: json[field.lastMessageUrl],
+      lastMessageDeleted: json[field.lastMessageDeleted],
       verifiedUserOnly: json[field.verifiedUserOnly],
       urlForVerifiedUserOnly: json[field.urlForVerifiedUserOnly],
       uploadForVerifiedUserOnly: json[field.uploadForVerifiedUserOnly],
@@ -218,10 +223,12 @@ class ChatRoom {
       field.rejectedUsers: rejectedUsers,
       field.createdAt: createdAt,
       field.updatedAt: updatedAt,
+      field.lastMessageId: lastMessageId,
       field.lastMessageText: lastMessageText,
       field.lastMessageAt: lastMessageAt,
       field.lastMessageUid: lastMessageUid,
       field.lastMessageUrl: lastMessageUrl,
+      field.lastMessageDeleted: lastMessageDeleted,
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
       field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
@@ -332,7 +339,7 @@ class ChatRoom {
       field.hasPassword: false,
       if (invitedUsers != null) field.invitedUsers: invitedUsers,
       field.users: usersMap,
-      field.masterUsers: [my.uid],
+      field.masterUsers: [myUid],
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
       field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
@@ -358,9 +365,9 @@ class ChatRoom {
       group: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      invitedUsers: otherUid == my.uid ? null : [otherUid],
-      users: [my.uid],
-      masterUsers: [my.uid],
+      invitedUsers: otherUid == myUid ? null : [otherUid],
+      users: [myUid!],
+      masterUsers: [myUid!],
     );
   }
 
@@ -383,6 +390,7 @@ class ChatRoom {
     Object? lastMessageAt,
     String? lastMessageUid,
     String? lastMessageUrl,
+    bool? lastMessageDeleted,
   }) async {
     if (single == true && (group == true || open == true)) {
       throw 'chat-room-update/single-cannot-be-group-or-open Single chat room cannot be group or open';
@@ -401,6 +409,8 @@ class ChatRoom {
       if (lastMessageAt != null) field.lastMessageAt: lastMessageAt,
       if (lastMessageUid != null) field.lastMessageUid: lastMessageUid,
       if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
+      if (lastMessageDeleted != null)
+        field.lastMessageDeleted: lastMessageDeleted,
       field.updatedAt: FieldValue.serverTimestamp(),
     };
 
@@ -420,9 +430,9 @@ class ChatRoom {
         : FieldValue.serverTimestamp();
     await ref.set(
       {
-        field.invitedUsers: FieldValue.arrayRemove([my.uid]),
+        field.invitedUsers: FieldValue.arrayRemove([myUid!]),
         field.users: {
-          my.uid: {
+          myUid!: {
             if (single) ...{
               ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
               ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
@@ -440,7 +450,8 @@ class ChatRoom {
         // In case, the user rejected the invitation
         // but actually wants to accept it, then we should
         // also remove the uid from rejeceted users.
-        field.rejectedUsers: FieldValue.arrayRemove([my.uid]),
+        field.rejectedUsers: FieldValue.arrayRemove([myUid!]),
+        field.updatedAt: FieldValue.serverTimestamp(),
       },
       SetOptions(merge: true),
     );
@@ -452,8 +463,8 @@ class ChatRoom {
 
   Future<void> rejectInvitation() async {
     await ref.update({
-      field.invitedUsers: FieldValue.arrayRemove([my.uid]),
-      field.rejectedUsers: FieldValue.arrayUnion([my.uid]),
+      field.invitedUsers: FieldValue.arrayRemove([myUid!]),
+      field.rejectedUsers: FieldValue.arrayUnion([myUid!]),
     });
   }
 
@@ -462,7 +473,7 @@ class ChatRoom {
     await ref.set(
       {
         field.users: {
-          my.uid: FieldValue.delete(),
+          myUid!: FieldValue.delete(),
         },
       },
       SetOptions(merge: true),
@@ -479,13 +490,14 @@ class ChatRoom {
   /// [updateNewMessagesMeta] is used to update all unread data for all
   /// users inside the chat room.
   Future<void> updateNewMessagesMeta({
+    String? lastMessageId,
     String? lastMessageText,
     String? lastMessageUrl,
   }) async {
     final serverTimestamp = FieldValue.serverTimestamp();
     final Map<String, Map<String, Object>> updateUserData = users.map(
       (uid, value) {
-        if (uid == my.uid) {
+        if (uid == myUid!) {
           final readOrder = _negatedOrder(DateTime.now());
           return MapEntry(
             uid,
@@ -523,13 +535,15 @@ class ChatRoom {
       },
     );
     await ref.set({
+      field.lastMessageId: lastMessageId,
       if (lastMessageText != null) field.lastMessageText: lastMessageText,
       field.lastMessageAt: FieldValue.serverTimestamp(),
-      field.lastMessageUid: my.uid,
+      field.lastMessageUid: myUid!,
       if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
+      field.lastMessageDeleted: false,
       field.users: {
         ...updateUserData,
-      }
+      },
     }, SetOptions(merge: true));
   }
 
@@ -541,9 +555,9 @@ class ChatRoom {
   /// The Chat Room must be updated or else, it may not proceed
   /// when old room data is 0, since newMessageCounter maybe inaccurate.
   Future<void> updateMyReadMeta() async {
-    if (!userUids.contains(my.uid)) return;
-    if (users[my.uid]!.newMessageCounter == 0) return;
-    final myReadOrder = users[my.uid]!.timeOrder;
+    if (!userUids.contains(myUid!)) return;
+    if (users[myUid!]!.newMessageCounter == 0) return;
+    final myReadOrder = users[myUid!]!.timeOrder;
     final updatedOrder = _negatedOrder(myReadOrder!);
     await ref.set({
       field.users: {
@@ -557,44 +571,62 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  /// Chat room subscription
-  ///
-  /// This is used to listen the chat room changes.
-  ///
-  /// The reason why it is not in the service is because each chat room can
-  /// have its own listener for realtime update.
-  ///
-  // StreamSubscription? chatRoomSubscription;
-  // BehaviorSubject<ChatRoom> changes = BehaviorSubject();
+  Future<void> mayDeleteLastMessage(String deletedMessageId) async {
+    dog("lastMessageId: $lastMessageId");
+    dog("deletedMessageId: $deletedMessageId");
+    if (lastMessageId == deletedMessageId) {
+      await ref.set({
+        field.lastMessageText: FieldValue.delete(),
+        field.lastMessageUrl: FieldValue.delete(),
+        field.lastMessageDeleted: true,
+      }, SetOptions(merge: true));
+    }
+  }
 
-  // listen() {
-  //   chatRoomSubscription?.cancel();
-  //   changes.add(this);
-  //   chatRoomSubscription = ref.snapshots().listen((snapshot) {
-  //     changes.add(ChatRoom.fromSnapshot(snapshot));
-  //   });
-  // }
+  Future<void> mayUpdateLastMessage({
+    required String messageId,
+    String? updatedMessageText,
+    String? updatedMessageUrl,
+  }) async {
+    dog("lastMessageId: $lastMessageId");
+    dog("updatedMessageId: $messageId");
+    if (lastMessageId == messageId) {
+      await ref.set({
+        field.lastMessageText: updatedMessageText,
+        field.lastMessageUrl: updatedMessageUrl,
+      }, SetOptions(merge: true));
+    }
+  }
 
-  // dispose() {
-  //   chatRoomSubscription?.cancel();
-  // }
+  // TODO need advise
+  /// To reply, it must be set here.
+  ///
+  /// Reason: Input box is the widget that sends the message
+  ///         with or without reply to. Since popup menu is
+  ///         separate widget and is the ui of the reply button,
+  ///         it needs to store it somewhere accessible
+  ///         by input box. So that the input box can know if we
+  ///         are replying.
+  ValueNotifier<ChatMessage?>? replyValueNotifier;
 
-  // StreamBuilder<ChatRoom> builder(Widget Function(ChatRoom room) builder) {
-  //   return StreamBuilder<ChatRoom>(
-  //     initialData: changes.value,
-  //     stream: changes.stream,
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.waiting &&
-  //           !snapshot.hasData) {
-  //         return const CircularProgressIndicator();
-  //       }
-  //       if (snapshot.hasError) {
-  //         debugPrint("Error: ${snapshot.error}");
-  //         return Text("Error: ${snapshot.error}");
-  //       }
-  //       final room = snapshot.data!;
-  //       return builder(room);
-  //     },
-  //   );
-  // }
+  void initReply() {
+    if (replyValueNotifier != null) disposeReply();
+    replyValueNotifier = ValueNotifier<ChatMessage?>(null);
+  }
+
+  void disposeReply() {
+    if (replyValueNotifier != null) {
+      replyValueNotifier!.dispose();
+      replyValueNotifier = null;
+      return;
+    }
+  }
+
+  void replyTo(ChatMessage chatMessage) {
+    if (replyValueNotifier == null) {
+      throw ChatException('reply-value-notifier-not-initialized',
+          'replyValueNotifier must be initialized');
+    }
+    replyValueNotifier!.value = chatMessage;
+  }
 }

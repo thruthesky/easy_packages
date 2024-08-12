@@ -48,7 +48,7 @@ class _PostDetailState extends State<PostDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(user.displayName),
-                            Text('${user.createdAt?.yMd}'),
+                            Text(post.createdAt.yMd),
                           ],
                         ),
                       )

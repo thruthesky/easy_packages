@@ -186,8 +186,36 @@ class MyAppState extends State<MyApp> {
 
 ## Chat to admin
 
+
+### 1:1 chat
+
+- If there is only one admin, you can create a 1:1 chat room with the user.
+
 - `chatting to admin` is a simple tric.
-  - Create a menu button for `Chat to admin`, then when the button is being pressed, simply open a chat room with uid of the admin. You can pass the admin uid to `ChatService.instance.showChatRoomScreen(uid: ...)`.
+  - Simply add `Chat to admin` button in the app, then when the button is being pressed, simply open a chat room with uid of the admin. You can pass the admin uid to `ChatService.instance.showChatRoomScreen(uid: ...)`.
+
+```dart
+UserDoc(
+  uid: 'h1JVPqCO4mNroGLAklc8AV45XB82',
+  builder: (admin) => ListTile(
+    title: Text('Inquiry to Admin'.t),
+    onTap: () =>
+        ChatService.instance.showChatRoomScreen(
+      context,
+      user: admin,
+    ),
+  ),
+),
+```
+
+
+### Group chat (NOT SUPPORTED, YET)
+
+This feature is not supported, yet.
+
+- ~~If there are many admins who want to participate in the customer care chat, list all the uid of admins.~~
+- ~~then, create a group chat room with the list of admins and the login user.~~
+
 
 
 

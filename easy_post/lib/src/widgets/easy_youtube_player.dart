@@ -40,6 +40,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
   @override
   void initState() {
     super.initState();
+    if (widget.post.youtube['id'] == null) return;
     youtubeController = YoutubePlayerController(
       initialVideoId: widget.post.youtube['id'],
       flags: YoutubePlayerFlags(
@@ -86,9 +87,9 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
                   : Icons.play_arrow,
               color: Colors.white,
             )),
-        CurrentPosition(),
-        ProgressBar(
-          colors: const ProgressBarColors(
+        const CurrentPosition(),
+        const ProgressBar(
+          colors: ProgressBarColors(
               playedColor: Colors.white,
               handleColor: Colors.white,
               backgroundColor: Colors.grey),
@@ -97,7 +98,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
         const SizedBox(
           width: 8,
         ),
-        RemainingDuration(),
+        const RemainingDuration(),
         // FullScreenButton(),
       ],
       topActions: const [],
@@ -106,7 +107,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
       // when it is also not exist in the post it will show a  default arrow
       thumbnail: widget.thumbnail ??
           CachedNetworkImage(
-            imageUrl: widget.post.youtube['hd'],
+            imageUrl: widget.post.youtube['thumbnails']['maxres']['url'],
             errorWidget: (context, error, _) => const Center(
               child: Icon(Icons.play_arrow),
             ),

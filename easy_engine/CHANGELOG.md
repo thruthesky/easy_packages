@@ -1,3 +1,6 @@
+## 0.0.5
+* Update. Document update.
+
 ## 0.0.4
 * Add. deleteAccount
 
