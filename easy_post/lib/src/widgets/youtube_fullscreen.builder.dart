@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/youtube_player_builder.dart';
 import 'package:flutter/material.dart';
@@ -33,19 +32,29 @@ class YoutubeFullscreenBuilder extends StatefulWidget {
 class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   YoutubePlayerController? youtubeController;
   bool isPlaying = false;
+  bool isReady = false;
+  late PlayerState playerState;
 
   @override
   void initState() {
-    super.initState();
     if (widget.post.youtube['id'] == null) return;
     youtubeController = YoutubePlayerController(
       initialVideoId: widget.post.youtube['id']!,
       flags: const YoutubePlayerFlags(
-        autoPlay: false,
-        mute: false,
-        controlsVisibleAtStart: false,
-      ),
+          autoPlay: false,
+          mute: false,
+          controlsVisibleAtStart: true,
+          hideControls: false),
     )..addListener(listener);
+    playerState = PlayerState.unknown;
+    super.initState();
+  }
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to other screen.
+    youtubeController?.pause();
+    super.deactivate();
   }
 
   @override
@@ -56,8 +65,9 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   }
 
   listener() {
-    if (mounted && youtubeController!.value.isReady) {
+    if (isReady && mounted && youtubeController!.value.isReady) {
       isPlaying = youtubeController!.value.isPlaying;
+      playerState = youtubeController!.value.playerState;
       setState(() {});
     }
   }
@@ -80,6 +90,11 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   Widget build(BuildContext context) {
     return YoutubePlayerBuilder(
       player: YoutubePlayer(
+        onReady: () {
+          setState(() {
+            isReady = true;
+          });
+        },
         bottomActions: [
           IconButton(
             onPressed: () {
@@ -110,14 +125,6 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
         ],
         topActions: const [],
         controller: youtubeController!,
-        // When thumbnail is not provided, it will try to get from the provided post
-        // When it is also not exist in the post it will show a default arrow
-        thumbnail: CachedNetworkImage(
-          imageUrl: widget.post.youtube['hd'] ?? '',
-          errorWidget: (context, error, _) => const Center(
-            child: Icon(Icons.play_arrow),
-          ),
-        ),
       ),
       builder: (context, smallWidget) {
         return widget.builder(context, smallWidget);

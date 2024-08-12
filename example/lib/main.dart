@@ -1,16 +1,22 @@
 import 'dart:async';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_messaging/easy_messaging.dart';
 import 'package:easy_storage/easy_storage.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
+import 'package:example/screens/messaging/messaging.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {
   /// Uncaught Exception 핸들링
@@ -19,8 +25,8 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
       lo.init();
       await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+          // options: DefaultFirebaseOptions.currentPlatform,
+          );
 
       UserService.instance.init();
       runApp(const MyApp());
@@ -50,24 +56,7 @@ class MyAppState extends State<MyApp> {
       uploadBottomSheetSpacing: 16,
     );
 
-    // MessagingService.instance.init(
-    //   projectId: DefaultFirebaseOptions.currentPlatform.projectId,
-    //   onMessageOpenedFromBackground: (message) {
-    //     print('onMessageOpenedFromBackground: $message');
-    //   },
-    //   onMessageOpenedFromTerminated: (RemoteMessage message) {
-    //     print(
-    //         'onMessageOpenedFromTerminated: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
-    //     alert(
-    //       context: context,
-    //       title: Text(message.notification?.title ?? ''),
-    //       message: Text(message.notification?.body ?? ''),
-    //     );
-    //   },
-    //   onForegroundMessage: (message) {
-    //     print('onForegroundMessage: $message');
-    //   },
-    // );
+    messagingInit();
 
     // PostService.instance.init(
     //   categories: {
@@ -86,6 +75,13 @@ class MyAppState extends State<MyApp> {
     // );
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+      /// open messaging screen
+      showGeneralDialog(
+          context: globalContext,
+          pageBuilder: (_, __, ___) {
+            return const MessagingScreen();
+          });
+
       // ChatService.instance.showChatRoomEditScreen(globalContext);
       // final room = await ChatRoom.get("t5zClWySjgryFf2tK0M8");
       // if (!mounted) return;
@@ -167,6 +163,59 @@ class MyAppState extends State<MyApp> {
 
       // print('snippet: $snippet');
     });
+  }
+
+  messagingInit() async {
+    MessagingService.instance.init(
+      projectId: '', //DefaultFirebaseOptions.currentPlatform.projectId,
+      onMessageOpenedFromBackground: (message) {
+        WidgetsBinding.instance.addPostFrameCallback((duration) async {
+          dog('onMessageOpenedFromBackground: $message');
+          alert(
+            context: globalContext,
+            title: Text(message.notification?.title ?? ''),
+            message: Text(message.notification?.body ?? ''),
+          );
+        });
+      },
+      onMessageOpenedFromTerminated: (RemoteMessage message) {
+        WidgetsBinding.instance.addPostFrameCallback((duration) async {
+          dog('onMessageOpenedFromTerminated: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
+          alert(
+            context: globalContext,
+            title: Text(message.notification?.title ?? ''),
+            message: Text(message.notification?.body ?? ''),
+          );
+        });
+      },
+      onForegroundMessage: (message) {
+        dog('onForegroundMessage: $message');
+      },
+    );
+
+    /// Android Head-up Notification
+    if (isAndroid) {
+      /// Set a channel for high importance notifications.
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        description: 'This channel is used for important notifications.', //
+        importance: Importance.max, // max 로 해야 Head-up display 가 잘 된다.
+        showBadge: true,
+        enableVibration: true,
+        playSound: true,
+      );
+
+      /// Register the channel with the system.
+      /// If there is already a registed channel (with same id), then it will be re-registered.
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+    }
   }
 
   @override

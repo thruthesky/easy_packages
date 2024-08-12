@@ -16,6 +16,7 @@ void addPostTranslations() async {
   if (locale == null) return;
 
   for (var entry in localeTexts.entries) {
+    if (lo.get(key: entry.key, locale: locale) != null) continue;
     lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
   }
 }
