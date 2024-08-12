@@ -190,7 +190,14 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Replying to {username}',
     'ko': '{username}에게 답장 중',
   },
-  // 'this message has been deleted' -> chat.bubble.dart
+  'the message being replied has been deleted': {
+    'en': 'The message being replied has been deleted',
+    'ko': '답장 중인 메시지가 삭제되었습니다'
+  },
+  'photo': {
+    'en': 'Photo',
+    'ko': '사진',
+  },
 
   // chat.messages.list_view.dart
   'something went wrong': {

@@ -22,6 +22,9 @@ class ChatBubble extends StatelessWidget {
   double photoHeight(BuildContext context) =>
       MediaQuery.of(context).size.width * 0.56;
 
+  Color replyDividerColor(BuildContext context) =>
+      Theme.of(context).colorScheme.outlineVariant;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -83,36 +86,6 @@ class ChatBubble extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                 ],
-                if (message.replyTo != null)
-                  UserDoc(
-                    uid: message.replyTo!.uid!,
-                    builder: (user) {
-                      if (user == null) {
-                        return Text(
-                          "replying to".t,
-                          style:
-                              Theme.of(context).textTheme.labelMedium?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: context.onSurface.withAlpha(100),
-                                  ),
-                        );
-                      }
-                      return Text(
-                        "replying to user".tr(
-                          args: {
-                            "username": user.displayName.isNotEmpty
-                                ? user.displayName
-                                : user.name
-                          },
-                        ),
-                        style:
-                            Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: context.onSurface.withAlpha(100),
-                                ),
-                      );
-                    },
-                  ),
                 if (message.deleted) ...[
                   Opacity(
                     opacity: 0.6,
@@ -146,7 +119,9 @@ class ChatBubble extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: message.uid == myUid
                               ? Theme.of(context).colorScheme.primaryContainer
-                              : Theme.of(context).colorScheme.tertiaryContainer,
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHigh,
                           borderRadius: BorderRadius.only(
                             topLeft: message.uid == myUid
                                 ? const Radius.circular(12)
@@ -164,34 +139,78 @@ class ChatBubble extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (message.replyTo != null) ...[
-                              ChatBubbleReply(
-                                message: message,
-                                maxWidth: maxWidth(context),
-                              ),
-                              const Divider(
-                                height: 0,
-                              ),
-                            ],
-                            if (message.url != null) ...[
-                              SizedBox(
-                                height: photoHeight(context),
-                                width: maxWidth(context),
-                                child: CachedNetworkImage(
-                                  key: ValueKey(message.url),
-                                  fadeInDuration: Duration.zero,
-                                  fadeOutDuration: Duration.zero,
-                                  fit: BoxFit.cover,
-                                  imageUrl: message.url!,
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: replyDividerColor(context),
+                                    ),
+                                  ),
+                                ),
+                                child: ChatBubbleReply(
+                                  message: message,
+                                  maxWidth: maxWidth(context),
                                 ),
                               ),
                             ],
-                            if (message.text != null &&
-                                message.text!.isNotEmpty) ...[
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Text(message.text!),
+                            Transform.translate(
+                              offset: Offset(
+                                0,
+                                message.replyTo != null ? -1 : 0,
                               ),
-                            ],
+                              child: Container(
+                                decoration: message.replyTo != null
+                                    ? BoxDecoration(
+                                        border: Border(
+                                          top: BorderSide(
+                                            color: replyDividerColor(context),
+                                          ),
+                                        ),
+                                      )
+                                    : null,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (message.url != null) ...[
+                                      SizedBox(
+                                        height: photoHeight(context),
+                                        width: maxWidth(context),
+                                        child: CachedNetworkImage(
+                                          key: ValueKey(message.url),
+                                          fadeInDuration: Duration.zero,
+                                          fadeOutDuration: Duration.zero,
+                                          fit: BoxFit.cover,
+                                          imageUrl: message.url!,
+                                          errorWidget: (context, url, error) {
+                                            dog("Error in Image Chat Bubble: $error");
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .surfaceContainerHighest,
+                                              ),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.error,
+                                                  color: context.error,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                    if (message.text != null &&
+                                        message.text!.isNotEmpty) ...[
+                                      Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: Text(message.text!),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

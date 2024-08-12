@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -86,28 +87,17 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (replyTo?.deleted == true) ...[
-            Opacity(
-              opacity: 0.6,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  'this message has been deleted'.t,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                ),
+            Container(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                'the message being replied has been deleted'.t,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
               ),
             )
           ] else
             Container(
-              width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -129,34 +119,116 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Column(
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (replyTo?.url != null) ...[
-                                SizedBox(
-                                  height: maxWidth(context) / 3,
-                                  width: maxWidth(context),
-                                  child: CachedNetworkImage(
-                                    key: ValueKey("reply_${message.url}"),
-                                    fadeInDuration: Duration.zero,
-                                    fadeOutDuration: Duration.zero,
-                                    fit: BoxFit.cover,
-                                    imageUrl: replyTo!.url!,
-                                  ),
-                                ),
-                              ],
-                              if (replyTo?.text != null &&
-                                  replyTo!.text!.isNotEmpty) ...[
                                 Padding(
-                                  padding: const EdgeInsets.all(12),
-                                  child: Text(
-                                    replyTo!.text!,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(12, 12, 0, 12),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                    ),
+                                    clipBehavior: Clip.hardEdge,
+                                    height: 56,
+                                    width: 56,
+                                    child: CachedNetworkImage(
+                                      key: ValueKey("reply_${message.url}"),
+                                      fadeInDuration: Duration.zero,
+                                      fadeOutDuration: Duration.zero,
+                                      fit: BoxFit.cover,
+                                      imageUrl: replyTo!.url!,
+                                      errorWidget: (context, url, error) {
+                                        dog("Error in Image Chat Bubble: $error");
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surfaceContainerHighest,
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.error,
+                                              color: context.error,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ],
+                              const SizedBox(width: 12),
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    0,
+                                    12,
+                                    12,
+                                    12,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "replying to user".tr(
+                                          args: {
+                                            "username":
+                                                user.displayName.isNotEmpty
+                                                    ? user.displayName
+                                                    : user.name
+                                          },
+                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: context.onSurface
+                                                  .withAlpha(150),
+                                            ),
+                                      ),
+                                      if (replyTo?.text != null &&
+                                          replyTo!.text!.isNotEmpty)
+                                        Text(
+                                          replyTo!.text!,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      else if (replyTo?.url != null &&
+                                          replyTo!.url!.isNotEmpty)
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.photo,
+                                              color: context.onSurface
+                                                  .withAlpha(200),
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              "[${'photo'.t}]",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium
+                                                  ?.copyWith(
+                                                    color: context.onSurface
+                                                        .withAlpha(150),
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ],
