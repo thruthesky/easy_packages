@@ -16,8 +16,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'package:easy_youtube/easy_youtube.dart';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {

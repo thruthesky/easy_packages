@@ -197,17 +197,15 @@ class ChatService {
     );
   }
 
-  Future<void> editMessage(
+  Future<void> showEditMessageDialog(
     BuildContext context, {
     required ChatMessage message,
-    required ChatRoom room,
   }) async {
     await showDialog(
       context: context,
       builder: (context) {
         return EditChatMessageDialog(
           message: message,
-          room: room,
         );
       },
     );
