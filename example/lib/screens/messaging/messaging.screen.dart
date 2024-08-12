@@ -213,6 +213,9 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 ),
               ],
             ),
+            const Divider(),
+            const Text('Subscribe to testSubscription'),
+            const PushNotificationToggelIcon(category: 'testSubscription'),
             const SizedBox(
               height: 32,
             ),
