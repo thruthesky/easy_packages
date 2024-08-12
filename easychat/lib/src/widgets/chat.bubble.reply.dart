@@ -194,6 +194,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                                               color: context.onSurface
                                                   .withAlpha(150),
                                             ),
+                                        maxLines: 1,
                                       ),
                                       if (replyTo?.text != null &&
                                           replyTo!.text!.isNotEmpty)

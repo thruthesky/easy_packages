@@ -234,7 +234,12 @@ class ChatBubble extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       if (message.url != null) ...[
-                                        SizedBox(
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surfaceContainerHighest,
+                                          ),
                                           height: photoHeight(context),
                                           width: maxWidth(context),
                                           child: CachedNetworkImage(
@@ -245,17 +250,10 @@ class ChatBubble extends StatelessWidget {
                                             imageUrl: message.url!,
                                             errorWidget: (context, url, error) {
                                               dog("Error in Image Chat Bubble: $error");
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .surfaceContainerHighest,
-                                                ),
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.error,
-                                                    color: context.error,
-                                                  ),
+                                              return Center(
+                                                child: Icon(
+                                                  Icons.error,
+                                                  color: context.error,
                                                 ),
                                               );
                                             },
@@ -301,7 +299,8 @@ class ChatBubble extends StatelessWidget {
           children: [
             if (message.isEdited)
               Text(
-                "${'edited'.t} • ${DateTime.fromMillisecondsSinceEpoch(message.editedAt!).shortDateTime}",
+                // "${'edited'.t} • ${DateTime.fromMillisecondsSinceEpoch(message.editedAt!).shortDateTime}",
+                'edited'.t,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: Theme.of(context)
                           .colorScheme
