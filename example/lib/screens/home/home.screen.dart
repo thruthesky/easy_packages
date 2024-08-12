@@ -1,4 +1,5 @@
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easychat/easychat.dart';
@@ -11,6 +12,7 @@ import 'package:example/screens/messaging/messaging.screen.dart';
 import 'package:example/screens/settings/settings.screen.dart';
 import 'package:example/screens/storage/upload_image.screen.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -55,7 +57,18 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Text('isSamllScreen: ${context.isSmallScreen}'),
+            Row(
+              children: [
+                Text('isSamllScreen: ${context.isSmallScreen}'),
+                Value(
+                  ref: FirebaseDatabase.instance.ref('/test/value'),
+                  builder: (v, r) => IconButton(
+                    icon: Text('Value Test: $v'),
+                    onPressed: () => toggle(r),
+                  ),
+                ),
+              ],
+            ),
             AuthStateChanges(
               builder: (user) => user == null
                   ? const Text('Sign-in first')

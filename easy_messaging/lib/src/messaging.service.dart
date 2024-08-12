@@ -358,36 +358,4 @@ class MessagingService {
 
     return preResponse(response);
   }
-
-  /// Toogle a node
-  ///
-  /// If the node of the [path] does not exist, create it and return true.
-  /// Warning, if the node exists, then remove it and return false.
-  ///
-  /// [value] is the value to set. If it is null, then it will be set to true.
-  ///
-  /// Returns true if the node is created, otherwise false.
-  Future<bool> toggle({
-    String? path,
-    DatabaseReference? ref,
-    dynamic value,
-  }) async {
-    if (path == null && ref == null) {
-      throw ArgumentError('path or ref must be not null');
-    }
-
-    if (path != null) {
-      ref = FirebaseDatabase.instance.ref(path);
-    }
-
-    final snapshot = await ref!.get();
-
-    if (snapshot.exists == false) {
-      await ref.set(value ?? true);
-      return true;
-    } else {
-      await ref.remove();
-      return false;
-    }
-  }
 }

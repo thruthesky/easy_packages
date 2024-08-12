@@ -274,6 +274,13 @@ packages:
       relative: true
     source: path
     version: "0.0.4"
+  easy_realtime_database:
+    dependency: "direct main"
+    description:
+      path: "../easy_realtime_database"
+      relative: true
+    source: path
+    version: "0.0.2"
   easy_report:
     dependency: "direct main"
     description:

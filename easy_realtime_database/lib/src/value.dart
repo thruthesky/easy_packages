@@ -41,7 +41,7 @@ class Value extends StatelessWidget {
 
   /// [dynamic] is the value of the node.
   /// [String] is the path of the node.
-  final Widget Function(dynamic value) builder;
+  final Widget Function(dynamic value, DatabaseReference ref) builder;
   final Widget? onLoading;
 
   @override
@@ -50,10 +50,8 @@ class Value extends StatelessWidget {
       stream: ref.onValue,
       builder: (context, AsyncSnapshot<DatabaseEvent> event) {
         if (event.connectionState == ConnectionState.waiting) {
-          if (event.hasData) {
-            return builder(event.data!.snapshot.value);
-          } else if (initialData != null) {
-            return builder(initialData);
+          if (initialData != null) {
+            return builder(initialData, ref);
           }
           return onLoading ?? const SizedBox.shrink();
         }
@@ -62,7 +60,7 @@ class Value extends StatelessWidget {
           return Text('Error; path: ${ref.path}, message: ${event.error}');
         }
         // value may be null.
-        return builder(event.data?.snapshot.value);
+        return builder(event.data?.snapshot.value, ref);
       },
     );
   }
@@ -75,28 +73,26 @@ class Value extends StatelessWidget {
   ///
   /// [path] 와 [ref] 둘 중 하나는 반드시 있어야 한다.
   static Widget once({
-    required DatabaseReference? ref,
-    required Widget Function(dynamic value) builder,
+    required DatabaseReference ref,
+    required Widget Function(dynamic value, DatabaseReference ref) builder,
     dynamic initialData,
     Widget? onLoading,
   }) {
     return FutureBuilder(
-      future: ref?.once(),
+      future: ref.once(),
       builder: (context, AsyncSnapshot<DatabaseEvent> event) {
         if (event.connectionState == ConnectionState.waiting) {
-          if (event.hasData) {
-            return builder(event.data!.snapshot.value);
-          } else if (initialData != null) {
-            return builder(initialData);
+          if (initialData != null) {
+            return builder(initialData, ref);
           }
           return onLoading ?? const SizedBox.shrink();
         }
         if (event.hasError) {
-          log('---> Value.once() -> Error; path: ${ref?.path}, message: ${event.error}');
+          log('---> Value.once() -> Error; path: ${ref.path}, message: ${event.error}');
           return Text('Error; ${event.error}');
         }
 
-        return builder(event.data?.snapshot.value);
+        return builder(event.data?.snapshot.value, ref);
       },
     );
   }

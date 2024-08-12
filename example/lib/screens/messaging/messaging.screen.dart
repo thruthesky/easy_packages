@@ -220,7 +220,8 @@ class _MessagingScreenState extends State<MessagingScreen> {
               if (u == null) return const Text('Must login first');
 
               return const PushNotificationToggelIcon(
-                  category: 'testSubscription');
+                subscriptionName: 'testSubscription',
+              );
             }),
             const SizedBox(
               height: 32,
