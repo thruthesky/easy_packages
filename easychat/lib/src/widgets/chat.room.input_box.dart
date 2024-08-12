@@ -42,14 +42,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   @override
   void initState() {
     super.initState();
-    room.initReply();
   }
 
   @override
   void dispose() {
     uploadProgress.close();
     controller.dispose();
-    room.disposeReply();
     dog("Input box being disposed");
     textFocus.dispose();
     if (url != null) {
@@ -63,12 +61,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     return Column(
       children: [
         ValueListenableBuilder(
-          valueListenable: room.replyValueNotifier!,
+          valueListenable: ChatService.instance.reply,
           builder: (context, message, child) {
             if (message != null) {
               return ChatRoomReplyingTo(
                 replyTo: message,
-                onPressClose: () => clearReplyTo(),
+                onPressClose: () => ChatService.instance.clearReply(),
               );
             }
             return const SizedBox.shrink();
@@ -241,15 +239,11 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
       room,
       text: controller.text.trim(),
       photoUrl: url,
-      replyTo: room.replyValueNotifier!.value,
+      replyTo: ChatService.instance.reply.value,
     );
     url = null;
-    if (room.replyValueNotifier!.value != null) clearReplyTo();
+    ChatService.instance.clearReply();
     if (controller.text.isNotEmpty) controller.clear();
     await sendMessageFuture;
-  }
-
-  void clearReplyTo() {
-    room.replyValueNotifier!.value = null;
   }
 }

@@ -62,7 +62,7 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
                 if (value == items.reply) {
                   // room.replyTo(message);
                   if (context.mounted) {
-                    ChatService.instance.showReplyPopup(context, room);
+                    ChatService.instance.reply.value = message;
                   }
                 } else if (value == items.edit) {
                   if (!context.mounted) return;

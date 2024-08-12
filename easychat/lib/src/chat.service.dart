@@ -213,38 +213,7 @@ class ChatService {
     );
   }
 
-  // TODO need advise
-  /// To reply, it must be set here.
-  ///
-  /// Reason: Input box is the widget that sends the message
-  ///         with or without reply to. Since popup menu is
-  ///         separate widget and is the ui of the reply button,
-  ///         it needs to store it somewhere accessible
-  ///         by input box. So that the input box can know if we
-  ///         are replying.
-  // ValueNotifier<ChatMessage?>? replyValueNotifier;
-
-  // void initReply() {
-  //   if (replyValueNotifier != null) disposeReply();
-  //   replyValueNotifier = ValueNotifier<ChatMessage?>(null);
-  // }
-
-  // void disposeReply() {
-  //   if (replyValueNotifier != null) {
-  //     replyValueNotifier!.dispose();
-  //     replyValueNotifier = null;
-  //     return;
-  //   }
-  // }
-
-  // void replyTo(ChatMessage chatMessage) {
-  //   if (replyValueNotifier == null) {
-  //     throw ChatException('reply-value-notifier-not-initialized',
-  //         'replyValueNotifier must be initialized');
-  //   }
-  //   replyValueNotifier!.value = chatMessage;
-  // }
-
-  ChatMessage? reply;
-  bool get replyEnabled => reply != null;
+  ValueNotifier<ChatMessage?> reply = ValueNotifier<ChatMessage?>(null);
+  bool get replyEnabled => reply.value != null;
+  clearReply() => reply.value = null;
 }
