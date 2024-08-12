@@ -1,0 +1,29 @@
+name: easy_realtime_database
+description: "Provide an easy to use realtime database helper utilities."
+version: 0.0.3
+homepage: https://github.com/thruthesky/easy-packages
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  firebase_database: ^11.0.2
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+
+repository: https://github.com/thruthesky/easy-packages/main/tree/easy_realtime_database
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - user
+  - user-management
+  - user-management-system
+  - firebase
+  - easy-packages
