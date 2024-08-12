@@ -5,9 +5,13 @@ class PushNotificationToggelIcon extends StatelessWidget {
   const PushNotificationToggelIcon({
     super.key,
     required this.category,
+    this.widgetOn = const Icon(Icons.notifications_rounded),
+    this.widgetOff = const Icon(Icons.notifications_off_outlined),
   });
 
   final String category;
+  final Widget widgetOn;
+  final Widget widgetOff;
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +23,7 @@ class PushNotificationToggelIcon extends StatelessWidget {
       },
       icon: Value(
         ref: messagingService.subscriptionRef(category),
-        builder: (v) => v == true
-            ? const Icon(Icons.notifications_rounded)
-            : const Icon(Icons.notifications_off_outlined),
+        builder: (v) => v == true ? widgetOn : widgetOff,
       ),
     );
   }
