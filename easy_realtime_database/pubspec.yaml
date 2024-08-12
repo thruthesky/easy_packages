@@ -1,6 +1,6 @@
 name: easy_realtime_database
 description: "Provide an easy to use realtime database helper utilities."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/thruthesky/easy-packages
 
 environment:
