@@ -94,6 +94,37 @@ There are two localization functions: `.t` and `.tr`.
 By default, the translation texts are saved in `easy_locales/lib/src/locale.texts.dart`. This file should have the most common text translation only. This is called `default translation text file`.
 
 If you are developing a package and you are using `easy_locale` for the internationalization of the package, you should not touch the default translation text file. Instead, you should create your own translation text in your package and apply it to `easy_locale`'s text object by calling `lo.set()`.
+See the example below especially how it supports the translations from the app.
+
+Example:
+```dart
+final localeTexts = <String, Map<String, String>>{
+  'chat room create': {
+    'en': 'Chat Room Create',
+    'ko': '채팅방 생성',
+  },
+  'chat room update': {
+    'en': 'Chat Room Update',
+    'ko': '채팅방 수정',
+  },
+};
+
+applyChatLocales() async {
+  final locale = await currentLocale; // get current locale of the app
+  if (locale == null) return;
+
+  for (var entry in localeTexts.entries) {
+    // If the app has set the text, then don't apply the text from the package.
+    // By prioritize app's translation.
+    if (lo.get(key: entry.key, locale: locale) != null) continue;
+
+    // Set the translation
+    lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
+  }
+}
+
+```
+
 
 If you are developing an app, you should create a text translation file somewhere in the app project, and apply it to `easy_local`'s text object by calling `lo.set()`.
 
@@ -170,6 +201,10 @@ final localeTexts = {
 }
 ```
 
+
+### Get local text
+
+Use this to check if the text exists.
 
 
 ### Local Transation Texts

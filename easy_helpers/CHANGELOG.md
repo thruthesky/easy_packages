@@ -1,3 +1,6 @@
+## 0.0.13
+* Add. isPhoneScreen
+
 ## 0.0.12
 * Update. document update.
 
