@@ -28,7 +28,7 @@ class ChatBubble extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       // Usually, if the same person is the previous message,
       // it should be a little more connected but for now,
-      // we will set it into 4.
+      // we will set it into 8.
       // margin: const EdgeInsets.symmetric(vertical: 4),
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -83,6 +83,36 @@ class ChatBubble extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                 ],
+                if (message.replyTo != null)
+                  UserDoc(
+                    uid: message.replyTo!.uid!,
+                    builder: (user) {
+                      if (user == null) {
+                        return Text(
+                          "replying to".t,
+                          style:
+                              Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: context.onSurface.withAlpha(100),
+                                  ),
+                        );
+                      }
+                      return Text(
+                        "replying to user".tr(
+                          args: {
+                            "username": user.displayName.isNotEmpty
+                                ? user.displayName
+                                : user.name
+                          },
+                        ),
+                        style:
+                            Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: context.onSurface.withAlpha(100),
+                                ),
+                      );
+                    },
+                  ),
                 if (message.deleted) ...[
                   Opacity(
                     opacity: 0.6,
@@ -103,10 +133,6 @@ class ChatBubble extends StatelessWidget {
                       ),
                     ),
                   )
-                ],
-                if (message.replyTo != null) ...[
-                  ChatBubbleReply(message: message),
-                  const SizedBox(height: 4),
                 ],
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -137,6 +163,15 @@ class ChatBubble extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            if (message.replyTo != null) ...[
+                              ChatBubbleReply(
+                                message: message,
+                                maxWidth: maxWidth(context),
+                              ),
+                              const Divider(
+                                height: 0,
+                              ),
+                            ],
                             if (message.url != null) ...[
                               SizedBox(
                                 height: photoHeight(context),

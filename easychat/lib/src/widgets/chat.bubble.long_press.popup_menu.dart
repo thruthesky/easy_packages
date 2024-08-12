@@ -3,6 +3,8 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
+// TODO merge with chat bubble
+
 class ChatBubbleLongPressPopupMenu extends StatelessWidget {
   const ChatBubbleLongPressPopupMenu({
     super.key,

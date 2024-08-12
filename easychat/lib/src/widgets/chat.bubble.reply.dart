@@ -7,9 +7,10 @@ import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class ChatBubbleReply extends StatefulWidget {
-  const ChatBubbleReply({super.key, required this.message});
+  const ChatBubbleReply({super.key, required this.message, this.maxWidth});
 
   final ChatMessage message;
+  final double? maxWidth;
 
   @override
   State<ChatBubbleReply> createState() => _ChatBubbleReplyState();
@@ -17,7 +18,11 @@ class ChatBubbleReply extends StatefulWidget {
 
 class _ChatBubbleReplyState extends State<ChatBubbleReply> {
   double maxWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56;
+      widget.maxWidth ??
+      // 48 is the size of the user avatar
+      // Note, it looks better when we have some
+      // space in left if it is our own message.
+      MediaQuery.of(context).size.width * 0.90 - 48;
 
   ChatMessage get message => widget.message;
 
@@ -78,35 +83,8 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
       opacity: 0.6,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: message.uid != myUid
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          UserDoc(
-            uid: message.replyTo!.uid!,
-            builder: (user) {
-              if (user == null) {
-                return Text(
-                  "replying to".t,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                );
-              }
-              return Text(
-                "replying to user".tr(
-                  args: {
-                    "username": user.displayName.isNotEmpty
-                        ? user.displayName
-                        : user.name
-                  },
-                ),
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              );
-            },
-          ),
           if (replyTo?.deleted == true) ...[
             Opacity(
               opacity: 0.6,
@@ -151,50 +129,35 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: message.replyTo!.uid == myUid
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .tertiaryContainer,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(12),
-                              ),
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (replyTo?.url != null) ...[
-                                  SizedBox(
-                                    height: maxWidth(context) / 3,
-                                    width: maxWidth(context),
-                                    child: CachedNetworkImage(
-                                      key: ValueKey("reply_${message.url}"),
-                                      fadeInDuration: Duration.zero,
-                                      fadeOutDuration: Duration.zero,
-                                      fit: BoxFit.cover,
-                                      imageUrl: replyTo!.url!,
-                                    ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (replyTo?.url != null) ...[
+                                SizedBox(
+                                  height: maxWidth(context) / 3,
+                                  width: maxWidth(context),
+                                  child: CachedNetworkImage(
+                                    key: ValueKey("reply_${message.url}"),
+                                    fadeInDuration: Duration.zero,
+                                    fadeOutDuration: Duration.zero,
+                                    fit: BoxFit.cover,
+                                    imageUrl: replyTo!.url!,
                                   ),
-                                ],
-                                if (replyTo?.text != null &&
-                                    replyTo!.text!.isNotEmpty) ...[
-                                  Padding(
-                                    padding: const EdgeInsets.all(12),
-                                    child: Text(
-                                      replyTo!.text!,
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ],
-                            ),
+                              if (replyTo?.text != null &&
+                                  replyTo!.text!.isNotEmpty) ...[
+                                Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Text(
+                                    replyTo!.text!,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ],
                       );
