@@ -65,10 +65,11 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   }
 
   listener() {
-    if (isReady && mounted && youtubeController!.value.isReady) {
-      isPlaying = youtubeController!.value.isPlaying;
-      playerState = youtubeController!.value.playerState;
-      setState(() {});
+    if (isReady && mounted) {
+      setState(() {
+        isPlaying = youtubeController!.value.isPlaying;
+        playerState = youtubeController!.value.playerState;
+      });
     }
   }
 

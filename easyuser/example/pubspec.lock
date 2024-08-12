@@ -183,7 +183,7 @@ packages:
       path: "../../easy_locale"
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.7"
   easy_storage:
     dependency: transitive
     description:
@@ -198,7 +198,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.23"
+    version: "0.0.24"
   fake_async:
     dependency: transitive
     description:
