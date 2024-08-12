@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
@@ -59,6 +61,7 @@ class MyAppState extends State<MyApp> {
     );
 
     messagingInit();
+    commentInit();
 
     // PostService.instance.init(
     //   categories: {
@@ -221,6 +224,22 @@ class MyAppState extends State<MyApp> {
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
     }
+  }
+
+  commentInit() {
+    CommentService.instance.init(
+      onCommentCreate: (DocumentReference ref) async {
+        final ancestorUids =
+            await CommentService.instance.getAncestorsUid(ref.id);
+        if (ancestorUids.isEmpty) return;
+        MessagingService.instance.sendMessageToUid(
+          uids: ancestorUids,
+          title: 'title ${DateTime.now()}',
+          body: 'ancestorComment test',
+          data: {"action": 'comment', 'commentId': ref.id},
+        );
+      },
+    );
   }
 
   @override

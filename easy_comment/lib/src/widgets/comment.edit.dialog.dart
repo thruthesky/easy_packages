@@ -114,12 +114,13 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
                 ElevatedButton(
                   onPressed: () async {
                     if (isCreate) {
-                      await Comment.create(
+                      final commentRef = await Comment.create(
                         documentReference: documentReference,
                         content: contentController.text,
                         urls: comment.urls,
                         parent: widget.parent,
                       );
+                      CommentService.instance.onCommentCreate?.call(commentRef);
                     } else {
                       await comment.update(
                         content: contentController.text,

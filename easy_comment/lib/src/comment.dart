@@ -87,6 +87,13 @@ class Comment {
     );
   }
 
+  /// Create a comment from the given commentId.
+  ///
+  /// This is used to use the method of the comment model class.
+  factory Comment.fromId(String id) {
+    return Comment.fromDocumentReference(col.doc(id));
+  }
+
   factory Comment.fromJson(Map<String, dynamic> json, String id) {
     return Comment(
       id: id,
@@ -198,6 +205,14 @@ class Comment {
       if (urls != null) 'urls': urls,
       'updateAt': FieldValue.serverTimestamp(),
     });
+  }
+
+  /// get comment
+  Future<Comment?> get() async {
+    final snapshot = await ref.get();
+    if (snapshot.exists == false) return null;
+    Comment comment = Comment.fromSnapshot(snapshot);
+    return comment;
   }
 
   /// Delete the comment

@@ -14,6 +14,16 @@ class CommentService {
   CollectionReference get col =>
       FirebaseFirestore.instance.collection('comments');
 
+  Function(DocumentReference)? onCommentCreate;
+
+  init({
+    Function(DocumentReference)? onCommentCreate,
+  }) {
+    if (initialized) return;
+    initialized = true;
+    this.onCommentCreate = onCommentCreate;
+  }
+
   /// Returns true if comment is created or updated.
   Future<bool?> showCommentEditDialog({
     required BuildContext context,
@@ -110,5 +120,23 @@ class CommentService {
       }
     }
     return parents.reversed.toList();
+  }
+
+  /// Return an array of user uid of the ancestors of the comment id.
+  /// [commentId] comment id to get the ancestor's uid
+  /// Returns the  [uids] List<String> of ancestors author uid
+  Future<List<String>> getAncestorsUid(String commentId) async {
+    Comment? comment = await Comment.fromId(commentId).get();
+
+    List<String> uids = [];
+    while (comment != null &&
+        comment.parentId != null &&
+        comment.parentId != comment.documentReference.id) {
+      comment = await Comment.fromId(comment.parentId!).get();
+      if (comment == null) break;
+      uids.add(comment.uid);
+    }
+
+    return uids.toSet().toList();
   }
 }
