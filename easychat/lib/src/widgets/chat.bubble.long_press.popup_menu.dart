@@ -22,7 +22,7 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
   );
 
   List<PopupMenuItem<String>> get menuItems => [
-        if (room.replyValueNotifier != null && message.deleted == false)
+        if (ChatService.instance.replyEnabled == false)
           PopupMenuItem<String>(
             value: items.reply,
             height: 40,
@@ -46,34 +46,38 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressStart: menuItems.isNotEmpty
-          ? (details) {
-              showPopupMenu(context, details.globalPosition);
+          ? (details) async {
+              final value = await showMenu(
+                context: context,
+                position: RelativeRect.fromLTRB(
+                  details.globalPosition.dx,
+                  details.globalPosition.dy,
+                  details.globalPosition.dx,
+                  0,
+                ),
+                items: menuItems,
+              );
+
+              if (value != null) {
+                if (value == items.reply) {
+                  // room.replyTo(message);
+                  if (context.mounted) {
+                    ChatService.instance.reply.value = message;
+                  }
+                } else if (value == items.edit) {
+                  if (!context.mounted) return;
+                  await ChatService.instance.editMessage(
+                    context,
+                    message: message,
+                    room: room,
+                  );
+                } else if (value == items.delete) {
+                  ChatService.instance.deleteMessage(message);
+                }
+              }
             }
           : null,
       child: child,
     );
-  }
-
-  void showPopupMenu(BuildContext context, Offset offset) async {
-    final value = await showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(offset.dx, offset.dy, offset.dx, 0),
-      items: menuItems,
-    );
-
-    if (value != null) {
-      if (value == items.reply) {
-        room.replyTo(message);
-      } else if (value == items.edit) {
-        if (!context.mounted) return;
-        await ChatService.instance.editMessage(
-          context,
-          message: message,
-          room: room,
-        );
-      } else if (value == items.delete) {
-        ChatService.instance.deleteMessage(message);
-      }
-    }
   }
 }
