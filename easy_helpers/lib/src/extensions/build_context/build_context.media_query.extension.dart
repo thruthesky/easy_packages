@@ -27,4 +27,7 @@ extension EasyHelperMediaQueryExtension on BuildContext {
 
   /// Extra big screen is bigger than the desktop.
   bool get isExtraBigScreen => screenWidth > 1200;
+
+  /// If the width of the device is less than or equal to 460, it is a phone screen.
+  bool get isPhoneScreen => isExtraSmallScreen || isSmallScreen;
 }

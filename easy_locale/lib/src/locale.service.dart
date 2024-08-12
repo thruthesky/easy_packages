@@ -162,4 +162,18 @@ class LocaleService {
     /// Case insensitive
     localeTexts[key]![locale] = value;
   }
+
+  /// Get the translation text
+  ///
+  /// You can use this to check if the translation text is already set.
+  String? get({
+    required String key,
+    required String locale,
+  }) {
+    /// For case insensitive
+    key = key.toLowerCase();
+
+    final textMap = localeTexts[key] ?? {};
+    return textMap[locale] ?? textMap[fallbackLocale];
+  }
 }

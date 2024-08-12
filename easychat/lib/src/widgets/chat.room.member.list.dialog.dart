@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +30,8 @@ class _ChatRoomMemberListDialogState extends State<ChatRoomMemberListDialog> {
     final width = MediaQuery.of(context).size.width;
     final maxWidth = width * 0.8;
     return AlertDialog(
-      title: const Text(
-        "Members",
+      title: Text(
+        "members".t,
       ),
       contentPadding: const EdgeInsets.all(8),
       content: SizedBox(

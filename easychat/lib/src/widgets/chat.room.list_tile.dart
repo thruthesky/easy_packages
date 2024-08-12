@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -58,11 +59,11 @@ class ChatRoomListTile extends StatelessWidget {
   }
 
   Widget? get subtitle => room.lastMessageDeleted == true
-      ? const Text(
-          'The last message was deleted.',
+      ? Text(
+          'last message was deleted'.t,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontStyle: FontStyle.italic),
+          style: const TextStyle(fontStyle: FontStyle.italic),
         )
       : room.lastMessageText != null
           ? Text(

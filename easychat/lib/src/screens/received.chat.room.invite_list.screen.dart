@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _ReceivedChatRoomInviteListScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Accept/Reject Chat Requests'),
+        title: Text('accept/reject chat requests'.t),
         actions: [
           IconButton(
             onPressed: () {
