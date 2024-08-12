@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ref: FirebaseDatabase.instance.ref('/test/value'),
                   builder: (v, r) => IconButton(
                     icon: Text('Value Test: $v'),
-                    onPressed: () => toggle(r),
+                    onPressed: () => toggle(r, 'yo'),
                   ),
                 ),
               ],
