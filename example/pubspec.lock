@@ -245,7 +245,7 @@ packages:
       path: "../easy_helpers"
       relative: true
     source: path
-    version: "0.0.12"
+    version: "0.0.13"
   easy_like:
     dependency: "direct main"
     description:
@@ -259,14 +259,14 @@ packages:
       path: "../easy_locale"
       relative: true
     source: path
-    version: "0.0.7"
+    version: "0.0.9"
   easy_messaging:
     dependency: "direct main"
     description:
       path: "../easy_messaging"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   easy_post_v2:
     dependency: "direct main"
     description:
@@ -274,6 +274,13 @@ packages:
       relative: true
     source: path
     version: "0.0.4"
+  easy_realtime_database:
+    dependency: "direct main"
+    description:
+      path: "../easy_realtime_database"
+      relative: true
+    source: path
+    version: "0.0.3"
   easy_report:
     dependency: "direct main"
     description:

@@ -37,6 +37,14 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "Example - iPad Air 11-inch (M2)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPad Air 11-inch (M2)",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "Example - iPhone 15 Pro",
             "request": "launch",
             "type": "dart",

@@ -197,19 +197,21 @@ class ChatService {
     );
   }
 
-  Future<void> editMessage(
+  Future<void> showEditMessageDialog(
     BuildContext context, {
     required ChatMessage message,
-    required ChatRoom room,
   }) async {
     await showDialog(
       context: context,
       builder: (context) {
         return EditChatMessageDialog(
           message: message,
-          room: room,
         );
       },
     );
   }
+
+  ValueNotifier<ChatMessage?> reply = ValueNotifier<ChatMessage?>(null);
+  bool get replyEnabled => reply.value != null;
+  clearReply() => reply.value = null;
 }

@@ -42,14 +42,13 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   @override
   void initState() {
     super.initState();
-    room.initReply();
   }
 
   @override
   void dispose() {
     uploadProgress.close();
     controller.dispose();
-    room.disposeReply();
+    ChatService.instance.clearReply();
     dog("Input box being disposed");
     textFocus.dispose();
     if (url != null) {
@@ -63,12 +62,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     return Column(
       children: [
         ValueListenableBuilder(
-          valueListenable: room.replyValueNotifier!,
+          valueListenable: ChatService.instance.reply,
           builder: (context, message, child) {
             if (message != null) {
               return ChatRoomReplyingTo(
                 replyTo: message,
-                onPressClose: () => clearReplyTo(),
+                onPressClose: () => ChatService.instance.clearReply(),
               );
             }
             return const SizedBox.shrink();
@@ -236,20 +235,21 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
 
   Future sendTextMessage() async {
     if (controller.text.isEmpty && url == null) return;
+    if (ChatService.instance.reply.value != null &&
+        ChatService.instance.reply.value?.roomId != room.id) {
+      throw ChatException("wrong-room-reply-message", "Room id mismatch.");
+    }
     setState(() => submitable = false);
+
     final sendMessageFuture = ChatService.instance.sendMessage(
       room,
       text: controller.text.trim(),
       photoUrl: url,
-      replyTo: room.replyValueNotifier!.value,
+      replyTo: ChatService.instance.reply.value,
     );
     url = null;
-    if (room.replyValueNotifier!.value != null) clearReplyTo();
+    ChatService.instance.clearReply();
     if (controller.text.isNotEmpty) controller.clear();
     await sendMessageFuture;
-  }
-
-  void clearReplyTo() {
-    room.replyValueNotifier!.value = null;
   }
 }
