@@ -38,13 +38,9 @@ class MessagingService {
   Function? onNotificationPermissionDenied;
   Function? onNotificationPermissionNotDetermined;
 
-  late final String projectId;
-
-  late final String sendMessageApi = 'sendmessage-mkxv2itpca-uc.a.run.app';
-  late final String sendMessageToUidsApi =
-      'sendmessagetouids-mkxv2itpca-uc.a.run.app';
-  late final String sendMessageToSubscriptionsApi =
-      'sendmessagetosubscription-mkxv2itpca-uc.a.run.app';
+  late final String sendMessageApi;
+  late final String sendMessageToUidsApi;
+  late final String sendMessageToSubscriptionsApi;
 
   bool initialized = false;
   String? token;
@@ -53,17 +49,21 @@ class MessagingService {
   ///
   /// [onBackgroundMessage] - Function to handle background messages.
   init({
+    required String sendMessageApi,
+    required String sendMessageToUidsApi,
+    required String sendMessageToSubscriptionsApi,
     Future<void> Function(RemoteMessage)? onBackgroundMessage,
     Function(RemoteMessage)? onForegroundMessage,
     required Function(RemoteMessage) onMessageOpenedFromTerminated,
     required Function(RemoteMessage) onMessageOpenedFromBackground,
     Function? onNotificationPermissionDenied,
     Function? onNotificationPermissionNotDetermined,
-    required String projectId,
   }) async {
     initialized = true;
 
-    this.projectId = projectId;
+    this.sendMessageApi = sendMessageApi;
+    this.sendMessageToUidsApi = sendMessageToUidsApi;
+    this.sendMessageToSubscriptionsApi = sendMessageToSubscriptionsApi;
 
     /// Register the background message handler if provided.
     if (onBackgroundMessage != null) {

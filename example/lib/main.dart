@@ -169,7 +169,10 @@ class MyAppState extends State<MyApp> {
 
   messagingInit() async {
     MessagingService.instance.init(
-      projectId: '', //DefaultFirebaseOptions.currentPlatform.projectId,
+      sendMessageApi: 'sendmessage-mkxv2itpca-uc.a.run.app',
+      sendMessageToUidsApi: 'sendmessagetouids-mkxv2itpca-uc.a.run.app',
+      sendMessageToSubscriptionsApi:
+          'sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
           dog('onMessageOpenedFromBackground: $message');

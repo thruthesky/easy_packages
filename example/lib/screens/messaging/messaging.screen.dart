@@ -1,4 +1,5 @@
 import 'package:easy_messaging/easy_messaging.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class MessagingScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
       TextEditingController(text: 'GatA8bgsNlcGDEmQ5m4N3xhkVmZ2');
   TextEditingController tokenController = TextEditingController(
       text:
-          'eXR2KTonTn2je2feP7K0AC:APA91bGXYxLIPhuMpia5xWphMbNHGVwcodcUPfdDUO7e8kXmbcSui40SJJjF5CuZxcYagfRQe1Y-Eo3hqOF8YsmjfeutCMAODGmB-xbE4UrnCkLJ4m3plW-_53431M6xGAC1zAftJFgP');
+          'cdgqMhK3QGm7pfBELsHQUq:APA91bGP8XoW1u6UOTZ_Q1gTwUvDLU5sMFCa9jFc0fbv2nKzl1Odu-LfBzJn8ejDIsTkiBE1mcNMZqchHzi5OXDSOztqyQBgMi8Ipx4MJztrivkpiZ5FAPM-SV8AlN3lx2eRuuXXsSZ9');
   TextEditingController subscriptionController =
       TextEditingController(text: 'testSubscription');
   TextEditingController titleController =
@@ -215,7 +216,12 @@ class _MessagingScreenState extends State<MessagingScreen> {
             ),
             const Divider(),
             const Text('Subscribe to testSubscription'),
-            const PushNotificationToggelIcon(category: 'testSubscription'),
+            AuthStateChanges(builder: (u) {
+              if (u == null) return const Text('Must login first');
+
+              return const PushNotificationToggelIcon(
+                  category: 'testSubscription');
+            }),
             const SizedBox(
               height: 32,
             ),
