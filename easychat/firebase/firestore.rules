@@ -5,125 +5,41 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if false;
     }
-    match /user-phone-sign-in-numbers/{id} {
-      allow get: if true;
-      allow list: if false;
-      allow write: if true;
-    }
-    match /gemini/{id} {
-      allow read, write: if true;
-    }
-    // The public information of the user.
-    // Warning: This is a public document. Do not store sensitive information like
-    // email, phone number, address, card number, license number, etc.
-    match /users/{uid} {
-      allow read: if true;
-      allow create: if (request.auth.uid == uid) && notUpdating(['admin']);
-      allow update: if (request.auth.uid == uid) && notUpdating(['admin']);
-      allow delete: if false;
-
-      
-      // The private information of the user.
-      // Save sensitive information here like email, phone number.
-      match /user-meta/private {
-        allow read: if request.auth.uid == uid;
-        allow create: if (request.auth.uid == uid);
-        allow update: if (request.auth.uid == uid);
-        allow delete: if false;
-      }
-
-      // The settings of the user.
-      match /user-meta/settings {
-        allow read: if true;
-        allow create: if (request.auth.uid == uid);
-        allow update: if (request.auth.uid == uid);
-        allow delete: if false;
-      }
-      match /user-meta/blocks {
-        allow read, write: if request.auth.uid == uid;
-      }
-    }
     
-    match /settings/{docId} {
-      allow read, write: if true;
-    }
 
     match /chat-rooms/{roomId} {
-      allow read: if true;
-      allow create: if true;
-      allow update: if true;
-      allow delete: if true;
-    }
-    
-    match /tasks/{taskId} {
-      allow read: if isMyField('creator');
-      allow create: if willBeMyField('creator');
-      allow update: if isMyField('creator');
-    }
-    
-    // TODO: Update the security rules to let the user can only add/remove his uid. Not other's uid.
-    match /likes/{likeId} {
-      allow read, write: if true;
-    }
-    
-    //
-    match /reports/{reportId} {
-      allow read, write: if willBeMyField('reporter') || isMyField('reporter');
-    }
-    
-    match /chat-rooms/{roomId} {
-      allow read: if true;
-      // allow read: if resource.data['users'].hasAny([request.auth.uid]);
-    }
-    
-    match /posts/{postId} {
-      allow read: if true;
-      allow create: if willBeMyDoc();
+      function roomUser() {
+        return request.auth.uid in resource.data.users;
+      }
+      function isCreator() {
+        return resource.data.creator == request.auth.uid;
+      }
+      function willBeCreator() {
+        return
+         request.resource.data.creator == request.auth.uid;
+      }
+      function join() {
+        return request.resource.data.users.hasAny(request.auth.uid);
+      }
+      function leave() {
+        return request.resource.data.users.hasAny(request.auth.uid) == false;
+      }
+
+      function onlyUpdating(fields) {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+      }
+
+
+      allow read: if roomUser();
+      allow create: if isCreator() || willBeCreator();
       allow update: if
-        ( willBeMyDoc() && isMyDoc() )
+        // If you are not in the room yet,
+        (!roomUser() && join() && onlyUpdate(['users']))
         ||
-        onlyUpdating(['commentCount', 'likeCount']);
-    }
-
-    match /comments/{commentId} {
-      allow read: if true;
-      allow create: if willBeMyDoc();
-      allow update: if willBeMyDoc() && isMyDoc();
-    }
-    
-    
-    // // TODO: check if the user of the uid is in the task group.
-    // function isUserInTaskGroup(taskId, uid) {
-    //    return true;
-    // }
-    
-    match /task/{taskId} {
-      allow read: if true;
-      allow create: if willBeMyField('creator');
-      allow update: if isMyField('creator') && willBeMyField('creator');
-    }
-    
-    
-
-    // temporary rules test
-    match /temp_rules_test/{doc} {
-      allow read: if false;
-      allow create: if willBeMyDoc();
-      allow update: if isMyDoc() || willBeMyDoc()
-          && notUpdating(['uid'])
-          && mustUpdating(['name'])
-          && onlyUpdating(['a', 'b'])
-          && onlyAddingOneElement('users')
-          && notRemoving('users', 'a')
-          && onlyRemoving('users', 'a')
-          && fieldCheck(['required', 'fields'], ['optional', 'fields'])
-          ;
-      allow delete: if false;
-    }
-    
-    // temporary collection for testing
-    match /tmp/{doc} {
-      allow read,write: if true;
+        // If you have join the room already,
+        (roomUser() && onlyUpdate(['updatedAt', 'order']))
+      ;
+      allow delete: if isCreator();
     }
   // EO of Rules
   }
@@ -164,9 +80,6 @@ function isMyDoc() {
 // Normally you would use like `isMyDoc()` to check if the document
 // belongs to the user. And this only works if the docuemnt field has 'uid'
 // If the document has some other field instead of 'uid', use this function.
-function isMyField(field) {
-   return resource.data[field] == request.auth.uid;
-}
 
 
 
@@ -177,11 +90,6 @@ function isMyField(field) {
 function willBeMyDoc() {
    return willBeMyField('uid');
 }
-function willBeMyField(field) {
-   return request.resource.data[field] == request.auth.uid;
-}
-
-
 
 // Check if the [fields] does not change.
 //
@@ -201,22 +109,6 @@ function notUpdating(fields) {
     ? !request.resource.data.keys().hasAny(fields)
     // 이미 생성된 문서가 있는 경우, 변경 금지 필드들(fields)이 변경안되면 true 를 리턴.
     : !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
-}
-
-
-
-// 함수
-//
-// 입력된 fields 중 한 개라도 업데이트되면 true 리턴
-//
-// 예, 입력 fields 가 ['A', 'B'] 이고, 업데이트된 필드가 ['A', 'C'] 이면 true 리턴. A 겹침
-// 예, 입력 fields 가 ['A', 'B'] 이고, 업데이트된 필드가 ['C', 'D'] 이면 false 리턴. 겹침 없음.
-// Example:
-// ```
-// allow update: if onlyUpdating(['a', 'b']);
-// ```
-function onlyUpdating(fields) {
-  return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
 }
 
 
