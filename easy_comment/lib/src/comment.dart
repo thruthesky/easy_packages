@@ -87,13 +87,6 @@ class Comment {
     );
   }
 
-  /// Create a comment from the given commentId.
-  ///
-  /// This is used to use the method of the comment model class.
-  factory Comment.fromId(String id) {
-    return Comment.fromDocumentReference(col.doc(id));
-  }
-
   factory Comment.fromJson(Map<String, dynamic> json, String id) {
     return Comment(
       id: id,
@@ -207,12 +200,14 @@ class Comment {
     });
   }
 
-  /// get comment
-  Future<Comment?> get() async {
-    final snapshot = await ref.get();
-    if (snapshot.exists == false) return null;
-    Comment comment = Comment.fromSnapshot(snapshot);
-    return comment;
+  // get comment
+  static Future<Comment?> get(String id) async {
+    if (id.isEmpty) {
+      throw 'comment-get/comment-id-empty Comment id is empty';
+    }
+    final documentSnapshot = await col.doc(id).get();
+    if (documentSnapshot.exists == false) return null;
+    return Comment.fromSnapshot(documentSnapshot);
   }
 
   /// Delete the comment

@@ -12,13 +12,10 @@ import 'package:example/etc/zone_error_handler.dart';
 // import 'package:example/firebase_options.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
-import 'package:example/screens/messaging/messaging.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-
-import 'package:easy_youtube/easy_youtube.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -81,11 +78,11 @@ class MyAppState extends State<MyApp> {
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
       /// open messaging screen
-      showGeneralDialog(
-          context: globalContext,
-          pageBuilder: (_, __, ___) {
-            return const MessagingScreen();
-          });
+      // showGeneralDialog(
+      //     context: globalContext,
+      //     pageBuilder: (_, __, ___) {
+      //       return const MessagingScreen();
+      //     });
 
       // ChatService.instance.showChatRoomEditScreen(globalContext);
       // final room = await ChatRoom.get("t5zClWySjgryFf2tK0M8");
@@ -229,9 +226,16 @@ class MyAppState extends State<MyApp> {
   commentInit() {
     CommentService.instance.init(
       onCommentCreate: (DocumentReference ref) async {
-        final ancestorUids =
+        /// get ancestor uid
+        List<String> ancestorUids =
             await CommentService.instance.getAncestorsUid(ref.id);
+
+        /// you can also attached the uid of the post author before sending the notification
+
         if (ancestorUids.isEmpty) return;
+
+        /// set push notification to remaining uids
+        /// can get comment or post to send more informative push notification
         MessagingService.instance.sendMessageToUid(
           uids: ancestorUids,
           title: 'title ${DateTime.now()}',

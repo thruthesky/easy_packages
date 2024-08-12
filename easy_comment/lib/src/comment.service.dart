@@ -14,6 +14,8 @@ class CommentService {
   CollectionReference get col =>
       FirebaseFirestore.instance.collection('comments');
 
+  /// Callback on comment create, use this if you want to do task after comment is created., eg. push notification
+  /// Callback will have the [DocumentReference] of the newly created `comment`, can be use to retrieve comment information.
   Function(DocumentReference)? onCommentCreate;
 
   init({
@@ -124,17 +126,25 @@ class CommentService {
 
   /// Return an array of user uid of the ancestors of the comment id.
   /// [commentId] comment id to get the ancestor's uid
+  /// [removeMyId] by default set true, remove current login user
   /// Returns the  [uids] List<String> of ancestors author uid
-  Future<List<String>> getAncestorsUid(String commentId) async {
-    Comment? comment = await Comment.fromId(commentId).get();
+  Future<List<String>> getAncestorsUid(
+    String commentId, {
+    bool removeMyId = true,
+  }) async {
+    Comment? comment = await Comment.get(commentId);
 
     List<String> uids = [];
     while (comment != null &&
         comment.parentId != null &&
         comment.parentId != comment.documentReference.id) {
-      comment = await Comment.fromId(comment.parentId!).get();
+      if (comment.parentId!.isEmpty) break;
+      comment = await Comment.get(comment.parentId!);
       if (comment == null) break;
       uids.add(comment.uid);
+    }
+    if (removeMyId && myUid != null) {
+      return uids.toSet().where((uid) => uid != myUid).toList();
     }
 
     return uids.toSet().toList();
