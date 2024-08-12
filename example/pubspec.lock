@@ -181,10 +181,10 @@ packages:
     dependency: transitive
     description:
       name: device_info_plus
-      sha256: "93429694c9253d2871b3af80cf11b3cbb5c65660d402ed7bf69854ce4a089f82"
+      sha256: a7fd703482b391a87d60b6061d04dfdeab07826b96f9abd8f5ed98068acc0074
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.1"
+    version: "10.1.2"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -221,10 +221,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_category
-      sha256: "830e9d31fc60e336eaa0cc4cb1daf8f8cc87824c9ad973bf88fb7196ff67ccfe"
+      sha256: "168a5c63611a3e55a66d06498a95b545bde2be0e1343ed2a0c2cca3cd2e5157b"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   easy_comment:
     dependency: "direct main"
     description:
@@ -245,7 +245,7 @@ packages:
       path: "../easy_helpers"
       relative: true
     source: path
-    version: "0.0.12"
+    version: "0.0.13"
   easy_like:
     dependency: "direct main"
     description:
@@ -259,14 +259,14 @@ packages:
       path: "../easy_locale"
       relative: true
     source: path
-    version: "0.0.7"
+    version: "0.0.9"
   easy_messaging:
     dependency: "direct main"
     description:
       path: "../easy_messaging"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   easy_post_v2:
     dependency: "direct main"
     description:
@@ -665,10 +665,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_local_notifications
-      sha256: dd6676d8c2926537eccdf9f72128bbb2a9d0814689527b17f92c248ff192eaf3
+      sha256: c500d5d9e7e553f06b61877ca6b9c8b92c570a4c8db371038702e8ce57f8a50f
       url: "https://pub.dev"
     source: hosted
-    version: "17.2.1+2"
+    version: "17.2.2"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
@@ -1050,10 +1050,10 @@ packages:
     dependency: transitive
     description:
       name: record_android
-      sha256: "9ccf6a206dc72b486cf37893690e70c17610e8f05dba8da1a808e73dc2f49a04"
+      sha256: "233b12f9be9de115ea1192df645a07aaacec42a6141154e3a34cfb6d9bcc5ae7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.4"
+    version: "1.2.5"
   record_darwin:
     dependency: transitive
     description:

@@ -157,26 +157,26 @@ packages:
     dependency: "direct main"
     description:
       name: easy_comment
-      sha256: cbde1cb0c6aefd4465f6580e21b1acfccdc8af5e6f2bedfa6907811cb97e3ab0
+      sha256: "3c7d4256bc2889845457981a1a9aafda5f34c6a862fa62f88864fa28198ecfa7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   easy_engine:
     dependency: transitive
     description:
       name: easy_engine
-      sha256: "445d8ffb9d81fa3a7ea3a84ab5ffb439f1032c8da6e9b58a901c59c15b4d7232"
+      sha256: "79d1a8f9e84cde632932315ad10da4f472591cf9886c3a2703c2abfc43d04f3a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.5"
   easy_helpers:
     dependency: "direct main"
     description:
       name: easy_helpers
-      sha256: "21b830cf7b5c8b41c2b850cbd854e9e2d4eb7b19e0eb51770fe8a2b26632ab87"
+      sha256: "25d45ea1a8a65655a5be4aa43dc11c5784079f9bdbcd6c777f596a865bf93c39"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.11"
+    version: "0.0.13"
   easy_locale:
     dependency: "direct main"
     description:
@@ -189,18 +189,18 @@ packages:
     dependency: "direct main"
     description:
       name: easy_storage
-      sha256: "6fe1ed4a5eec37382fb1fcd01c5692bc802ba7de0f8a09eee90cc21bbcb95cfe"
+      sha256: "7ae7356cfe6da9c4bb1eabdee9aa00c64340c481eba0438a3c4fa5720f1022ff"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.12"
+    version: "0.0.13"
   easyuser:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "175036525c46823c3768d07eec4e1887c9d5cf4f6ddcfa1c3012c49e0b3b781d"
+      sha256: e16dc6e05dc0c3091f00dee03e0f584fd5e50e9fb9bf9db006dfbdcc6350c7b7
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.23"
+    version: "0.0.24"
   fake_async:
     dependency: transitive
     description:
