@@ -132,7 +132,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                                       borderRadius: BorderRadius.circular(8),
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .primaryContainer,
+                                          .surfaceContainerHighest,
                                     ),
                                     clipBehavior: Clip.hardEdge,
                                     height: 56,
@@ -145,17 +145,10 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                                       imageUrl: replyTo!.url!,
                                       errorWidget: (context, url, error) {
                                         dog("Error in Image Chat Bubble: $error");
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .surfaceContainerHighest,
-                                          ),
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.error,
-                                              color: context.error,
-                                            ),
+                                        return Center(
+                                          child: Icon(
+                                            Icons.error,
+                                            color: context.error,
                                           ),
                                         );
                                       },

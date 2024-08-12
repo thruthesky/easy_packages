@@ -220,7 +220,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       message: Text(
                         // Check It translated properly
                         // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
-                        'user has been invited.'.tr(
+                        'user has been invited'.tr(
                           args: {
                             'username': selectedUser.displayName.isEmpty
                                 ? selectedUser.name
