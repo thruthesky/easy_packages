@@ -16,15 +16,13 @@ class PushNotificationToggelIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MessagingService messagingService = MessagingService.instance;
-    return IconButton(
-      onPressed: () async {
-        // messagingService.toggle(
-        //     ref: messagingService.subscriptionRef(subscriptionName));
-      },
-      icon: Value(
-        ref: messagingService.subscriptionRef(subscriptionName),
-        builder: (v, ref) => v == true ? widgetOn : widgetOff,
+    return Value(
+      ref: MessagingService.instance.subscriptionRef(subscriptionName),
+      builder: (v, r) => IconButton(
+        onPressed: () async {
+          await toggle(r);
+        },
+        icon: v == true ? widgetOn : widgetOff,
       ),
     );
   }
