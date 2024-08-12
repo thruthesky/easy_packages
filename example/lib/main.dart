@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 
 void main() async {
   /// Uncaught Exception 핸들링
