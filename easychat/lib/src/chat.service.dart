@@ -212,4 +212,8 @@ class ChatService {
       },
     );
   }
+
+  ValueNotifier<ChatMessage?> reply = ValueNotifier<ChatMessage?>(null);
+  bool get replyEnabled => reply.value != null;
+  clearReply() => reply.value = null;
 }
