@@ -66,7 +66,7 @@ class ChatBubbleLongPressPopupMenu extends StatelessWidget {
                   }
                 } else if (value == items.edit) {
                   if (!context.mounted) return;
-                  await ChatService.instance.editMessage(
+                  await ChatService.instance.showEditMessageDialog(
                     context,
                     message: message,
                     room: room,

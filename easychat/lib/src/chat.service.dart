@@ -197,7 +197,7 @@ class ChatService {
     );
   }
 
-  Future<void> editMessage(
+  Future<void> showEditMessageDialog(
     BuildContext context, {
     required ChatMessage message,
     required ChatRoom room,
