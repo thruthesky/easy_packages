@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_like/src/like.exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 /// Support like only. Not dislike.
@@ -50,7 +51,7 @@ class Like {
     final currentUser = FirebaseAuth.instance.currentUser;
 
     if (currentUser == null) {
-      throw Exception('User is not signed in');
+      throw LikeException('like/sign-in-required', 'User is not signed in');
     }
 
     final uid = currentUser.uid;
@@ -90,6 +91,7 @@ class Like {
       transaction.set(
           likeRef,
           {
+            'documentReference': documentReference,
             'likeCount': $likeCount,
             'likedBy': $likedBy,
           },

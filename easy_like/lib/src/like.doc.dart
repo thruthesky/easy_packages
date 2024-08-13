@@ -42,6 +42,7 @@ class LikeDoc extends StatelessWidget {
       return StreamBuilder<bool?>(
         initialData: initialData,
         stream: Like.col.doc(documentReference.id).snapshots().map((snapshot) {
+          if (snapshot.exists == false) return null;
           final like = Like.fromSnapshot(snapshot);
           return like.likedBy.contains(uid);
         }),
@@ -54,6 +55,7 @@ class LikeDoc extends StatelessWidget {
           if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
+
           return builder(snapshot.data ?? false);
         },
       );
@@ -61,11 +63,8 @@ class LikeDoc extends StatelessWidget {
 
     return FutureBuilder<bool?>(
       initialData: initialData,
-      future: FirebaseFirestore.instance
-          .collection('likes')
-          .doc(documentReference.id)
-          .get()
-          .then((snapshot) {
+      future: Like.col.doc(documentReference.id).get().then((snapshot) {
+        if (snapshot.exists == false) return null;
         final like = Like.fromSnapshot(snapshot);
         return like.likedBy.contains(uid);
       }),

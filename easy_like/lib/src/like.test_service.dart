@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_like/easy_like.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LikeTestService {
   static LikeTestService? _instance;
@@ -11,11 +12,15 @@ class LikeTestService {
 
   LikeTestService._();
 
+  static get currentUser => FirebaseAuth.instance.currentUser;
+
   /// Write a test for the Like model.
   runTests() async {
     log('--> Like tests');
 
-    final documentReference = db.collection('tmp').doc('a');
+    final documentReference = db
+        .collection('tmp')
+        .doc('like-test-' + DateTime.now().millisecondsSinceEpoch.toString());
     await documentReference.set({
       'title': 'a',
     });
@@ -36,7 +41,7 @@ class LikeTestService {
     final dynamic refData = refSnapshot.data()!;
     assert(refData['likeCount'] == 1);
     assert(refData['likedBy'].length == 1);
-    assert(refData['likedBy'].contains('uid-a'));
+    assert(refData['likedBy'].contains(currentUser!.uid));
 
     await like.like();
 
@@ -51,5 +56,7 @@ class LikeTestService {
     assert(refData2['likeCount'] == 0);
     assert(refData2['likedBy'].length == 0);
     assert(refData2['likedBy'].contains('uid-a') == false);
+
+    log('--> Test is done !');
   }
 }

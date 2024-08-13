@@ -31,6 +31,7 @@ It does not support `dislike` since most of the community don't provide `dislike
 - `/likes/{documentId}`: This is where like information saved. And the id of the document is the target document.
 - `documentReference`: This field is reference of the target document. It's a reference. So it can access the target document regardless of any collection.
 - `likedBy`: This field is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
+- `likeCount`: This field is the no of the likes. It can be used for search purpose.
 
 - Note that, the `like document ID` is the same as the target document ID.
 
