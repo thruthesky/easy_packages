@@ -256,7 +256,18 @@ class MyAppState extends State<MyApp> {
   chatInit() {
     ChatService.instance.init(
         chatRoomActionButton: (room) =>
-            PushNotificationToggelIcon(subscriptionName: room.id));
+            PushNotificationToggelIcon(subscriptionName: room.id),
+        onSendMessage: (
+            {required ChatMessage message, required ChatRoom room}) async {
+          final uids = room.userUids.where((uid) => uid != myUid).toList();
+          if (uids.isEmpty) return;
+          MessagingService.instance.sendMessageToUid(
+            uids: uids,
+            title: 'ChatService ${DateTime.now()}',
+            body: '${room.id} ${message.id} ${message.text}',
+            data: {"action": 'chat', 'roomId': room.id},
+          );
+        });
   }
 
   @override

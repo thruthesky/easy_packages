@@ -28,11 +28,13 @@ class ChatService {
   Future<fs.DocumentReference> Function({BuildContext context})?
       $showChatRoomEditScreen;
 
+  /// Add extra widget on chatroom,. eg. push notification toggle button
   Widget Function(ChatRoom)? chatRoomActionButton;
 
   /// Callback on chatMessage send, use this if you want to do task after message is created., eg. push notification
   /// Callback will have the new [ChatMessage] information
-  Function(ChatMessage)? onSendMessage;
+  Function({required ChatMessage message, required ChatRoom room})?
+      onSendMessage;
 
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
@@ -40,7 +42,8 @@ class ChatService {
     Future<fs.DocumentReference> Function({BuildContext context})?
         $showChatRoomEditScreen,
     Widget Function(ChatRoom)? chatRoomActionButton,
-    Function(ChatMessage)? onSendMessage,
+    Function({required ChatMessage message, required ChatRoom room})?
+        onSendMessage,
   }) {
     UserService.instance.init();
 
@@ -150,7 +153,7 @@ class ChatService {
       lastMessageText: text,
       lastMessageUrl: photoUrl,
     );
-    onSendMessage?.call(newMessage);
+    onSendMessage?.call(message: newMessage, room: room);
   }
 
   Future updateMessage({

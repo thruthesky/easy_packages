@@ -168,7 +168,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
         ),
         actions: [
-          if (ChatService.instance.chatRoomActionButton != null)
+          if (ChatService.instance.chatRoomActionButton != null &&
+              $room != null)
             ChatService.instance.chatRoomActionButton!($room!),
           Builder(builder: (context) {
             return DrawerButton(
