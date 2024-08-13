@@ -184,7 +184,7 @@ class Comment {
 
       return addedRef;
     });
-
+    CommentService.instance.onCommentCreate?.call(ref);
     return ref;
   }
 
