@@ -287,3 +287,17 @@ initState() {
   })();
 }
 ```
+
+
+## Get posts
+
+To get some posts, you can code like below.
+
+```dart
+PostService.instance
+    .getPosts(category: 'youtube', limit: 100)
+    .then((value) {
+      posts.addAll(value);
+  }
+);
+```
