@@ -29,8 +29,8 @@ It does not support `dislike` since most of the community don't provide `dislike
 ## Database structure for Like and Dislike
 
 - `/likes/{documentId}`: This is where like information saved. And the id of the document is the target document.
-- `documentReference`: This is the reference of the target document. It's a reference. So it can access the target document regardless of any collection.
-- `likedBy`: is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
+- `documentReference`: This field is reference of the target document. It's a reference. So it can access the target document regardless of any collection.
+- `likedBy`: This field is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
 
 
 ## Logic

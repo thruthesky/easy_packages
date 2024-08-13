@@ -1,33 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// Support like only. Not dislike.
 /// See README.md for more information.
 class Like {
-  /// uid should be the login user's uid (or it can be any user id)
-  ///
-  /// It does not fix the user's uid as FirebaseAuth.instance.currentUser.uid
-  /// So, it can be any user's uid. But generally, it should be the login
-  /// user's uid.
-  ///
-  /// To force to it to be the login user's uid, you can use Firestore security rules
-  final String uid;
+  static CollectionReference get col =>
+      FirebaseFirestore.instance.collection('likes');
 
-  /// original document reference
+  /// original document reference. It is called 'target document reference'.
   final DocumentReference documentReference;
-  DocumentReference get ref =>
-      FirebaseFirestore.instance.collection('likes').doc(documentReference.id);
+  DocumentReference get likeRef => col.doc(documentReference.id);
+
+  String? id;
+  List<String> likedBy = [];
 
   Like({
-    required this.uid,
     required this.documentReference,
+    this.likedBy = const [],
+    this.id,
   });
 
+  factory Like.fromSnapshot(DocumentSnapshot snapshot) {
+    return Like.fromJson(
+      snapshot.data() as Map<String, dynamic>,
+      snapshot.id,
+    );
+  }
+
+  factory Like.fromJson(Map<String, dynamic> json, String id) {
+    return Like(
+      documentReference: json['documentReference'],
+      likedBy: List<String>.from(json['likedBy'] ?? []),
+    );
+  }
+
+  /// Like (or dislike)
+  ///
+  /// [uid] is the user's uid who likes (or unlikes) the document.
+  ///
   /// When the user likes the document,
   ///
   /// - Add the user's uid to the likedBy list
   /// - Increase the likes count
   /// - Increaes the likes count in the document
-  Future<void> like() async {
+  static Future<void> like() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      throw Exception('User is not signed in');
+    }
+
+    final uid = currentUser.uid;
+
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       FieldValue $likedBy;
 
@@ -52,7 +76,7 @@ class Like {
 
       ///
       transaction.set(
-          documentReference,
+          ref,
           {
             'likeCount': $likeCount,
           },
@@ -61,7 +85,7 @@ class Like {
           ));
 
       transaction.set(
-          ref,
+          likeRef,
           {
             'likeCount': $likeCount,
             'likedBy': $likedBy,

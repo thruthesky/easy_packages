@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_like/easy_like.dart';
 import 'package:flutter/material.dart';
 
-/// reason for this widget is to get if the the user like the  content or not
-/// to display different ui design base on the user like or not ex: changing the icon
+/// LikeDoc builds (or rebuilds) widget based on the like status of the user.
 ///
-
-/// LikeDoc is a widget that checks if the current user has liked a post.
+/// if the current user has liked the document, it will build the widget with
+/// true. Otherwise, it will build the widget with false.
 ///
 /// [documentReference] is the reference to the document that contains the likes.
 ///
@@ -25,6 +25,7 @@ class LikeDoc extends StatelessWidget {
     required this.documentReference,
     required this.uid,
     required this.builder,
+    this.initialData,
     this.sync = false,
   });
 
@@ -32,61 +33,51 @@ class LikeDoc extends StatelessWidget {
   final DocumentReference documentReference;
   final String uid;
   final bool sync;
+  final bool? initialData;
 
   @override
   Widget build(BuildContext context) {
     if (sync) {
-      return StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('likes')
-            .doc(documentReference.id)
-            .snapshots(),
+      return StreamBuilder<bool?>(
+        initialData: initialData,
+        stream: Like.col.doc(documentReference.id).snapshots().map((snapshot) {
+          final like = Like.fromSnapshot(snapshot);
+          return like.likedBy.contains(uid);
+        }),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              snapshot.hasData == false) {
             return const SizedBox.shrink();
           }
+
           if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
-
-          if (snapshot.hasData && snapshot.data!.exists) {
-            final Map<String, dynamic>? data = snapshot.data!.data();
-            final List<String> likedBy =
-                List<String>.from(data?['likedBy'] ?? []);
-
-            final bool isLiked = likedBy.contains(uid);
-
-            return builder(isLiked);
-          }
-
-          return builder(false);
+          return builder(snapshot.data ?? false);
         },
       );
     }
 
-    return FutureBuilder(
+    return FutureBuilder<bool?>(
+      initialData: initialData,
       future: FirebaseFirestore.instance
           .collection('likes')
           .doc(documentReference.id)
-          .get(),
+          .get()
+          .then((snapshot) {
+        final like = Like.fromSnapshot(snapshot);
+        return like.likedBy.contains(uid);
+      }),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            snapshot.hasData == false) {
           return const SizedBox.shrink();
         }
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
-        if (snapshot.hasData && snapshot.data!.exists) {
-          final Map<String, dynamic>? data = snapshot.data!.data();
-          final List<String> likedBy =
-              List<String>.from(data?['likedBy'] ?? []);
 
-          final bool isLiked = likedBy.contains(uid);
-
-          return builder(isLiked);
-        }
-
-        return builder(false);
+        return builder(snapshot.data ?? false);
       },
     );
   }
