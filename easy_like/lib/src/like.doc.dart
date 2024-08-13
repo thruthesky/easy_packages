@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_like/easy_like.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 /// LikeDoc builds (or rebuilds) widget based on the like status of the user.
@@ -9,8 +10,6 @@ import 'package:flutter/material.dart';
 ///
 /// [documentReference] is the reference to the document that contains the likes.
 ///
-/// [uid] is the user ID to check in the likedBy list.
-///
 /// [builder] is a function that takes a boolean value indicating whether the
 /// user has liked the post and returns a widget.
 ///
@@ -18,12 +17,14 @@ import 'package:flutter/material.dart';
 /// updated. If it is false, it will use FutureBuilder to get the post only one
 /// time. If it is true, it will use StreamBuilder to get the post and rebuild
 /// the widget when the post is updated.
+///
+/// To use this widget, the user needs to be login first. Or this widget always
+/// build with false.
 
 class LikeDoc extends StatelessWidget {
   const LikeDoc({
     super.key,
     required this.documentReference,
-    required this.uid,
     required this.builder,
     this.initialData,
     this.sync = false,
@@ -31,12 +32,12 @@ class LikeDoc extends StatelessWidget {
 
   final Widget Function(bool) builder;
   final DocumentReference documentReference;
-  final String uid;
   final bool sync;
   final bool? initialData;
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
     if (sync) {
       return StreamBuilder<bool?>(
         initialData: initialData,
