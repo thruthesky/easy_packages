@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
 
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
@@ -168,6 +169,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ],
                 ),
         ),
+        actions: [
+          if (ChatService.instance.chatRoomActionButton != null)
+            ChatService.instance.chatRoomActionButton!($room!),
+          IconButton(
+              onPressed: () {}, icon: const Icon(Icons.notifications_active)),
+          Builder(builder: (context) {
+            return DrawerButton(
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            );
+          })
+        ],
       ),
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,

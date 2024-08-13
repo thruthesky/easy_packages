@@ -7,6 +7,7 @@ import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:easychat/easychat.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
@@ -60,6 +61,7 @@ class MyAppState extends State<MyApp> {
 
     messagingInit();
     commentInit();
+    chatInit();
 
     // PostService.instance.init(
     //   categories: {
@@ -249,6 +251,12 @@ class MyAppState extends State<MyApp> {
         );
       },
     );
+  }
+
+  chatInit() {
+    ChatService.instance.init(
+        chatRoomActionButton: (room) =>
+            PushNotificationToggelIcon(subscriptionName: room.id));
   }
 
   @override

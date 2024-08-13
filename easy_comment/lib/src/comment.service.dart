@@ -128,10 +128,7 @@ class CommentService {
   /// [commentId] comment id to get the ancestor's uid
   /// [removeMyId] by default set true, remove current login user
   /// Returns the  [uids] List<String> of ancestors author uid
-  Future<List<String>> getAncestorsUid(
-    String commentId, {
-    bool removeMyId = true,
-  }) async {
+  Future<List<String>> getAncestorsUid(String commentId) async {
     Comment? comment = await Comment.get(commentId);
 
     List<String> uids = [];
@@ -143,10 +140,6 @@ class CommentService {
       if (comment == null) break;
       uids.add(comment.uid);
     }
-    if (removeMyId && myUid != null) {
-      return uids.toSet().where((uid) => uid != myUid).toList();
-    }
-
-    return uids.toSet().toList();
+    return uids.toSet().where((uid) => uid != myUid).toList();
   }
 }

@@ -28,11 +28,14 @@ class ChatService {
   Future<fs.DocumentReference> Function({BuildContext context})?
       $showChatRoomEditScreen;
 
+  Widget Function(ChatRoom)? chatRoomActionButton;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
     Future<fs.DocumentReference> Function({BuildContext context})?
         $showChatRoomEditScreen,
+    Widget Function(ChatRoom)? chatRoomActionButton,
   }) {
     UserService.instance.init();
 
@@ -42,6 +45,7 @@ class ChatService {
         $showChatRoomListScreen ?? this.$showChatRoomListScreen;
     this.$showChatRoomEditScreen =
         $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
+    this.chatRoomActionButton = chatRoomActionButton;
   }
 
   /// Firebase CollectionReference for Chat Room docs
