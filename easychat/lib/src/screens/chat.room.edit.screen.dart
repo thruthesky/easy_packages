@@ -142,11 +142,10 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                           chatRoom = await ChatRoom.get(newRoomRef.id);
                         } catch (e) {
                           dog("Error ${e.toString()}");
-                          rethrow;
-                        } finally {
                           setState(() {
                             isLoading = false;
                           });
+                          rethrow;
                         }
                         if (chatRoom == null) return;
                         iconUrlOnCreate = null;
@@ -170,11 +169,11 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                           );
                         } catch (e) {
                           dog("Error ${e.toString()}");
+                          setState(() {
+                            isLoading = false;
+                          });
                           rethrow;
                         }
-                        setState(() {
-                          isLoading = false;
-                        });
                         if (!context.mounted) return;
                         Navigator.of(context).pop(room!.ref);
                       },
