@@ -221,7 +221,7 @@ final localeTexts = <String, Map<String, String>>{
   },
   'reject': {
     'en': 'Reject',
-    'ko': '반려',
+    'ko': '거절',
   },
 
   // chat.room.invitation.short.list.dart
