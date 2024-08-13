@@ -1,3 +1,6 @@
+## 0.0.4
+* Add. Topic subscription.
+
 ## 0.0.3
 * Update. Enhance messaging functionality.
 

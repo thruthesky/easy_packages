@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
 import 'package:easy_storage/easy_storage.dart';
@@ -16,9 +15,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'package:easy_youtube/easy_youtube.dart';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 
 void main() async {
   /// Uncaught Exception 핸들링
@@ -169,7 +167,10 @@ class MyAppState extends State<MyApp> {
 
   messagingInit() async {
     MessagingService.instance.init(
-      projectId: '', //DefaultFirebaseOptions.currentPlatform.projectId,
+      sendMessageApi: 'sendmessage-mkxv2itpca-uc.a.run.app',
+      sendMessageToUidsApi: 'sendmessagetouids-mkxv2itpca-uc.a.run.app',
+      sendMessageToSubscriptionsApi:
+          'sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
           dog('onMessageOpenedFromBackground: $message');
@@ -208,6 +209,9 @@ class MyAppState extends State<MyApp> {
         playSound: true,
       );
 
+      // final youtube =
+      //     Youtube(url: 'https://www.youtube.com/watch?v=YBmFxBb9U6g');
+
       /// Register the channel with the system.
       /// If there is already a registed channel (with same id), then it will be re-registered.
       final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -218,6 +222,16 @@ class MyAppState extends State<MyApp> {
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
     }
+
+    // print('youtube id: ${youtube.getVideoId()}');
+
+    // // youtube.getVideoId();
+    // final snippet = await youtube.getSnippet(
+    //   apiKey: 'AIzaSyDguL0DVfgQQ8YJHfSAJm1t8gCetR0-TdY',
+    // );
+    // print(' default url :${snippet.thumbnails['default']}');
+    // print('snippet: ${snippet.statistics}');
+    // });
   }
 
   @override

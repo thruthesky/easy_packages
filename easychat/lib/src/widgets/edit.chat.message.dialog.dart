@@ -10,11 +10,9 @@ class EditChatMessageDialog extends StatefulWidget {
   const EditChatMessageDialog({
     super.key,
     required this.message,
-    required this.room,
   });
 
   final ChatMessage message;
-  final ChatRoom room;
 
   @override
   State<EditChatMessageDialog> createState() => _EditChatMessageDialogState();

@@ -1,0 +1,22 @@
+{
+  "name": "firebase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require ts-node/register tests/rules.spec.ts --watch --watch-files 'tests/**/*.ts'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^3.0.4"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.7",
+    "firebase": "^10.12.2",
+    "mocha": "^10.5.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}

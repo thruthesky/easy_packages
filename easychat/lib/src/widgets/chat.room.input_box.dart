@@ -48,6 +48,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   void dispose() {
     uploadProgress.close();
     controller.dispose();
+    ChatService.instance.clearReply();
     dog("Input box being disposed");
     textFocus.dispose();
     if (url != null) {
@@ -234,7 +235,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
 
   Future sendTextMessage() async {
     if (controller.text.isEmpty && url == null) return;
+    if (ChatService.instance.reply.value != null &&
+        ChatService.instance.reply.value?.roomId != room.id) {
+      throw ChatException("wrong-room-reply-message", "Room id mismatch.");
+    }
     setState(() => submitable = false);
+
     final sendMessageFuture = ChatService.instance.sendMessage(
       room,
       text: controller.text.trim(),

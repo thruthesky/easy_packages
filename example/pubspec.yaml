@@ -22,6 +22,7 @@ dependencies:
   easy_locale:
   easy_messaging:
   easy_post_v2:
+  easy_realtime_database:
   easy_report:
   easy_setting_v2:
   easy_storage:
@@ -67,6 +68,8 @@ dependency_overrides:
     path: ../easy_messaging
   easy_post_v2:
     path: ../easy_post
+  easy_realtime_database:
+    path: ../easy_realtime_database
   easy_report:
     path: ../easy_report
   easy_setting_v2:

@@ -53,15 +53,11 @@ class ChatMessagesListView extends StatelessWidget {
             }
             final doc = snapshot.docs[index];
             final message = ChatMessage.fromSnapshot(doc);
-            return ChatBubbleLongPressPopupMenu(
-              message: message,
-              room: room,
-              child: itemBuilder?.call(context, message) ??
-                  ChatBubble(
-                    key: ValueKey("chatBubble_${message.id}"),
-                    message: message,
-                  ),
-            );
+            return itemBuilder?.call(context, message) ??
+                ChatBubble(
+                  key: ValueKey("chatBubble_${message.id}"),
+                  message: message,
+                );
           },
         );
       },
