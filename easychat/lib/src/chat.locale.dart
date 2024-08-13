@@ -158,16 +158,6 @@ final localeTexts = <String, Map<String, String>>{
   },
 
   // chat.bubble.dart
-  'edited': {
-    'en': 'Edited',
-    'ko': '편집됨',
-  },
-  'this message has been deleted': {
-    'en': 'This message has been deleted.',
-    'ko': '이 메시지는 삭제되었습니다.',
-  },
-
-  // chat.bubble.long_press.popup_menu.dart
   'reply': {
     'en': 'Reply',
     'ko': '답장',
@@ -180,6 +170,14 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Delete',
     'ko': '삭제',
   },
+  'edited': {
+    'en': 'Edited',
+    'ko': '편집됨',
+  },
+  'this message has been deleted': {
+    'en': 'This message has been deleted.',
+    'ko': '이 메시지는 삭제되었습니다.',
+  },
 
   // chat.bubble.reply.dart
   'replying to': {
@@ -190,7 +188,14 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Replying to {username}',
     'ko': '{username}에게 답장 중',
   },
-  // 'this message has been deleted' -> chat.bubble.dart
+  'the message being replied has been deleted': {
+    'en': 'The message being replied has been deleted',
+    'ko': '답장 중인 메시지가 삭제되었습니다'
+  },
+  'photo': {
+    'en': 'Photo',
+    'ko': '사진',
+  },
 
   // chat.messages.list_view.dart
   'something went wrong': {
@@ -216,7 +221,7 @@ final localeTexts = <String, Map<String, String>>{
   },
   'reject': {
     'en': 'Reject',
-    'ko': '반려',
+    'ko': '거절',
   },
 
   // chat.room.invitation.short.list.dart

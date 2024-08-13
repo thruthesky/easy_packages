@@ -82,6 +82,31 @@ class ChatRoomReplyingTo extends StatelessWidget {
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (replyTo.url != null && replyTo.url!.isNotEmpty) ...[
+                          Container(
+                            decoration: BoxDecoration(
+                              color: replyTo.uid == my.uid
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .tertiaryContainer,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(12)),
+                            ),
+                            height: 42,
+                            width: 42,
+                            clipBehavior: Clip.hardEdge,
+                            child: CachedNetworkImage(
+                              imageUrl: replyTo.url!,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        ],
+                        if (replyTo.text != null && replyTo.url != null) ...[
+                          const SizedBox(width: 8),
+                        ],
                         if (replyTo.text != null &&
                             replyTo.text!.isNotEmpty) ...[
                           Flexible(
@@ -109,31 +134,6 @@ class ChatRoomReplyingTo extends StatelessWidget {
                             ),
                           ),
                         ],
-                        if (replyTo.text != null && replyTo.url != null) ...[
-                          const SizedBox(width: 8),
-                        ],
-                        if (replyTo.url != null && replyTo.url!.isNotEmpty) ...[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: replyTo.uid == my.uid
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .tertiaryContainer,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(12)),
-                            ),
-                            height: 42,
-                            width: 42,
-                            clipBehavior: Clip.hardEdge,
-                            child: CachedNetworkImage(
-                              imageUrl: replyTo.url!,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        ]
                       ],
                     );
                   },

@@ -41,10 +41,9 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
     youtubeController = YoutubePlayerController(
       initialVideoId: widget.post.youtube['id']!,
       flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          controlsVisibleAtStart: true,
-          hideControls: false),
+        autoPlay: false,
+        mute: false,
+      ),
     )..addListener(listener);
     playerState = PlayerState.unknown;
     super.initState();
@@ -65,10 +64,11 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   }
 
   listener() {
-    if (isReady && mounted && youtubeController!.value.isReady) {
-      isPlaying = youtubeController!.value.isPlaying;
-      playerState = youtubeController!.value.playerState;
-      setState(() {});
+    if (isReady && mounted) {
+      setState(() {
+        isPlaying = youtubeController!.value.isPlaying;
+        playerState = youtubeController!.value.playerState;
+      });
     }
   }
 
@@ -109,9 +109,9 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
               color: Colors.white,
             ),
           ),
-          const CurrentPosition(),
-          const ProgressBar(
-            colors: ProgressBarColors(
+          CurrentPosition(),
+          ProgressBar(
+            colors: const ProgressBarColors(
                 playedColor: Colors.white,
                 handleColor: Colors.white,
                 backgroundColor: Colors.grey),
@@ -120,8 +120,8 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
           const SizedBox(
             width: 8,
           ),
-          const RemainingDuration(),
-          const FullScreenButton(),
+          RemainingDuration(),
+          FullScreenButton(),
         ],
         topActions: const [],
         controller: youtubeController!,

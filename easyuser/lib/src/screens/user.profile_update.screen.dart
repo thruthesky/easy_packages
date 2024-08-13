@@ -189,24 +189,27 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                   },
                 ),
                 const SizedBox(height: 48),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      my.update(
-                        name: nameController.text,
-                        displayName: displayNameController.text,
-                        birthYear: birthYear,
-                        birthMonth: birthMonth,
-                        birthDay: birthDay,
-                        gender: gender,
-                        stateMessage: stateMessageController.text,
-                      );
-                      toast(
-                        context: context,
-                        message: Text('Profile Updated Successfully'.t),
-                      );
-                    },
-                    child: Text('Update'.t),
+                SafeArea(
+                  minimum: const EdgeInsets.only(bottom: 16),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        my.update(
+                          name: nameController.text,
+                          displayName: displayNameController.text,
+                          birthYear: birthYear,
+                          birthMonth: birthMonth,
+                          birthDay: birthDay,
+                          gender: gender,
+                          stateMessage: stateMessageController.text,
+                        );
+                        toast(
+                          context: context,
+                          message: Text('Profile Updated Successfully'.t),
+                        );
+                      },
+                      child: Text('Update'.t),
+                    ),
                   ),
                 ),
               ],

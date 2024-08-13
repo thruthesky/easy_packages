@@ -66,7 +66,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   dispose() {
     roomSubscription?.cancel();
     roomNotifier.dispose();
-    // $room?.dispose();
     super.dispose();
   }
 
