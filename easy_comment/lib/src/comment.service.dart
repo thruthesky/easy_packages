@@ -126,7 +126,6 @@ class CommentService {
 
   /// Return an array of user uid of the ancestors of the comment id.
   /// [commentId] comment id to get the ancestor's uid
-  /// [removeMyId] by default set true, remove current login user
   /// Returns the  [uids] List<String> of ancestors author uid
   Future<List<String>> getAncestorsUid(String commentId) async {
     Comment? comment = await Comment.get(commentId);
