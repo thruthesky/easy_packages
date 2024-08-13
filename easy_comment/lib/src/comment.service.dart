@@ -139,6 +139,7 @@ class CommentService {
       if (comment == null) break;
       uids.add(comment.uid);
     }
+
     return uids.toSet().where((uid) => uid != myUid).toList();
   }
 }
