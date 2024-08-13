@@ -32,6 +32,9 @@ It does not support `dislike` since most of the community don't provide `dislike
 - `documentReference`: This field is reference of the target document. It's a reference. So it can access the target document regardless of any collection.
 - `likedBy`: This field is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
 
+- Note that, the `like document ID` is the same as the target document ID.
+
+
 
 ## Logic
 

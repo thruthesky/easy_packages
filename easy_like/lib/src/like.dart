@@ -9,7 +9,10 @@ class Like {
 
   /// original document reference. It is called 'target document reference'.
   final DocumentReference documentReference;
+
+  /// Like document reference. The document ID is the same as the target document ID.
   DocumentReference get likeRef => col.doc(documentReference.id);
+  DocumentReference get ref => likeRef;
 
   String? id;
   List<String> likedBy = [];
@@ -43,7 +46,7 @@ class Like {
   /// - Add the user's uid to the likedBy list
   /// - Increase the likes count
   /// - Increaes the likes count in the document
-  static Future<void> like() async {
+  Future<void> like() async {
     final currentUser = FirebaseAuth.instance.currentUser;
 
     if (currentUser == null) {
@@ -56,7 +59,7 @@ class Like {
       FieldValue $likedBy;
 
       List<String> likedBy = [];
-      final snapshot = await ref.get();
+      final snapshot = await likeRef.get();
       if (snapshot.exists) {
         final Map<String, dynamic> data =
             snapshot.data() as Map<String, dynamic>;
@@ -76,7 +79,7 @@ class Like {
 
       ///
       transaction.set(
-          ref,
+          documentReference,
           {
             'likeCount': $likeCount,
           },

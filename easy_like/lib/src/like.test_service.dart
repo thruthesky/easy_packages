@@ -21,7 +21,6 @@ class LikeTestService {
     });
 
     final like = Like(
-      uid: 'uid-a',
       documentReference: documentReference,
     );
 
