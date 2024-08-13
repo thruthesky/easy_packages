@@ -301,3 +301,52 @@ PostService.instance
   }
 );
 ```
+
+
+## Creating the document if it does not exists
+
+
+You have built a candy crush game app and you want to keep the user's score based on the grid size. There must be only one document per each size of the user.
+
+And you want to display the best score on the screen in realtime. Then, you can do the following.
+
+
+```dart
+listenBestScore() {
+  /// 1. Make sure that the score document exists.
+  (() async {
+    final List<Post> posts = await PostService.instance.getPosts(
+      query: PostService.instance.col
+          .where('category', isEqualTo: Config.candyCrushCategory)
+          .where('uid', isEqualTo: my.uid)
+          .where('size', isEqualTo: gridSize)
+          .limit(1),
+    );
+    if (posts.isEmpty) {
+      /// Create a new score document if the user does not have one.
+      await Post.create(category: Config.candyCrushCategory, extra: {
+        'category': Config.candyCrushCategory,
+        'uid': my.uid,
+        'size': gridSize,
+        'score': currentScore,
+      });
+    }
+  })();
+
+  /// 2. Then, listen for the realtime update.
+  bestScoreSubscription = PostService.instance.col
+      .where('category', isEqualTo: Config.candyCrushCategory)
+      .where('uid', isEqualTo: my.uid)
+      .where('size', isEqualTo: gridSize)
+      .limit(1)
+      .snapshots()
+      .listen((snapshot) {
+    if (snapshot.docs.isNotEmpty) {
+      bestScorePost = Post.fromSnapshot(snapshot.docs.first);
+      bestScore = bestScorePost!.extra['score'] ?? 0;
+      dog('bestScore: $bestScore');
+      setState(() {});
+    }
+  });
+}
+```

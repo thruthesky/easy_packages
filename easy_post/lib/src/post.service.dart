@@ -133,15 +133,37 @@ class PostService {
 
   /// Get the last n posts of the category from the Firestore.
   Future<List<Post>> getPosts({
-    required String category,
+    Query? query,
+    String? category,
+    String? uid,
+    String? orderBy,
     int limit = 10,
   }) async {
-    final query = col
-        .where('category', isEqualTo: category)
-        .orderBy('createdAt', descending: true)
-        .limit(limit);
+    if (query != null) {
+      return await getPostsFromQuery(query);
+    }
 
-    final snapshot = await query.get();
+    Query q = col;
+    if (category != null) {
+      q = q.where('category', isEqualTo: category);
+    }
+    if (uid != null) {
+      q = q.where('uid', isEqualTo: uid);
+    }
+    q = q.orderBy('createdAt', descending: true);
+    q = q.limit(limit);
+
+    return await getPostsFromQuery(q);
+  }
+
+  /// Get posts from snapshot
+  List<Post> getPostsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) => Post.fromSnapshot(doc)).toList();
+  }
+
+  /// Get posts from Query
+  Future<List<Post>> getPostsFromQuery(Query query) async {
+    final snapshot = await query.get();
+    return getPostsFromSnapshot(snapshot);
   }
 }
