@@ -282,16 +282,24 @@ class MyAppState extends State<MyApp> {
   /// With the option of 'excludeSubscribers: true', the backend will send messages to the users whose uid is not in the list of subscription.
   chatInit() {
     ChatService.instance.init(
-        chatRoomActionButton: (room) =>
-            PushNotificationToggelIcon(subscriptionName: room.id),
+
+        /// On chat, users on chatRoom always get  notification unless they turn it off.
+        /// To show that the notification is active, PushNotificationToggleIcon is reverse
+        /// This will show the Icon as enabled by default, and when click it will set `uid:true` to subscription name
+        /// which later on we se set on the `onSendMessage` -> `sendMessageToUid` with parameter of excludeSubscribers.
+        /// This will remove the uid of those who has /path/subscriptionName/uid:true from the list of uids
+        chatRoomActionButton: (room) => PushNotificationToggleIcon(
+              subscriptionName: room.id,
+              reverse: true,
+            ),
         onSendMessage: (
             {required ChatMessage message, required ChatRoom room}) async {
           final uids = room.userUids.where((uid) => uid != myUid).toList();
           if (uids.isEmpty) return;
           MessagingService.instance.sendMessageToUid(
             uids: uids,
-            // subscriptionName: room.id,
-            // excludeSubscribers: true,
+            subscriptionName: room.id,
+            excludeSubscribers: true,
             title: 'ChatService ${DateTime.now()}',
             body: '${room.id} ${message.id} ${message.text}',
             data: {"action": 'chat', 'roomId': room.id},
