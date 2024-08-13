@@ -286,8 +286,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 if (room.group)
                   ListTile(
                     title: Text("leave".t),
-                    onTap: () {
+                    onTap: () async {
+                      final re = await confirm(
+                        context: context,
+                        title: Text("leaving room".t),
+                        message: Text('leaving room confirmation'.t),
+                      );
+                      if (re != true) return;
                       room.leave();
+                      if (!context.mounted) return;
                       // two pops since we are opening both
                       // drawer and room screen.
                       Navigator.of(context).pop();

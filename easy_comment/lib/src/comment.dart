@@ -184,7 +184,7 @@ class Comment {
 
       return addedRef;
     });
-
+    CommentService.instance.onCommentCreate?.call(ref);
     return ref;
   }
 
@@ -198,6 +198,16 @@ class Comment {
       if (urls != null) 'urls': urls,
       'updateAt': FieldValue.serverTimestamp(),
     });
+  }
+
+  // get comment
+  static Future<Comment?> get(String id) async {
+    if (id.isEmpty) {
+      throw 'comment-get/comment-id-empty Comment id is empty';
+    }
+    final documentSnapshot = await col.doc(id).get();
+    if (documentSnapshot.exists == false) return null;
+    return Comment.fromSnapshot(documentSnapshot);
   }
 
   /// Delete the comment
