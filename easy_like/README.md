@@ -60,3 +60,33 @@ TextButton(
   ),
 ),
 ```
+
+## Changing Icons if like or unlike
+
+- You can display diffrent icon base on the status of the like (like or unlike) 
+
+- `LikeDoc` is a widget that you can use to determine of the like status(like or unlike)
+
+Example
+```dart 
+IconButton(
+  onPressed: () async {
+    final like = Like(
+        uid: my.uid, documentReference: post.ref);
+    await like.like();
+  },
+  icon: LikeDoc(
+      uid: my.uid,
+      documentReference: post.ref,
+      sync: true,
+      builder: (islike) {
+        return FaIcon(
+          islike
+              ? FontAwesomeIcons.solidHeart
+              : FontAwesomeIcons.heart,
+          color: Colors.pink[700],
+          size: 30,
+        );
+      }),
+),
+```
