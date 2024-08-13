@@ -232,7 +232,10 @@ class MyAppState extends State<MyApp> {
             await CommentService.instance.getAncestorsUid(ref.id);
 
         /// you can also attached the uid of the post author before sending the notification
-        Post post = await Post.get(ref.id);
+        Comment? comment = await Comment.get(ref.id);
+        if (comment == null) return;
+
+        Post post = await Post.get(comment.documentReference.id);
         if (myUid != null && post.uid != myUid) {
           ancestorUids.add(post.uid);
         }
@@ -245,7 +248,11 @@ class MyAppState extends State<MyApp> {
           uids: ancestorUids,
           title: 'title ${DateTime.now()}',
           body: 'ancestorComment test',
-          data: {"action": 'comment', 'commentId': ref.id},
+          data: {
+            "action": 'comment',
+            'commentId': ref.id,
+            'postId': comment.documentReference.id,
+          },
         );
       },
     );
