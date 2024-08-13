@@ -5,7 +5,6 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:flutter/material.dart';
 
 class ChatRoom {
   /// Field names used for the Firestore document
