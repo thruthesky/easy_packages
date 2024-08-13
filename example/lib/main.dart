@@ -274,6 +274,12 @@ class MyAppState extends State<MyApp> {
     );
   }
 
+  /// (Trick) When user disable the notification, then, subscribe !!.
+  ///   -> Meaning, when user turn off the notification, then, the uid is saved true in the subscription. This is a reverse logic.
+  ///   -> When user turn on the notification, then, delete the uid from the subscription.
+  ///
+  /// When a user send chat message, call 'sendMessageToUid' with the 'subscription name' and uid list.
+  /// With the option of 'excludeSubscribers: true', the backend will send messages to the users whose uid is not in the list of subscription.
   chatInit() {
     ChatService.instance.init(
         chatRoomActionButton: (room) =>
@@ -284,6 +290,8 @@ class MyAppState extends State<MyApp> {
           if (uids.isEmpty) return;
           MessagingService.instance.sendMessageToUid(
             uids: uids,
+            // subscriptionName: room.id,
+            // excludeSubscribers: true,
             title: 'ChatService ${DateTime.now()}',
             body: '${room.id} ${message.id} ${message.text}',
             data: {"action": 'chat', 'roomId': room.id},
