@@ -27,8 +27,8 @@ class MessagingService {
   Query get myTokenQuery =>
       fcmTokensRef.orderByChild('uid').equalTo(currentUser!.uid);
 
-  DatabaseReference subscriptionRef(String category) =>
-      rootRef.child('$fcmSubscriptions/$category/${currentUser!.uid}');
+  DatabaseReference subscriptionRef(String subscriptionName) =>
+      rootRef.child('$fcmSubscriptions/$subscriptionName/${currentUser!.uid}');
 
   MessagingService._();
 

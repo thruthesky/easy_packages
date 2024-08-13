@@ -30,12 +30,17 @@ class ChatService {
 
   Widget Function(ChatRoom)? chatRoomActionButton;
 
+  /// Callback on chatMessage send, use this if you want to do task after message is created., eg. push notification
+  /// Callback will have the new [ChatMessage] information
+  Function(ChatMessage)? onSendMessage;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
     Future<fs.DocumentReference> Function({BuildContext context})?
         $showChatRoomEditScreen,
     Widget Function(ChatRoom)? chatRoomActionButton,
+    Function(ChatMessage)? onSendMessage,
   }) {
     UserService.instance.init();
 
@@ -46,6 +51,7 @@ class ChatService {
     this.$showChatRoomEditScreen =
         $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
     this.chatRoomActionButton = chatRoomActionButton;
+    this.onSendMessage = onSendMessage;
   }
 
   /// Firebase CollectionReference for Chat Room docs
@@ -144,6 +150,7 @@ class ChatService {
       lastMessageText: text,
       lastMessageUrl: photoUrl,
     );
+    onSendMessage?.call(newMessage);
   }
 
   Future updateMessage({
