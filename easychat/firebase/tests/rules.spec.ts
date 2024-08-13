@@ -16,6 +16,7 @@ import {
   FieldValue,
   arrayRemove,
   arrayUnion,
+  deleteField,
 } from "firebase/firestore";
 import { readFileSync } from "node:fs";
 import { before } from "mocha";
@@ -904,6 +905,7 @@ describe("Non-open Group Chat Room Joining Test (Open: False)", async () => {
       );
     });
   });
+
   it("[Pass] Joining to an Non-Open Group Chat, Invited", async () => {
     const appleGroupUpdate: ChatRoom = {
       users: {
@@ -919,6 +921,7 @@ describe("Non-open Group Chat Room Joining Test (Open: False)", async () => {
       })
     );
   });
+
   it("[Fail] Joining to an Non-Open Group Chat, Not Invited", async () => {
     const appleGroupUpdate: ChatRoom = {
       users: {
@@ -1020,7 +1023,7 @@ describe("Non-open Group Chat Room Joining Test (Open: False)", async () => {
   });
 });
 
-describe("Single Chat Room Join Test", async () => {
+describe("Single Chat Room Invitation Test (Pending Invite)", async () => {
   const appleGroup: ChatRoom = {
     name: "apple and banana",
     creator: appleId,
@@ -1035,6 +1038,109 @@ describe("Single Chat Room Join Test", async () => {
       //   },
     },
     invitedUsers: [bananaId],
+  };
+  let appleGroupId: string = "apple-banana-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+  it("[Fail] Creator/Master invited a user to a Single Chat", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(eggPlantId),
+    };
+    await assertFails(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member invited a user to a Single Chat", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(eggPlantId),
+    };
+    await assertFails(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider Joining to a Single Chat where there is pending invitation", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [eggPlantId]: {
+          nMC: 0,
+        },
+      },
+      invitedUsers: arrayRemove(eggPlantId),
+    };
+    await assertFails(
+      setDoc(doc(eggPlantDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider Inviting himself to a Single Chat there is pending invitation", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(eggPlantId),
+    };
+    await assertFails(
+      setDoc(doc(eggPlantDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Invited user joins but adding extra people", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [bananaId]: {
+          nMC: 0,
+        },
+        [eggPlantId]: {
+          nMC: 0,
+        },
+      },
+      invitedUsers: arrayRemove(bananaId),
+    };
+    await assertFails(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+describe("Single Chat Room Joining Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple and banana",
+    creator: appleId,
+    single: true,
+    masterUids: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+    },
   };
   let appleGroupId: string = "apple-banana-id";
   before(async () => {
@@ -1075,12 +1181,17 @@ describe("Single Chat Room Join Test", async () => {
       })
     );
   });
-  it("[Fail] Creator invited a user to a Single Chat", async () => {
+  it("[Fail] Outsider Replacing a user to a Single Chat", async () => {
     const appleGroupUpdate: ChatRoom = {
-      invitedUsers: arrayUnion(eggPlantId),
+      users: {
+        [bananaId]: deleteField(),
+        [eggPlantId]: {
+          nMC: 0,
+        },
+      },
     };
     await assertFails(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      setDoc(doc(eggPlantDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
         merge: true,
       })
     );

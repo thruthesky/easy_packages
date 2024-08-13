@@ -5,7 +5,7 @@ interface ChatRoom {
   name?: string;
   description?: string;
   // This will include the readings and order
-  users?: { [key: string]: ChatUser };
+  users?: { [key: string]: ChatUser | FieldValue };
   invitedUsers?: string[] | FieldValue;
   rejectedUsers?: string[];
   blockedUsers?: string[];
