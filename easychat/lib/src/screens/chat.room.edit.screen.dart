@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
@@ -26,6 +27,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   bool get isUpdate => widget.room != null;
 
   bool open = false;
+  bool isLoading = false;
 
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -117,39 +119,66 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             const SizedBox(
               height: 24,
             ),
-            isCreate
-                ? ElevatedButton(
-                    onPressed: () async {
-                      final newRoomRef = await ChatRoom.create(
-                        name: nameController.text,
-                        description: descriptionController.text,
-                        iconUrl: iconUrlOnCreate,
-                        open: open,
-                        group: true,
-                        single: false,
-                        users: [myUid!],
-                      );
-                      final chatRoom = await ChatRoom.get(newRoomRef.id);
-                      iconUrlOnCreate = null;
-                      if (!context.mounted) return;
-                      Navigator.of(context).pop(chatRoom!.ref);
-                      ChatService.instance
-                          .showChatRoomScreen(context, room: chatRoom);
-                    },
-                    child: Text('create'.t.toUpperCase()),
-                  )
-                : ElevatedButton(
-                    onPressed: () async {
-                      await room!.update(
-                        name: nameController.text,
-                        description: descriptionController.text,
-                        open: open,
-                      );
-                      if (!context.mounted) return;
-                      Navigator.of(context).pop(room!.ref);
-                    },
-                    child: Text('update'.t.toUpperCase()),
-                  ),
+            if (isLoading) ...[
+              const CircularProgressIndicator(),
+            ] else
+              isCreate
+                  ? ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        ChatRoom? chatRoom;
+                        try {
+                          final newRoomRef = await ChatRoom.create(
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            iconUrl: iconUrlOnCreate,
+                            open: open,
+                            group: true,
+                            single: false,
+                            users: [myUid!],
+                          );
+                          chatRoom = await ChatRoom.get(newRoomRef.id);
+                        } catch (e) {
+                          dog("Error ${e.toString()}");
+                          setState(() {
+                            isLoading = false;
+                          });
+                          rethrow;
+                        }
+                        if (chatRoom == null) return;
+                        iconUrlOnCreate = null;
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop(chatRoom.ref);
+                        ChatService.instance
+                            .showChatRoomScreen(context, room: chatRoom);
+                      },
+                      child: Text('create'.t.toUpperCase()),
+                    )
+                  : ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
+                          await room!.update(
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            open: open,
+                          );
+                        } catch (e) {
+                          dog("Error ${e.toString()}");
+                          setState(() {
+                            isLoading = false;
+                          });
+                          rethrow;
+                        }
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop(room!.ref);
+                      },
+                      child: Text('update'.t.toUpperCase()),
+                    ),
             const SafeArea(
               child: SizedBox(
                 height: 12,

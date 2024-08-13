@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
@@ -28,6 +27,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   StreamSubscription? roomSubscription;
   ValueNotifier<int> roomNotifier = ValueNotifier(0);
+
+  // Future<void> Function()? beforeSendMessage;
 
   @override
   void initState() {
@@ -167,6 +168,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ],
                 ),
         ),
+        actions: [
+          if (ChatService.instance.chatRoomActionButton != null &&
+              $room != null)
+            ChatService.instance.chatRoomActionButton!($room!),
+          Builder(builder: (context) {
+            return DrawerButton(
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            );
+          })
+        ],
       ),
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
@@ -207,32 +220,35 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             // if the user is not a member of the chat room
             if (!$room!.joined) ...[
               ValueListenableBuilder(
-                  valueListenable: roomNotifier,
-                  builder: (_, hc, __) {
-                    if ($room!.joined) return const SizedBox.shrink();
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                      margin: const EdgeInsets.only(
-                        bottom: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                      ),
-                      child: Text(
-                        notMemberMessage($room!),
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    );
-                  }),
+                valueListenable: roomNotifier,
+                builder: (_, hc, __) {
+                  if ($room!.joined) return const SizedBox.shrink();
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    margin: const EdgeInsets.only(
+                      bottom: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                    ),
+                    child: Text(
+                      notMemberMessage($room!),
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  );
+                },
+              ),
             ],
             SafeArea(
               top: false,
               child: $room == null
                   ? const SizedBox.shrink()
-                  : ChatRoomInputBox(room: $room!),
+                  : ChatRoomInputBox(
+                      room: $room!,
+                    ),
             ),
           ],
         ],

@@ -34,7 +34,9 @@ class ChatRoomListTile extends StatelessWidget {
                 )
               : const Icon(Icons.people),
         ),
-        title: Text(room.name.trim().isNotEmpty ? room.name : room.id),
+        title: Text(
+          room.name.trim().isNotEmpty ? room.name : "Group Chat",
+        ),
         subtitle: subtitle,
         trailing: trailing,
         onTap: () => onTapTile(context, room, null),

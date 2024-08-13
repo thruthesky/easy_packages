@@ -221,7 +221,7 @@ final localeTexts = <String, Map<String, String>>{
   },
   'reject': {
     'en': 'Reject',
-    'ko': '반려',
+    'ko': '거절',
   },
 
   // chat.room.invitation.short.list.dart
@@ -299,6 +299,14 @@ final localeTexts = <String, Map<String, String>>{
   'leave': {
     'en': 'Leave',
     'ko': '나가기',
+  },
+  'leaving room': {
+    'en': 'Leaving Room',
+    'ko': '채팅방 나가기',
+  },
+  'leaving room confirmation': {
+    'en': "Are you sure you want to leave the room?",
+    'ko': "채팅을 나가시겠습니까?",
   },
   'block': {
     'en': 'Block',

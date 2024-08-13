@@ -27,6 +27,7 @@ class Post {
   final String id;
   final String category;
   final String title;
+  final String subtitle;
   final String content;
   final String uid;
   final DateTime createdAt;
@@ -67,6 +68,7 @@ class Post {
     required this.id,
     required this.category,
     required this.title,
+    required this.subtitle,
     required this.content,
     required this.uid,
     required this.createdAt,
@@ -85,6 +87,7 @@ class Post {
       id: id,
       category: json['category'],
       title: json['title'] ?? '',
+      subtitle: json['subtitle'] ?? '',
       content: json['content'] ?? '',
       uid: json['uid'],
       createdAt: json['createdAt'] is Timestamp
@@ -106,7 +109,9 @@ class Post {
   }
   Map<String, dynamic> toJson() => {
         'id': id,
+        'category': category,
         'title': title,
+        'subtitle': subtitle,
         'content': content,
         'uid': uid,
         'createdAt': createdAt,
@@ -150,6 +155,7 @@ class Post {
   static Future<DocumentReference> create({
     required String category,
     String? title,
+    String? subtitle,
     String? content,
     List<String> urls = const [],
     String youtubeUrl = '',
@@ -165,6 +171,7 @@ class Post {
     final data = {
       'category': category,
       if (title != null) 'title': title,
+      if (subtitle != null) 'subtitle': subtitle,
       if (content != null) 'content': content,
       'uid': currentUser!.uid,
       'urls': urls,
@@ -190,6 +197,7 @@ class Post {
   /// TODO: display loader and percentage while image uploading
   Future<void> update({
     String? title,
+    String? subtitle,
     String? content,
     List<String>? urls,
     String? youtubeUrl,
@@ -197,6 +205,7 @@ class Post {
   }) async {
     final data = {
       if (title != null) 'title': title,
+      if (subtitle != null) 'subtitle': subtitle,
       if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
