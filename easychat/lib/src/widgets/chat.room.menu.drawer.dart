@@ -290,9 +290,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       final re = await confirm(
                         context: context,
                         title: Text("leaving room".t),
-                        message: const Text(
-                          "Are you sure you want to leave the room?",
-                        ),
+                        message: Text('leaving room confirmation'.t),
                       );
                       if (re != true) return;
                       room.leave();
