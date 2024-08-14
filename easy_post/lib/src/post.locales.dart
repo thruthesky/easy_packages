@@ -12,11 +12,12 @@ final localeTexts = <String, Map<String, String>>{
 };
 
 void addPostTranslations() async {
-  final locale = await currentLocale;
-  if (locale == null) return;
+  lo.merge(localeTexts);
+  // final locale = await currentLocale;
+  // if (locale == null) return;
 
-  for (var entry in localeTexts.entries) {
-    if (lo.get(key: entry.key, locale: locale) != null) continue;
-    lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
-  }
+  // for (var entry in localeTexts.entries) {
+  //   if (lo.get(key: entry.key, locale: locale) != null) continue;
+  //   lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
+  // }
 }

@@ -26,4 +26,6 @@ User get my {
 }
 
 /// [myUid] returns the current user's uid. It can be null.
+///
+/// Use [myUid] instead of 'my.uid' since 'my.uid' will be ready(loaded) much later than [myUid].
 String? get myUid => FirebaseAuth.instance.currentUser?.uid;
