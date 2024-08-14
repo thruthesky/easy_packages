@@ -26,6 +26,9 @@ class PostService {
   /// Callback will have the [Post] of the newly created `post` information.
   Function(Post)? onCreate;
 
+  /// Add extra widget on chatroom,. eg. push notification toggle button
+  Widget Function(String)? postListActionButton;
+
   init({
     Future Function(BuildContext, Post)? showPostDetailScreen,
     Future<DocumentReference?> Function(BuildContext, String?)?
@@ -34,6 +37,7 @@ class PostService {
         showPostUpdateScreen,
     String? youtubeDataApi,
     Function(Post)? onCreate,
+    Widget Function(String)? postListActionButton,
   }) {
     initialized = true;
     $showPostDetailScreen = showPostDetailScreen;
@@ -41,6 +45,7 @@ class PostService {
     $showPostUpdateScreen = showPostUpdateScreen;
     this.youtubeDataApi = youtubeDataApi;
     this.onCreate = onCreate;
+    this.postListActionButton = postListActionButton;
     addPostTranslations();
   }
 

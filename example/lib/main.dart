@@ -240,16 +240,23 @@ class MyAppState extends State<MyApp> {
     // });
   }
 
+  postInit() {
+    PostService.instance.init(
+      postListActionButton: (category) => PushNotificationToggleIcon(
+        subscriptionName: category,
+      ),
+      onCreate: (Post post) async {
+        /// do something after post is created
+      },
+    );
+  }
+
   commentInit() {
     CommentService.instance.init(
-      onCreate: (DocumentReference ref) async {
+      onCreate: (Comment comment) async {
         /// get ancestor uid
         List<String> ancestorUids =
-            await CommentService.instance.getAncestorsUid(ref.id);
-
-        /// you can also attached the uid of the post author before sending the notification
-        Comment? comment = await Comment.get(ref.id);
-        if (comment == null) return;
+            await CommentService.instance.getAncestorsUid(comment.id);
 
         Post post = await Post.get(comment.documentReference.id);
         if (myUid != null && post.uid != myUid) {
@@ -266,7 +273,7 @@ class MyAppState extends State<MyApp> {
           body: 'ancestorComment test',
           data: {
             "action": 'comment',
-            'commentId': ref.id,
+            'commentId': comment.id,
             'postId': comment.documentReference.id,
           },
         );
