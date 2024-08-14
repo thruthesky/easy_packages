@@ -1,6 +1,6 @@
 name: easy_like
 description: "An esay way to handle the like functionality for every use case"
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:
@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   cloud_firestore: ^5.0.2
+  firebase_auth: ^5.1.1
   flutter:
     sdk: flutter
 

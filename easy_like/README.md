@@ -29,8 +29,12 @@ It does not support `dislike` since most of the community don't provide `dislike
 ## Database structure for Like and Dislike
 
 - `/likes/{documentId}`: This is where like information saved. And the id of the document is the target document.
-- `documentReference`: This is the reference of the target document. It's a reference. So it can access the target document regardless of any collection.
-- `likedBy`: is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
+- `documentReference`: This field is reference of the target document. It's a reference. So it can access the target document regardless of any collection.
+- `likedBy`: This field is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
+- `likeCount`: This field is the no of the likes. It can be used for search purpose.
+
+- Note that, the `like document ID` is the same as the target document ID.
+
 
 
 ## Logic
@@ -58,5 +62,34 @@ TextButton(
   child: Text(
     'Like'.tr( args: {'n': widget.post.likeCount}, form: widget.post.likeCount),
   ),
+),
+```
+
+## Changing Icons if like or unlike
+
+- You can display diffrent widget base on the status of the like (like or unlike) 
+
+- `LikeDoc` is a widget that you can use to determine of the like status(like or unlike)
+
+Example
+```dart 
+IconButton(
+  onPressed: () async {
+    final like = Like(documentReference: post.ref);
+    await like.like();
+  },
+  icon: LikeDoc(
+      uid: my.uid,
+      documentReference: post.ref,
+      sync: true,
+      builder: (islike) {
+        return FaIcon(
+          islike
+              ? FontAwesomeIcons.solidHeart
+              : FontAwesomeIcons.heart,
+          color: Colors.pink[700],
+          size: 30,
+        );
+      }),
 ),
 ```

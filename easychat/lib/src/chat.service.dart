@@ -28,11 +28,22 @@ class ChatService {
   Future<fs.DocumentReference> Function({BuildContext context})?
       $showChatRoomEditScreen;
 
+  /// Add extra widget on chatroom,. eg. push notification toggle button
+  Widget Function(ChatRoom)? chatRoomActionButton;
+
+  /// Callback on chatMessage send, use this if you want to do task after message is created., eg. push notification
+  /// Callback will have the new [ChatMessage] information
+  Function({required ChatMessage message, required ChatRoom room})?
+      onSendMessage;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
     Future<fs.DocumentReference> Function({BuildContext context})?
         $showChatRoomEditScreen,
+    Widget Function(ChatRoom)? chatRoomActionButton,
+    Function({required ChatMessage message, required ChatRoom room})?
+        onSendMessage,
   }) {
     UserService.instance.init();
 
@@ -42,6 +53,8 @@ class ChatService {
         $showChatRoomListScreen ?? this.$showChatRoomListScreen;
     this.$showChatRoomEditScreen =
         $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
+    this.chatRoomActionButton = chatRoomActionButton;
+    this.onSendMessage = onSendMessage;
   }
 
   /// Firebase CollectionReference for Chat Room docs
@@ -140,6 +153,7 @@ class ChatService {
       lastMessageText: text,
       lastMessageUrl: photoUrl,
     );
+    onSendMessage?.call(message: newMessage, room: room);
   }
 
   Future updateMessage({

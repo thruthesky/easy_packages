@@ -221,7 +221,7 @@ final localeTexts = <String, Map<String, String>>{
   },
   'reject': {
     'en': 'Reject',
-    'ko': '반려',
+    'ko': '거절',
   },
 
   // chat.room.invitation.short.list.dart
@@ -361,11 +361,13 @@ final localeTexts = <String, Map<String, String>>{
 };
 
 applyChatLocales() async {
-  final locale = await currentLocale;
-  if (locale == null) return;
+  lo.merge(localeTexts);
 
-  for (var entry in localeTexts.entries) {
-    if (lo.get(key: entry.key, locale: locale) != null) continue;
-    lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
-  }
+  // final locale = await currentLocale;
+  // if (locale == null) return;
+
+  // for (var entry in localeTexts.entries) {
+  //   if (lo.get(key: entry.key, locale: locale) != null) continue;
+  //   lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
+  // }
 }

@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   devicelocale: ^0.7.1
-  easy_locale: ^0.0.5
+  easy_locale: ^0.0.10
   flutter:
     sdk: flutter
   intl: ^0.19.0

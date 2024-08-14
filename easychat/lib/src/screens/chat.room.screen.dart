@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
@@ -169,6 +168,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ],
                 ),
         ),
+        actions: [
+          if (ChatService.instance.chatRoomActionButton != null &&
+              $room != null)
+            ChatService.instance.chatRoomActionButton!($room!),
+          Builder(builder: (context) {
+            return DrawerButton(
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            );
+          })
+        ],
       ),
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
