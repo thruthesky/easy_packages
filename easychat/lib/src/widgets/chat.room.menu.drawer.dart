@@ -305,8 +305,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               if (room.single)
                 ListTile(
                   title: Text("block".t),
-                  onTap: () {
-                    // TODO review if this is the correct way
+                  onTap: () async {
                     UserService.instance
                         .block(context: context, otherUid: user!.uid);
                   },

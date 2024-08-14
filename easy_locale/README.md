@@ -122,7 +122,6 @@ applyChatLocales() async {
     lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
   }
 }
-
 ```
 
 
@@ -141,6 +140,8 @@ TranslationService.instance.set(
 expect('hello'.t == 'Hello', true);
 ```
 
+
+See `lo.merge` to merge the translated text **synchrounously**.
 
 
 #### Adding custom translations
@@ -298,6 +299,24 @@ class _MyHomePageState extends State<MyHomePage> {
 ```
 
 
+# Merging texts
+
+The `lo.set()` needs a locale to set(or replace) the text. And you may write the code to get it **asynchrounously**. And the translated text may not appear immediately. It means, there might be a flickering with the text code and the text.
+
+To prevent this, you may use `lo.merge()` which does not require the locale, thus it will set(or replace) the text **synchrounously**. And there will be no flickering.
+
+You can call the `lo.merge()` method like below just before you use it.
+
+```dart
+lo.merge({
+  'test': {
+    'en': 'Test',
+    'ko': '테스트',
+  },
+});
+```
+
+
 # 유닛 테스트
 
 
@@ -311,4 +330,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 - If the translation is not working, then check if the easy_locale package has been initialized.
+
+
 

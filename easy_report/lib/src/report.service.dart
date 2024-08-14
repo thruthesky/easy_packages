@@ -15,12 +15,32 @@ class ReportService {
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
-  // report
+  /// Report
+  ///
+  /// It reports the [otherUid] user with the [documentReference] document reference.
+  ///
+  /// Use this method to report a user.
+  ///
+  /// Refer to README.md for details.
   Future<void> report({
     required BuildContext context,
     required DocumentReference documentReference,
     required String otherUid,
   }) async {
+    if (currentUser == null) {
+      if (context.mounted) {
+        toast(context: context, message: Text('You are not signed in'.t));
+      }
+      return;
+    }
+
+    if (currentUser?.uid == otherUid) {
+      if (context.mounted) {
+        toast(context: context, message: Text('You cannot report yourself'.t));
+      }
+      return;
+    }
+
     // Check if the user has already reported by you.
     final snapshot = await col
         .where('reporter', isEqualTo: currentUser!.uid)

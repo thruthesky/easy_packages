@@ -1,4 +1,4 @@
-final Map<String, dynamic> localeTexts = {
+final Map<String, Map<String, dynamic>> localeTexts = {
   'version': {
     'en': 'Version: {v}',
     'ko': '버전: {v}',
@@ -245,6 +245,12 @@ final Map<String, dynamic> localeTexts = {
     'ko': '내용을 입력하세요',
   },
 
+  /// --------------------- User, Login, Regigstration, Profile ---------------------
+  'You are not signed in': {
+    'en': 'You are not signed in',
+    'ko': '로그인하지 않았습니다',
+  },
+
   /// --------------------- Post ---------------------
 
   'post create': {
@@ -300,6 +306,12 @@ final Map<String, dynamic> localeTexts = {
     'ko': '파일 선택',
   },
 
+  /// ----------------------- Block -----------------------
+  'You cannot block yourself': {
+    'en': 'You cannot block yourself',
+    'ko': '자신을 차단할 수 없습니다',
+  },
+
   /// ----------------------- Report -----------------------
   ///
 
@@ -334,5 +346,9 @@ final Map<String, dynamic> localeTexts = {
   'You have reported this user now': {
     'en': 'You have reported this user now',
     'ko': '이 사용자를 신고했습니다',
+  },
+  'You cannot report yourself': {
+    'en': 'You cannot report yourself',
+    'ko': '자신을 신고할 수 없습니다',
   },
 };

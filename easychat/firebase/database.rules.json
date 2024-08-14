@@ -3,16 +3,16 @@
     "mirror-users": {
       ".read": true,
       "$uid": {
-        ".write": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
       },
       ".indexOn": ["createdAt"]
     },
     "fcm-tokens": {
       ".read": true,
       "$token": {
-        ".write": "newData.val() === auth.uid",
+        ".write": "newData.val() === auth.uid"
       },
-      ".indexOn": [".value"],
+      ".indexOn": [".value"]
     },
     "fcm-subscriptions": {
       ".read": true,
