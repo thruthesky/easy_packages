@@ -104,7 +104,7 @@ class Like {
           merge: true,
         ),
       );
-      LikeService.instance.onLike?.call(
+      LikeService.instance.onLiked?.call(
         like: Like.fromJson(data, likeRef.id),
         isLiked: isLiked,
       );

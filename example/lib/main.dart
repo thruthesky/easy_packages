@@ -252,6 +252,7 @@ class MyAppState extends State<MyApp> {
             : "post-sub-$category",
       ),
       onCreate: (Post post) async {
+        /// send push notification to subscriber
         MessagingService.instance.sendMessageToSubscription(
           subscription: post.category.isNullOrEmpty
               ? 'post-sub-no-category'
@@ -360,7 +361,8 @@ class MyAppState extends State<MyApp> {
 
   likeInit() {
     LikeService.instance.init(
-      onLike: ({required Like like, required bool isLiked}) async {
+      onLiked: ({required Like like, required bool isLiked}) async {
+        /// only send notification if it is liked
         if (isLiked == false) return;
 
         /// get the like document reference for more information

@@ -6,11 +6,11 @@ class LikeService {
   LikeService._();
 
   /// Callback after on Like event. usage, eg. push notification
-  Function({required Like like, required bool isLiked})? onLike;
+  Function({required Like like, required bool isLiked})? onLiked;
 
   init({
-    Function({required Like like, required bool isLiked})? onLike,
+    Function({required Like like, required bool isLiked})? onLiked,
   }) {
-    this.onLike = onLike;
+    this.onLiked = onLiked;
   }
 }
