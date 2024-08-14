@@ -22,8 +22,9 @@ class ChatBubble extends StatelessWidget {
   double photoHeight(BuildContext context) =>
       MediaQuery.of(context).size.width * 0.56;
 
-  Color replyDividerColor(BuildContext context) =>
-      Theme.of(context).colorScheme.outlineVariant;
+  Color replyDividerColor(BuildContext context) => message.uid == myUid
+      ? const Color.fromARGB(255, 232, 205, 130)
+      : Theme.of(context).colorScheme.outlineVariant;
 
   static const items = (
     reply: 'reply',
@@ -179,7 +180,8 @@ class ChatBubble extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             color: message.uid == myUid
-                                ? Theme.of(context).colorScheme.primaryContainer
+                                // ? Theme.of(context).colorScheme.primaryContainer
+                                ? Colors.amber.shade200
                                 : Theme.of(context)
                                     .colorScheme
                                     .surfaceContainerHigh,

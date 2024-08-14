@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 class ChatRoomListScreen extends StatefulWidget {
   const ChatRoomListScreen({
     super.key,
-    this.queryOption = ChatRoomListOption.allMine,
+    this.queryOption = ChatRoomQuery.allMine,
   });
 
-  final ChatRoomListOption queryOption;
+  final ChatRoomQuery queryOption;
 
   @override
   State<ChatRoomListScreen> createState() => _ChatRoomListScreenState();
 }
 
 class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
-  late ChatRoomListOption queryOption;
+  late ChatRoomQuery queryOption;
   @override
   void initState() {
     super.initState();
@@ -45,7 +45,7 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
               maxWidth: 180,
             ),
             itemBuilder: (BuildContext context) {
-              return ChatRoomListOption.values
+              return ChatRoomQuery.values
                   .map((q) => PopupMenuItem(
                       value: q, child: Text(q.name.toLowerCase().t)))
                   .toList();

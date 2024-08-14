@@ -6,22 +6,10 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
-enum ChatRoomListOption {
-  allMine,
-  allMineByTime,
-  open,
-  single,
-  singleByTime,
-  group,
-  groupByTime,
-  receivedInvites,
-  rejectedInvites,
-}
-
 class ChatRoomListView extends StatelessWidget {
   const ChatRoomListView({
     super.key,
-    this.queryOption = ChatRoomListOption.allMine,
+    this.queryOption = ChatRoomQuery.allMine,
     this.itemBuilder,
     this.itemExtent,
     this.emptyBuilder,
@@ -29,7 +17,7 @@ class ChatRoomListView extends StatelessWidget {
     this.physics = const ClampingScrollPhysics(),
   });
 
-  final ChatRoomListOption queryOption;
+  final ChatRoomQuery queryOption;
   final Widget Function(BuildContext context, ChatRoom room, int index)?
       itemBuilder;
   final double? itemExtent;
@@ -37,58 +25,10 @@ class ChatRoomListView extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final ScrollPhysics? physics;
 
-  Query get query {
-    Query q = ChatService.instance.roomCol;
-    if (queryOption == ChatRoomListOption.allMine) {
-      q = q.orderBy(
-        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.order}',
-        descending: true,
-      );
-    } else if (queryOption == ChatRoomListOption.allMineByTime) {
-      q = q.orderBy(
-        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.timeOrder}',
-        descending: true,
-      );
-    } else if (queryOption == ChatRoomListOption.open) {
-      q = q
-          .where(ChatRoom.field.open, isEqualTo: true)
-          .orderBy(ChatRoom.field.updatedAt, descending: true);
-    } else if (queryOption == ChatRoomListOption.single) {
-      q = q.orderBy(
-        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleOrder}',
-        descending: true,
-      );
-    } else if (queryOption == ChatRoomListOption.singleByTime) {
-      q = q.orderBy(
-        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleTimeOrder}',
-        descending: true,
-      );
-    } else if (queryOption == ChatRoomListOption.group) {
-      q = q.orderBy(
-        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupOrder}',
-        descending: true,
-      );
-    } else if (queryOption == ChatRoomListOption.groupByTime) {
-      q = q.orderBy(
-        '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupTimeOrder}',
-        descending: true,
-      );
-    } else if (queryOption == ChatRoomListOption.receivedInvites) {
-      q = q
-          .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
-          .orderBy(ChatRoom.field.updatedAt, descending: true);
-    } else if (queryOption == ChatRoomListOption.rejectedInvites) {
-      q = q
-          .where(ChatRoom.field.rejectedUsers, arrayContains: myUid)
-          .orderBy(ChatRoom.field.updatedAt, descending: true);
-    }
-    return q;
-  }
-
   @override
   Widget build(BuildContext context) {
     return FirestoreQueryBuilder(
-      query: query,
+      query: queryOption.query,
       builder: (context, snapshot, child) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
@@ -102,14 +42,14 @@ class ChatRoomListView extends StatelessWidget {
 
         return CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const ChatRoomInvitationShortList(
+                  ChatRoomInvitationShortList(
                     key: ValueKey("Chat Room Invitation Short List"),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                 ],
               ),
             ),

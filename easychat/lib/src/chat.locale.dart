@@ -66,41 +66,41 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Chat Room List',
     'ko': '채팅방 목록',
   },
-  ChatRoomListOption.allMine.name.toLowerCase(): {
+  ChatRoomQuery.allMine.name.toLowerCase(): {
     'en': 'My Chats',
     'ko': '내 채팅',
   },
-  ChatRoomListOption.allMineByTime.name.toLowerCase(): {
+  ChatRoomQuery.allMineByTime.name.toLowerCase(): {
     'en': 'My Chats Ordered by Time',
     'ko': '내 채팅 시간 순',
   },
-  ChatRoomListOption.single.name.toLowerCase(): {
+  ChatRoomQuery.single.name.toLowerCase(): {
     'en': '1:1 Chats',
     'ko': '1:1 채팅',
   },
-  ChatRoomListOption.singleByTime.name.toLowerCase(): {
+  ChatRoomQuery.singleByTime.name.toLowerCase(): {
     'en': '1:1 Chats Ordered by Time',
     'ko': '1:1 채팅 시간 순',
   },
-  ChatRoomListOption.group.name.toLowerCase(): {
+  ChatRoomQuery.group.name.toLowerCase(): {
     'en': 'Group Chats',
     'ko': '그룹 채팅',
   },
-  ChatRoomListOption.groupByTime.name.toLowerCase(): {
+  ChatRoomQuery.groupByTime.name.toLowerCase(): {
     'en': 'Group Chats Ordered by Time',
     'ko': '그룹 채팅 시간 순',
   },
-  ChatRoomListOption.receivedInvites.name.toLowerCase(): {
+  ChatRoomQuery.receivedInvites.name.toLowerCase(): {
     'en': 'Received Chat Invitations',
     'ko': '받은 채팅 초대',
   },
-  ChatRoomListOption.rejectedInvites.name.toLowerCase(): {
+  ChatRoomQuery.rejectedInvites.name.toLowerCase(): {
     'en': 'Rejected Chat Invitations',
     'ko': '반려된 채팅 초대',
   },
-  ChatRoomListOption.open.name.toLowerCase(): {
+  ChatRoomQuery.open.name.toLowerCase(): {
     'en': 'Open Chats',
-    'ko': '공개 채팅'
+    'ko': '공개 채팅',
   },
 
   // chat.room.screen.dart
@@ -142,6 +142,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Accept/Reject Chat Requests',
     'ko': '채팅 요청 수락/반려',
   },
+  'no chat requests': {
+    'en': 'No Chat Requests',
+    'ko': '채팅 요청',
+  },
 
   // rejected.chat.room.invite_list.screen.dart
   'rejected chat requests': {
@@ -155,6 +159,10 @@ final localeTexts = <String, Map<String, String>>{
   'you have rejected chat already, accept the chat instead?': {
     'en': "You have rejected the chat already. Accept and continue chat?",
     'ko': "이미 이 채팅을 거절하셨습니다. 수락하고 계속 채팅하시겠습니까?"
+  },
+  'no chat rejected': {
+    'en': 'No chat rejected.',
+    'ko': '아직 채팅을 거절하지 않았습니다.',
   },
 
   // chat.bubble.dart

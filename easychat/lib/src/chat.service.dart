@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -82,7 +81,7 @@ class ChatService {
   /// Show the chat room list screen.
   Future showChatRoomListScreen(
     BuildContext context, {
-    ChatRoomListOption queryOption = ChatRoomListOption.allMine,
+    ChatRoomQuery queryOption = ChatRoomQuery.allMine,
   }) {
     return $showChatRoomListScreen?.call() ??
         showGeneralDialog(
@@ -110,7 +109,7 @@ class ChatService {
         showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => const ChatRoomListScreen(
-            queryOption: ChatRoomListOption.open,
+            queryOption: ChatRoomQuery.open,
           ),
         );
   }
