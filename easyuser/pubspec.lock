@@ -177,6 +177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.10"
+  easy_report:
+    dependency: "direct main"
+    description:
+      name: easy_report
+      sha256: c9cbc13195621c11162c2007d8c45b22f39e7a89cb2c81383efde926102de3f5
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   easy_storage:
     dependency: "direct main"
     description:
@@ -827,5 +835,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.3 <4.0.0"
+  dart: ">=3.4.4 <4.0.0"
   flutter: ">=3.22.0"

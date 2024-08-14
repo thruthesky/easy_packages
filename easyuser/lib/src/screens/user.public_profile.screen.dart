@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_report/easy_report.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -145,10 +146,11 @@ class UserPublicProfileScreen extends StatelessWidget {
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  // await ReportService.instance.report(
-                                  //     context: context,
-                                  //     otherUid: user.uid,
-                                  //     documentRef);
+                                  await ReportService.instance.report(
+                                    context: context,
+                                    otherUid: user.uid,
+                                    documentReference: user.ref,
+                                  );
                                 },
                                 child: Text(
                                   'report'.t,
