@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_like/easy_like.dart';
-import 'package:easy_like/src/like.exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 /// Support like only. Not dislike.
@@ -70,17 +69,20 @@ class Like {
 
       int $likeCount = likedBy.length;
 
-      /// check if likedBy contains the uid, if not then it will liked.
-      /// otherwise dislike
-      bool isLiked = likedBy.contains(uid) == false;
+      /// Check if to like or to unlike.
+      ///
+      /// If likedBy contains the uid, the uid liked it already. So, it should unlike it.
+      /// If likedBy does not contain the uid, then like it.
+      bool hasLiked = likedBy.contains(uid);
 
-      /// If isLiked then add it, else unlike it;
-      if (isLiked) {
-        $likedBy = FieldValue.arrayUnion([uid]);
-        $likeCount++;
-      } else {
+      /// If the user has liked it, then unlike it.
+      if (hasLiked) {
         $likedBy = FieldValue.arrayRemove([uid]);
         $likeCount--;
+      } else {
+        /// If the user has not liked it, then like it.
+        $likedBy = FieldValue.arrayUnion([uid]);
+        $likeCount++;
       }
 
       ///
@@ -106,7 +108,7 @@ class Like {
       );
       LikeService.instance.onLiked?.call(
         like: Like.fromJson(data, likeRef.id),
-        isLiked: isLiked,
+        isLiked: !hasLiked,
       );
     });
   }
