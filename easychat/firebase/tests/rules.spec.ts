@@ -1979,3 +1979,63 @@ describe("Kick Out Members Test", async () => {
     );
   });
 });
+
+// =======================================================================
+// ========================= Delete Doc Test =============================
+// =======================================================================
+
+describe("Delete Doc", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [durianId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+  it("[Pass] Master delete doc", async () => {
+    await assertSucceeds(deleteDoc(doc(appleDb, getRoomPath(appleGroupId))));
+  });
+  it("[Fail] Member delete doc", async () => {
+    await assertFails(deleteDoc(doc(durianDb, getRoomPath(appleGroupId))));
+  });
+  it("[Fail] Outsider delete doc", async () => {
+    await assertFails(deleteDoc(doc(guavaDb, getRoomPath(appleGroupId))));
+  });
+});
