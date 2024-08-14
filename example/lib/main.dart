@@ -246,7 +246,16 @@ class MyAppState extends State<MyApp> {
         subscriptionName: category ?? 'no-category-post',
       ),
       onCreate: (Post post) async {
-        /// do something after post is created
+        MessagingService.instance.sendMessageToSubscription(
+          subscription:
+              post.category.isNotEmpty ? post.category : 'no-category-post',
+          title: 'post title ${post.title}  ${DateTime.now()}',
+          body: 'post body ${post.content}',
+          data: {
+            "action": 'post',
+            'postId': post.id,
+          },
+        );
       },
     );
   }
