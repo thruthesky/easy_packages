@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_like/easy_like.dart';
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
@@ -65,6 +66,7 @@ class MyAppState extends State<MyApp> {
     commentInit();
     chatInit();
     reportInit();
+    likeInit();
 
     // PostService.instance.init(
     //   categories: {
@@ -352,6 +354,33 @@ class MyAppState extends State<MyApp> {
             'documentReference': report.documentReference.toString(),
           },
         );
+      },
+    );
+  }
+
+  likeInit() {
+    LikeService.instance.init(
+      onLike: ({required Like like, required bool isLiked}) async {
+        if (isLiked == false) return;
+
+        /// get the like document reference for more information
+        /// then base from the document reference you can swich or decide where the notificaiton should go
+        /// set push notification. e.g. send push notification to post like
+        if (like.documentReference.toString().contains('/posts/')) {
+          Post post = await Post.get(like.documentReference.id);
+
+          /// can get more information base from the documentReference
+          /// can give more details on the push notification
+          MessagingService.instance.sendMessageToUid(
+            uids: [post.uid],
+            title: 'Your post got liked',
+            body: '${my.displayName} liked ${post.title}',
+            data: {
+              "action": 'like',
+              'documentReference': like.documentReference.toString(),
+            },
+          );
+        }
       },
     );
   }

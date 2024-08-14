@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_like/easy_like.dart';
 import 'package:easy_like/src/like.exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -69,13 +70,17 @@ class Like {
 
       int $likeCount = likedBy.length;
 
-      /// If liked already then, unlike it;
-      if (likedBy.contains(uid)) {
-        $likedBy = FieldValue.arrayRemove([uid]);
-        $likeCount--;
-      } else {
+      /// check if likedBy contains the uid, if not then it will liked.
+      /// otherwise dislike
+      bool isLiked = likedBy.contains(uid) == false;
+
+      /// If isLiked then add it, else unlike it;
+      if (isLiked) {
         $likedBy = FieldValue.arrayUnion([uid]);
         $likeCount++;
+      } else {
+        $likedBy = FieldValue.arrayRemove([uid]);
+        $likeCount--;
       }
 
       ///
@@ -87,17 +92,22 @@ class Like {
           SetOptions(
             merge: true,
           ));
-
+      final data = {
+        'documentReference': documentReference,
+        'likeCount': $likeCount,
+        'likedBy': $likedBy,
+      };
       transaction.set(
-          likeRef,
-          {
-            'documentReference': documentReference,
-            'likeCount': $likeCount,
-            'likedBy': $likedBy,
-          },
-          SetOptions(
-            merge: true,
-          ));
+        likeRef,
+        data,
+        SetOptions(
+          merge: true,
+        ),
+      );
+      LikeService.instance.onLike?.call(
+        like: Like.fromJson(data, likeRef.id),
+        isLiked: isLiked,
+      );
     });
   }
 }
