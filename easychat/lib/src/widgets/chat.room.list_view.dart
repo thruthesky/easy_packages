@@ -102,7 +102,13 @@ class ChatRoomListView extends StatelessWidget {
         if (snapshot.docs.isEmpty) {
           return emptyBuilder?.call(context) ??
               Center(
-                child: Text("chat list is empty".t),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    "chat list is empty".t,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               );
         }
         final docs = snapshot.docs;

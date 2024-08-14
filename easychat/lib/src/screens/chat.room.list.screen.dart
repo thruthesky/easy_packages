@@ -26,7 +26,7 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('chat room list: ${queryOption.name}'.t),
+        title: Text(queryOption.name.toLowerCase().t),
         actions: [
           IconButton(
             onPressed: () {
@@ -41,9 +41,13 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
                 queryOption = q;
               });
             },
+            constraints: const BoxConstraints(
+              maxWidth: 180,
+            ),
             itemBuilder: (BuildContext context) {
               return ChatRoomListOption.values
-                  .map((q) => PopupMenuItem(value: q, child: Text(q.name)))
+                  .map((q) => PopupMenuItem(
+                      value: q, child: Text(q.name.toLowerCase().t)))
                   .toList();
             },
           ),
@@ -52,6 +56,9 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
       body: ChatRoomListView(
         queryOption: queryOption,
         itemBuilder: (context, room, index) {
+          if (queryOption == ChatRoomListOption.receivedInvites) {
+            return ChatRoomInvitationListTile(room: room);
+          }
           if (index == 0) {
             return Column(
               mainAxisSize: MainAxisSize.min,

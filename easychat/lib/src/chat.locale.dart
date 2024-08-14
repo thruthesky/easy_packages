@@ -66,39 +66,39 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Chat Room List',
     'ko': '채팅방 목록',
   },
-  'chat room list: ${ChatRoomListOption.allMine.name}': {
+  ChatRoomListOption.allMine.name.toLowerCase(): {
     'en': 'My Chats',
     'ko': '내 채팅',
   },
-  'chat room list: ${ChatRoomListOption.allMineByTime.name}': {
+  ChatRoomListOption.allMineByTime.name.toLowerCase(): {
     'en': 'My Chats Ordered by Time',
     'ko': '내 채팅 시간 순',
   },
-  'chat room list: ${ChatRoomListOption.single.name}': {
+  ChatRoomListOption.single.name.toLowerCase(): {
     'en': '1:1 Chats',
     'ko': '1:1 채팅',
   },
-  'chat room list: ${ChatRoomListOption.singleByTime.name}': {
+  ChatRoomListOption.singleByTime.name.toLowerCase(): {
     'en': '1:1 Chats Ordered by Time',
     'ko': '1:1 채팅 시간 순',
   },
-  'chat room list: ${ChatRoomListOption.group.name}': {
+  ChatRoomListOption.group.name.toLowerCase(): {
     'en': 'Group Chats',
     'ko': '그룹 채팅',
   },
-  'chat room list: ${ChatRoomListOption.groupByTime.name}': {
+  ChatRoomListOption.groupByTime.name.toLowerCase(): {
     'en': 'Group Chats Ordered by Time',
     'ko': '그룹 채팅 시간 순',
   },
-  'chat room list: ${ChatRoomListOption.receivedInvites.name}': {
+  ChatRoomListOption.receivedInvites.name.toLowerCase(): {
     'en': 'Received Chat Invitations',
     'ko': '받은 채팅 초대',
   },
-  'chat room list: ${ChatRoomListOption.rejectedInvites.name}': {
+  ChatRoomListOption.rejectedInvites.name.toLowerCase(): {
     'en': 'Rejected Chat Invitations',
     'ko': '반려된 채팅 초대',
   },
-  'chat room list: ${ChatRoomListOption.open.name}': {
+  ChatRoomListOption.open.name.toLowerCase(): {
     'en': 'Open Chats',
     'ko': '공개 채팅'
   },
@@ -244,8 +244,8 @@ final localeTexts = <String, Map<String, String>>{
   // chat.room.list_view.dart
   // 'something went wrong' -> chat.room.invitation.short.list.dart
   'chat list is empty': {
-    'en': 'You have no chat friends. Start chatting with someone.',
-    'ko': '채팅 친구가 없습니다. 누군가와 채팅을 시작하세요.',
+    'en': 'No Chat rooms yet.',
+    'ko': '아직 채팅방이 없습니다.',
   },
 
   // chat.room.member.list.dialog.dart
