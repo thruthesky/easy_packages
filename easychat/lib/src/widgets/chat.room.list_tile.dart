@@ -46,7 +46,7 @@ class ChatRoomListTile extends StatelessWidget {
       otherUid: getOtherUserUidFromRoomId(room.id)!,
       builder: (blocked) {
         if (blocked) {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
         return UserDoc.sync(
           uid: getOtherUserUidFromRoomId(room.id)!,
