@@ -46,12 +46,8 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
             ),
             itemBuilder: (BuildContext context) {
               return ChatRoomListOption.values
-                  .map(
-                    (q) => PopupMenuItem(
-                      value: q,
-                      child: Text(q.name.toLowerCase().t),
-                    ),
-                  )
+                  .map((q) => PopupMenuItem(
+                      value: q, child: Text(q.name.toLowerCase().t)))
                   .toList();
             },
           ),
