@@ -27,7 +27,7 @@ class PostService {
   Function(Post)? onCreate;
 
   /// Add extra widget on chatroom,. eg. push notification toggle button
-  Widget Function(String)? postListActionButton;
+  Widget Function(String?)? postListActionButton;
 
   init({
     Future Function(BuildContext, Post)? showPostDetailScreen,
@@ -37,7 +37,7 @@ class PostService {
         showPostUpdateScreen,
     String? youtubeDataApi,
     Function(Post)? onCreate,
-    Widget Function(String)? postListActionButton,
+    Widget Function(String?)? postListActionButton,
   }) {
     initialized = true;
     $showPostDetailScreen = showPostDetailScreen;
