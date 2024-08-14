@@ -63,6 +63,7 @@ class MyAppState extends State<MyApp> {
     messagingInit();
     commentInit();
     chatInit();
+    applyChatLocales();
 
     // PostService.instance.init(
     //   categories: {
