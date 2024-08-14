@@ -176,6 +176,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                           ],
                         );
                 }),
+
                 UploadIconButton(
                   photoCamera: true,
                   photoGallery: true,
