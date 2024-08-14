@@ -295,7 +295,15 @@ UserDoc(
 
 ## FirestoreUserDoc
 
-It works just the same as `UserDoc` but gets data from Firestore.
+- It works just the same as `UserDoc` but gets data from Firestore.
+
+- Note that, the truth of the source is saved in Firestore. Meaning, the data in realtime database are not the origin data. It's mirrored data. And it might not have the updated data.
+
+
+- Use `FirestoreUserDoc` whenever you need to get a document only one time.
+
+- Use `UserDoc` when you need to display a list of user data or to display the data in realtime since it uses rtdb and it's cheap.
+
 
 
 
