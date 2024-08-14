@@ -15,6 +15,7 @@ import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_locale/easy_locale.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -32,6 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    lo.merge({
+      'version': {'en': 'V', 'ko': '버'}
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -59,7 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             Row(
               children: [
-                Text('isSamllScreen: ${context.isSmallScreen}'),
+                Text('version'.t),
+                Text('   isSamllScreen: ${context.isSmallScreen}'),
                 Value(
                   ref: FirebaseDatabase.instance.ref('/test/value'),
                   builder: (v, r) => IconButton(

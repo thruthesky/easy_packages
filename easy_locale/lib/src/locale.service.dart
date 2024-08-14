@@ -60,7 +60,7 @@ class LocaleService {
 
   initConvertExistingTextKeysToLowerCase() {
     /// Make the translation text key into lower case
-    Map<String, dynamic> copy = {};
+    Map<String, Map<String, dynamic>> copy = {};
     localeTexts.forEach((key, value) {
       final lowerKey = key.toLowerCase();
 
@@ -146,7 +146,12 @@ class LocaleService {
 
   /// Set translation text
   ///
-  /// It will replace the existing text if the key is already set.
+  /// It will set(or replace) the text of the key of the locale.
+  ///
+  /// Note that, it will only set the text of the key of the **locale**. It
+  /// will not set the text of the key of the other locales.
+  ///
+  /// To merge the translation text, use [merge] function.
   set({
     required String key,
     required String locale,
@@ -175,5 +180,15 @@ class LocaleService {
 
     final textMap = localeTexts[key] ?? {};
     return textMap[locale] ?? textMap[fallbackLocale];
+  }
+
+  /// Merge the translation text
+  merge(Map<String, Map<String, dynamic>> texts) {
+    texts.forEach((key, value) {
+      if (localeTexts[key] == null) {
+        localeTexts[key] = {};
+      }
+      localeTexts[key]!.addAll(value);
+    });
   }
 }

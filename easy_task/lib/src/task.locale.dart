@@ -85,7 +85,7 @@ final localeTexts = <String, Map<String, String>>{
 };
 
 void addTaskLocaleTexts() async {
-  // lo.merge(localeTexts);
+  lo.merge(localeTexts);
 
   // final locale = await currentLocale;
   // if (locale == null) return;
