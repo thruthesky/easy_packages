@@ -40,7 +40,7 @@ class PostLikeTextButton extends StatelessWidget {
       statesController: statesController,
       isSemanticButton: isSemanticButton,
       onPressed: () async {
-        final like = Like(uid: my.uid, documentReference: post.ref);
+        final like = Like(documentReference: post.ref);
         await like.like();
       },
       child: child,

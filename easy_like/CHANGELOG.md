@@ -1,3 +1,7 @@
+## 0.0.7 **Breaking Change**
+* Add. `LikeDoc`.
+* Refactor. **Breaking Change** No more uid.
+
 ## 0.0.6
 * Update. document udpate.
 
