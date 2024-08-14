@@ -52,6 +52,9 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
       body: ChatRoomListView(
         queryOption: queryOption,
         itemBuilder: (context, room, index) {
+          if (queryOption != ChatRoomListOption.receivedInvites) {
+            return ChatRoomInvitationListTile(room: room);
+          }
           if (index == 0) {
             return Column(
               mainAxisSize: MainAxisSize.min,
