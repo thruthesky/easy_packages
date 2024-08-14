@@ -12,7 +12,7 @@ dependencies:
   collection: ^1.18.0
   easy_helpers: ^0.0.11
   easy_locale: ^0.0.10
-  easy_storage: ^0.0.12
+  easy_storage: ^0.0.14
   easyuser: ^0.0.17
   firebase_ui_firestore: ^1.6.4
   flutter:
