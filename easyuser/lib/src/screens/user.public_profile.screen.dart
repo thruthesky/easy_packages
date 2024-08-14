@@ -61,13 +61,6 @@ class UserPublicProfileScreen extends StatelessWidget {
                                     .colorScheme
                                     .onSurfaceVariant,
                               ),
-                              child: Center(
-                                  child: Text(
-                                'Failed to load image'.t,
-                                style: context.bodyMedium.copyWith(
-                                  color: Colors.white,
-                                ),
-                              )),
                             ),
                             imageUrl: user.statePhotoUrl!,
                             fit: BoxFit.cover,
