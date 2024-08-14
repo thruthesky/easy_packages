@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 
@@ -61,6 +60,7 @@ class MyAppState extends State<MyApp> {
     );
 
     messagingInit();
+    postInit();
     commentInit();
     chatInit();
 
@@ -243,7 +243,7 @@ class MyAppState extends State<MyApp> {
   postInit() {
     PostService.instance.init(
       postListActionButton: (category) => PushNotificationToggleIcon(
-        subscriptionName: category,
+        subscriptionName: category ?? 'no-category-post',
       ),
       onCreate: (Post post) async {
         /// do something after post is created
@@ -289,29 +289,38 @@ class MyAppState extends State<MyApp> {
   /// With the option of 'excludeSubscribers: true', the backend will send messages to the users whose uid is not in the list of subscription.
   chatInit() {
     ChatService.instance.init(
-
-        /// On chat, users on chatRoom always get  notification unless they turn it off.
-        /// To show that the notification is active, PushNotificationToggleIcon is reverse
-        /// This will show the Icon as enabled by default, and when click it will set `uid:true` to subscription name
-        /// which later on we se set on the `onSendMessage` -> `sendMessageToUid` with parameter of excludeSubscribers.
-        /// This will remove the uid of those who has /path/subscriptionName/uid:true from the list of uids
-        chatRoomActionButton: (room) => PushNotificationToggleIcon(
-              subscriptionName: room.id,
-              reverse: true,
-            ),
-        onSendMessage: (
-            {required ChatMessage message, required ChatRoom room}) async {
-          final uids = room.userUids.where((uid) => uid != myUid).toList();
-          if (uids.isEmpty) return;
-          MessagingService.instance.sendMessageToUid(
-            uids: uids,
-            subscriptionName: room.id,
-            excludeSubscribers: true,
-            title: 'ChatService ${DateTime.now()}',
-            body: '${room.id} ${message.id} ${message.text}',
-            data: {"action": 'chat', 'roomId': room.id},
-          );
-        });
+      /// On chat, users on chatRoom always get  notification unless they turn it off.
+      /// To show that the notification is active, PushNotificationToggleIcon is reverse
+      /// This will show the Icon as enabled by default, and when click it will set `uid:true` to subscription name
+      /// which later on we se set on the `onSendMessage` -> `sendMessageToUid` with parameter of excludeSubscribers.
+      /// This will remove the uid of those who has /path/subscriptionName/uid:true from the list of uids
+      chatRoomActionButton: (room) => PushNotificationToggleIcon(
+        subscriptionName: room.id,
+        reverse: true,
+      ),
+      onSendMessage: (
+          {required ChatMessage message, required ChatRoom room}) async {
+        final uids = room.userUids.where((uid) => uid != myUid).toList();
+        if (uids.isEmpty) return;
+        MessagingService.instance.sendMessageToUid(
+          uids: uids,
+          subscriptionName: room.id,
+          excludeSubscribers: true,
+          title: 'ChatService ${DateTime.now()}',
+          body: '${room.id} ${message.id} ${message.text}',
+          data: {"action": 'chat', 'roomId': room.id},
+        );
+      },
+      onInvite: ({required ChatRoom room, required String uid}) async {
+        MessagingService.instance.sendMessageToUid(
+          uids: [uid],
+          title: 'Chat Invite ${DateTime.now()}',
+          body:
+              '${my.displayName} Has invited you to join the chat room ${room.id} ${room.name}',
+          data: {"action": 'chatInvite', 'roomId': room.id},
+        );
+      },
+    );
   }
 
   @override
