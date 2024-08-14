@@ -316,13 +316,75 @@ lo.merge({
 });
 ```
 
+## Setting texts where it is needed
 
-# 유닛 테스트
+- You may use `lo.merge` to add translation where it is used.
+- The example below merges translation texts inside the build method. You may do so if you want.
+
+```dart
+class ReportMenu extends StatelessWidget {
+  const ReportMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    lo.merge({
+      'report': {
+        'en': 'Report',
+        'ko': '신고',
+      },
+      'my report list': {
+        'en': 'My Report List',
+        'ko': '내 신고 목록',
+      },
+    });
+    return Settings(
+      label: 'Report'.t,
+      children: [
+        ListTile(
+          onTap: () {},
+          title: Text('my report list'.t),
+          leading: const Icon(Icons.report),
+          trailing: const Icon(Icons.chevron_right_rounded),
+        ),
+      ],
+    );
+  }
+}
+```
 
 
-`test` 폴더에 있는 테스트 코드를 보고, 사용법을 익히셔도 됩니다.
+
+- One good use case for writing the text translation (for i18n) in the build method is that a widget that has some text translation with `.t` or `.tr`, and that widget is used in a multiple screen.
+  - For instance, you use the easy_comment package in task management and forum, and the two should display different words. The comment pakcage in task management may have text translation like below. The code below displays `Add review of the task` instead of `Add a comment`.
+  
+- A good use case for writing text translations (for i18n) in the build method is when a widget with text translations using `.t` or `.tr` is used across multiple screens.
+  - For instance, if you use the easy_comment package in both task management screen and forum screen, each should display different words. In task management, the comment package might have a text translation like below. The code below displays `Add review of the task` instead of `Add a comment`.
+```dart
+class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    lo.merge({
+      'input comment': {
+        'en': 'Add review of the task',
+        'ko': '작업에 대한 리뷰를 추가하세요',
+      },
+    });
+    return CommentListTreeView(documentReference: task.ref);
+  }
+}
+```
+
+And in the forum screen, you may set the text translation with `lo.merge()` to display different texts.
 
 
+
+
+
+
+# Unit test
+
+
+- You can look at the test code in the `tests` folder to learn how to use it.
 
 
 

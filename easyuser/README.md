@@ -464,34 +464,40 @@ It uses Realtime Database only.
 
 
 
+## User block
 
-`---------------  아래 부터 문서 작업을 할 것: 아래는 과거 버전의 문서이다. 작업해서 위로 올린다. ----------------`
+- To block a user, you can call `i.block()` method. This method provides UI and logic to block and unblock a user.
+- To display the users who are blocked by the login user, call `UserService.instance.showBlockListScreen()`.
+- To customize the UI of the block list screen, you can create your own screen and use `BlockListView`.
+  - `BlockListView` supports most of the properties of the list view widget.
+- To display the UI design based on the block status, use `UserBlocked` widget like below.
+```dart
+UserBlocked(
+  otherUid: user.uid,
+  builder: (blocked) => Text(
+    blocked ? 'Unblock'.t : 'block'.t,
+  ),
+)
+```
+
+
+
 
 
 # Geo query
 
-- TODO: easy_geo_query 패키지를 만들어서 따로 관리 할 것. 아래 링크 방식으로 제작 할 것.
+- TODO: create a easy_geo_query package and develop with some idea of the doc below.
 
 - Here is some tips to better understand about Geo search: [How to perform geoqueries on Firestore (somewhat) efficiently](https://medium.com/firebase-developers/how-to-perform-geoqueries-on-firestore-somewhat-efficiently-6c2f10fd285f)
 
 
 
-- 먼저 앱이 실행되면 사용자의 위/경도 정보를 사용자 문서 필드  `latitude`, `longitude` 에 저장한다.
-    - 그러면 Fireflutter 이 자동으로 geohash4,geohash5,geohash6,geohash7 를 저장한다.
-    - 그리고, 필요에 따라 Firestore 미러링되게 한다.
-
-- 검색을 할 때, 로그인한 사용자의 200 미터 내의 사용자 검색은 로그인을 한 사용자의 geohash7 과 DB 의 geohash7 이 일치하는 사용자를 가져와 보여주면 된다.
-    - geohash6 는 1km 이내, geohash5 는 5km 이내, geohash4 는 20km 이내의 사용자를 검색 할 수 있다.
 
 
 
 
 
-
-
-## 로그인
-
-하우스에서 이메일/비밀번호를 통한 기본적인 회원 가입 및 회원 정보 수정 위젯을 제공한다. 하지만, 실제 앱 개발을 할 때에는 각 앱에 맞는 로그인을 사용하기를 바란다. 어떤 방식이든 Firebase Auth 를 통해서 로그인을 하면 된다. 그러면 각 기능들이 Firebase Auth 서비스를 통해서 로그인 정보를 액세스하고 연동하여 잘 동작을 한다.
+@TODO ///// `---------------  아래 부터 문서 작업을 할 것: 아래는 과거 버전의 문서이다. 작업해서 위로 올린다. ----------------`
 
 
 
@@ -1159,38 +1165,6 @@ UserService.instance.init(
 ## 좋아요
 
 - [좋아요](./like.md) 문서 참고
-
-
-
-## 사용자 차단 표시 및 차단하기
-
-- 블럭된 사용자는 `BlockListView` 로 목록으로 표시 할 수 있다.
-- 블럭된 경우 문자열로 표시하는 경우는 `orBlock()` String extension 을 사용하면 된다.
-- 위젯으로 표시를 해야하는 경우는 `Blocked`로 하면 된다.
-
-예제 - 코멘트 목록에서 사진을 표시할 때, 사용자가 차단되어져 있으면 사진을 표시하지 않는다.
-
-```dart
-Blocked(
-  uid: widget.comment.uid,
-  yes: () => SizedBox.fromSize(),
-  no: () => DisplayDatabasePhotos(
-    urls: widget.comment.urls,
-    path:
-        '${Path.comment(widget.post.id, widget.comment.id)}/${Field.urls}',
-  ),
-),
-```
-
-블럭 버튼을 표시하는 것은 위젯 문서를 참고한다.
-
-
-- 다른 사용자를 차단 할 때에 `UserService.instance.block()` 함수를 쓰면 된다. 이 함수 내에
-  - 로그인을 했는지 확인하고,
-  - 차단 할지 물어보고 (ask 옵션)
-  - 차단 했으면 화면에 알려주는 (notify 옵션)
-  기능들이 모두 포함되어져 있다.
-
 
 
 

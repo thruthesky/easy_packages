@@ -20,6 +20,16 @@ class TaskDetailsScreen extends StatefulWidget {
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   @override
   Widget build(BuildContext context) {
+    lo.merge({
+      'input comment': {
+        'en': 'Add review of the task',
+        'ko': '작업에 대한 리뷰를 추가하세요',
+      },
+      'comment list is empty': {
+        'en': 'No review yet',
+        'ko': '아직 리뷰가 없습니다',
+      },
+    });
     return TaskDoc(
       task: widget.task,
       sync: true,
