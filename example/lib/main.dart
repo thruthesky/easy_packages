@@ -6,6 +6,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_report/easy_report.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
@@ -63,6 +64,7 @@ class MyAppState extends State<MyApp> {
     postInit();
     commentInit();
     chatInit();
+    reportInit();
 
     // PostService.instance.init(
     //   categories: {
@@ -330,6 +332,25 @@ class MyAppState extends State<MyApp> {
           body:
               '${my.displayName} Has invited you to join the chat room ${room.id} ${room.name}',
           data: {"action": 'chatInvite', 'roomId': room.id},
+        );
+      },
+    );
+  }
+
+  reportInit() {
+    ReportService.instance.init(
+      onCreate: (Report report) async {
+        /// set push notification. e.g. send push notification to reportee
+        /// or developer can send push notification to admin
+        MessagingService.instance.sendMessageToUid(
+          uids: [report.reportee],
+          title: 'You have been reported',
+          body: 'Report reason ${report.reason}',
+          data: {
+            "action": 'report',
+            'reportId': report.id,
+            'documentReference': report.documentReference.toString(),
+          },
         );
       },
     );
