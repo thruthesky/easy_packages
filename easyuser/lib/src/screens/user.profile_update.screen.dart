@@ -176,7 +176,14 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                           ],
                         );
                 }),
+
                 UploadIconButton(
+                  photoCamera: true,
+                  photoGallery: true,
+                  videoCamera: false,
+                  videoGallery: false,
+                  fromGallery: false,
+                  fromFile: false,
                   icon: Row(
                     children: [
                       const Icon(Icons.camera_alt),

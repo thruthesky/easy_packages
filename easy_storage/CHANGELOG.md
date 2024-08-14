@@ -1,3 +1,6 @@
+## 0.0.14
+* Refactor. `fromGallery`, `fromFile`.
+
 ## 0.0.13
 * Update. Document update.
 

@@ -20,6 +20,9 @@ It also provides a way of listing and blocking users.
 - In admin screen, it displays the texts and uploads on the screen and let the admin choose to block the user or not.
 
 
+- It can report any document as long as it provides a user uid to blame.
+  - For instance,
+    - For a group chat, there might be many master users and you want to report that that room. You can pass the reference of the chat room document(reference), but must specifiy the user uid of whom to blame.
 
 
 

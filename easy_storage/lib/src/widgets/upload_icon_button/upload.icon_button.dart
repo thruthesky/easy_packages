@@ -15,6 +15,20 @@ import 'package:flutter/material.dart';
 /// [UploadIconButton.image], [UploadIconButton.video],  [UploadIconButton.file].
 ///
 /// The [onUpload] function is called when the upload is complete.
+///
+/// If [photoGallery] is set to true, it will get only photos from gallery.
+///
+/// If [videoGallery] is set to true, it will get only videos from gallery.
+///
+/// If [photoCamera] is set to true, it will get only photos from camera.
+///
+/// If [videoCamera] is set to true, it will get only videos from camera.
+///
+/// If [fromGallery] is set to true, it will get whatever from Gallery.
+/// It can be any file like image, pdf, zip, video, audio, etc.
+///
+/// If [fromFile] is set to true, it will get whatever from file storage(Not from gallery).
+/// It can be any file like image, pdf, zip, video, audio, etc.
 class UploadIconButton extends StatelessWidget {
   const UploadIconButton({
     super.key,
