@@ -99,38 +99,50 @@ class ChatRoomListView extends StatelessWidget {
         if (snapshot.isFetching && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (snapshot.docs.isEmpty) {
-          return emptyBuilder?.call(context) ??
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Text(
-                    "chat list is empty".t,
-                    textAlign: TextAlign.center,
+
+        return CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const ChatRoomInvitationShortList(
+                    key: ValueKey("Chat Room Invitation Short List"),
                   ),
-                ),
-              );
-        }
-        final docs = snapshot.docs;
-        final chatRooms =
-            docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
-        return ListView.builder(
-          itemExtent: itemExtent,
-          padding: padding,
-          physics: physics,
-          itemCount: chatRooms.length,
-          itemBuilder: (context, index) {
-            if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
-              snapshot.fetchMore();
-            }
-            final room = chatRooms[index];
-            if (itemBuilder != null) {
-              return itemBuilder!(context, room, index);
-            }
-            return ChatRoomListTile(
-              room: room,
-            );
-          },
+                  const SizedBox(height: 8),
+                ],
+              ),
+            ),
+            if (snapshot.docs.isEmpty)
+              SliverToBoxAdapter(
+                child: emptyBuilder?.call(context) ??
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Text(
+                          "chat list is empty".t,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+              ),
+            SliverList.builder(
+              itemCount: snapshot.docs.length,
+              itemBuilder: (context, index) {
+                if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
+                  snapshot.fetchMore();
+                }
+
+                final room = ChatRoom.fromSnapshot(snapshot.docs[index]);
+                if (itemBuilder != null) {
+                  return itemBuilder!(context, room, index);
+                }
+                return ChatRoomListTile(
+                  room: room,
+                );
+              },
+            ),
+          ],
         );
       },
     );

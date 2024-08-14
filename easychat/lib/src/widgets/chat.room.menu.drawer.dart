@@ -5,6 +5,7 @@ import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.member.list.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_report/easy_report.dart';
 
 class ChatRoomMenuDrawer extends StatelessWidget {
   const ChatRoomMenuDrawer({
@@ -310,17 +311,16 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         .block(context: context, otherUid: user!.uid);
                   },
                 ),
-              // ListTile(
-              //   title: Text('report'.t),
-              //   onTap: () {
-              // TODO review if is this the correct way
-              // ReportService.instance.report(
-              //   context: context,
-              //   documentReference: user!.doc,
-              //   otherUid: user!.uid,
-              // );
-              //   },
-              // ),
+              ListTile(
+                title: Text('report'.t),
+                onTap: () {
+                  ReportService.instance.report(
+                    context: context,
+                    documentReference: room.ref,
+                    otherUid: user!.uid,
+                  );
+                },
+              ),
               const SizedBox(
                 height: 36,
               ),

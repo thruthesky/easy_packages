@@ -22,7 +22,8 @@ It also provides a way of listing and blocking users.
 
 - It can report any document as long as it provides a user uid to blame.
   - For instance,
-    - For a group chat, there might be many master users and you want to report that that room. You can pass the reference of the chat room document(reference), but must specifiy the user uid of whom to blame.
+    - For a group chat, there might be many master users and you want to report that that room. You can pass the reference of the chat room document(reference), and choose any of the master users to blame.
+    - The option of `otherUid` is the one who is responsible for that document.
 
 
 

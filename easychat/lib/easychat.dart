@@ -34,3 +34,5 @@ export './src/chat.locale.dart';
 
 // Service ====================================================
 export './src/chat.service.dart';
+
+export './src/chat.query.dart';

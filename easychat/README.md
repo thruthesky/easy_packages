@@ -27,6 +27,15 @@ Add `easychat` into your `pubspec.yaml`
 ChatService.instance.init();
 ```
 
+
+## Logic
+
+- User must sign in to use any of the chat features.
+  - You must be sure that the user sign in first before using the chat screen. Or an error may appears on the screen.
+
+
+
+
 ## User database
 
 If your app uses diferent Firestore database structure from what `easychat` expects, you can use the `easyuser` package to setup the user database structure to fit your app.

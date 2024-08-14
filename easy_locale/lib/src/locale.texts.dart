@@ -251,6 +251,11 @@ final Map<String, Map<String, dynamic>> localeTexts = {
     'ko': '로그인하지 않았습니다',
   },
 
+  'sign-in first': {
+    'en': 'Sign-in first',
+    'ko': '로그인을 먼저 해주세요',
+  },
+
   /// --------------------- Post ---------------------
 
   'post create': {

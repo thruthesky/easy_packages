@@ -80,8 +80,10 @@ class ChatService {
       db.FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
 
   /// Show the chat room list screen.
-  Future showChatRoomListScreen(BuildContext context,
-      {ChatRoomListOption queryOption = ChatRoomListOption.allMine}) {
+  Future showChatRoomListScreen(
+    BuildContext context, {
+    ChatRoomListOption queryOption = ChatRoomListOption.allMine,
+  }) {
     return $showChatRoomListScreen?.call() ??
         showGeneralDialog(
           context: context,
@@ -89,6 +91,15 @@ class ChatService {
             queryOption: queryOption,
           ),
         );
+  }
+
+  Future showInviteListScreen(
+    BuildContext context,
+  ) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
+    );
   }
 
   Future showOpenChatRoomListScreen(BuildContext context) {
