@@ -16,14 +16,14 @@ class CommentService {
 
   /// Callback on comment create, use this if you want to do task after comment is created., eg. push notification
   /// Callback will have the [DocumentReference] of the newly created `comment`, can be use to retrieve comment information.
-  Function(DocumentReference)? onCommentCreate;
+  Function(DocumentReference)? onCreate;
 
   init({
-    Function(DocumentReference)? onCommentCreate,
+    Function(DocumentReference)? onCreate,
   }) {
     if (initialized) return;
     initialized = true;
-    this.onCommentCreate = onCommentCreate;
+    this.onCreate = onCreate;
   }
 
   /// Returns true if comment is created or updated.
