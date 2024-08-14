@@ -8,38 +8,118 @@ service cloud.firestore {
     
 
     match /chat-rooms/{roomId} {
-      function roomUser() {
-        return request.auth.uid in resource.data.users;
+      function willBeSingle() {
+        return request.resource.data.keys().hasAny(["single"]) 
+                && request.resource.data.single == true;
       }
-      function isCreator() {
-        return resource.data.creator == request.auth.uid;
+      function willBeAtMostOne(field) {
+        return !request.resource.data.keys().hasAny([field])
+          || (
+            request.resource.data.keys().hasAny([field])
+            && request.resource.data[field].size() <= 1
+          );
       }
-      function willBeCreator() {
-        return
-         request.resource.data.creator == request.auth.uid;
+      function willBeOnlyMaster() {
+        return request.resource.data.masterUsers.hasOnly([request.auth.uid]);
       }
-      function join() {
-        return request.resource.data.users.hasAny(request.auth.uid);
-      }
-      function leave() {
-        return request.resource.data.users.hasAny(request.auth.uid) == false;
+      function willBeOnlyMember() {
+        return request.resource.data.users.keys().hasOnly([request.auth.uid]);
       }
 
+      function sameOrRemovingMembers() {
+        return request.resource.data.users.keys().hasOnly(resource.data.users.keys());
+      }
+      function isMember() {
+        return request.auth.uid in resource.data.users.keys();
+      }
+      function isMaster() {
+        return request.auth.uid in resource.data.masterUsers;
+      }
+      function willBeMember() {
+        return request.auth.uid in request.resource.data.users.keys();
+      }
+      function isJoining() {
+        return !isMember() && willBeMember() && onlyAddingOneMember();
+      }
+      function isLeaving() {
+        return !willBeMember() && isMember() && onlyRemovingOneMember();
+      }
+      function isOpenGroup() {
+        return resource.data.keys().hasAny(['group', 'open'])
+                && resource.data.open == true
+                && resource.data.group == true;
+      }
+      function isSingleChat() {
+        return 'single' in resource.data.keys()
+                && resource.data.single;
+      }
+      function isInvited() {
+        return resource.data.keys().hasAny(['invitedUsers'])
+                && request.auth.uid in resource.data.invitedUsers;
+      }
+      function willBeRejectedUser() {
+        return request.resource.data.keys().hasAny(['rejectedUsers'])
+                && request.auth.uid in request.resource.data.rejectedUsers;
+      }
+      function isRejectedUser() {
+        return resource.data.keys().hasAny(['rejectedUsers'])
+                && request.auth.uid in resource.data.rejectedUsers;
+      }
+      function isRejecting() {
+        return isInvited()
+                && willBeRejectedUser()
+                && !isRejectedUser();
+      }
+      function notUpdating(fields) {
+        return resource == null 
+          ? !request.resource.data.keys().hasAny(fields)
+          : !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+      }
+      function onlyAddingOneMember() {
+        return resource.data.users.keys().toSet().intersection(request.resource.data.users.keys().toSet()) == resource.data.users.keys().toSet()
+          && request.resource.data.users.keys().toSet().difference(resource.data.users.keys().toSet()).size() == 1;
+      }
+      function onlyRemovingOneMember() {
+        return request.resource.data.users.keys().toSet().intersection(resource.data.users.keys().toSet()) == request.resource.data.users.keys().toSet()
+                && resource.data.users.keys().toSet().difference(request.resource.data.users.keys().toSet()).size() == 1;
+      }
+      function sameMembers() {
+        return request.resource.data.users.keys().toSet().intersection(resource.data.users.keys().toSet()) == request.resource.data.users.keys().toSet()
+                && resource.data.users.keys().toSet().difference(request.resource.data.users.keys().toSet()).size() == 0;
+      }
       function onlyUpdating(fields) {
         return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
       }
 
-
-      allow read: if roomUser();
-      allow create: if isCreator() || willBeCreator();
-      allow update: if
-        // If you are not in the room yet,
-        (!roomUser() && join() && onlyUpdate(['users']))
-        ||
-        // If you have join the room already,
-        (roomUser() && onlyUpdate(['updatedAt', 'order']))
-      ;
-      allow delete: if isCreator();
+      // Chat Room Rules
+      allow read: if isMember();
+      allow create: if willBeOnlyMember() 
+                      && willBeOnlyMaster()
+                      && (
+                        !willBeSingle()
+                        || (willBeSingle() && willBeAtMostOne('invitedUsers'))
+                      );
+      allow update: if 
+        (
+          isMaster()
+          && sameOrRemovingMembers()
+          && (
+            !isSingleChat()
+            || (isSingleChat() && notUpdating(['invitedUsers','single']))
+          )
+        )
+        || (
+          isJoining()
+          && (isOpenGroup() || isInvited() || isRejectedUser())
+        )
+        || isLeaving()
+        || isRejecting()
+        || (
+          isMember()
+          && onlyUpdating(['lastMessageText', 'lastMessageAt', 'lastMessageUid', 'lastMessageUrl', 'lastMessageId', 'lastMessageDeleted', 'users'])
+          && sameMembers()
+        );
+        allow delete: if isMaster();
     }
   // EO of Rules
   }
@@ -47,27 +127,27 @@ service cloud.firestore {
 
 
 // example: fieldCheck(['required', 'fields'], ['optional', 'fields'])
-function fieldCheck(requires, optional) {
-  let all = requires.concat( optional );
-  // let fC = debug('****** fieldCheck *****');
-  return required( requires ) && request.resource.data.keys().hasOnly(all);
-}
+// function fieldCheck(requires, optional) {
+//   let all = requires.concat( optional );
+//   // let fC = debug('****** fieldCheck *****');
+//   return required( requires ) && request.resource.data.keys().hasOnly(all);
+// }
 
-// * Warning : It's check the fields after save.
-// * Warning : !!! It's not checking the incoming data fields !!!
-function required(fields) {
-  // let d = debug('**** required ****');
-  // let e = debug(request.resource.data);
-  return request.resource.data.keys().hasAll( fields );
-}
+// // * Warning : It's check the fields after save.
+// // * Warning : !!! It's not checking the incoming data fields !!!
+// function required(fields) {
+//   // let d = debug('**** required ****');
+//   // let e = debug(request.resource.data);
+//   return request.resource.data.keys().hasAll( fields );
+// }
 
 
 
 // Check if the uid of the document matches to the loign user's uid.
 //
-function isMyDoc() {
-   return isMyField('uid');
-}
+// function isMyDoc() {
+//    return isMyField('uid');
+// }
 
 // Check if the field matches to the login user's uid
 //
@@ -87,9 +167,9 @@ function isMyDoc() {
 //
 // [field] must match the user uid.
 // Use this to see if the document belongs to the user after save.
-function willBeMyDoc() {
-   return willBeMyField('uid');
-}
+// function willBeMyDoc() {
+//    return willBeMyField('uid');
+// }
 
 // Check if the [fields] does not change.
 //
@@ -102,68 +182,68 @@ function willBeMyDoc() {
 // 문서의 특정 필드들(fields)은 변경되지 않도록 한다.
 //
 // 변경이 안되면 true, 변경이 되면, false 를 리턴.
-function notUpdating(fields) {
-  // 저장되어져 있는 데이터가 없으면, 즉 생성인 경우,
-  return resource == null 
-    // 생성될 문서에 변경 금지된 필드들(fields)이 없으면, true 를 리턴.
-    ? !request.resource.data.keys().hasAny(fields)
-    // 이미 생성된 문서가 있는 경우, 변경 금지 필드들(fields)이 변경안되면 true 를 리턴.
-    : !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
-}
+// function notUpdating(fields) {
+//   // 저장되어져 있는 데이터가 없으면, 즉 생성인 경우,
+//   return resource == null 
+//     // 생성될 문서에 변경 금지된 필드들(fields)이 없으면, true 를 리턴.
+//     ? !request.resource.data.keys().hasAny(fields)
+//     // 이미 생성된 문서가 있는 경우, 변경 금지 필드들(fields)이 변경안되면 true 를 리턴.
+//     : !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+// }
 
 
 
 
 
-// The value of [fields] must be changed.
-// Chaging other properties rather than [fields] is fine.
-function mustUpdating(fields) {
-  return request.resource.data.diff(resource.data).affectedKeys().hasAll(fields);
-}
+// // The value of [fields] must be changed.
+// // Chaging other properties rather than [fields] is fine.
+// function mustUpdating(fields) {
+//   return request.resource.data.diff(resource.data).affectedKeys().hasAll(fields);
+// }
 
 
-// Adding an element to the array field.
-//
-// This must add an elemnt only. Not replacing any other element. It does unique element check.
-//
-// 배열에 요소를 1개만 추가
-// 문서의 여러 필드 중 하나의 배열 필드에 1개의 요소만 추가하는 경우.
-// 다른 필드는 건드리지 않으며, 해당 필드에 무엇이든 요소가 하나만 추가하면 된다.
-// 예를 들어, 채팅방에서 누군가를 초대할 때, 초대한 사람의 uid 를 배열에 추가하는 경우등에 사용하면 된다.
-function onlyAddingOneElement(arrayField) {
-  return
-    resource.data[arrayField].toSet().intersection(request.resource.data[arrayField].toSet()) == resource.data[arrayField].toSet()
-    &&
-    request.resource.data[arrayField].toSet().difference(resource.data[arrayField].toSet()).size() == 1
-  ;
-}
+// // Adding an element to the array field.
+// //
+// // This must add an elemnt only. Not replacing any other element. It does unique element check.
+// //
+// // 배열에 요소를 1개만 추가
+// // 문서의 여러 필드 중 하나의 배열 필드에 1개의 요소만 추가하는 경우.
+// // 다른 필드는 건드리지 않으며, 해당 필드에 무엇이든 요소가 하나만 추가하면 된다.
+// // 예를 들어, 채팅방에서 누군가를 초대할 때, 초대한 사람의 uid 를 배열에 추가하는 경우등에 사용하면 된다.
+// function onlyAddingOneElement(arrayField) {
+//   return
+//     resource.data[arrayField].toSet().intersection(request.resource.data[arrayField].toSet()) == resource.data[arrayField].toSet()
+//     &&
+//     request.resource.data[arrayField].toSet().difference(resource.data[arrayField].toSet()).size() == 1
+//   ;
+// }
 
 
-// Return true if the array field in the document is not removing the element.
-//
-// Usage: notRemoving('users', resource.data.master) - for blocking moderator to remove master.
+// // Return true if the array field in the document is not removing the element.
+// //
+// // Usage: notRemoving('users', resource.data.master) - for blocking moderator to remove master.
 
-// 문서의 특정 배열 필드에서 특정 요소를 제거하지 않는 경우 참을 리턴한다.
-// 예를 들어, 채팅방의 moderators 필드에 관리자와 여러명의 부 관리자가 있는 경우, 부 관리자가 관리자를 제거하지 못하게 할 때 등에서 사용한다.
-// 즉, 문서의 여러 필드 중에서 [field] 에서 [element] 를 제거하지 못하도록 할 때 사용한다.
-// 예) notRemoving('users', 'a') 와 같이 하면, users 필드에서 'a' 를 제거하는 쿼리를 하면 에러를 내도록 할 때 사용한다.
-function notRemoving(field, element) {
-  return request.resource.data[field].hasAny([element]);
-}
+// // 문서의 특정 배열 필드에서 특정 요소를 제거하지 않는 경우 참을 리턴한다.
+// // 예를 들어, 채팅방의 moderators 필드에 관리자와 여러명의 부 관리자가 있는 경우, 부 관리자가 관리자를 제거하지 못하게 할 때 등에서 사용한다.
+// // 즉, 문서의 여러 필드 중에서 [field] 에서 [element] 를 제거하지 못하도록 할 때 사용한다.
+// // 예) notRemoving('users', 'a') 와 같이 하면, users 필드에서 'a' 를 제거하는 쿼리를 하면 에러를 내도록 할 때 사용한다.
+// function notRemoving(field, element) {
+//   return request.resource.data[field].hasAny([element]);
+// }
 
 
-// Return true if the array field in the document is removing only the the element. It must maintain other elements.
-//
-// arrayField is an array
-// [element] is an element to be removed from the arrayField
-//
-// 문서의 특정 배열 필드에서 특정 요소를 제거하고, 다른 요소는 변경하지 않는 경우 참을 리턴한다.
-// 예를 들면, 글의 좋아요 목록 필드에 UID 를 저장하는 경우, 나의 UID 만 뺄 수 있도록 허용하는 것이다.
-function onlyRemoving(arryField, element) {
-  return
-    resource.data[arryField].toSet().difference(request.resource.data[arryField].toSet()) == [element].toSet() 
-    &&
-    resource.data[arryField].toSet().intersection(request.resource.data[arryField].toSet()) == request.resource.data[arryField].toSet()
-  ;
-}
+// // Return true if the array field in the document is removing only the the element. It must maintain other elements.
+// //
+// // arrayField is an array
+// // [element] is an element to be removed from the arrayField
+// //
+// // 문서의 특정 배열 필드에서 특정 요소를 제거하고, 다른 요소는 변경하지 않는 경우 참을 리턴한다.
+// // 예를 들면, 글의 좋아요 목록 필드에 UID 를 저장하는 경우, 나의 UID 만 뺄 수 있도록 허용하는 것이다.
+// function onlyRemoving(arryField, element) {
+//   return
+//     resource.data[arryField].toSet().difference(request.resource.data[arryField].toSet()) == [element].toSet() 
+//     &&
+//     resource.data[arryField].toSet().intersection(request.resource.data[arryField].toSet()) == request.resource.data[arryField].toSet()
+//   ;
+// }
 
