@@ -242,7 +242,7 @@ class MyAppState extends State<MyApp> {
 
   commentInit() {
     CommentService.instance.init(
-      onCommentCreate: (DocumentReference ref) async {
+      onCreate: (DocumentReference ref) async {
         /// get ancestor uid
         List<String> ancestorUids =
             await CommentService.instance.getAncestorsUid(ref.id);
