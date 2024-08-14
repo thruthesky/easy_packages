@@ -17,6 +17,7 @@ import {
   arrayRemove,
   arrayUnion,
   deleteField,
+  increment,
 } from "firebase/firestore";
 import { readFileSync } from "node:fs";
 import { before } from "mocha";
@@ -58,6 +59,9 @@ async function clearAndResetFirestoreContext(): Promise<void> {
   guavaDb = testEnv.authenticatedContext(guavaId).firestore();
 }
 
+// ===========================================================
+// ================ Chat Room Creation Test ==================
+// ===========================================================
 describe("Chat Room Creation Test", async () => {
   before(async () => {
     setLogLevel("error");
@@ -74,11 +78,10 @@ describe("Chat Room Creation Test", async () => {
     await clearAndResetFirestoreContext();
   });
 
-  it("[Pass] Create Room with name as creator, master, and member (1)", async () => {
+  it("[Pass] Create Room with name as master and member (1)", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -89,12 +92,11 @@ describe("Chat Room Creation Test", async () => {
       setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
     );
   });
-  it("[Pass] Create Room with name as creator, master, and member (2)", async () => {
+  it("[Pass] Create Room with name as master, and member (2)", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
       group: true,
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -110,8 +112,7 @@ describe("Chat Room Creation Test", async () => {
       name: "apple group",
       group: true,
       open: true,
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -122,11 +123,10 @@ describe("Chat Room Creation Test", async () => {
       setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
     );
   });
-  it("[Pass] Create Room as creator, master, and member without name", async () => {
+  it("[Pass] Create Room as  master, and member without name", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -134,27 +134,12 @@ describe("Chat Room Creation Test", async () => {
       },
     };
     await assertSucceeds(
-      setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
-    );
-  });
-  it("[Fail] Create Room with name and description but no creator", async () => {
-    const appleGroup: ChatRoom = {
-      name: "apple group",
-      masterUids: [appleId],
-      users: {
-        [appleId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
       setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
     );
   });
   it("[Fail] Create Room with name and description but no masterUid", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
       users: {
         [appleId]: {
           nMC: 0,
@@ -168,39 +153,15 @@ describe("Chat Room Creation Test", async () => {
   it("[Fail] Create Room with name and description but no member", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
     };
     await assertFails(
       setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
     );
   });
-  it("[Fail] Create Room with name and description but no member and creator", async () => {
+  it("[Fail] Create Room with name but no member and master", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      masterUids: [appleId],
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
-    );
-  });
-  it("[Fail] Create Room with name and description but no master and creator", async () => {
-    const appleGroup: ChatRoom = {
-      name: "apple group",
-      users: {
-        [appleId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
-    );
-  });
-  it("[Fail] Create Room with name and description but no member and master", async () => {
-    const appleGroup: ChatRoom = {
-      name: "apple group",
-      creator: appleId,
     };
     await assertFails(
       setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
@@ -209,8 +170,7 @@ describe("Chat Room Creation Test", async () => {
   it("[Fail] Create Room with Extra User as member", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -227,8 +187,7 @@ describe("Chat Room Creation Test", async () => {
   it("[Fail] Create Room with Extra User as master (1)", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
-      masterUids: [appleId, bananaId],
+      masterUsers: [appleId, bananaId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -242,8 +201,7 @@ describe("Chat Room Creation Test", async () => {
   it("[Fail] Create Room with Extra User as master (2)", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
-      masterUids: [appleId, bananaId],
+      masterUsers: [appleId, bananaId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -257,28 +215,12 @@ describe("Chat Room Creation Test", async () => {
       setDoc(doc(appleDb, getRoomPath(generateRandomId())), appleGroup)
     );
   });
-  it("[Fail] Create Room but creator, member, and master is a different user", async () => {
+  it("[Fail] Create Room but member, and master is a different user", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(bananaDb, getRoomPath(generateRandomId())), appleGroup)
-    );
-  });
-  it("[Fail] Create Room but creator is a different user", async () => {
-    const appleGroup: ChatRoom = {
-      name: "apple group",
-      creator: appleId,
-      masterUids: [bananaId],
-      users: {
-        [bananaId]: {
           nMC: 0,
         },
       },
@@ -290,8 +232,7 @@ describe("Chat Room Creation Test", async () => {
   it("[Fail] Create Room but master is a different user", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: bananaId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [bananaId]: {
           nMC: 0,
@@ -305,8 +246,7 @@ describe("Chat Room Creation Test", async () => {
   it("[Fail] Create Room but users is a different user", async () => {
     const appleGroup: ChatRoom = {
       name: "apple group",
-      creator: bananaId,
-      masterUids: [bananaId],
+      masterUsers: [bananaId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -321,8 +261,7 @@ describe("Chat Room Creation Test", async () => {
     const appleGroup: ChatRoom = {
       name: "apple and banana",
       single: true,
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -337,8 +276,7 @@ describe("Chat Room Creation Test", async () => {
     const appleAndBananaRoom: ChatRoom = {
       name: "apple and banana",
       single: true,
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -354,8 +292,7 @@ describe("Chat Room Creation Test", async () => {
     const appleAndBananaRoom: ChatRoom = {
       name: "apple and banana",
       single: true,
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -371,8 +308,7 @@ describe("Chat Room Creation Test", async () => {
     const appleAndBananaRoom: ChatRoom = {
       name: "apple and banana",
       single: true,
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -388,8 +324,7 @@ describe("Chat Room Creation Test", async () => {
     const appleAndBananaRoom: ChatRoom = {
       name: "apple and banana",
       single: true,
-      creator: bananaId,
-      masterUids: [bananaId],
+      masterUsers: [bananaId],
       users: {
         [bananaId]: {
           nMC: 0,
@@ -405,8 +340,7 @@ describe("Chat Room Creation Test", async () => {
     const appleAndBananaRoom: ChatRoom = {
       name: "apple and banana",
       single: true,
-      creator: appleId,
-      masterUids: [appleId],
+      masterUsers: [appleId],
       users: {
         [appleId]: {
           nMC: 0,
@@ -420,11 +354,13 @@ describe("Chat Room Creation Test", async () => {
   });
 });
 
+// ===========================================================
+// ============== Group Chat Room Update Test ================
+// ===========================================================
 describe("Group Chat Room Update Test", async () => {
   const appleGroup: ChatRoom = {
     name: "apple group",
-    creator: appleId,
-    masterUids: [appleId, bananaId],
+    masterUsers: [appleId, bananaId],
     users: {
       [appleId]: {
         nMC: 0,
@@ -460,28 +396,341 @@ describe("Group Chat Room Update Test", async () => {
       );
     });
   });
-  // TODO only creator or master can update the Name, Description
-  //   it("[Pass] Update Room Name as Creator", async () => {
-  //     const appleGroupUpdate: ChatRoom = {
-  //       name: "apple group better name",
-  //     };
-  //     await assertSucceeds(
-  //       setDoc(doc(appleDb, chatRoomRef + "/" + appleGroupId), appleGroupUpdate, {
-  //         merge: true,
-  //       })
-  //     );
-  //   });
-  it("[Pass] Creator invited a user", async () => {
-    const appleGroupUpdate: ChatRoom = {
-      invitedUsers: [eggPlantId],
-    };
 
+  // ================================
+
+  it("[Pass] Update Room Name as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      name: "apple group better name",
+    };
     await assertSucceeds(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
-        merge: true,
-      })
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
     );
   });
+  it("[Pass] Update Room Description as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      description: "apple group better name",
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Update Room into Open as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      open: true,
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Pass] Update Room iconUrl as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      iconUrl: "12312",
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Pass] Update Room last message as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      lastMessageText: "lastMessageText",
+      lastMessageAt: 123123,
+      lastMessageUid: "lastMessageUid",
+      lastMessageUrl: "lastMessageUrl",
+      lastMessageId: "lastMessageId",
+      lastMessageDeleted: false,
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Pass] Update Room verifiedUserOnly as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      verifiedUserOnly: false,
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Update Room urlForVerifiedUserOnly as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      urlForVerifiedUserOnly: false,
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Update Room uploadForVerifiedUserOnly as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      uploadForVerifiedUserOnly: false,
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Update Room gender as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      gender: "F",
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Update Room doman as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      domain: "domain",
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Pass] Update Room hasPassword as Master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      hasPassword: false,
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  // ================================
+
+  it("[Fail] Update Room Name as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      name: "apple group better name",
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Update Room Description as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      description: "apple group better name",
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Update Room into Open as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      open: true,
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Fail] Update Room iconUrl as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      iconUrl: "12312",
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Pass] Update Room last message as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      lastMessageText: "lastMessageText",
+      lastMessageAt: 123123,
+      lastMessageUid: "lastMessageUid",
+      lastMessageUrl: "lastMessageUrl",
+      lastMessageId: "lastMessageId",
+      lastMessageDeleted: false,
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Fail] Update Room verifiedUserOnly as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      verifiedUserOnly: false,
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Update Room urlForVerifiedUserOnly as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      urlForVerifiedUserOnly: false,
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Update Room uploadForVerifiedUserOnly as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      uploadForVerifiedUserOnly: false,
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Update Room gender as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      gender: "F",
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Update Room doman as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      domain: "domain",
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  it("[Fail] Update Room hasPassword as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      hasPassword: false,
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+
+  // ================================
+
   it("[Pass] Master invited a user", async () => {
     const appleGroupUpdate: ChatRoom = {
       invitedUsers: [eggPlantId],
@@ -552,10 +801,9 @@ describe("Group Chat Room Update Test", async () => {
 describe("Open Group Chat Room Joining Test (Open: True)", async () => {
   const appleGroup: ChatRoom = {
     name: "apple group",
-    creator: appleId,
     group: true,
     open: true,
-    masterUids: [appleId, bananaId],
+    masterUsers: [appleId, bananaId],
     users: {
       [appleId]: {
         nMC: 0,
@@ -615,34 +863,6 @@ describe("Open Group Chat Room Joining Test (Open: True)", async () => {
     };
     await assertSucceeds(
       setDoc(doc(eggPlantDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
-        merge: true,
-      })
-    );
-  });
-  it("[Fail] Creator put another user who is not invited", async () => {
-    const appleGroupUpdate: ChatRoom = {
-      users: {
-        [flowerId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
-        merge: true,
-      })
-    );
-  });
-  it("[Fail] Creator put another user who is invited", async () => {
-    const appleGroupUpdate: ChatRoom = {
-      users: {
-        [eggPlantId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
         merge: true,
       })
     );
@@ -708,10 +928,9 @@ describe("Open Group Chat Room Joining Test (Open: True)", async () => {
 describe("Non-open Group Chat Room Joining Test (Open: Null)", async () => {
   const appleGroup: ChatRoom = {
     name: "apple group",
-    creator: appleId,
     // open: false
     group: true,
-    masterUids: [appleId, bananaId],
+    masterUsers: [appleId, bananaId],
     users: {
       [appleId]: {
         nMC: 0,
@@ -773,34 +992,6 @@ describe("Non-open Group Chat Room Joining Test (Open: Null)", async () => {
     };
     await assertFails(
       setDoc(doc(flowerDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
-        merge: true,
-      })
-    );
-  });
-  it("[Fail] Creator put another user who is not invited", async () => {
-    const appleGroupUpdate: ChatRoom = {
-      users: {
-        [flowerId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
-        merge: true,
-      })
-    );
-  });
-  it("[Fail] Creator put another user who is invited", async () => {
-    const appleGroupUpdate: ChatRoom = {
-      users: {
-        [eggPlantId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
         merge: true,
       })
     );
@@ -866,10 +1057,9 @@ describe("Non-open Group Chat Room Joining Test (Open: Null)", async () => {
 describe("Non-open Group Chat Room Joining Test (Open: False)", async () => {
   const appleGroup: ChatRoom = {
     name: "apple group",
-    creator: appleId,
     open: false,
     group: true,
-    masterUids: [appleId, bananaId],
+    masterUsers: [appleId, bananaId],
     users: {
       [appleId]: {
         nMC: 0,
@@ -937,34 +1127,6 @@ describe("Non-open Group Chat Room Joining Test (Open: False)", async () => {
       })
     );
   });
-  it("[Fail] Creator put another user who is not invited", async () => {
-    const appleGroupUpdate: ChatRoom = {
-      users: {
-        [flowerId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
-        merge: true,
-      })
-    );
-  });
-  it("[Fail] Creator put another user who is invited", async () => {
-    const appleGroupUpdate: ChatRoom = {
-      users: {
-        [eggPlantId]: {
-          nMC: 0,
-        },
-      },
-    };
-    await assertFails(
-      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
-        merge: true,
-      })
-    );
-  });
   it("[Fail] Master put another user who is not invited", async () => {
     const appleGroupUpdate: ChatRoom = {
       users: {
@@ -1026,9 +1188,8 @@ describe("Non-open Group Chat Room Joining Test (Open: False)", async () => {
 describe("Single Chat Room Invitation Test (Pending Invite)", async () => {
   const appleGroup: ChatRoom = {
     name: "apple and banana",
-    creator: appleId,
     single: true,
-    masterUids: [appleId, bananaId],
+    masterUsers: [appleId, bananaId],
     users: {
       [appleId]: {
         nMC: 0,
@@ -1062,7 +1223,7 @@ describe("Single Chat Room Invitation Test (Pending Invite)", async () => {
       );
     });
   });
-  it("[Fail] Creator/Master invited a user to a Single Chat", async () => {
+  it("[Fail] Master invited a user to a Single Chat", async () => {
     const appleGroupUpdate: ChatRoom = {
       invitedUsers: arrayUnion(eggPlantId),
     };
@@ -1130,9 +1291,8 @@ describe("Single Chat Room Invitation Test (Pending Invite)", async () => {
 describe("Single Chat Room Joining Test", async () => {
   const appleGroup: ChatRoom = {
     name: "apple and banana",
-    creator: appleId,
     single: true,
-    masterUids: [appleId, bananaId],
+    masterUsers: [appleId, bananaId],
     users: {
       [appleId]: {
         nMC: 0,
@@ -1192,6 +1352,628 @@ describe("Single Chat Room Joining Test", async () => {
     };
     await assertFails(
       setDoc(doc(eggPlantDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+describe("Non Open Group Chat Room Leaving Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [eggPlantId]: {
+        nMC: 0,
+      },
+      [flowerId]: {
+        nMC: 0,
+      },
+    },
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+
+  it("[Pass] Member leaving a Group Chat", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+      },
+    };
+    await assertSucceeds(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Pass] Master leaving a Group Chat", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [bananaId]: deleteField(),
+      },
+      masterUsers: arrayRemove(bananaId),
+    };
+    await assertSucceeds(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Fail] Member leaving a Group Chat and removing extra user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+        [eggPlantId]: deleteField(),
+      },
+    };
+
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Pass] Master leaving a Group Chat and removing extra user", async () => {
+    // Technically, it should be okay because,
+    // Masters may be allowed to kickout other members
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [bananaId]: deleteField(),
+        [eggPlantId]: deleteField(),
+      },
+    };
+
+    await assertSucceeds(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+describe("Open Group Chat Room Leaving Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    open: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [eggPlantId]: {
+        nMC: 0,
+      },
+      [flowerId]: {
+        nMC: 0,
+      },
+    },
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+
+  it("[Pass] Member leaving a Group Chat", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+      },
+    };
+    await assertSucceeds(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Pass] Master leaving a Group Chat", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [bananaId]: deleteField(),
+      },
+      masterUsers: arrayRemove(bananaId),
+    };
+    await assertSucceeds(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Fail] Member leaving a Group Chat and removing extra user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+        [eggPlantId]: deleteField(),
+      },
+    };
+
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Pass] Master leaving a Group Chat and removing extra user", async () => {
+    // Technically, it should be okay because,
+    // Masters may be allowed to kickout other members
+    // "Although, master should not be leaving the room"
+    // it is not a security issue.
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [bananaId]: deleteField(),
+        [eggPlantId]: deleteField(),
+      },
+    };
+
+    await assertSucceeds(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+// =======================================================================
+// ======================= Reject Chat Room Test =========================
+// =======================================================================
+
+describe("Reject Chat Room Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+
+  it("[Pass] User rejected the invitation", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayRemove(eggPlantId),
+      rejectedUsers: arrayUnion(eggPlantId),
+    };
+    await assertSucceeds(
+      setDoc(doc(eggPlantDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Fail] Not-invited User rejected the invitation (Pass or Fail)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayRemove(flowerId),
+      rejectedUsers: arrayUnion(flowerId),
+    };
+    // Pass or Fail, this is not a security issue
+    await assertFails(
+      setDoc(doc(flowerDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Fail] Member suddenly rejected the invitation (Pass or Fail)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayRemove(carrotId),
+      rejectedUsers: arrayUnion(carrotId),
+    };
+
+    // Pass or Fail, this is not a security issue
+    // We simply have to be aware
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+// =======================================================================
+// ================== Accept Rejected Chat Room Test =====================
+// =======================================================================
+
+describe("Accept Rejected Chat Room Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+
+  it("[Pass] User accepted the invitation but rejected initially", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      rejectedUsers: arrayRemove(flowerId),
+      users: {
+        [flowerId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertSucceeds(
+      setDoc(doc(flowerDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Master tried to force to accept the invitation but rejected already", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      rejectedUsers: arrayRemove(flowerId),
+      users: {
+        [flowerId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertFails(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member tried to force to accept the invitation but rejected already", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      rejectedUsers: arrayRemove(flowerId),
+      users: {
+        [flowerId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider tried to force to accept the invitation but rejected already", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      rejectedUsers: arrayRemove(flowerId),
+      users: {
+        [flowerId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+// =======================================================================
+// ========================= Reads Meta Updating =========================
+// =======================================================================
+
+describe("Reads Meta Updating Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+
+  it("[Pass] User added 1 in new message counter (nMC) for other users", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [appleId]: {
+          nMC: increment(1),
+        },
+        [bananaId]: {
+          nMC: increment(1),
+        },
+        [carrotId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertSucceeds(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] User added 1 in new message counter (nMC) for other users & replacing another user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [appleId]: {
+          nMC: increment(1),
+        },
+        [bananaId]: deleteField(),
+        [guavaId]: {
+          nMC: increment(1),
+        },
+        [carrotId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] User added 1 in new message counter (nMC) for other users & replacing another user (2)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [appleId]: {
+          nMC: increment(1),
+        },
+        [guavaId]: {
+          nMC: increment(1),
+        },
+        [carrotId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertFails(
+      updateDoc(doc(carrotDb, getRoomPath(appleGroupId)), {
+        data: appleGroupUpdate,
+      })
+    );
+  });
+});
+
+// =======================================================================
+// ========================== Kick Out Members ===========================
+// =======================================================================
+
+describe("Kick Out Members Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [durianId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+
+  it("[Pass] Master removed 1 user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+      },
+    };
+    await assertSucceeds(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Pass] Master removed other master", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [bananaId]: deleteField(),
+      },
+      masterUsers: arrayRemove(bananaId),
+    };
+    await assertSucceeds(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member removed 1 other user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+      },
+    };
+    await assertFails(
+      setDoc(doc(durianDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider removed 1 other user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+      },
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
         merge: true,
       })
     );

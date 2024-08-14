@@ -7,24 +7,24 @@ interface ChatRoom {
   // This will include the readings and order
   users?: { [key: string]: ChatUser | FieldValue };
   invitedUsers?: string[] | FieldValue;
-  rejectedUsers?: string[];
-  blockedUsers?: string[];
-  masterUsers?: string[];
+  rejectedUsers?: string[] | FieldValue;
+  blockedUsers?: string[] | FieldValue;
+  masterUsers?: string[] | FieldValue;
   hasPassword?: boolean;
   open?: boolean;
   single?: boolean;
   group?: boolean;
   iconUrl?: string;
-  creator?: string;
   masterUids?: string[];
   lastMessageId?: string;
   lastMessageText?: string;
-  lastMessageUrl?: number;
+  lastMessageUrl?: string;
   lastMessageUid?: string;
   lastMessageDeleted?: boolean;
+  lastMessageAt?: number;
   verifiedUserOnly?: boolean;
-  urlForVerifiedUserOnly?: string;
-  uploadForVerifiedUserOnly?: string;
+  urlForVerifiedUserOnly?: boolean;
+  uploadForVerifiedUserOnly?: boolean;
   gender?: string;
   domain?: string;
 }
