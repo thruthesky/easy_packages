@@ -31,7 +31,7 @@ class ChatMessagesListView extends StatelessWidget {
           return Text('Something went wrong! ${snapshot.error}');
         }
         if (snapshot.isFetching && !snapshot.hasData) {
-          return const CircularProgressIndicator.adaptive();
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
         if (snapshot.docs.isEmpty) {
           return Center(

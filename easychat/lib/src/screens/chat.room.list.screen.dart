@@ -16,6 +16,21 @@ class ChatRoomListScreen extends StatefulWidget {
 
 class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
   late ChatRoomQuery queryOption;
+
+  List<ChatRoomQuery> options = [
+    ChatRoomQuery.allMine,
+    ChatRoomQuery.allMineByTime,
+    ChatRoomQuery.single,
+    ChatRoomQuery.singleByTime,
+    ChatRoomQuery.group,
+    ChatRoomQuery.open,
+    ChatRoomQuery.groupByTime,
+    // Don't show received invites and rejected invites
+    // must be in a separate screen
+    // ChatRoomQuery.receivedInvites,
+    // ChatRoomQuery.rejectedInvites,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +60,7 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
               maxWidth: 180,
             ),
             itemBuilder: (BuildContext context) {
-              return ChatRoomQuery.values
+              return options
                   .map((q) => PopupMenuItem(
                       value: q, child: Text(q.name.toLowerCase().t)))
                   .toList();

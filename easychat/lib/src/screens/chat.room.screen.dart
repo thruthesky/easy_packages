@@ -194,7 +194,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if ($room == null)
-            const Center(child: CircularProgressIndicator.adaptive())
+            const Expanded(
+              flex: 5,
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            )
           else ...[
             Expanded(
               flex: 5,

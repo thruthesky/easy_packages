@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
@@ -36,7 +34,6 @@ class ChatRoomListView extends StatelessWidget {
         if (snapshot.isFetching && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-
         return CustomScrollView(
           slivers: [
             const SliverToBoxAdapter(
@@ -87,4 +84,3 @@ class ChatRoomListView extends StatelessWidget {
     );
   }
 }
-// 
