@@ -66,39 +66,66 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Chat Room List',
     'ko': '채팅방 목록',
   },
-  'chat room list screen title: ' + ChatRoomQuery.allMine.name.toLowerCase(): {
+  'chat room list screen title: ${ChatRoomQuery.allMine.name.toLowerCase()}': {
     'en': 'My Chats',
     'ko': '내 채팅',
   },
-  ChatRoomQuery.allMineByTime.name.toLowerCase(): {
+  'chat room list screen title: ${ChatRoomQuery.allMineByTime.name.toLowerCase()}':
+      {
     'en': 'My Chats Ordered by Time',
     'ko': '내 채팅 시간 순',
   },
-  ChatRoomQuery.single.name.toLowerCase(): {
+  'chat room list screen title: ${ChatRoomQuery.single.name.toLowerCase()}': {
     'en': '1:1 Chats',
     'ko': '1:1 채팅',
   },
-  ChatRoomQuery.singleByTime.name.toLowerCase(): {
+  'chat room list screen title: ${ChatRoomQuery.singleByTime.name.toLowerCase()}':
+      {
     'en': '1:1 Chats Ordered by Time',
     'ko': '1:1 채팅 시간 순',
   },
-  ChatRoomQuery.group.name.toLowerCase(): {
+  'chat room list screen title: ${ChatRoomQuery.group.name.toLowerCase()}': {
     'en': 'Group Chats',
     'ko': '그룹 채팅',
   },
-  ChatRoomQuery.groupByTime.name.toLowerCase(): {
+  'chat room list screen title: ${ChatRoomQuery.groupByTime.name.toLowerCase()}':
+      {
     'en': 'Group Chats Ordered by Time',
     'ko': '그룹 채팅 시간 순',
   },
-  // ChatRoomQuery.receivedInvites.name.toLowerCase(): {
-  //   'en': 'Received Chat Invitations',
-  //   'ko': '받은 채팅 초대',
-  // },
-  // ChatRoomQuery.rejectedInvites.name.toLowerCase(): {
-  //   'en': 'Rejected Chat Invitations',
-  //   'ko': '반려된 채팅 초대',
-  // },
-  ChatRoomQuery.open.name.toLowerCase(): {
+  'chat room list screen title: ${ChatRoomQuery.open.name.toLowerCase()}': {
+    'en': 'Open Chats',
+    'ko': '공개 채팅',
+  },
+
+  'chat room list screen option: ${ChatRoomQuery.allMine.name.toLowerCase()}': {
+    'en': 'My Chats',
+    'ko': '내 채팅',
+  },
+  'chat room list screen option: ${ChatRoomQuery.allMineByTime.name.toLowerCase()}':
+      {
+    'en': 'My Chats Ordered by Time',
+    'ko': '내 채팅 시간 순',
+  },
+  'chat room list screen option: ${ChatRoomQuery.single.name.toLowerCase()}': {
+    'en': '1:1 Chats',
+    'ko': '1:1 채팅',
+  },
+  'chat room list screen option: ${ChatRoomQuery.singleByTime.name.toLowerCase()}':
+      {
+    'en': '1:1 Chats Ordered by Time',
+    'ko': '1:1 채팅 시간 순',
+  },
+  'chat room list screen option: ${ChatRoomQuery.group.name.toLowerCase()}': {
+    'en': 'Group Chats',
+    'ko': '그룹 채팅',
+  },
+  'chat room list screen option: ${ChatRoomQuery.groupByTime.name.toLowerCase()}':
+      {
+    'en': 'Group Chats Ordered by Time',
+    'ko': '그룹 채팅 시간 순',
+  },
+  'chat room list screen option: ${ChatRoomQuery.open.name.toLowerCase()}': {
     'en': 'Open Chats',
     'ko': '공개 채팅',
   },
@@ -112,29 +139,18 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Chat Room',
     'ko': '채팅방',
   },
-  'unaccepted yet, once you sent a message, the chat is automatically accepted':
-      {
+  'unaccepted yet, accept before reading message': {
     'en':
-        "You haven't accepted this chat yet. Once you send a message, the chat is automatically accepted.",
-    'ko': "아직 이 채팅을 수락하지 않았습니다. 메시지를 보내면 채팅이 자동으로 수락됩니다.",
+        "You haven't accepted or rejected the chat request/invitation yet. Accept the chat so that you can read the message.",
+    'ko': "아직 채팅 요청/초대를 수락하거나 거부하지 않았습니다. 메시지를 읽을 수 있도록 채팅을 수락하세요.",
   },
-  'rejected chat, if replied, the chat will be accepted': {
-    'en':
-        "You have rejected this chat. However, if you sent a reply, the chat is automatically accepted.",
-    'ko': "이 채팅을 거절하셨습니다. 그러나 답장을 보내면 채팅이 자동으로 수락됩니다.",
-  },
-  'this is open chat, if sent a message, you join the room': {
-    'en':
-        "This is an open group. Once you sent a message, you will automatically join the group.",
-    'ko': "이것은 오픈 그룹입니다. 메시지를 보내면 자동으로 그룹에 가입됩니다.",
+  'the chat was rejected, unable to show message': {
+    'en': "You have rejected this chat. Unable to show message.",
+    'ko': "이 채팅을 거절하셨습니다. 메시지를 보여줄 수 없습니다.",
   },
   'the chat room may be private or deleted': {
     'en': "The Chat Room may be private and/or deleted.",
     'ko': "채팅방은 비공개 또는 삭제될 수 있습니다.",
-  },
-  'unable to show chat messages': {
-    'en': "Unable to show chat messages.",
-    'ko': "채팅 메시지를 보여줄 수 없습니다.",
   },
 
   // received.chat.room.invite_list.screen.dart
