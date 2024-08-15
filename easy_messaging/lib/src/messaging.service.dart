@@ -294,17 +294,17 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
-    Uri url = Uri.https(sendMessageApi);
-    final re = {
-      "title": title,
-      "body": body,
-      "data": jsonEncode(data),
-      if (imageUrl != null) "imageUrl": imageUrl,
-      "tokens": tokens.join(',')
-    };
+    Uri url = Uri.parse(sendMessageApi);
+
     http.Response response = await http.post(
       url,
-      body: re,
+      body: jsonEncode({
+        "title": title,
+        "body": body,
+        "data": data,
+        if (imageUrl != null) "imageUrl": imageUrl,
+        "tokens": tokens.join(','),
+      }),
     );
 
     return preResponse(response);
@@ -324,15 +324,15 @@ class MessagingService {
     Uri url = Uri.https(sendMessageToUidsApi);
     http.Response response = await http.post(
       url,
-      body: {
+      body: jsonEncode({
         "title": title,
         "body": body,
-        "data": jsonEncode(data),
+        "data": data,
         "uids": uids.join(','),
         "subscriptionName": subscriptionName,
         "excludeSubscribers": excludeSubscribers,
         if (imageUrl != null) "imageUrl": imageUrl,
-      },
+      }),
     );
 
     return preResponse(response);
@@ -351,13 +351,13 @@ class MessagingService {
 
     final response = await http.post(
       url,
-      body: {
+      body: jsonEncode({
         "title": title,
         "body": body,
-        "data": jsonEncode(data),
+        "data": data,
         if (imageUrl != null) "imageUrl": imageUrl,
         "subscription": subscription
-      },
+      }),
     );
 
     return preResponse(response);
