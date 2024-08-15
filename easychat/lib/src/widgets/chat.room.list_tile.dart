@@ -42,19 +42,27 @@ class ChatRoomListTile extends StatelessWidget {
         onTap: () => onTapTile(context, room, null),
       );
     }
-    return UserDoc.sync(
-      uid: getOtherUserUidFromRoomId(room.id)!,
-      builder: (user) {
-        return ListTile(
-          leading: user == null ? null : UserAvatar(user: user),
-          title: user == null
-              ? Text(room.id)
-              : Text(user.displayName.trim().isNotEmpty
-                  ? user.displayName
-                  : '...'),
-          subtitle: subtitle,
-          trailing: trailing,
-          onTap: () => onTapTile(context, room, user),
+    return UserBlocked(
+      otherUid: getOtherUserUidFromRoomId(room.id)!,
+      builder: (blocked) {
+        if (blocked) {
+          return const SizedBox.shrink();
+        }
+        return UserDoc.sync(
+          uid: getOtherUserUidFromRoomId(room.id)!,
+          builder: (user) {
+            return ListTile(
+              leading: user == null ? null : UserAvatar(user: user),
+              title: user == null
+                  ? Text(room.id)
+                  : Text(user.displayName.trim().isNotEmpty
+                      ? user.displayName
+                      : '...'),
+              subtitle: subtitle,
+              trailing: trailing,
+              onTap: () => onTapTile(context, room, user),
+            );
+          },
         );
       },
     );

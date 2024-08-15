@@ -317,6 +317,8 @@ class MessagingService {
     required String body,
     required Map<String, dynamic> data,
     String? imageUrl,
+    String subscriptionName = '',
+    bool excludeSubscribers = false,
   }) async {
     // /// Send messages in batches
     Uri url = Uri.https(sendMessageToUidsApi);
@@ -326,8 +328,10 @@ class MessagingService {
         "title": title,
         "body": body,
         "data": jsonEncode(data),
+        "uids": uids.join(','),
+        "subscriptionName": subscriptionName,
+        "excludeSubscribers": excludeSubscribers,
         if (imageUrl != null) "imageUrl": imageUrl,
-        "uids": uids.join(',')
       },
     );
 

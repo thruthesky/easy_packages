@@ -421,6 +421,7 @@ class ChatRoom {
       field.invitedUsers: FieldValue.arrayUnion([uid]),
       field.updatedAt: FieldValue.serverTimestamp(),
     });
+    ChatService.instance.onInvite?.call(room: this, uid: uid);
   }
 
   Future<void> acceptInvitation() async {

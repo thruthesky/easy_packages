@@ -20,6 +20,10 @@ It also provides a way of listing and blocking users.
 - In admin screen, it displays the texts and uploads on the screen and let the admin choose to block the user or not.
 
 
+- It can report any document as long as it provides a user uid to blame.
+  - For instance,
+    - For a group chat, there might be many master users and you want to report that that room. You can pass the reference of the chat room document(reference), and choose any of the master users to blame.
+    - The option of `otherUid` is the one who is responsible for that document.
 
 
 
@@ -63,5 +67,10 @@ ElevatedButton(
 
 It's open source. You can simply open the source code of this package and copy/paste/edit the code. The code would be easy enough to re-use.
 
+
+
+- To display the reports that the login user made, call `ReportService.instance.showReportListScreen()`.
+- To customize the UI of the report list screen, you can create your own screen and use `ReportListView`.
+  - `ReportListView` supports most of the properties of the list view widget.
 
 

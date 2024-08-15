@@ -15,12 +15,41 @@ class ReportService {
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
-  // report
+  /// Callback after report is created. usage, eg. push notification after report to admin or user
+  Function(Report)? onCreate;
+
+  init({
+    Function(Report)? onCreate,
+  }) {
+    this.onCreate = onCreate;
+  }
+
+  /// Report
+  ///
+  /// It reports the [otherUid] user with the [documentReference] document reference.
+  ///
+  /// Use this method to report a user.
+  ///
+  /// Refer to README.md for details.
   Future<void> report({
     required BuildContext context,
     required DocumentReference documentReference,
     required String otherUid,
   }) async {
+    if (currentUser == null) {
+      if (context.mounted) {
+        toast(context: context, message: Text('You are not signed in'.t));
+      }
+      return;
+    }
+
+    if (currentUser?.uid == otherUid) {
+      if (context.mounted) {
+        toast(context: context, message: Text('You cannot report yourself'.t));
+      }
+      return;
+    }
+
     // Check if the user has already reported by you.
     final snapshot = await col
         .where('reporter', isEqualTo: currentUser!.uid)
@@ -49,13 +78,18 @@ class ReportService {
       if (reason == null) return;
     }
 
-    await col.add({
+    final data = {
       'reporter': currentUser!.uid,
       'reportee': otherUid,
       'reason': reason,
       'documentReference': documentReference,
       'createdAt': FieldValue.serverTimestamp(),
-    });
+    };
+
+    final ref = await col.add(data);
+
+    /// if onCreate is set, then call the call back.
+    onCreate?.call(Report.fromJson(data, ref.id));
 
     if (context.mounted) {
       toast(
