@@ -294,7 +294,7 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
-    Uri url = Uri.https(sendMessageApi);
+    Uri url = Uri.parse(sendMessageApi);
 
     http.Response response = await http.post(
       url,
@@ -303,7 +303,7 @@ class MessagingService {
         "body": body,
         "data": data,
         if (imageUrl != null) "imageUrl": imageUrl,
-        "tokens": tokens.join(',')
+        "tokens": tokens.join(','),
       }),
     );
 
