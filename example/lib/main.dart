@@ -350,7 +350,7 @@ class MyAppState extends State<MyApp> {
         MessagingService.instance.sendMessageToUid(
           uids: ancestorUids,
           title: 'title ${DateTime.now()}',
-          body: 'ancestorComment test',
+          body: 'ancestorComment test ${comment.content}',
           data: {
             "action": 'comment',
             'commentId': comment.id,
