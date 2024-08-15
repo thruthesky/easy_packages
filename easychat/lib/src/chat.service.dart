@@ -126,8 +126,6 @@ class ChatService {
   /// Return Dialog/Screen that may return DocReference
   Future<fs.DocumentReference?> showChatRoomEditScreen(BuildContext context,
       {ChatRoom? room}) {
-    // TODO this is wrong
-    // we need to provide the room as well
     return $showChatRoomEditScreen?.call(context, room: room) ??
         showGeneralDialog<fs.DocumentReference>(
           context: context,
