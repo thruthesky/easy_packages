@@ -94,20 +94,24 @@ class Like {
           SetOptions(
             merge: true,
           ));
-      final data = {
-        'documentReference': documentReference,
-        'likeCount': $likeCount,
-        'likedBy': $likedBy,
-      };
+
       transaction.set(
         likeRef,
-        data,
+        {
+          'documentReference': documentReference,
+          'likeCount': $likeCount,
+          'likedBy': $likedBy,
+        },
         SetOptions(
           merge: true,
         ),
       );
       LikeService.instance.onLiked?.call(
-        like: Like.fromJson(data, likeRef.id),
+        like: Like.fromJson({
+          'documentReference': documentReference,
+          'likeCount': $likeCount,
+          'likedBy': likedBy,
+        }, likeRef.id),
         isLiked: !hasLiked,
       );
     });
