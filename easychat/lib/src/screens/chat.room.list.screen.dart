@@ -17,19 +17,19 @@ class ChatRoomListScreen extends StatefulWidget {
 class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
   late ChatRoomQuery queryOption;
 
-  List<ChatRoomQuery> options = [
-    ChatRoomQuery.allMine,
-    ChatRoomQuery.allMineByTime,
-    ChatRoomQuery.single,
-    ChatRoomQuery.singleByTime,
-    ChatRoomQuery.group,
-    ChatRoomQuery.open,
-    ChatRoomQuery.groupByTime,
-    // Don't show received invites and rejected invites
-    // must be in a separate screen
-    // ChatRoomQuery.receivedInvites,
-    // ChatRoomQuery.rejectedInvites,
-  ];
+  // List<ChatRoomQuery> options = [
+  //   ChatRoomQuery.allMine,
+  //   ChatRoomQuery.allMineByTime,
+  //   ChatRoomQuery.single,
+  //   ChatRoomQuery.singleByTime,
+  //   ChatRoomQuery.group,
+  //   ChatRoomQuery.open,
+  //   ChatRoomQuery.groupByTime,
+  //   // Don't show received invites and rejected invites
+  //   // must be in a separate screen
+  //   // ChatRoomQuery.receivedInvites,
+  //   // ChatRoomQuery.rejectedInvites,
+  // ];
 
   @override
   void initState() {
@@ -41,7 +41,8 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(queryOption.name.toLowerCase().t),
+        title: Text(
+            'chat room list screen title: ' + queryOption.name.toLowerCase().t),
         actions: [
           IconButton(
             onPressed: () {
@@ -60,9 +61,14 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
               maxWidth: 180,
             ),
             itemBuilder: (BuildContext context) {
-              return options
-                  .map((q) => PopupMenuItem(
-                      value: q, child: Text(q.name.toLowerCase().t)))
+              return ChatRoomQuery.values
+                  .map(
+                    (q) => PopupMenuItem(
+                      value: q,
+                      child: Text('chat room list screen option: ' +
+                          q.name.toLowerCase().t),
+                    ),
+                  )
                   .toList();
             },
           ),
