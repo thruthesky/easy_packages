@@ -99,17 +99,16 @@ class Like {
         likeRef,
         {
           'documentReference': documentReference,
-          'likeCount': $likeCount,
           'likedBy': $likedBy,
         },
         SetOptions(
           merge: true,
         ),
       );
+
       LikeService.instance.onLiked?.call(
         like: Like.fromJson({
           'documentReference': documentReference,
-          'likeCount': $likeCount,
           'likedBy': likedBy,
         }, likeRef.id),
         isLiked: !hasLiked,
