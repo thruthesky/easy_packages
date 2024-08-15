@@ -176,6 +176,57 @@ class MyAppState extends State<MyApp> {
     });
   }
 
+  handleRemoteMessage(RemoteMessage message) async {
+    dog('handleRemoteMessage: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
+
+    if (message.data['action'] == 'chat') {
+      ChatRoom? room = await ChatRoom.get(message.data['roomId']);
+      if (room != null && globalContext.mounted) {
+        ChatService.instance.showChatRoomScreen(
+          globalContext,
+          room: room,
+        );
+      }
+    } else if (message.data['action'] == 'chatInvite') {
+      ChatService.instance.showInviteListScreen(globalContext);
+    } else if (message.data['action'] == 'post' ||
+        message.data['action'] == 'comment') {
+      Post post = await Post.get(message.data['postId']);
+      if (globalContext.mounted) {
+        PostService.instance.showPostDetailScreen(
+          context: globalContext,
+          post: post,
+        );
+      }
+    } else if (message.data['action'] == 'like') {
+      if (message.data['source'] == 'post') {
+        Post post = await Post.get(message.data['postId']);
+        if (globalContext.mounted) {
+          PostService.instance.showPostDetailScreen(
+            context: globalContext,
+            post: post,
+          );
+        }
+      }
+    } else if (message.data['action'] == 'report') {
+      debugPrint("e.g. open report list screen for admin");
+      alert(
+        context: globalContext,
+        title: Text("Report ${message.notification?.title ?? ''}"),
+        message:
+            Text("${message.notification?.body} ${message.data.toString()}"),
+      );
+    } else {
+      alert(
+        context: globalContext,
+        title: Text(
+            "Notification wasnt handled0 ${message.notification?.title ?? ''}"),
+        message:
+            Text("${message.notification?.body} ${message.data.toString()}"),
+      );
+    }
+  }
+
   messagingInit() async {
     MessagingService.instance.init(
       sendMessageApi: 'https://sendmessage-mkxv2itpca-uc.a.run.app',
@@ -185,21 +236,13 @@ class MyAppState extends State<MyApp> {
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
           dog('onMessageOpenedFromBackground: $message');
-          alert(
-            context: globalContext,
-            title: Text(message.notification?.title ?? ''),
-            message: Text(message.notification?.body ?? ''),
-          );
+          handleRemoteMessage(message);
         });
       },
       onMessageOpenedFromTerminated: (RemoteMessage message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
-          dog('onMessageOpenedFromTerminated: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
-          alert(
-            context: globalContext,
-            title: Text(message.notification?.title ?? ''),
-            message: Text(message.notification?.body ?? ''),
-          );
+          dog('onMessageOpenedFromTerminated: $message');
+          handleRemoteMessage(message);
         });
       },
       onForegroundMessage: (message) {
@@ -325,7 +368,7 @@ class MyAppState extends State<MyApp> {
           subscriptionName: room.id,
           excludeSubscribers: true,
           title: 'ChatService ${DateTime.now()}',
-          body: '${room.id} ${message.id} ${message.text}',
+          body: '${message.text} ${room.id} ${message.id} ',
           data: {"action": 'chat', 'roomId': room.id},
         );
       },
@@ -380,6 +423,8 @@ class MyAppState extends State<MyApp> {
             body: '${my.displayName} liked ${post.title}',
             data: {
               "action": 'like',
+              "source": 'post',
+              'postId': post.id,
               'documentReference': like.documentReference.toString(),
             },
           );
