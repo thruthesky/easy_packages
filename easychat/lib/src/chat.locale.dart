@@ -128,7 +128,7 @@ final localeTexts = <String, Map<String, String>>{
         "This is an open group. Once you sent a message, you will automatically join the group.",
     'ko': "이것은 오픈 그룹입니다. 메시지를 보내면 자동으로 그룹에 가입됩니다.",
   },
-  'the chat room mau be private or deleted': {
+  'the chat room may be private or deleted': {
     'en': "The Chat Room may be private and/or deleted.",
     'ko': "채팅방은 비공개 또는 삭제될 수 있습니다.",
   },

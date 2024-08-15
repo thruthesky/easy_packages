@@ -111,7 +111,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       return 'this is open chat, if sent a message, you join the room'.t;
     }
     // Else, it should be handled by the Firestore rulings.
-    return 'the chat room mau be private or deleted'.t;
+    return 'the chat room may be private or deleted'.t;
   }
 
   @override
