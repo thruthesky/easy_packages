@@ -113,12 +113,10 @@ class ChatRoomReplyingTo extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 color: replyTo.uid == my.uid
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer
+                                    ? Colors.amber.shade200
                                     : Theme.of(context)
                                         .colorScheme
-                                        .tertiaryContainer,
+                                        .surfaceContainerHigh,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(12)),
                               ),

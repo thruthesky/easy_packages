@@ -31,7 +31,7 @@ class _ReceivedChatRoomInviteListScreenState
       body: myUid == null
           ? Center(child: Text('sign-in first'.t))
           : FirestoreListView(
-              query: ChatQuery.inviteList,
+              query: ChatRoomQuery.receivedInvites(),
               itemBuilder: (context, doc) {
                 return ChatRoomInvitationListTile(
                   room: ChatRoom.fromSnapshot(doc),

@@ -5,17 +5,32 @@ import 'package:flutter/material.dart';
 class ChatRoomListScreen extends StatefulWidget {
   const ChatRoomListScreen({
     super.key,
-    this.queryOption = ChatRoomListOption.allMine,
+    this.queryOption = ChatRoomQuery.allMine,
   });
 
-  final ChatRoomListOption queryOption;
+  final ChatRoomQuery queryOption;
 
   @override
   State<ChatRoomListScreen> createState() => _ChatRoomListScreenState();
 }
 
 class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
-  late ChatRoomListOption queryOption;
+  late ChatRoomQuery queryOption;
+
+  // List<ChatRoomQuery> options = [
+  //   ChatRoomQuery.allMine,
+  //   ChatRoomQuery.allMineByTime,
+  //   ChatRoomQuery.single,
+  //   ChatRoomQuery.singleByTime,
+  //   ChatRoomQuery.group,
+  //   ChatRoomQuery.open,
+  //   ChatRoomQuery.groupByTime,
+  //   // Don't show received invites and rejected invites
+  //   // must be in a separate screen
+  //   // ChatRoomQuery.receivedInvites,
+  //   // ChatRoomQuery.rejectedInvites,
+  // ];
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +41,8 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(queryOption.name.toLowerCase().t),
+        title: Text(
+            'chat room list screen title: ' + queryOption.name.toLowerCase().t),
         actions: [
           IconButton(
             onPressed: () {
@@ -45,9 +61,14 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
               maxWidth: 180,
             ),
             itemBuilder: (BuildContext context) {
-              return ChatRoomListOption.values
-                  .map((q) => PopupMenuItem(
-                      value: q, child: Text(q.name.toLowerCase().t)))
+              return ChatRoomQuery.values
+                  .map(
+                    (q) => PopupMenuItem(
+                      value: q,
+                      child: Text('chat room list screen option: ' +
+                          q.name.toLowerCase().t),
+                    ),
+                  )
                   .toList();
             },
           ),
