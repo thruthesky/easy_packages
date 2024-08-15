@@ -176,9 +176,14 @@ class MyAppState extends State<MyApp> {
     });
   }
 
+  /// Sample Remote Message handling
+  /// When receive message we can redirect or do whatever base from the data
+  /// like redirect to post, chat, user profile or display on the screen after the message is click from device trays.
+  ///
   handleRemoteMessage(RemoteMessage message) async {
     dog('handleRemoteMessage: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
 
+    /// If action chat, redirect to chat
     if (message.data['action'] == 'chat') {
       ChatRoom? room = await ChatRoom.get(message.data['roomId']);
       if (room != null && globalContext.mounted) {
@@ -187,8 +192,12 @@ class MyAppState extends State<MyApp> {
           room: room,
         );
       }
+
+      /// If action is chatInvite, redirect to chat invite list
     } else if (message.data['action'] == 'chatInvite') {
       ChatService.instance.showInviteListScreen(globalContext);
+
+      /// If action is post or comment then redirect to post view screen
     } else if (message.data['action'] == 'post' ||
         message.data['action'] == 'comment') {
       Post post = await Post.get(message.data['postId']);
@@ -198,6 +207,12 @@ class MyAppState extends State<MyApp> {
           post: post,
         );
       }
+
+      /// If action is like, redirect base from the source of like.
+      /// the following example came from post like
+      /// so redirect to post view screen.
+      /// redirect page may differ depends on the developer
+      /// e.g the like came from profile like, then should redirect to profile page
     } else if (message.data['action'] == 'like') {
       if (message.data['source'] == 'post') {
         Post post = await Post.get(message.data['postId']);
@@ -208,6 +223,8 @@ class MyAppState extends State<MyApp> {
           );
         }
       }
+
+      /// if like is report, then mostly we redirect to admin report list screen
     } else if (message.data['action'] == 'report') {
       debugPrint("e.g. open report list screen for admin");
       alert(
@@ -216,6 +233,8 @@ class MyAppState extends State<MyApp> {
         message:
             Text("${message.notification?.body} ${message.data.toString()}"),
       );
+
+      /// or display something if on the screen
     } else {
       alert(
         context: globalContext,
