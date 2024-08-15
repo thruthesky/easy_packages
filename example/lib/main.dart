@@ -178,10 +178,10 @@ class MyAppState extends State<MyApp> {
 
   messagingInit() async {
     MessagingService.instance.init(
-      sendMessageApi: 'sendmessage-mkxv2itpca-uc.a.run.app',
-      sendMessageToUidsApi: 'sendmessagetouids-mkxv2itpca-uc.a.run.app',
+      sendMessageApi: 'https://sendmessage-mkxv2itpca-uc.a.run.app',
+      sendMessageToUidsApi: 'https://sendmessagetouids-mkxv2itpca-uc.a.run.app',
       sendMessageToSubscriptionsApi:
-          'sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
+          'https://sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
           dog('onMessageOpenedFromBackground: $message');
