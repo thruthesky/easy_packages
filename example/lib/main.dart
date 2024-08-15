@@ -176,30 +176,92 @@ class MyAppState extends State<MyApp> {
     });
   }
 
+  /// Sample Remote Message handling
+  /// When receive message we can redirect or do whatever base from the data
+  /// like redirect to post, chat, user profile or display on the screen after the message is click from device trays.
+  ///
+  handleRemoteMessage(RemoteMessage message) async {
+    dog('handleRemoteMessage: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
+
+    /// If action chat, redirect to chat
+    if (message.data['action'] == 'chat') {
+      ChatRoom? room = await ChatRoom.get(message.data['roomId']);
+      if (room != null && globalContext.mounted) {
+        ChatService.instance.showChatRoomScreen(
+          globalContext,
+          room: room,
+        );
+      }
+
+      /// If action is chatInvite, redirect to chat invite list
+    } else if (message.data['action'] == 'chatInvite') {
+      ChatService.instance.showInviteListScreen(globalContext);
+
+      /// If action is post or comment then redirect to post view screen
+    } else if (message.data['action'] == 'post' ||
+        message.data['action'] == 'comment') {
+      Post post = await Post.get(message.data['postId']);
+      if (globalContext.mounted) {
+        PostService.instance.showPostDetailScreen(
+          context: globalContext,
+          post: post,
+        );
+      }
+
+      /// If action is like, redirect base from the source of like.
+      /// the following example came from post like
+      /// so redirect to post view screen.
+      /// redirect page may differ depends on the developer
+      /// e.g the like came from profile like, then should redirect to profile page
+    } else if (message.data['action'] == 'like') {
+      if (message.data['source'] == 'post') {
+        Post post = await Post.get(message.data['postId']);
+        if (globalContext.mounted) {
+          PostService.instance.showPostDetailScreen(
+            context: globalContext,
+            post: post,
+          );
+        }
+      }
+
+      /// if like is report, then mostly we redirect to admin report list screen
+    } else if (message.data['action'] == 'report') {
+      debugPrint("e.g. open report list screen for admin");
+      alert(
+        context: globalContext,
+        title: Text("Report ${message.notification?.title ?? ''}"),
+        message:
+            Text("${message.notification?.body} ${message.data.toString()}"),
+      );
+
+      /// or display something if on the screen
+    } else {
+      alert(
+        context: globalContext,
+        title: Text(
+            "Notification wasnt handled0 ${message.notification?.title ?? ''}"),
+        message:
+            Text("${message.notification?.body} ${message.data.toString()}"),
+      );
+    }
+  }
+
   messagingInit() async {
     MessagingService.instance.init(
-      sendMessageApi: 'sendmessage-mkxv2itpca-uc.a.run.app',
-      sendMessageToUidsApi: 'sendmessagetouids-mkxv2itpca-uc.a.run.app',
+      sendMessageApi: 'https://sendmessage-mkxv2itpca-uc.a.run.app',
+      sendMessageToUidsApi: 'https://sendmessagetouids-mkxv2itpca-uc.a.run.app',
       sendMessageToSubscriptionsApi:
-          'sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
+          'https://sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
           dog('onMessageOpenedFromBackground: $message');
-          alert(
-            context: globalContext,
-            title: Text(message.notification?.title ?? ''),
-            message: Text(message.notification?.body ?? ''),
-          );
+          handleRemoteMessage(message);
         });
       },
       onMessageOpenedFromTerminated: (RemoteMessage message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
-          dog('onMessageOpenedFromTerminated: ${message.notification?.title ?? ''} ${message.notification?.body ?? ''}');
-          alert(
-            context: globalContext,
-            title: Text(message.notification?.title ?? ''),
-            message: Text(message.notification?.body ?? ''),
-          );
+          dog('onMessageOpenedFromTerminated: $message');
+          handleRemoteMessage(message);
         });
       },
       onForegroundMessage: (message) {
@@ -288,7 +350,7 @@ class MyAppState extends State<MyApp> {
         MessagingService.instance.sendMessageToUid(
           uids: ancestorUids,
           title: 'title ${DateTime.now()}',
-          body: 'ancestorComment test',
+          body: 'ancestorComment test ${comment.content}',
           data: {
             "action": 'comment',
             'commentId': comment.id,
@@ -325,7 +387,7 @@ class MyAppState extends State<MyApp> {
           subscriptionName: room.id,
           excludeSubscribers: true,
           title: 'ChatService ${DateTime.now()}',
-          body: '${room.id} ${message.id} ${message.text}',
+          body: '${message.text} ${room.id} ${message.id} ',
           data: {"action": 'chat', 'roomId': room.id},
         );
       },
@@ -380,6 +442,8 @@ class MyAppState extends State<MyApp> {
             body: '${my.displayName} liked ${post.title}',
             data: {
               "action": 'like',
+              "source": 'post',
+              'postId': post.id,
               'documentReference': like.documentReference.toString(),
             },
           );
