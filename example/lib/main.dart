@@ -431,8 +431,11 @@ class MyAppState extends State<MyApp> {
         /// get the like document reference for more information
         /// then base from the document reference you can swich or decide where the notificaiton should go
         /// set push notification. e.g. send push notification to post like
-        if (like.documentReference.toString().contains('/posts/')) {
+        if (like.documentReference.toString().contains('posts/')) {
           Post post = await Post.get(like.documentReference.id);
+
+          /// dont send push notification if the owner of the post is the loggin user.
+          if (post.uid == myUid) return;
 
           /// can get more information base from the documentReference
           /// can give more details on the push notification
