@@ -66,7 +66,7 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Chat Room List',
     'ko': '채팅방 목록',
   },
-  ChatRoomQuery.allMine.name.toLowerCase(): {
+  'chat room list screen title: ' + ChatRoomQuery.allMine.name.toLowerCase(): {
     'en': 'My Chats',
     'ko': '내 채팅',
   },
@@ -90,14 +90,14 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Group Chats Ordered by Time',
     'ko': '그룹 채팅 시간 순',
   },
-  ChatRoomQuery.receivedInvites.name.toLowerCase(): {
-    'en': 'Received Chat Invitations',
-    'ko': '받은 채팅 초대',
-  },
-  ChatRoomQuery.rejectedInvites.name.toLowerCase(): {
-    'en': 'Rejected Chat Invitations',
-    'ko': '반려된 채팅 초대',
-  },
+  // ChatRoomQuery.receivedInvites.name.toLowerCase(): {
+  //   'en': 'Received Chat Invitations',
+  //   'ko': '받은 채팅 초대',
+  // },
+  // ChatRoomQuery.rejectedInvites.name.toLowerCase(): {
+  //   'en': 'Rejected Chat Invitations',
+  //   'ko': '반려된 채팅 초대',
+  // },
   ChatRoomQuery.open.name.toLowerCase(): {
     'en': 'Open Chats',
     'ko': '공개 채팅',

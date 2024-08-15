@@ -114,6 +114,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return 'the chat room may be private or deleted'.t;
   }
 
+  /// Returns true if the login user can view the chat messages.
+  ///
+  /// It check if
+  /// - the user has already joined the chat room,
+  ///   -- the user must joined the room even if it's open chat.
+  ///
+  bool get canViewChatMessage {
+    return $room!.joined;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,72 +200,64 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           );
         },
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if ($room == null)
-            const Expanded(
-              flex: 5,
-              child: Center(child: CircularProgressIndicator.adaptive()),
-            )
-          else ...[
-            Expanded(
-              flex: 5,
-              child: $room!.joined ||
-                      $room!.open ||
-                      $room!.invitedUsers.contains(my.uid) ||
-                      $room!.rejectedUsers.contains(my.uid)
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: ChatMessagesListView(
-                        key: const ValueKey("Chat Message List View"),
-                        room: $room!,
-                      ),
-                    )
-                  : Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Text('unable to show chat messages'.t),
-                      ),
-                    ),
+      body: $room == null
+          ? Center(child: CircularProgressIndicator.adaptive())
+          : Column(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: canViewChatMessage
+                      ? Align(
+                          alignment: Alignment.bottomCenter,
+                          child: ChatMessagesListView(
+                            key: const ValueKey("Chat Message List View"),
+                            room: $room!,
+                          ),
+                        )
+                      : Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Text('unable to show chat messages'.t),
+                          ),
+                        ),
+                ),
+                // There is a chance for user to open the chat room
+                // if the user is not a member of the chat room
+                if (!$room!.joined) ...[
+                  ValueListenableBuilder(
+                    valueListenable: roomNotifier,
+                    builder: (_, hc, __) {
+                      if ($room!.joined) return const SizedBox.shrink();
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        margin: const EdgeInsets.only(
+                          bottom: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              Theme.of(context).colorScheme.secondaryContainer,
+                        ),
+                        child: Text(
+                          notMemberMessage($room!),
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+                SafeArea(
+                  top: false,
+                  child: $room == null
+                      ? const SizedBox.shrink()
+                      : ChatRoomInputBox(
+                          room: $room!,
+                        ),
+                ),
+              ],
             ),
-            // There is a chance for user to open the chat room
-            // if the user is not a member of the chat room
-            if (!$room!.joined) ...[
-              ValueListenableBuilder(
-                valueListenable: roomNotifier,
-                builder: (_, hc, __) {
-                  if ($room!.joined) return const SizedBox.shrink();
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    margin: const EdgeInsets.only(
-                      bottom: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                    ),
-                    child: Text(
-                      notMemberMessage($room!),
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  );
-                },
-              ),
-            ],
-            SafeArea(
-              top: false,
-              child: $room == null
-                  ? const SizedBox.shrink()
-                  : ChatRoomInputBox(
-                      room: $room!,
-                    ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }

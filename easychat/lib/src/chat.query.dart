@@ -9,9 +9,7 @@ enum ChatRoomQuery {
   single,
   singleByTime,
   group,
-  groupByTime,
-  receivedInvites,
-  rejectedInvites;
+  groupByTime;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
@@ -49,15 +47,20 @@ enum ChatRoomQuery {
         '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupTimeOrder}',
         descending: true,
       );
-    } else if (this == receivedInvites) {
-      q = q
-          .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
-          .orderBy(ChatRoom.field.updatedAt, descending: true);
-    } else if (this == rejectedInvites) {
-      q = q
-          .where(ChatRoom.field.rejectedUsers, arrayContains: myUid)
-          .orderBy(ChatRoom.field.updatedAt, descending: true);
     }
+
     return q;
+  }
+
+  static Query receivedInvites() {
+    return ChatService.instance.roomCol
+        .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
+        .orderBy(ChatRoom.field.updatedAt, descending: true);
+  }
+
+  static Query rejectedInvites() {
+    return ChatService.instance.roomCol
+        .where(ChatRoom.field.rejectedUsers, arrayContains: myUid)
+        .orderBy(ChatRoom.field.updatedAt, descending: true);
   }
 }
