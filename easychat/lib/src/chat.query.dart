@@ -15,45 +15,45 @@ enum ChatRoomQuery {
 
   Query get query {
     Query q = ChatService.instance.roomCol;
-    if (this == ChatRoomQuery.allMine) {
+    if (this == allMine) {
       q = q.orderBy(
         '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.order}',
         descending: true,
       );
-    } else if (this == ChatRoomQuery.allMineByTime) {
+    } else if (this == allMineByTime) {
       q = q.orderBy(
         '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.timeOrder}',
         descending: true,
       );
-    } else if (this == ChatRoomQuery.open) {
+    } else if (this == open) {
       q = q
           .where(ChatRoom.field.open, isEqualTo: true)
           .orderBy(ChatRoom.field.updatedAt, descending: true);
-    } else if (this == ChatRoomQuery.single) {
+    } else if (this == single) {
       q = q.orderBy(
         '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleOrder}',
         descending: true,
       );
-    } else if (this == ChatRoomQuery.singleByTime) {
+    } else if (this == singleByTime) {
       q = q.orderBy(
         '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.singleTimeOrder}',
         descending: true,
       );
-    } else if (this == ChatRoomQuery.group) {
+    } else if (this == group) {
       q = q.orderBy(
         '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupOrder}',
         descending: true,
       );
-    } else if (this == ChatRoomQuery.groupByTime) {
+    } else if (this == groupByTime) {
       q = q.orderBy(
         '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.groupTimeOrder}',
         descending: true,
       );
-    } else if (this == ChatRoomQuery.receivedInvites) {
+    } else if (this == receivedInvites) {
       q = q
           .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
           .orderBy(ChatRoom.field.updatedAt, descending: true);
-    } else if (this == ChatRoomQuery.rejectedInvites) {
+    } else if (this == rejectedInvites) {
       q = q
           .where(ChatRoom.field.rejectedUsers, arrayContains: myUid)
           .orderBy(ChatRoom.field.updatedAt, descending: true);
