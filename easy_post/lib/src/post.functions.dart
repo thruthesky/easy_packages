@@ -31,6 +31,7 @@ Future<Map<String, dynamic>?> getYoutubeSnippet(String? youtubeUrl) async {
     'channelTitle': snippet.channelTitle,
     'thumbnails': thumbnails,
     'description': snippet.description,
+    'channelId': snippet.channelId,
     'isShorts': shorts,
     'statistics': {
       'viewCount': snippet.statistics.viewCount,

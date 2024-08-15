@@ -231,3 +231,51 @@ class ContentDetails {
     return 'duration: $duration, dimension: $dimension, definition: $definition, caption: $caption, licensedContent: $licensedContent, projection: $projection';
   }
 }
+
+//  add statistics into the model like viers subribers no of video
+class ChannelInfo {
+  final String title;
+  final String description;
+  final String customUrl;
+  final String publishedAt;
+  final Map<String, Thumbnail> thumbnails;
+  final String playlistId;
+
+  const ChannelInfo({
+    required this.title,
+    required this.description,
+    required this.customUrl,
+    required this.publishedAt,
+    required this.thumbnails,
+    required this.playlistId,
+  });
+
+  factory ChannelInfo.fromJson(Map<String, dynamic> json) {
+    if (json['items'] == null || json['items'].length == 0) {
+      throw Exception('No youtube items found');
+    }
+
+    final snippet = json['items'][0]['snippet'];
+    final contentDetails = json['items'][0]['contentDetails'];
+    return ChannelInfo(
+      title: snippet['title'],
+      description: snippet['description'],
+      customUrl: snippet['customUrl'],
+      publishedAt: snippet['publishedAt'],
+      thumbnails: {
+        if (snippet['thumbnails']['default'] != null)
+          'default': Thumbnail.fromJson(snippet['thumbnails']['default']),
+        if (snippet['thumbnails']['medium'] != null)
+          'medium': Thumbnail.fromJson(snippet['thumbnails']['medium']),
+        if (snippet['thumbnails']['high'] != null)
+          'high': Thumbnail.fromJson(snippet['thumbnails']['high']),
+      },
+      playlistId: contentDetails['relatedPlaylists']['uploads'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'title: $title, description: $description, customUrl: $customUrl, publishedAt: $publishedAt, thumbnails: $thumbnails, playlistId: $playlistId';
+  }
+}

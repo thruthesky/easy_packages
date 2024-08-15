@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:easy_youtube/src/snippet.dart';
+import 'package:easy_youtube/src/video_list.dart';
 import 'package:youtube_parser/youtube_parser.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,5 +37,45 @@ class Youtube {
     }
     final snippet = Snippet.fromJson(json);
     return snippet;
+  }
+
+  /// Getting channelinfo
+  ///
+  /// to get channel info like channel avatar chanel deails like custome url
+  /// like video count , subscribers , playlistId etc .
+  static Future<ChannelInfo> getChannelInfo(
+      {required String apiKey, required String channelId}) async {
+    final url =
+        'https://www.googleapis.com/youtube/v3/channels?part=id%2C+snippet,statistics,contentDetails&id=$channelId&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    final json = jsonDecode(response.body);
+
+    if (json['error'] != null) {
+      throw Exception(json['error']['message']);
+    }
+
+    return ChannelInfo.fromJson(json);
+  }
+
+  /// Getting youtube playlist
+  ///
+  /// to get the list of item on the playlist from the youtube channel
+
+  static Future<VideoList> getPlaylist(
+      {required String apiKey, required String playlistId}) async {
+    final url =
+        'https://www.googleapis.com/youtube/v3/playlistItems?part=id%2C+snippet&maxResult=8&playlistId=$playlistId&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    final json = jsonDecode(response.body);
+
+    if (json['error'] != null) {
+      throw Exception(json['error']['message']);
+    }
+
+    return VideoList.fromJson(json);
   }
 }
