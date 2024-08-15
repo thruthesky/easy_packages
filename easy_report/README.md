@@ -69,3 +69,8 @@ It's open source. You can simply open the source code of this package and copy/p
 
 
 
+- To display the reports that the login user made, call `ReportService.instance.showReportListScreen()`.
+- To customize the UI of the report list screen, you can create your own screen and use `ReportListView`.
+  - `ReportListView` supports most of the properties of the list view widget.
+
+

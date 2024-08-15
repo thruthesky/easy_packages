@@ -151,6 +151,18 @@ class Comment {
     );
 
     final db = FirebaseFirestore.instance;
+    final newData = {
+      'documentReference': documentReference,
+      'parentId': parent?.id ?? '',
+      'content': content,
+      'uid': my.uid,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updateAt': FieldValue.serverTimestamp(),
+      'urls': urls,
+      'depth': parent == null ? 0 : parent.depth + 1,
+      'order': order,
+      'deleted': false,
+    };
 
     /// [t] 는 transaction 용 DB instance 인데, FirebaseFirestore.instance 와는 다르다.
     /// t.get() 은 Future 를 리턴하지만, t.set(), t.update() 는 Future 륄 리턴하지 않는다.
@@ -160,18 +172,7 @@ class Comment {
     /// security rules 나 기타에 의해서 하나라도 에러가 나면, 모두 롤백된다.
     DocumentReference ref = await db.runTransaction((t) async {
       final addedRef = col.doc();
-      t.set(addedRef, {
-        'documentReference': documentReference,
-        'parentId': parent?.id ?? '',
-        'content': content,
-        'uid': my.uid,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updateAt': FieldValue.serverTimestamp(),
-        'urls': urls,
-        'depth': parent == null ? 0 : parent.depth + 1,
-        'order': order,
-        'deleted': false,
-      });
+      t.set(addedRef, newData);
       t.update(documentReference, {
         'commentCount': FieldValue.increment(1),
       });
@@ -184,7 +185,7 @@ class Comment {
 
       return addedRef;
     });
-    CommentService.instance.onCommentCreate?.call(ref);
+    CommentService.instance.onCreate?.call(Comment.fromJson(newData, ref.id));
     return ref;
   }
 

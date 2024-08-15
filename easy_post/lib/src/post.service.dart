@@ -21,6 +21,14 @@ class PostService {
       $showPostUpdateScreen;
 
   String? youtubeDataApi;
+
+  /// Callback on post create, use this if you want to do task after post is created., eg. push notification
+  /// Callback will have the [Post] of the newly created `post` information.
+  Function(Post)? onCreate;
+
+  /// Add extra widget on chatroom,. eg. push notification toggle button
+  Widget Function(String?)? postListActionButton;
+
   init({
     Future Function(BuildContext, Post)? showPostDetailScreen,
     Future<DocumentReference?> Function(BuildContext, String?)?
@@ -28,13 +36,16 @@ class PostService {
     Future<DocumentReference?> Function(BuildContext, Post)?
         showPostUpdateScreen,
     String? youtubeDataApi,
+    Function(Post)? onCreate,
+    Widget Function(String?)? postListActionButton,
   }) {
     initialized = true;
     $showPostDetailScreen = showPostDetailScreen;
     $showPostCreateScreen = showPostCreateScreen;
     $showPostUpdateScreen = showPostUpdateScreen;
     this.youtubeDataApi = youtubeDataApi;
-
+    this.onCreate = onCreate;
+    this.postListActionButton = postListActionButton;
     addPostTranslations();
   }
 

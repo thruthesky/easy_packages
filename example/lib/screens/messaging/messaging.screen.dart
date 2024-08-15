@@ -219,7 +219,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
             AuthStateChanges(builder: (u) {
               if (u == null) return const Text('Must login first');
 
-              return const PushNotificationToggelIcon(
+              return const PushNotificationToggleIcon(
                 subscriptionName: 'testSubscription',
               );
             }),

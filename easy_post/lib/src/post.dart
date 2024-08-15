@@ -168,6 +168,8 @@ class Post {
     //   throw 'post-create/category-is-required Category is required';
     // }
 
+    final youtube = await getYoutubeSnippet(youtubeUrl);
+
     final data = {
       'category': category,
       if (title != null) 'title': title,
@@ -180,15 +182,18 @@ class Post {
       'createdAt': FieldValue.serverTimestamp(),
       'updateAt': FieldValue.serverTimestamp(),
       'deleted': false,
-    };
-
-    final youtube = await getYoutubeSnippet(youtubeUrl);
-
-    return await PostService.instance.col.add({
-      ...data,
       if (youtube != null) 'youtube': youtube,
       ...?extra,
-    });
+    };
+
+    DocumentReference documentReference =
+        await PostService.instance.col.add(data);
+
+    /// Callback after post is created
+    PostService.instance.onCreate
+        ?.call(Post.fromJson(data, documentReference.id));
+
+    return documentReference;
   }
 
   /// update a post

@@ -35,6 +35,11 @@ class ChatService {
   Function({required ChatMessage message, required ChatRoom room})?
       onSendMessage;
 
+  /// Callback on after userInvite. Can be use if you want to do task after invite. eg. send push notification
+  /// [room] current room
+  /// [uid] uid of the user that is being invited
+  Function({required ChatRoom room, required String uid})? onInvite;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
@@ -43,6 +48,7 @@ class ChatService {
     Widget Function(ChatRoom)? chatRoomActionButton,
     Function({required ChatMessage message, required ChatRoom room})?
         onSendMessage,
+    Function({required ChatRoom room, required String uid})? onInvite,
   }) {
     UserService.instance.init();
 
@@ -54,6 +60,7 @@ class ChatService {
         $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
     this.chatRoomActionButton = chatRoomActionButton;
     this.onSendMessage = onSendMessage;
+    this.onInvite = onInvite;
   }
 
   /// Firebase CollectionReference for Chat Room docs
