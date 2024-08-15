@@ -1,6 +1,14 @@
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
+/// Display a widget based on the user is blocked or not.
+///
+/// This widget listens to the user's block list in realtime, and displays
+/// (re-builds) the widget with true or false value.
+///
+/// If the login user blocked [otherUid], then [builder] will be called with
+/// true. Otherwise, false.
+///
 class UserBlocked extends StatelessWidget {
   const UserBlocked({
     super.key,

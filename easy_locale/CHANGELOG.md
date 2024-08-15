@@ -1,3 +1,6 @@
+## 0.0.10
+* Add. `merge`.
+
 ## 0.0.9
 * Update. Document update.
 

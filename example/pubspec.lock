@@ -252,14 +252,14 @@ packages:
       path: "../easy_like"
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.7"
   easy_locale:
     dependency: "direct main"
     description:
       path: "../easy_locale"
       relative: true
     source: path
-    version: "0.0.9"
+    version: "0.0.10"
   easy_messaging:
     dependency: "direct main"
     description:
@@ -301,7 +301,7 @@ packages:
       path: "../easy_storage"
       relative: true
     source: path
-    version: "0.0.13"
+    version: "0.0.14"
   easy_task:
     dependency: "direct main"
     description:

@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_like/easy_like.dart';
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_report/easy_report.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
@@ -61,8 +62,12 @@ class MyAppState extends State<MyApp> {
     );
 
     messagingInit();
+    postInit();
     commentInit();
     chatInit();
+    reportInit();
+    likeInit();
+    applyChatLocales();
 
     // PostService.instance.init(
     //   categories: {
@@ -240,16 +245,36 @@ class MyAppState extends State<MyApp> {
     // });
   }
 
+  postInit() {
+    PostService.instance.init(
+      postListActionButton: (category) => PushNotificationToggleIcon(
+        subscriptionName: category.isNullOrEmpty
+            ? 'post-sub-no-category'
+            : "post-sub-$category",
+      ),
+      onCreate: (Post post) async {
+        /// send push notification to subscriber
+        MessagingService.instance.sendMessageToSubscription(
+          subscription: post.category.isNullOrEmpty
+              ? 'post-sub-no-category'
+              : "post-sub-${post.category}",
+          title: 'post title ${post.title}  ${DateTime.now()}',
+          body: 'post body ${post.content}',
+          data: {
+            "action": 'post',
+            'postId': post.id,
+          },
+        );
+      },
+    );
+  }
+
   commentInit() {
     CommentService.instance.init(
-      onCommentCreate: (DocumentReference ref) async {
+      onCreate: (Comment comment) async {
         /// get ancestor uid
         List<String> ancestorUids =
-            await CommentService.instance.getAncestorsUid(ref.id);
-
-        /// you can also attached the uid of the post author before sending the notification
-        Comment? comment = await Comment.get(ref.id);
-        if (comment == null) return;
+            await CommentService.instance.getAncestorsUid(comment.id);
 
         Post post = await Post.get(comment.documentReference.id);
         if (myUid != null && post.uid != myUid) {
@@ -266,7 +291,7 @@ class MyAppState extends State<MyApp> {
           body: 'ancestorComment test',
           data: {
             "action": 'comment',
-            'commentId': ref.id,
+            'commentId': comment.id,
             'postId': comment.documentReference.id,
           },
         );
@@ -282,21 +307,85 @@ class MyAppState extends State<MyApp> {
   /// With the option of 'excludeSubscribers: true', the backend will send messages to the users whose uid is not in the list of subscription.
   chatInit() {
     ChatService.instance.init(
-        chatRoomActionButton: (room) =>
-            PushNotificationToggelIcon(subscriptionName: room.id),
-        onSendMessage: (
-            {required ChatMessage message, required ChatRoom room}) async {
-          final uids = room.userUids.where((uid) => uid != myUid).toList();
-          if (uids.isEmpty) return;
+      /// On chat, users on chatRoom always get  notification unless they turn it off.
+      /// To show that the notification is active, PushNotificationToggleIcon is reverse
+      /// This will show the Icon as enabled by default, and when click it will set `uid:true` to subscription name
+      /// which later on we se set on the `onSendMessage` -> `sendMessageToUid` with parameter of excludeSubscribers.
+      /// This will remove the uid of those who has /path/subscriptionName/uid:true from the list of uids
+      chatRoomActionButton: (room) => PushNotificationToggleIcon(
+        subscriptionName: room.id,
+        reverse: true,
+      ),
+      onSendMessage: (
+          {required ChatMessage message, required ChatRoom room}) async {
+        final uids = room.userUids.where((uid) => uid != myUid).toList();
+        if (uids.isEmpty) return;
+        MessagingService.instance.sendMessageToUid(
+          uids: uids,
+          subscriptionName: room.id,
+          excludeSubscribers: true,
+          title: 'ChatService ${DateTime.now()}',
+          body: '${room.id} ${message.id} ${message.text}',
+          data: {"action": 'chat', 'roomId': room.id},
+        );
+      },
+      onInvite: ({required ChatRoom room, required String uid}) async {
+        MessagingService.instance.sendMessageToUid(
+          uids: [uid],
+          title: 'Chat Invite ${DateTime.now()}',
+          body:
+              '${my.displayName} Has invited you to join the chat room ${room.id} ${room.name}',
+          data: {"action": 'chatInvite', 'roomId': room.id},
+        );
+      },
+    );
+  }
+
+  reportInit() {
+    ReportService.instance.init(
+      onCreate: (Report report) async {
+        /// set push notification. e.g. send push notification to reportee
+        /// or developer can send push notification to admin
+        MessagingService.instance.sendMessageToUid(
+          uids: [report.reportee],
+          title: 'You have been reported',
+          body: 'Report reason ${report.reason}',
+          data: {
+            "action": 'report',
+            'reportId': report.id,
+            'documentReference': report.documentReference.toString(),
+          },
+        );
+      },
+    );
+  }
+
+  likeInit() {
+    LikeService.instance.init(
+      onLiked: ({required Like like, required bool isLiked}) async {
+        /// only send notification if it is liked
+        if (isLiked == false) return;
+
+        /// get the like document reference for more information
+        /// then base from the document reference you can swich or decide where the notificaiton should go
+        /// set push notification. e.g. send push notification to post like
+        if (like.documentReference.toString().contains('/posts/')) {
+          Post post = await Post.get(like.documentReference.id);
+
+          /// can get more information base from the documentReference
+          /// can give more details on the push notification
           MessagingService.instance.sendMessageToUid(
-            uids: uids,
-            // subscriptionName: room.id,
-            // excludeSubscribers: true,
-            title: 'ChatService ${DateTime.now()}',
-            body: '${room.id} ${message.id} ${message.text}',
-            data: {"action": 'chat', 'roomId': room.id},
+            uids: [post.uid],
+            title: 'Your post got liked',
+            body: '${my.displayName} liked ${post.title}',
+            data: {
+              "action": 'like',
+              'documentReference': like.documentReference.toString(),
+            },
           );
-        });
+        }
+      },
+    );
   }
 
   @override

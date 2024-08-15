@@ -346,20 +346,34 @@ class UserService {
 
   /// Blocks other user.
   ///
-  /// User can block other user and the block button may appear in different
-  /// places in the app.
+  ///
+  /// User can block other user.
+  /// The block has some UI logic and you may put the block button any where in
+  /// the app.
+  /// Use this method to block a user for the unified block logic.
+  ///
+  /// This method toggles the block status.
   ///
   /// Since the block has some logic of displaying the confirmation dialog,
   /// it is better to use this method to unify the block logic.
   ///
   /// This method toggles the block status.
   ///
-  /// TODO: Display the other user's name and photo in the confirmation dialog.
-  /// TODO: Dispaly error on blocking himself.
-  Future block({
+  ///
+  /// Return
+  /// - null if the block is canceled or failed to do the action.
+  /// - true if the user is blocked.
+  /// - false if the user is un-blocked (from blocked)
+  ///
+  Future<bool?> block({
     required BuildContext context,
     required String otherUid,
   }) async {
+    if (otherUid == myUid) {
+      toast(context: context, message: Text('you cannot block yourself'.t));
+      return null;
+    }
+
     /// Display user info as subtitle in the confirmation dialog.
     Widget userInfoSubtitle = UserDoc(
       uid: otherUid,
@@ -384,7 +398,7 @@ class UserService {
         subtitle: userInfoSubtitle,
         message: Text('un-block confirm message'.t),
       );
-      if (re != true) return false;
+      if (re != true) return null;
 
       await blockDoc.update({
         otherUid: FieldValue.delete(),
@@ -392,7 +406,7 @@ class UserService {
       if (context.mounted) {
         toast(context: context, message: Text('user is un-blocked'.t));
       }
-      return;
+      return false;
     }
 
     final re = await confirm(
@@ -402,7 +416,7 @@ class UserService {
         message: Text(
           'block confirm message'.t,
         ));
-    if (re != true) return false;
+    if (re != true) return null;
 
     await blockDoc.set(
       {
@@ -416,6 +430,7 @@ class UserService {
     if (context.mounted) {
       toast(context: context, message: Text('user is blocked'.t));
     }
+    return true;
   }
 
   showBlockListScreen(BuildContext context) {

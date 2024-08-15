@@ -122,7 +122,6 @@ applyChatLocales() async {
     lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
   }
 }
-
 ```
 
 
@@ -141,6 +140,8 @@ TranslationService.instance.set(
 expect('hello'.t == 'Hello', true);
 ```
 
+
+See `lo.merge` to merge the translated text **synchrounously**.
 
 
 #### Adding custom translations
@@ -298,12 +299,92 @@ class _MyHomePageState extends State<MyHomePage> {
 ```
 
 
-# 유닛 테스트
+# Merging texts
+
+The `lo.set()` needs a locale to set(or replace) the text. And you may write the code to get it **asynchrounously**. And the translated text may not appear immediately. It means, there might be a flickering with the text code and the text.
+
+To prevent this, you may use `lo.merge()` which does not require the locale, thus it will set(or replace) the text **synchrounously**. And there will be no flickering.
+
+You can call the `lo.merge()` method like below just before you use it.
+
+```dart
+lo.merge({
+  'test': {
+    'en': 'Test',
+    'ko': '테스트',
+  },
+});
+```
+
+## Setting texts where it is needed
+
+- You may use `lo.merge` to add translation where it is used.
+- The example below merges translation texts inside the build method. You may do so if you want.
+
+```dart
+class ReportMenu extends StatelessWidget {
+  const ReportMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    lo.merge({
+      'report': {
+        'en': 'Report',
+        'ko': '신고',
+      },
+      'my report list': {
+        'en': 'My Report List',
+        'ko': '내 신고 목록',
+      },
+    });
+    return Settings(
+      label: 'Report'.t,
+      children: [
+        ListTile(
+          onTap: () {},
+          title: Text('my report list'.t),
+          leading: const Icon(Icons.report),
+          trailing: const Icon(Icons.chevron_right_rounded),
+        ),
+      ],
+    );
+  }
+}
+```
 
 
-`test` 폴더에 있는 테스트 코드를 보고, 사용법을 익히셔도 됩니다.
+
+- One good use case for writing the text translation (for i18n) in the build method is that a widget that has some text translation with `.t` or `.tr`, and that widget is used in a multiple screen.
+  - For instance, you use the easy_comment package in task management and forum, and the two should display different words. The comment pakcage in task management may have text translation like below. The code below displays `Add review of the task` instead of `Add a comment`.
+  
+- A good use case for writing text translations (for i18n) in the build method is when a widget with text translations using `.t` or `.tr` is used across multiple screens.
+  - For instance, if you use the easy_comment package in both task management screen and forum screen, each should display different words. In task management, the comment package might have a text translation like below. The code below displays `Add review of the task` instead of `Add a comment`.
+```dart
+class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    lo.merge({
+      'input comment': {
+        'en': 'Add review of the task',
+        'ko': '작업에 대한 리뷰를 추가하세요',
+      },
+    });
+    return CommentListTreeView(documentReference: task.ref);
+  }
+}
+```
+
+And in the forum screen, you may set the text translation with `lo.merge()` to display different texts.
 
 
+
+
+
+
+# Unit test
+
+
+- You can look at the test code in the `tests` folder to learn how to use it.
 
 
 
@@ -311,4 +392,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 - If the translation is not working, then check if the easy_locale package has been initialized.
+
+
 

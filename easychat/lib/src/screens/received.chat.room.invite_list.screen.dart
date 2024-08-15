@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ReceivedChatRoomInviteListScreen extends StatefulWidget {
@@ -14,9 +14,6 @@ class ReceivedChatRoomInviteListScreen extends StatefulWidget {
 
 class _ReceivedChatRoomInviteListScreenState
     extends State<ReceivedChatRoomInviteListScreen> {
-  Query get query =>
-      ChatService.instance.roomCol.where('invitedUsers', arrayContains: my.uid);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,14 +28,19 @@ class _ReceivedChatRoomInviteListScreenState
           ),
         ],
       ),
-      body: ChatRoomListView(
-        queryOption: ChatRoomListOption.receivedInvites,
-        itemBuilder: (context, room, index) {
-          return ChatRoomInvitationListTile(
-            room: room,
-          );
-        },
-      ),
+      body: myUid == null
+          ? Center(child: Text('sign-in first'.t))
+          : FirestoreListView(
+              query: ChatQuery.inviteList,
+              itemBuilder: (context, doc) {
+                return ChatRoomInvitationListTile(
+                  room: ChatRoom.fromSnapshot(doc),
+                );
+              },
+              emptyBuilder: (context) => Center(
+                child: Text('no chat requests'.t),
+              ),
+            ),
     );
   }
 }

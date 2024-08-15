@@ -20,6 +20,8 @@ class _PostListScreenState extends State<PostListScreen> {
       appBar: AppBar(
         title: const Text('PostList'),
         actions: [
+          if (PostService.instance.postListActionButton != null)
+            PostService.instance.postListActionButton!(category),
           IconButton(
             onPressed: () => PostService.instance.showPostCreateScreen(
               context: context,

@@ -1,4 +1,4 @@
-final Map<String, dynamic> localeTexts = {
+final Map<String, Map<String, dynamic>> localeTexts = {
   'version': {
     'en': 'Version: {v}',
     'ko': '버전: {v}',
@@ -49,38 +49,6 @@ final Map<String, dynamic> localeTexts = {
   'reply': {
     'en': 'Reply',
     'ko': '댓글',
-  },
-  'block': {
-    'en': 'Block',
-    'ko': '차단',
-  },
-  'unblock': {
-    'en': 'Un-block',
-    'ko': '차단해제',
-  },
-  'block confirm title': {
-    'en': 'Block User',
-    'ko': '사용자 차단',
-  },
-  'block confirm message': {
-    'en': 'Are you sure you want to block this user?',
-    'ko': '이 사용자를 차단하시겠습니까?',
-  },
-  'un-block confirm title': {
-    'en': 'Un-block User',
-    'ko': '사용자 차단 해제',
-  },
-  'un-block confirm message': {
-    'en': 'Are you sure you want to un-block this user?',
-    'ko': '이 사용자의 차단을 해제하시겠습니까?',
-  },
-  'user is blocked': {
-    'en': 'User is blocked',
-    'ko': '사용자가 차단되었습니다',
-  },
-  'user is un-blocked': {
-    'en': 'User is un-blocked',
-    'ko': '사용자의 차단이 해제되었습니다',
   },
   'like': {
     'en': {
@@ -245,6 +213,17 @@ final Map<String, dynamic> localeTexts = {
     'ko': '내용을 입력하세요',
   },
 
+  /// --------------------- User, Login, Regigstration, Profile ---------------------
+  'You are not signed in': {
+    'en': 'You are not signed in',
+    'ko': '로그인하지 않았습니다',
+  },
+
+  'sign-in first': {
+    'en': 'Sign-in first',
+    'ko': '로그인을 먼저 해주세요',
+  },
+
   /// --------------------- Post ---------------------
 
   'post create': {
@@ -300,12 +279,67 @@ final Map<String, dynamic> localeTexts = {
     'ko': '파일 선택',
   },
 
+  /// ----------------------- Block -----------------------
+  'You cannot block yourself': {
+    'en': 'You cannot block yourself',
+    'ko': '자신을 차단할 수 없습니다',
+  },
+
+  'block': {
+    'en': 'Block',
+    'ko': '차단',
+  },
+  'unblock': {
+    'en': 'Un-block',
+    'ko': '차단해제',
+  },
+  'block confirm title': {
+    'en': 'Block User',
+    'ko': '사용자 차단',
+  },
+  'block confirm message': {
+    'en': 'Are you sure you want to block this user?',
+    'ko': '이 사용자를 차단하시겠습니까?',
+  },
+  'un-block confirm title': {
+    'en': 'Un-block User',
+    'ko': '사용자 차단 해제',
+  },
+  'un-block confirm message': {
+    'en': 'Are you sure you want to un-block this user?',
+    'ko': '이 사용자의 차단을 해제하시겠습니까?',
+  },
+  'user is blocked': {
+    'en': 'User is blocked',
+    'ko': '사용자가 차단되었습니다',
+  },
+  'user is un-blocked': {
+    'en': 'User is un-blocked',
+    'ko': '사용자의 차단이 해제되었습니다',
+  },
+  'block list': {
+    'en': 'Block List',
+    'ko': '차단 목록',
+  },
+  'block list view is empty': {
+    'en': 'You have not blocked anyone',
+    'ko': '아직 아무도 차단하지 않았습니다',
+  },
+
   /// ----------------------- Report -----------------------
   ///
 
   'report': {
     'en': 'Report',
     'ko': '신고',
+  },
+  'report list': {
+    'en': 'Report list',
+    'ko': '신고 목록',
+  },
+  'report list view is empty': {
+    'en': 'You have not reported anyone',
+    'ko': '아직 아무도 신고하지 않았습니다',
   },
   'You have already reported this user': {
     'en': 'You have already reported this user',
@@ -334,5 +368,9 @@ final Map<String, dynamic> localeTexts = {
   'You have reported this user now': {
     'en': 'You have reported this user now',
     'ko': '이 사용자를 신고했습니다',
+  },
+  'You cannot report yourself': {
+    'en': 'You cannot report yourself',
+    'ko': '자신을 신고할 수 없습니다',
   },
 };
