@@ -5,17 +5,32 @@ import 'package:flutter/material.dart';
 class ChatRoomListScreen extends StatefulWidget {
   const ChatRoomListScreen({
     super.key,
-    this.queryOption = ChatRoomListOption.allMine,
+    this.queryOption = ChatRoomQuery.allMine,
   });
 
-  final ChatRoomListOption queryOption;
+  final ChatRoomQuery queryOption;
 
   @override
   State<ChatRoomListScreen> createState() => _ChatRoomListScreenState();
 }
 
 class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
-  late ChatRoomListOption queryOption;
+  late ChatRoomQuery queryOption;
+
+  List<ChatRoomQuery> options = [
+    ChatRoomQuery.allMine,
+    ChatRoomQuery.allMineByTime,
+    ChatRoomQuery.single,
+    ChatRoomQuery.singleByTime,
+    ChatRoomQuery.group,
+    ChatRoomQuery.open,
+    ChatRoomQuery.groupByTime,
+    // Don't show received invites and rejected invites
+    // must be in a separate screen
+    // ChatRoomQuery.receivedInvites,
+    // ChatRoomQuery.rejectedInvites,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +60,7 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
               maxWidth: 180,
             ),
             itemBuilder: (BuildContext context) {
-              return ChatRoomListOption.values
+              return options
                   .map((q) => PopupMenuItem(
                       value: q, child: Text(q.name.toLowerCase().t)))
                   .toList();

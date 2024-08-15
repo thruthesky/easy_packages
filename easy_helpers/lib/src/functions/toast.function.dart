@@ -33,6 +33,8 @@ ScaffoldFeatureController toast({
     SnackBar(
       duration: duration,
       backgroundColor: backgroundColor,
+      // TODO
+      elevation: 20,
       content: Row(
         children: [
           Expanded(

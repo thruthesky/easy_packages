@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/chat.locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
@@ -25,8 +24,8 @@ class ChatService {
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;
-  Future<fs.DocumentReference> Function({BuildContext context})?
-      $showChatRoomEditScreen;
+  Future<fs.DocumentReference?> Function(BuildContext context,
+      {ChatRoom? room})? $showChatRoomEditScreen;
 
   /// Add extra widget on chatroom,. eg. push notification toggle button
   Widget Function(ChatRoom)? chatRoomActionButton;
@@ -44,7 +43,8 @@ class ChatService {
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
-    Future<fs.DocumentReference> Function({BuildContext context})?
+    Future<fs.DocumentReference?> Function(BuildContext context,
+            {ChatRoom? room})?
         $showChatRoomEditScreen,
     Widget Function(ChatRoom)? chatRoomActionButton,
     Function({required ChatMessage message, required ChatRoom room})?
@@ -89,7 +89,7 @@ class ChatService {
   /// Show the chat room list screen.
   Future showChatRoomListScreen(
     BuildContext context, {
-    ChatRoomListOption queryOption = ChatRoomListOption.allMine,
+    ChatRoomQuery queryOption = ChatRoomQuery.allMine,
   }) {
     return $showChatRoomListScreen?.call() ??
         showGeneralDialog(
@@ -117,15 +117,18 @@ class ChatService {
         showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => const ChatRoomListScreen(
-            queryOption: ChatRoomListOption.open,
+            queryOption: ChatRoomQuery.open,
           ),
         );
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
+  /// Return Dialog/Screen that may return DocReference
   Future<fs.DocumentReference?> showChatRoomEditScreen(BuildContext context,
       {ChatRoom? room}) {
-    return $showChatRoomEditScreen?.call(context: context) ??
+    // TODO this is wrong
+    // we need to provide the room as well
+    return $showChatRoomEditScreen?.call(context, room: room) ??
         showGeneralDialog<fs.DocumentReference>(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomEditScreen(room: room),

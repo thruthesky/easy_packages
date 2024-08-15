@@ -3,6 +3,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RejectedChatRoomInviteListScreen extends StatelessWidget {
@@ -19,26 +20,32 @@ class RejectedChatRoomInviteListScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('rejected chat requests'.t),
       ),
-      body: ChatRoomListView(
-        queryOption: ChatRoomListOption.rejectedInvites,
-        itemBuilder: (context, room, index) {
-          return ChatRoomListTile(
-            room: room,
-            onTap: (context, room, user) async {
-              final re = await confirm(
-                context: context,
-                title: Text('rejected chat'.t),
-                message: const Text(
-                  "You have rejected the chat already. Accept and continue chat?",
-                ),
-              );
-              if (re ?? false) {
-                await room.acceptInvitation();
-              }
-            },
-          );
-        },
-      ),
+      body: myUid == null
+          ? Center(child: Text('sign-in first'.t))
+          : FirestoreListView(
+              query: ChatRoomQuery.receivedInvites.query,
+              itemBuilder: (context, doc) {
+                return ChatRoomListTile(
+                  room: ChatRoom.fromSnapshot(doc),
+                  onTap: (context, room, user) async {
+                    final re = await confirm(
+                      context: context,
+                      title: Text('rejected chat'.t),
+                      message: Text(
+                        "you have rejected chat already, accept the chat instead?"
+                            .t,
+                      ),
+                    );
+                    if (re ?? false) {
+                      await room.acceptInvitation();
+                    }
+                  },
+                );
+              },
+              emptyBuilder: (context) => Center(
+                child: Text('no chat rejected'.t),
+              ),
+            ),
     );
   }
 }
