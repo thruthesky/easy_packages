@@ -210,40 +210,6 @@ class MessagingService {
     });
   }
 
-  /// TODO - send the actual message by calling Cloud functions since the access token for HTTP v1 API is required. and it's not easy to get from flutter client.
-  /// Create a cloud function that accepts user uid list and title, body, data, and imageUrl.
-  /// Then, send the message to the users.
-  /// then, return the result of success or failure to the client.
-  send({
-    required List<String> uids,
-    required String title,
-    required String body,
-    required Map<String, dynamic> data,
-    String? imageUrl,
-    int batchSize = 128,
-  }) async {
-    /// Get tokens of the users
-    final List<String> tokens = await getTokens(uids);
-
-    /// Remove duplicated tokens.
-    ///
-    ///
-
-    // /// Send messages in batches
-    // Uri url =
-    //     Uri.https('fcm.googleapis.com', 'v1/projects/$projectId/messages:send');
-    // for (String token in tokens) {
-    //   http.Response response = await http.post(
-    //     url,
-    //     body: getPayload(token: token, title: title, body: body, data: data)
-    //         .toString(),
-    //   );
-
-    // print('Response status: ${response.statusCode}');
-    // print('Response body: ${response.body}');
-    // }
-  }
-
   /// Get tokens of the users
   ///
   /// [uids] - List of user ids
@@ -256,24 +222,6 @@ class MessagingService {
       }
     }
     return tokens;
-  }
-
-  Map<String, dynamic> getPayload({
-    required String token,
-    required String title,
-    required String body,
-    required Map<String, dynamic> data,
-    String? imageUrl,
-  }) {
-    return {
-      "message": {
-        "token": token,
-        "notification": {
-          "title": title,
-          "body": body,
-        }
-      }
-    };
   }
 
   preResponse(http.Response response) {
@@ -294,17 +242,15 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
-    Uri url = Uri.parse(sendMessageApi);
-
-    http.Response response = await http.post(
-      url,
-      body: jsonEncode({
+    final http.Response response = await httpPost(
+      sendMessageApi,
+      {
         "title": title,
         "body": body,
         "data": data,
         if (imageUrl != null) "imageUrl": imageUrl,
-        "tokens": tokens.join(','),
-      }),
+        "tokens": tokens,
+      },
     );
 
     return preResponse(response);
@@ -320,19 +266,17 @@ class MessagingService {
     String subscriptionName = '',
     bool excludeSubscribers = false,
   }) async {
-    // /// Send messages in batches
-    Uri url = Uri.https(sendMessageToUidsApi);
-    http.Response response = await http.post(
-      url,
-      body: jsonEncode({
+    final http.Response response = await httpPost(
+      sendMessageToUidsApi,
+      {
         "title": title,
         "body": body,
         "data": data,
-        "uids": uids.join(','),
+        "uids": uids,
         "subscriptionName": subscriptionName,
         "excludeSubscribers": excludeSubscribers,
         if (imageUrl != null) "imageUrl": imageUrl,
-      }),
+      },
     );
 
     return preResponse(response);
@@ -346,20 +290,27 @@ class MessagingService {
     required Map<String, dynamic> data,
     String? imageUrl,
   }) async {
-    // /// Send messages in batches
-    Uri url = Uri.https(sendMessageToSubscriptionsApi);
-
-    final response = await http.post(
-      url,
-      body: jsonEncode({
+    final http.Response response = await httpPost(
+      sendMessageToSubscriptionsApi,
+      {
         "title": title,
         "body": body,
         "data": data,
         if (imageUrl != null) "imageUrl": imageUrl,
         "subscription": subscription
-      }),
+      },
     );
 
     return preResponse(response);
+  }
+
+  Future<http.Response> httpPost(String url, Map<String, dynamic> body) {
+    return http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
   }
 }
