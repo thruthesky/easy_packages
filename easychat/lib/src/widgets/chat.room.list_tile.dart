@@ -88,11 +88,11 @@ class ChatRoomListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text((room.lastMessageAt ?? room.updatedAt).short),
         if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
           Badge(
             label: Text("${room.users[myUid!]!.newMessageCounter}"),
           ),
+        Text((room.lastMessageAt ?? room.updatedAt).short),
       ],
     );
   }
