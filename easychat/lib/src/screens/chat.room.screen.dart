@@ -50,9 +50,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       $user = await User.get(getOtherUserUidFromRoomId($room!.id)!);
     }
 
-    setState(() {});
-    $room!.updateMyReadMeta();
-
     // listen to the chat room
     roomSubscription =
         ChatService.instance.roomCol.doc($room!.id).snapshots().listen(
@@ -62,6 +59,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         roomNotifier.value = $room!.updatedAt.millisecondsSinceEpoch;
       },
     );
+    // Auto Join Groups when it is open chat
+    if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
+      await $room!.join();
+    }
+    setState(() {});
   }
 
   @override
@@ -95,23 +97,28 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return 'chat room'.t;
   }
 
+  bool get iAmInvited => $room?.invitedUsers.contains(myUid!) ?? false;
+  bool get iRejected => $room?.rejectedUsers.contains(myUid!) ?? false;
+
   String notMemberMessage(ChatRoom room) {
-    if (room.invitedUsers.contains(myUid!)) {
-      // The user has a chance to open the chat room with message
-      // when the other user sent a message (1:1) but the user
-      // haven't accepted yet.
-      return 'unaccepted yet, once you sent a message, the chat is automatically accepted'
-          .t;
+    if (iAmInvited) {
+      return 'unaccepted yet, accept before reading message'.t;
     }
-    if (room.rejectedUsers.contains(myUid!)) {
-      return 'rejected chat, if replied, the chat will be accepted'.t;
-    }
-    if (room.group) {
-      // For open chat rooms, the rooms can be seen by users.
-      return 'this is open chat, if sent a message, you join the room'.t;
+    if (iRejected) {
+      return 'the chat was rejected, unable to show message'.t;
     }
     // Else, it should be handled by the Firestore rulings.
-    return 'the chat room mau be private or deleted'.t;
+    return 'the chat room may be private or deleted'.t;
+  }
+
+  /// Returns true if the login user can view the chat messages.
+  ///
+  /// It check if
+  /// - the user has already joined the chat room,
+  ///   -- the user must joined the room even if it's open chat.
+  ///
+  bool get canViewChatMessage {
+    return $room!.joined;
   }
 
   @override
@@ -190,69 +197,81 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           );
         },
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if ($room == null)
-            const Center(child: CircularProgressIndicator.adaptive())
-          else ...[
-            Expanded(
-              flex: 5,
-              child: $room!.joined ||
-                      $room!.open ||
-                      $room!.invitedUsers.contains(my.uid) ||
-                      $room!.rejectedUsers.contains(my.uid)
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: ChatMessagesListView(
-                        key: const ValueKey("Chat Message List View"),
-                        room: $room!,
-                      ),
-                    )
-                  : Center(
+      body:
+          // for ($room!.open && !canViewChatMessage)
+          // showing loading widget at first because the user must join
+          // the room first.
+          $room == null || ($room!.open && !canViewChatMessage)
+              ? const Center(child: CircularProgressIndicator.adaptive())
+              : !canViewChatMessage
+                  ? Center(
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
-                        child: Text('unable to show chat messages'.t),
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            maxWidth: 300,
+                            maxHeight: 400,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(notMemberMessage($room!)),
+                              if (iAmInvited) ...[
+                                const SizedBox(height: 24),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        await $room!.acceptInvitation();
+                                        setState(() {});
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.all(12),
+                                      ),
+                                      child: Text("accept".t),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        await $room!.rejectInvitation();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.all(12),
+                                      ),
+                                      child: Text("reject".t),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                              const SizedBox(height: 108),
+                            ],
+                          ),
+                        ),
                       ),
+                    )
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: ChatMessagesListView(
+                              key: const ValueKey("Chat Message List View"),
+                              room: $room!,
+                            ),
+                          ),
+                        ),
+                        SafeArea(
+                          top: false,
+                          child: ChatRoomInputBox(
+                            room: $room!,
+                          ),
+                        ),
+                      ],
                     ),
-            ),
-            // There is a chance for user to open the chat room
-            // if the user is not a member of the chat room
-            if (!$room!.joined) ...[
-              ValueListenableBuilder(
-                valueListenable: roomNotifier,
-                builder: (_, hc, __) {
-                  if ($room!.joined) return const SizedBox.shrink();
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    margin: const EdgeInsets.only(
-                      bottom: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                    ),
-                    child: Text(
-                      notMemberMessage($room!),
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  );
-                },
-              ),
-            ],
-            SafeArea(
-              top: false,
-              child: $room == null
-                  ? const SizedBox.shrink()
-                  : ChatRoomInputBox(
-                      room: $room!,
-                    ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }

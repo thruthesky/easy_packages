@@ -26,6 +26,11 @@ final Map<String, Map<String, dynamic>> localeTexts = {
     'ko': '닫기',
   },
 
+  'go back': {
+    'en': 'Go back',
+    'ko': '돌아가기',
+  },
+
   'User not found': {
     'en': 'User not found',
     'ko': '사용자를 찾을 수 없습니다',
@@ -213,7 +218,7 @@ final Map<String, Map<String, dynamic>> localeTexts = {
     'ko': '내용을 입력하세요',
   },
 
-  /// --------------------- User, Login, Regigstration, Profile ---------------------
+  /// --------------------- User, Login, Regigstration, Profile, Terms and Conditions, Privacy ---------------------
   'You are not signed in': {
     'en': 'You are not signed in',
     'ko': '로그인하지 않았습니다',
@@ -222,6 +227,15 @@ final Map<String, Map<String, dynamic>> localeTexts = {
   'sign-in first': {
     'en': 'Sign-in first',
     'ko': '로그인을 먼저 해주세요',
+  },
+
+  'agree': {
+    'en': 'Agree',
+    'ko': '동의합니다',
+  },
+  'agree short': {
+    'en': 'Agree',
+    'ko': '동의',
   },
 
   /// --------------------- Post ---------------------
