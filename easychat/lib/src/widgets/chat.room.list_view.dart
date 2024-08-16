@@ -11,6 +11,9 @@ class ChatRoomListView extends StatelessWidget {
     this.itemBuilder,
     this.emptyBuilder,
     this.separatorBuilder,
+    this.invitationSeparatorBuilder,
+    this.invitationItemBuilder,
+    this.invitationBottomWidget,
   });
 
   final ChatRoomQuery queryOption;
@@ -19,6 +22,13 @@ class ChatRoomListView extends StatelessWidget {
   final Widget Function(BuildContext context)? emptyBuilder;
 
   final Widget Function(BuildContext, int)? separatorBuilder;
+
+  final Widget Function(BuildContext, int)? invitationSeparatorBuilder;
+
+  final Widget Function(BuildContext context, ChatRoom room, int index)?
+      invitationItemBuilder;
+
+  final Widget? invitationBottomWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +46,17 @@ class ChatRoomListView extends StatelessWidget {
         }
         return CustomScrollView(
           slivers: [
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ChatRoomInvitationShortList(
-                    key: ValueKey("Chat Room Invitation Short List"),
+                    key: const ValueKey("Chat Room Invitation Short List"),
+                    bottomWidget: invitationBottomWidget ?? const Divider(),
+                    itemBuilder: invitationItemBuilder,
+                    separatorBuilder: invitationSeparatorBuilder,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),

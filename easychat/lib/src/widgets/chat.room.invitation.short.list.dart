@@ -9,9 +9,17 @@ class ChatRoomInvitationShortList extends StatelessWidget {
   const ChatRoomInvitationShortList({
     super.key,
     this.padding,
+    this.itemBuilder,
+    this.separatorBuilder,
+    this.bottomWidget = const Divider(),
   });
 
   final EdgeInsetsGeometry? padding;
+
+  final Widget Function(BuildContext context, ChatRoom room, int index)?
+      itemBuilder;
+  final Widget Function(BuildContext, int)? separatorBuilder;
+  final Widget? bottomWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +69,13 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                 ],
               ),
             ),
-            ListView.builder(
+            ListView.separated(
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: chatRooms.length,
+              separatorBuilder: separatorBuilder ??
+                  (context, index) => const SizedBox.shrink(),
               itemBuilder: (listViewContext, index) {
                 final room = chatRooms[index];
                 // The fourth invitation and other nexts should be in
@@ -90,19 +100,20 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                     },
                   );
                 }
-                return ChatRoomInvitationListTile(
-                  room: room,
-                  onAccept: (room, user) async {
-                    await ChatService.instance.showChatRoomScreen(
-                      context,
+                return itemBuilder?.call(context, room, index) ??
+                    ChatRoomInvitationListTile(
                       room: room,
-                      user: user,
+                      onAccept: (room, user) async {
+                        await ChatService.instance.showChatRoomScreen(
+                          context,
+                          room: room,
+                          user: user,
+                        );
+                      },
                     );
-                  },
-                );
               },
             ),
-            const Divider(),
+            if (bottomWidget != null) bottomWidget!,
           ],
         );
       },
