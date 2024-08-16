@@ -130,6 +130,8 @@ class ChatRoom {
   /// domain can be used to filter the chat rooms by the app.
   String domain;
 
+  bool get iSeen => users[myUid!]?.newMessageCounter == 0;
+
   ChatRoom({
     required this.id,
     required this.name,
