@@ -53,6 +53,7 @@ class UserDoc extends StatelessWidget {
             return const SizedBox.shrink();
           }
           if (snapshot.hasError) {
+            dog('UserDoc() uid: $uid -> StreamBuilder() -> hasError: ${snapshot.error}');
             return Text(snapshot.error.toString());
           }
 

@@ -55,6 +55,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
         // Updating replyTo, The true source is updated
         replyTo = replySource;
         message.update(replyTo: replyTo);
+        dog("Updating Reply");
         if (replyTo!.deleted == true) subscription?.cancel();
         return;
       }
