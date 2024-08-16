@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/youtube_player_builder.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +20,14 @@ class YoutubeFullscreenBuilder extends StatefulWidget {
     super.key,
     required this.post,
     required this.builder,
+    this.thumbnail,
+    this.autoPlay = false,
   });
 
   final Post post;
   final Widget Function(BuildContext, Widget) builder;
+  final Widget? thumbnail;
+  final bool autoPlay;
 
   @override
   State<YoutubeFullscreenBuilder> createState() =>
@@ -31,7 +36,8 @@ class YoutubeFullscreenBuilder extends StatefulWidget {
 
 class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   YoutubePlayerController? youtubeController;
-  bool isPlaying = false;
+  ValueNotifier<bool> isPlayingNotifier = ValueNotifier(false);
+  // bool isPlaying = false;
   bool isReady = false;
   late PlayerState playerState;
 
@@ -40,8 +46,8 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
     if (widget.post.youtube['id'] == null) return;
     youtubeController = YoutubePlayerController(
       initialVideoId: widget.post.youtube['id']!,
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
+      flags: YoutubePlayerFlags(
+        autoPlay: widget.autoPlay,
         mute: false,
       ),
     )..addListener(listener);
@@ -60,15 +66,14 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   void dispose() {
     youtubeController?.pause();
     youtubeController?.dispose();
+    isPlayingNotifier.dispose();
     super.dispose();
   }
 
   listener() {
-    if (isReady && mounted) {
-      setState(() {
-        isPlaying = youtubeController!.value.isPlaying;
-        playerState = youtubeController!.value.playerState;
-      });
+    if (mounted && youtubeController!.value.isReady) {
+      isPlayingNotifier.value = youtubeController!.value.isPlaying;
+      playerState = youtubeController!.value.playerState;
     }
   }
 
@@ -81,7 +86,7 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
       return;
     }
     if (oldWidget.post.youtube['id'] != widget.post.youtube['id']) {
-      youtubeController?.load(widget.post.youtube['id']!);
+      youtubeController?.load(widget.post.youtube['id']);
       youtubeController?.pause();
     }
   }
@@ -90,28 +95,27 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   Widget build(BuildContext context) {
     return YoutubePlayerBuilder(
       player: YoutubePlayer(
-        onReady: () {
-          setState(() {
-            isReady = true;
-          });
-        },
         bottomActions: [
-          IconButton(
-            onPressed: () {
-              if (youtubeController != null) {
-                youtubeController!.value.isPlaying
-                    ? youtubeController?.pause()
-                    : youtubeController?.play();
-              }
-            },
-            icon: Icon(
-              isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
-            ),
-          ),
-          CurrentPosition(),
-          ProgressBar(
-            colors: const ProgressBarColors(
+          ValueListenableBuilder<bool>(
+              valueListenable: isPlayingNotifier,
+              builder: (context, isPlaying, _) {
+                return IconButton(
+                  onPressed: () {
+                    if (youtubeController != null) {
+                      youtubeController!.value.isPlaying
+                          ? youtubeController?.pause()
+                          : youtubeController?.play();
+                    }
+                  },
+                  icon: Icon(
+                    isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                  ),
+                );
+              }),
+          const CurrentPosition(),
+          const ProgressBar(
+            colors: ProgressBarColors(
                 playedColor: Colors.white,
                 handleColor: Colors.white,
                 backgroundColor: Colors.grey),
@@ -120,11 +124,12 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
           const SizedBox(
             width: 8,
           ),
-          RemainingDuration(),
-          FullScreenButton(),
+          const RemainingDuration(),
+          const FullScreenButton(),
         ],
         topActions: const [],
         controller: youtubeController!,
+        thumbnail: widget.thumbnail,
       ),
       builder: (context, smallWidget) {
         return widget.builder(context, smallWidget);
