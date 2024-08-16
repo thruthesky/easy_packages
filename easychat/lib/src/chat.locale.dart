@@ -204,10 +204,6 @@ final localeTexts = <String, Map<String, String>>{
   },
 
   // chat.bubble.reply.dart
-  'replying to': {
-    'en': 'Replying to',
-    'ko': '답글',
-  },
   'replying to user': {
     'en': 'Replying to {username}',
     'ko': '{username}에게 답장 중',
@@ -342,8 +338,10 @@ final localeTexts = <String, Map<String, String>>{
   },
 
   // chat.room.replying_to
-  // 'replying to' -> chat.bubble.reply.dart
-  // Nothing else to translate
+  'replying to': {
+    'en': 'Replying to',
+    'ko': '답글',
+  },
 
   // edit.chat.message.dialog.dart
   'edit message': {

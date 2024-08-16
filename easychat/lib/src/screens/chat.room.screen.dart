@@ -203,57 +203,61 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           // the room first.
           $room == null || ($room!.open && !canViewChatMessage)
               ? const Center(child: CircularProgressIndicator.adaptive())
-              : !canViewChatMessage
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Container(
-                          constraints: const BoxConstraints(
-                            maxWidth: 300,
-                            maxHeight: 400,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(notMemberMessage($room!)),
-                              if (iAmInvited) ...[
-                                const SizedBox(height: 24),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        await $room!.acceptInvitation();
-                                        setState(() {});
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.all(12),
+              : ValueListenableBuilder(
+                  valueListenable: roomNotifier,
+                  builder: (_, hc, __) {
+                    if (!canViewChatMessage) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              maxWidth: 300,
+                              maxHeight: 400,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(notMemberMessage($room!)),
+                                if (iAmInvited) ...[
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          await $room!.acceptInvitation();
+                                          setState(() {});
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.all(12),
+                                        ),
+                                        child: Text("accept".t),
                                       ),
-                                      child: Text("accept".t),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                        await $room!.rejectInvitation();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.all(12),
+                                      const SizedBox(width: 8),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          await $room!.rejectInvitation();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.all(12),
+                                        ),
+                                        child: Text("reject".t),
                                       ),
-                                      child: Text("reject".t),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
+                                const SizedBox(height: 108),
                               ],
-                              const SizedBox(height: 108),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  : Column(
+                      );
+                    }
+                    return Column(
                       children: [
                         Expanded(
                           child: Align(
@@ -271,7 +275,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           ),
                         ),
                       ],
-                    ),
+                    );
+                  }),
     );
   }
 }
