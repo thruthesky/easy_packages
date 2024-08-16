@@ -541,7 +541,10 @@ class ChatRoom {
       if (lastMessageText != null) field.lastMessageText: lastMessageText,
       field.lastMessageAt: FieldValue.serverTimestamp(),
       field.lastMessageUid: myUid!,
-      if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
+      if (lastMessageUrl != null)
+        field.lastMessageUrl: lastMessageUrl
+      else
+        field.lastMessageUrl: FieldValue.delete(),
       field.lastMessageDeleted: false,
       field.users: {
         ...updateUserData,

@@ -207,50 +207,47 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   valueListenable: roomNotifier,
                   builder: (_, hc, __) {
                     if (!canViewChatMessage) {
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Container(
-                            constraints: const BoxConstraints(
-                              maxWidth: 300,
-                              maxHeight: 400,
-                            ),
-                            child: Column(
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
+                        ),
+                        child: Center(
+                          child: AlertDialog(
+                            title: Text("chat invitation".t),
+                            content: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(notMemberMessage($room!)),
                                 if (iAmInvited) ...[
                                   const SizedBox(height: 24),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          await $room!.acceptInvitation();
-                                          setState(() {});
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.all(12),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            await $room!.acceptInvitation();
+                                            setState(() {});
+                                          },
+                                          child: Text("accept".t),
                                         ),
-                                        child: Text("accept".t),
                                       ),
                                       const SizedBox(width: 8),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                          await $room!.rejectInvitation();
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.all(12),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            await $room!.rejectInvitation();
+                                          },
+                                          child: Text("reject".t),
                                         ),
-                                        child: Text("reject".t),
                                       ),
                                     ],
                                   ),
                                 ],
-                                const SizedBox(height: 108),
                               ],
                             ),
                           ),
