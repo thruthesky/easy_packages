@@ -152,6 +152,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': "The Chat Room may be private and/or deleted.",
     'ko': "채팅방은 비공개 또는 삭제될 수 있습니다.",
   },
+  "chat invitation": {
+    'en': "Chat Invitation",
+    'ko': "채팅 초대",
+  },
 
   // received.chat.room.invite_list.screen.dart
   'accept/reject chat requests': {
@@ -202,6 +206,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'This message has been deleted.',
     'ko': '이 메시지는 삭제되었습니다.',
   },
+  'photo': {
+    'en': 'Photo',
+    'ko': '사진',
+  },
 
   // chat.bubble.reply.dart
   'replying to user': {
@@ -212,10 +220,7 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'The message being replied has been deleted',
     'ko': '답장 중인 메시지가 삭제되었습니다'
   },
-  'photo': {
-    'en': 'Photo',
-    'ko': '사진',
-  },
+  // 'photo' ==> chat.bubble.dart
 
   // chat.messages.list_view.dart
   'something went wrong': {
@@ -338,8 +343,10 @@ final localeTexts = <String, Map<String, String>>{
   },
 
   // chat.room.replying_to
-  // 'replying to' -> chat.bubble.reply.dart
-  // Nothing else to translate
+  'replying to': {
+    'en': 'Replying to',
+    'ko': '답글',
+  },
 
   // edit.chat.message.dialog.dart
   'edit message': {
