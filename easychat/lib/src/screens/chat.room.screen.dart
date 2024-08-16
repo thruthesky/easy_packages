@@ -155,18 +155,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       ),
                       const SizedBox(width: 12),
                     ] else if ($room!.single) ...[
-                      GestureDetector(
-                        child: UserAvatar(
-                          user: $user!,
-                          size: 36,
-                          radius: 15,
+                      if ($user != null)
+                        GestureDetector(
+                          child: UserAvatar(
+                            user: $user!,
+                            size: 36,
+                            radius: 15,
+                          ),
+                          onTap: () =>
+                              UserService.instance.showPublicProfileScreen(
+                            context,
+                            user: $user!,
+                          ),
                         ),
-                        onTap: () =>
-                            UserService.instance.showPublicProfileScreen(
-                          context,
-                          user: $user!,
-                        ),
-                      ),
                       const SizedBox(width: 12),
                     ],
                     Expanded(
