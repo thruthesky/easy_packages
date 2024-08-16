@@ -204,13 +204,9 @@ final localeTexts = <String, Map<String, String>>{
   },
 
   // chat.bubble.reply.dart
-  'replying to': {
-    'en': 'Replying to',
-    'ko': '답글',
-  },
   'replying to user': {
-    'en': 'Replying to {username}',
-    'ko': '{username}에게 답장 중',
+    'en': 'Replied to {username}',
+    'ko': '{username}에게 답장',
   },
   'the message being replied has been deleted': {
     'en': 'The message being replied has been deleted',
