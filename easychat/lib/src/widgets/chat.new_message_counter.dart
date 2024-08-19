@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/widgets.dart';
@@ -18,11 +19,12 @@ class ChatNewMessageCounter extends StatefulWidget {
 
 class _ChatNewMessageCounterState extends State<ChatNewMessageCounter> {
   int initialData = 0;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       initialData: initialData,
-      stream: ChatService.instance.myRoomQuery.snapshots().map((snapshot) {
+      stream: ChatRoomQuery.unread().snapshots().map((snapshot) {
         if (snapshot.size == 0) {
           return 0;
         }
@@ -30,6 +32,7 @@ class _ChatNewMessageCounterState extends State<ChatNewMessageCounter> {
         int newMessages = 0;
         for (final doc in docs) {
           final room = ChatRoom.fromSnapshot(doc);
+          dog("1 Read: ${room.users[myUid]?.newMessageCounter} id: ${room.id}");
           newMessages += room.users[myUid]?.newMessageCounter ?? 0;
         }
         return newMessages;

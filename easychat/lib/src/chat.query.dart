@@ -9,7 +9,8 @@ enum ChatRoomQuery {
   single,
   singleByTime,
   group,
-  groupByTime;
+  groupByTime,
+  ;
 
   Query get query {
     Query q = ChatService.instance.roomCol;
@@ -62,5 +63,12 @@ enum ChatRoomQuery {
     return ChatService.instance.roomCol
         .where(ChatRoom.field.rejectedUsers, arrayContains: myUid)
         .orderBy(ChatRoom.field.updatedAt, descending: true);
+  }
+
+  static Query unread() {
+    return ChatService.instance.roomCol.where(
+      '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.newMessageCounter}',
+      isGreaterThan: 0,
+    );
   }
 }

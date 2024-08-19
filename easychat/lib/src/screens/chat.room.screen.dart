@@ -155,18 +155,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       ),
                       const SizedBox(width: 12),
                     ] else if ($room!.single) ...[
-                      GestureDetector(
-                        child: UserAvatar(
-                          user: $user!,
-                          size: 36,
-                          radius: 15,
+                      if ($user != null)
+                        GestureDetector(
+                          child: UserAvatar(
+                            user: $user!,
+                            size: 36,
+                            radius: 15,
+                          ),
+                          onTap: () =>
+                              UserService.instance.showPublicProfileScreen(
+                            context,
+                            user: $user!,
+                          ),
                         ),
-                        onTap: () =>
-                            UserService.instance.showPublicProfileScreen(
-                          context,
-                          user: $user!,
-                        ),
-                      ),
                       const SizedBox(width: 12),
                     ],
                     Expanded(
@@ -203,57 +204,58 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           // the room first.
           $room == null || ($room!.open && !canViewChatMessage)
               ? const Center(child: CircularProgressIndicator.adaptive())
-              : !canViewChatMessage
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Container(
-                          constraints: const BoxConstraints(
-                            maxWidth: 300,
-                            maxHeight: 400,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(notMemberMessage($room!)),
-                              if (iAmInvited) ...[
-                                const SizedBox(height: 24),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        await $room!.acceptInvitation();
-                                        setState(() {});
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.all(12),
+              : ValueListenableBuilder(
+                  valueListenable: roomNotifier,
+                  builder: (_, hc, __) {
+                    if (!canViewChatMessage) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
+                        ),
+                        child: Center(
+                          child: AlertDialog(
+                            title: Text("chat invitation".t),
+                            content: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(notMemberMessage($room!)),
+                                if (iAmInvited) ...[
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            await $room!.acceptInvitation();
+                                            setState(() {});
+                                          },
+                                          child: Text("accept".t),
+                                        ),
                                       ),
-                                      child: Text("accept".t),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                        await $room!.rejectInvitation();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.all(12),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            await $room!.rejectInvitation();
+                                          },
+                                          child: Text("reject".t),
+                                        ),
                                       ),
-                                      child: Text("reject".t),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
                               ],
-                              const SizedBox(height: 108),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  : Column(
+                      );
+                    }
+                    return Column(
                       children: [
                         Expanded(
                           child: Align(
@@ -271,7 +273,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           ),
                         ),
                       ],
-                    ),
+                    );
+                  }),
     );
   }
 }

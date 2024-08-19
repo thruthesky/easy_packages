@@ -75,24 +75,44 @@ class ChatRoomListTile extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontStyle: FontStyle.italic),
         )
-      : room.lastMessageText != null
-          ? Text(
-              room.lastMessageText!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            )
-          : null;
+      : Row(
+          children: [
+            if (room.lastMessageUrl != null &&
+                room.lastMessageUrl!.isNotEmpty) ...[
+              const Icon(Icons.photo, size: 16),
+              const SizedBox(width: 4),
+            ],
+            if (room.lastMessageText != null &&
+                room.lastMessageText!.isNotEmpty)
+              Flexible(
+                child: Text(
+                  room.lastMessageText!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            else if (room.lastMessageUrl != null &&
+                room.lastMessageUrl!.isNotEmpty)
+              Flexible(
+                child: Text(
+                  "[${'photo'.t}]",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+          ],
+        );
 
   Widget get trailing {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text((room.lastMessageAt ?? room.updatedAt).short),
         if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
           Badge(
             label: Text("${room.users[myUid!]!.newMessageCounter}"),
           ),
+        Text((room.lastMessageAt ?? room.updatedAt).short),
       ],
     );
   }

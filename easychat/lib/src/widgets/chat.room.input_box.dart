@@ -49,7 +49,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     uploadProgress.close();
     controller.dispose();
     ChatService.instance.clearReply();
-    dog("Input box being disposed");
     textFocus.dispose();
     if (url != null) {
       StorageService.instance.delete(url);
