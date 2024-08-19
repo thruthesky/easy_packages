@@ -109,9 +109,12 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
-          Badge(
-            label: Text("${room.users[myUid!]!.newMessageCounter}"),
-          ),
+          ChatService.instance.chatRoomNewMessageBuilder?.call(room) ??
+              Badge(
+                label: Text(
+                  "${room.users[myUid!]!.newMessageCounter}",
+                ),
+              ),
         Text((room.lastMessageAt ?? room.updatedAt).short),
       ],
     );

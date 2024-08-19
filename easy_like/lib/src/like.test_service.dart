@@ -20,7 +20,7 @@ class LikeTestService {
 
     final documentReference = db
         .collection('tmp')
-        .doc('like-test-' + DateTime.now().millisecondsSinceEpoch.toString());
+        .doc('like-test-${DateTime.now().millisecondsSinceEpoch}');
     await documentReference.set({
       'title': 'a',
     });

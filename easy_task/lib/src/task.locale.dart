@@ -1,5 +1,4 @@
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_task/easy_task.dart';
 
 final localeTexts = <String, Map<String, String>>{
   'project': {

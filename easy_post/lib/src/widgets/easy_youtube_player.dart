@@ -87,9 +87,9 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
                   : Icons.play_arrow,
               color: Colors.white,
             )),
-        CurrentPosition(),
-        ProgressBar(
-          colors: const ProgressBarColors(
+        const CurrentPosition(),
+        const ProgressBar(
+          colors: ProgressBarColors(
               playedColor: Colors.white,
               handleColor: Colors.white,
               backgroundColor: Colors.grey),
@@ -98,7 +98,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
         const SizedBox(
           width: 8,
         ),
-        RemainingDuration(),
+        const RemainingDuration(),
         // FullScreenButton(),
       ],
       topActions: const [],

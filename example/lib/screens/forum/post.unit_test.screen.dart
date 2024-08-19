@@ -41,7 +41,7 @@ class PostUniteTestScreen extends StatelessWidget {
               final youtube =
                   Youtube(url: 'https://www.youtube.com/watch?v=YBmFxBb9U6g');
 
-              print('youtube id: ${youtube.getVideoId()}');
+              dog('youtube id: ${youtube.getVideoId()}');
 
               // youtube.getVideoId();
               final snippet = await youtube.getSnippet(

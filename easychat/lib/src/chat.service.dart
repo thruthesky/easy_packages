@@ -40,20 +40,25 @@ class ChatService {
   /// [uid] uid of the user that is being invited
   Function({required ChatRoom room, required String uid})? onInvite;
 
+  Widget Function(ChatRoom room)? chatRoomNewMessageBuilder;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
     Future<fs.DocumentReference?> Function(BuildContext context,
             {ChatRoom? room})?
         $showChatRoomEditScreen,
-    Widget Function(ChatRoom)? chatRoomActionButton,
     Function({required ChatMessage message, required ChatRoom room})?
         onSendMessage,
     Function({required ChatRoom room, required String uid})? onInvite,
+    Widget Function(ChatRoom)? chatRoomActionButton,
+    Widget Function(ChatRoom room)? chatRoomNewMessageBuilder,
   }) {
     UserService.instance.init();
 
     initialized = true;
+
+    this.chatRoomNewMessageBuilder = chatRoomNewMessageBuilder;
 
     this.$showChatRoomListScreen =
         $showChatRoomListScreen ?? this.$showChatRoomListScreen;

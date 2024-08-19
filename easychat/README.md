@@ -229,3 +229,17 @@ This feature is not supported, yet.
 
 
 
+
+
+
+# chatRoomActionButton
+
+You can customize the chat room buttons on the header in chat room.
+
+
+# chatRoomNewMessageBuilder
+
+The `ChatNewMessageCounter` is for displaying the number of new message of the whole chat rooms.
+
+If you want to display the number of new messages of each chat room, you can use `chatRoomNewMessageBuilder` builder.
+
