@@ -273,7 +273,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 ],
               ],
               const SizedBox(height: 24),
-              label(context: context, text: "options".t),
+              if (user?.admin != true)
+                label(context: context, text: "options".t),
               const SizedBox(height: 8),
               if (room.joined) ...[
                 if (room.group && room.masterUsers.contains(my.uid))
@@ -303,24 +304,26 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     },
                   ),
               ],
-              if (room.single)
+              if (user?.admin != true) ...[
+                if (room.single)
+                  ListTile(
+                    title: Text("block".t),
+                    onTap: () async {
+                      UserService.instance
+                          .block(context: context, otherUid: user!.uid);
+                    },
+                  ),
                 ListTile(
-                  title: Text("block".t),
-                  onTap: () async {
-                    UserService.instance
-                        .block(context: context, otherUid: user!.uid);
+                  title: Text('report'.t),
+                  onTap: () {
+                    ReportService.instance.report(
+                      context: context,
+                      documentReference: room.ref,
+                      otherUid: user!.uid,
+                    );
                   },
-                ),
-              ListTile(
-                title: Text('report'.t),
-                onTap: () {
-                  ReportService.instance.report(
-                    context: context,
-                    documentReference: room.ref,
-                    otherUid: user!.uid,
-                  );
-                },
-              ),
+                )
+              ],
               const SizedBox(
                 height: 36,
               ),

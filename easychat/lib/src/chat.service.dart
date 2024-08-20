@@ -42,6 +42,11 @@ class ChatService {
 
   Widget Function(int no)? chatRoomNewMessageBuilder;
 
+  /// This is used in Chat Room list screen.
+  ///
+  /// Why? Login in different apps may have different way to present.
+  Widget Function(BuildContext context)? loginButtonBuilder;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
@@ -53,6 +58,7 @@ class ChatService {
     Function({required ChatRoom room, required String uid})? onInvite,
     Widget Function(ChatRoom)? chatRoomActionButton,
     Widget Function(int no)? chatRoomNewMessageBuilder,
+    Widget Function(BuildContext context)? loginButtonBuilder,
   }) {
     UserService.instance.init();
 
@@ -67,6 +73,7 @@ class ChatService {
     this.chatRoomActionButton = chatRoomActionButton;
     this.onSendMessage = onSendMessage;
     this.onInvite = onInvite;
+    this.loginButtonBuilder = loginButtonBuilder;
   }
 
   /// Firebase CollectionReference for Chat Room docs
