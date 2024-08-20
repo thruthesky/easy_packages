@@ -54,10 +54,12 @@ class ChatRoomInvitationShortList extends StatelessWidget {
               padding: padding ?? const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Badge(
-                    label: Text(
-                        "${chatRooms.length < 4 ? chatRooms.length : '3+'}"),
-                  ),
+                  ChatService.instance.chatRoomNewMessageBuilder
+                          ?.call(chatRooms.length) ??
+                      Badge(
+                        label: Text(
+                            "${chatRooms.length < 4 ? chatRooms.length : '3+'}"),
+                      ),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
