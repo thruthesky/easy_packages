@@ -303,21 +303,21 @@ class UserService {
     BuildContext context, {
     required User user,
   }) {
-    return $showPublicProfileScreen?.call(context, user) ??
-        showGeneralDialog(
-          context: context,
-          pageBuilder: (context, _, __) {
-            return UserPublicProfileScreen(user: user);
-          },
-        );
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return $showPublicProfileScreen?.call(context, user) ??
+            UserPublicProfileScreen(user: user);
+      },
+    );
   }
 
   showProfileUpdaeScreen(BuildContext context) {
-    return $showProfileUpdateScreen?.call() ??
-        showGeneralDialog(
-          context: context,
-          pageBuilder: (context, _, __) => const UserProfileUpdateScreen(),
-        );
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) =>
+          $showProfileUpdateScreen?.call() ?? const UserProfileUpdateScreen(),
+    );
   }
 
   /// To easily display userSearchDialog you can use

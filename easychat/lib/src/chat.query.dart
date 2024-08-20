@@ -65,6 +65,7 @@ enum ChatRoomQuery {
         .orderBy(ChatRoom.field.updatedAt, descending: true);
   }
 
+  /// Returns a query for unread chat rooms.
   static Query unread() {
     return ChatService.instance.roomCol.where(
       '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.newMessageCounter}',

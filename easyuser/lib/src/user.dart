@@ -287,11 +287,11 @@ class User {
   }) async {
     final data = <String, dynamic>{
       'updatedAt': FieldValue.serverTimestamp(),
-      if (displayName != null) 'displayName': displayName,
+      if (displayName != null) 'displayName': displayName.trim(),
       if (displayName != null)
-        'caseIncensitiveDisplayName': displayName.toLowerCase(),
-      if (name != null) 'name': name,
-      if (name != null) 'caseIncensitveName': name.toLowerCase(),
+        'caseIncensitiveDisplayName': displayName.toLowerCase().trim(),
+      if (name != null) 'name': name.trim(),
+      if (name != null) 'caseIncensitveName': name.toLowerCase().trim(),
       if (birthYear != null) 'birthYear': birthYear,
       if (birthMonth != null) 'birthMonth': birthMonth,
       if (birthDay != null) 'birthDay': birthDay,
