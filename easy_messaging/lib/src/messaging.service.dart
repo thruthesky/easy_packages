@@ -38,9 +38,9 @@ class MessagingService {
   Function? onNotificationPermissionDenied;
   Function? onNotificationPermissionNotDetermined;
 
-  late final String sendMessageApi;
+  late final String sendMessageToTokensApi;
   late final String sendMessageToUidsApi;
-  late final String sendMessageToSubscriptionsApi;
+  late final String sendMessageToSubscriptionApi;
 
   bool initialized = false;
   String? token;
@@ -49,9 +49,9 @@ class MessagingService {
   ///
   /// [onBackgroundMessage] - Function to handle background messages.
   init({
-    required String sendMessageApi,
+    required String sendMessageToTokensApi,
     required String sendMessageToUidsApi,
-    required String sendMessageToSubscriptionsApi,
+    required String sendMessageToSubscriptionApi,
     Future<void> Function(RemoteMessage)? onBackgroundMessage,
     Function(RemoteMessage)? onForegroundMessage,
     required Function(RemoteMessage) onMessageOpenedFromTerminated,
@@ -61,9 +61,9 @@ class MessagingService {
   }) async {
     initialized = true;
 
-    this.sendMessageApi = sendMessageApi;
+    this.sendMessageToTokensApi = sendMessageToTokensApi;
     this.sendMessageToUidsApi = sendMessageToUidsApi;
-    this.sendMessageToSubscriptionsApi = sendMessageToSubscriptionsApi;
+    this.sendMessageToSubscriptionApi = sendMessageToSubscriptionApi;
 
     /// Register the background message handler if provided.
     if (onBackgroundMessage != null) {
@@ -166,7 +166,7 @@ class MessagingService {
     // web does not support topics: https://firebase.google.com/docs/cloud-messaging/flutter/topic-messaging#subscribe_the_client_app_to_a_topic
     if (kIsWeb) return;
 
-    await FirebaseMessaging.instance.subscribeToTopic(Topic.allUsers);
+    /// Subscribe user base on their platform
     if (Platform.isAndroid) {
       await FirebaseMessaging.instance.subscribeToTopic(Topic.android);
     } else if (Platform.isIOS) {
@@ -189,6 +189,9 @@ class MessagingService {
     } else if (Platform.isFuchsia) {
       await FirebaseMessaging.instance.subscribeToTopic(Topic.fuchsia);
     }
+
+    /// Subscribe all user to allUsers topic
+    await FirebaseMessaging.instance.subscribeToTopic(Topic.allUsers);
   }
 
   /// Initialize Messaging Event Handlers
@@ -224,6 +227,11 @@ class MessagingService {
     return tokens;
   }
 
+  ///
+  /// Preprocess respose
+  /// Return the list of tokens that has errors,
+  /// If error throw error message
+  ///
   preResponse(http.Response response) {
     dog('Response status: ${response.statusCode}');
     dog('Response body: ${response.body}');
@@ -235,7 +243,7 @@ class MessagingService {
   }
 
   /// Send a message to the users
-  Future<List<String>> sendMessage({
+  Future<List<String>> sendMessageToTokens({
     required List<String> tokens,
     required String title,
     required String body,
@@ -243,7 +251,7 @@ class MessagingService {
     String? imageUrl,
   }) async {
     final http.Response response = await httpPost(
-      sendMessageApi,
+      sendMessageToTokensApi,
       {
         "title": title,
         "body": body,
@@ -257,7 +265,7 @@ class MessagingService {
   }
 
   /// Send a message to the users
-  Future<List<String>> sendMessageToUid({
+  Future<List<String>> sendMessageToUids({
     required List<String> uids,
     required String title,
     required String body,
@@ -291,7 +299,7 @@ class MessagingService {
     String? imageUrl,
   }) async {
     final http.Response response = await httpPost(
-      sendMessageToSubscriptionsApi,
+      sendMessageToSubscriptionApi,
       {
         "title": title,
         "body": body,

@@ -27,14 +27,10 @@ Add `easychat` into your `pubspec.yaml`
 ChatService.instance.init();
 ```
 
-
 ## Logic
 
 - User must sign in to use any of the chat features.
   - You must be sure that the user sign in first before using the chat screen. Or an error may appears on the screen.
-
-
-
 
 ## User database
 
@@ -76,8 +72,6 @@ ChatService.instance.init();
 - `group` - is true when the room is group chat
 - `open` - is true when the room is open group chat.
 
-
-
 #### Cost of Firestore
 
 - Firestore is more expensive compared to Realtime Database.
@@ -87,11 +81,9 @@ ChatService.instance.init();
     - In chat room list screen and chat room screen, the chat room document are listened(subscribed) for realtime updates. And it will be a bit costy.
     - If you have millions of users and if it costs, let us know. We will hurry to customize it for low cost.
 
-
 ### Chat message database struture (RTDB)
 
 For the speed and cost efficiencies, the chat messages are saved under `/chat-messages/{roomId}` in Realtime Database
-
 
 - `senderUid` is the chat message sender uid.
 - `createdAt` is the date time of the chat message.
@@ -100,11 +92,10 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
 - `url` is the url of photo or file of the chat message.
 - `deleted` is true when the message is deleted. if the message is deleted, then text, url, url preview values will be deleted.
 - When sending a chat message, if the text contains a URL, the site information is displayed for previewing. The appropriate values are stored in the following fields below the message:
-    - `previewUrl` - URL
-    - `previewTitle` - Title
-    - `previewDescription` - Description
-    - `previewImageUrl` - Image
-
+  - `previewUrl` - URL
+  - `previewTitle` - Title
+  - `previewDescription` - Description
+  - `previewImageUrl` - Image
 
 ### Chat room settings per each users (RTDB)
 
@@ -141,6 +132,7 @@ The one who create chat room automatically becomes a master. And he can add anot
 It really happened to one of my own projects that someone sent very bad words to many other users that he does not know. And he ruined the app. So, we have a special feature to prevent this. And this feature is optional.
 
 - Chat invitation is an optional.
+
   - It can be disabled by default with the option that allows each user to enable it.
   - Or it can be enabled by default with the option that each user to disable it.
 
@@ -162,6 +154,7 @@ The password must kept in secret by the Security rules. Then, how the user can j
 - And, client cannot read the password and when the user enters the password, how the client can check if the password is correct or not?
 
 The solution is that,
+
 - The user will save the password in `/users/{uid}/user-meta/private {chatRoomPassword: ...}`
 - And user tries to join the room and in the security rule,
   - Security rules is the one to check if the password in user meta and in the chat private are the same.
@@ -169,16 +162,7 @@ The solution is that,
 
 This is the way how it can compare the chat password.
 
-
-
-
-
-
-
-
-
 # Development Tip
-
 
 ## Opening chat room create in main.dart
 
@@ -191,10 +175,7 @@ class MyAppState extends State<MyApp> {
     });
 ```
 
-
-
 ## Chat to admin
-
 
 ### 1:1 chat
 
@@ -217,7 +198,6 @@ UserDoc(
 ),
 ```
 
-
 ### Group chat (NOT SUPPORTED, YET)
 
 This feature is not supported, yet.
@@ -225,21 +205,94 @@ This feature is not supported, yet.
 - ~~If there are many admins who want to participate in the customer care chat, list all the uid of admins.~~
 - ~~then, create a group chat room with the list of admins and the login user.~~
 
-
-
-
-
-
-
-
 # chatRoomActionButton
 
-You can customize the chat room buttons on the header in chat room.
+You can add extra button on the header in chat room.
+The `chatRoomActionButton` contains the chat room information.
+and accepts a Function that return a widget.
+The return widget will be display in the action button.
 
+Usage: (e.g. adding extra icon on the chat room header)
+
+```dart
+    ChatService.instance.init(
+      chatRoomActionButton: (room) => IconButton(
+        onPressed: () {
+          /// do some state
+        },
+        icon: const Icon(Icons.notifications),
+      ),
+    );
+```
+
+# onSendMessage CallBack
+
+Using `onSendMessage` is a callback after the message is sent.
+It contains the `ChatMessage` information and the `ChatRoom` information.
+
+Usage: (e.g. push notification to other users in the chat room)
+
+You may also use `PushNotificationToggleIcon` widget which came from `easy_messaging` package. It display a toggle push notification icon.
+and make a subscription to rtdb using the room id as subscriptionName.
+The path is `fcm-subscriptions/$subscriptionName/$userId`.
+By default `pushNotificationToggleIcon` display enable icon when it is set to true, otherwise false. To reverse this we can set `reverse: true`.
+Which display a disable icon when it is set to true, otherwise false.
+With this we can exclude Subscribers from push notification.
+
+```dart
+    ChatService.instance.init(
+      /// push notification toggle icon in reverse
+      chatRoomActionButton: (room) => PushNotificationToggleIcon(
+        subscriptionName: room.id,
+        reverse: true,
+      ),
+      onSendMessage: (
+          {required ChatMessage message, required ChatRoom room}) async {
+        /// remove current user uid
+        final uids = room.userUids.where((uid) => uid != myUid).toList();
+        if (uids.isEmpty) return;
+        /// send push notification to remaining uid
+        /// using sendMessageToUid along with subscriptionName and
+        /// excludeSubscribers set to `true` will exclude the uids if
+        /// their subscription to room id is set to true.
+        MessagingService.instance.sendMessageToUids(
+          uids: uids,
+          subscriptionName: room.id,
+          excludeSubscribers: true,
+          title: '{name} sent you a message'.tr(args: {'name': my.displayName}),
+          body: '${message.text}',
+          data: {"action": 'chat', 'roomId': room.id},
+        );
+      },
+    );
+```
+
+# onInvite Callback
+
+The `onInvite` callback is triggered after a user was invited to the chat room.
+This is called from `ChatRoom` -> `inviteUser` method.
+
+Usage: (e.g. push notification to inform the other user of invitation)
+
+```dart
+ChatService.instance.init(
+      onInvite: ({required ChatRoom room, required String uid}) async {
+        MessagingService.instance.sendMessageToUids(
+          uids: [uid],
+          title: '{name} invited you to join a chat room'.tr(args: {
+            'name': my.displayName,
+          }),
+          body: 'You got chat room invite'.t,
+          data: {
+            "action": 'chatInvite',
+          },
+        );
+      },
+    );
+```
 
 # chatRoomNewMessageBuilder
 
 The `ChatNewMessageCounter` is for displaying the number of new message of the whole chat rooms.
 
 If you want to display the number of new messages of each chat room, you can use `chatRoomNewMessageBuilder` builder.
-

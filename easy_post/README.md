@@ -2,7 +2,6 @@
 
 A post management library for Firebase and Fltuter.
 
-
 # TODOs
 
 - Use Realtime Database for listing.
@@ -13,14 +12,11 @@ A post management library for Firebase and Fltuter.
   - This is for reducing the cost.
   - The Firestore will hold data for keeping original data and filtering purpose.
 
-
 # Database Structure
 
 - `youtubeUrl` has the youtube url. If there is no youtubeUrl, it must be an empty string. The `youtubeUrl` field must always exsit. To get posts that has youtube url, filter the post document using the firestore's `graterThan` filter.
 
-
 # Custom Data
-
 
 You can use `extra` field to save custom fields and values.
 
@@ -32,11 +28,7 @@ await Post.create(category: 'puzzle-score', extra: {
 });
 ```
 
-
 You can access the custom value like `post.extra['size']`. Note that, the `post.extra` is merely the alias of `post.data`.
-
-
-
 
 # Category
 
@@ -47,6 +39,7 @@ It's entirely up to you to decide how you want to design the UI/UX of the catego
 `easy_post_v2` provides post list screen and it requires some categories. You can feed the categories like below;
 
 Example:
+
 ```dart
 PostService.instance.showPostListScreen(
   context: context,
@@ -63,13 +56,7 @@ PostService.instance.showPostListScreen(
 
 If you don't want to use the `easy_category`, you can customize the whole post list screen by yourself. And actually, customizing the whole post list screen is recommended since your app would require different UI/UX. But that does not mean you have to use something other than `easy_category`. You can still use it even if you customize the UI/UX of the whole post screens and widgets.
 
-
-
-
-
 You can develop your own post list screen where you can design your own category options. It's really up to you for anything. You don't even have to use categoreis if you don't need them.
-
-
 
 # Youtube
 
@@ -80,14 +67,12 @@ You can develop your own post list screen where you can design your own category
 - And there is a default screen for displaying youtube video as a post list view. You can use `PostService.instance.showYoutubeListScreen()`. This screen will show youtube thumbnails and metadata in the list view. If the post has no youtube, then it will show the post title.
 - The post details screen displays youtube if there is a youtube. Otherwise, it will display post details without youtube.
 
-
 # Screen
 
 ## Youtube Screen
 
 - you can display a youtube screen with `PostService.instance.showYoutubeScren()`
 - YoutubeScreen supported fullscreen mode
-
 
 Displaying a Youtube video
 
@@ -98,10 +83,11 @@ YoutubePlayer(
   post:post,
 )
 ```
-- youtube with fullscreen you need to wrap your scaffold with `YoutubeFullscreenBuilder`
-this widget allows your youtube video to be fullscreen 
 
-``` dart
+- youtube with fullscreen you need to wrap your scaffold with `YoutubeFullscreenBuilder`
+  this widget allows your youtube video to be fullscreen
+
+```dart
 YoutubeFullscreenBuilder(
   post: post,
   builder: (context, youtube){
@@ -123,11 +109,12 @@ IconButton(
   icon: const Icon(Icons.add),
 ),
 ```
-- To display your own customize post creation screen you initialize post create screen like this. 
+
+- To display your own customize post creation screen you initialize post create screen like this.
 
 - you can still used the default design if you only want to customize something base on your need.
 
-```dart 
+```dart
 PostService.instance.init(
   showPostCreateScreen: (context, category) {
     return showGeneralDialog(
@@ -142,11 +129,11 @@ PostService.instance.init(
 );
 ```
 
-## Post Update Screen 
- - to display a post update screen, simply call `PostService.instance.showPostUpdateScreen()`
+## Post Update Screen
 
+- to display a post update screen, simply call `PostService.instance.showPostUpdateScreen()`
 
-```dart 
+```dart
 IconButton(
   onPressed: () {
     PostService.instance
@@ -156,12 +143,11 @@ IconButton(
 ),
 ```
 
-
-- To display your own customize post update screen you can initialize post update screen like the example below. 
+- To display your own customize post update screen you can initialize post update screen like the example below.
 
 - you can still used the default design if you only want to customize something base on your need.
 
-```dart 
+```dart
 PostService.instance.init(
   showPostUpdateScreen: (context, post) {
     return showGeneralDialog(
@@ -176,10 +162,9 @@ PostService.instance.init(
 );
 ```
 
-
 ## Post Detail Screen
-To display display the details of post you can use `PostServices.instance.showPostDetailScreen()` or `PostDetailScreen()`
 
+To display display the details of post you can use `PostServices.instance.showPostDetailScreen()` or `PostDetailScreen()`
 
 ```dart
 IconButton(
@@ -192,7 +177,7 @@ IconButton(
   },
 ),
 
-/// or 
+/// or
 
 PostDetailScreen(post: post);
 
@@ -227,6 +212,7 @@ PostService.instance.init(
 - `sync`: If true, it will use `StreamBuilder` to fetch the post and rebuild the widget whenever the post is updated. If false, it will use `FutureBuilder` to fetch the post only once. The default is false.
 
 Example:
+
 ```dart
 @override
 Widget build(BuildContext context) {
@@ -250,25 +236,24 @@ Widget build(BuildContext context) {
 }
 ```
 
-
 ## Post Detail Widgets
 
- Creating your own screen, you might want to create a customize screen to specific need of your app and still want to use the some of the default
- widget used on the defualt screen, you can use the widget below
+Creating your own screen, you might want to create a customize screen to specific need of your app and still want to use the some of the default
+widget used on the defualt screen, you can use the widget below
 
 - `PostDetail` this contains the default widget used in `PostDetailScreen` such as `user meta data`, `post`, `post action button`.
 
 - `PostDetailCommentListTreeView` this contains the list of comments of the Post.
 
-- `PostDetailCommentInputBox` this contains the post comment input box and will open a bottom sheet to input the commnet. 
+- `PostDetailCommentInputBox` this contains the post comment input box and will open a bottom sheet to input the commnet.
 
 - `PostDetailBottomAction` this contains the post action such as `like`, `comment` and `menu` for `edit`, `delete`, `report`, `block`
 
-- `PostCommentTextButton` this button allows you to open the post comment input box  you can use.
+- `PostCommentTextButton` this button allows you to open the post comment input box you can use.
 
-- `PostLikeTextButton` this button allows you to toggle like and unlike button by passing the `post` information. 
+- `PostLikeTextButton` this button allows you to toggle like and unlike button by passing the `post` information.
 
-- `PostPopupMenuButton` this button allows you to open more menu such report, block, delete and  edit.
+- `PostPopupMenuButton` this button allows you to open more menu such report, block, delete and edit.
 
 # Developer's Tips
 
@@ -288,7 +273,6 @@ initState() {
 }
 ```
 
-
 ## Get posts
 
 To get some posts, you can code like below.
@@ -302,14 +286,11 @@ PostService.instance
 );
 ```
 
-
 ## Creating the document if it does not exists
-
 
 You have built a candy crush game app and you want to keep the user's score based on the grid size. There must be only one document per each size of the user.
 
 And you want to display the best score on the screen in realtime. Then, you can do the following.
-
 
 ```dart
 listenBestScore() {
@@ -349,4 +330,60 @@ listenBestScore() {
     }
   });
 }
+```
+
+# postListActionButton
+
+You can add extra button on the header in post list screen.
+The `postListActionButton` contains the category information from Postlist if category is selected and it accepts a Function that return a widget
+
+The return widget will be display in the action button.
+
+Usage: (e.g. adding extra icon on the chat room header. like notification toggle icon)
+
+Example below using `PushNotificationToggleIcon` widget to subscribe to subscriptionName.
+
+```dart
+    PostService.instance.init(
+      postListActionButton: (category) => PushNotificationToggleIcon(
+        subscriptionName: category.isNullOrEmpty
+            ? 'post-sub-no-category'
+            : "post-sub-$category",
+      ),
+    );
+```
+
+# onCreate CallBack
+
+The `onCreate` is a callback after the post is created.
+This contain the newly created `Post` information.
+
+Usage: (e.g. push notification to other users who subscribe to the category)
+
+With the Subscription example fro postListActionButton, we can send push notification to other users who subscribe to the category.
+
+In the example below, users can use `PushNotificationToggleIcon` to subscribe to `post-sub-$category` subscriptionName. Then we also send push notification to other users who subscribe to `post-sub-$category` subscriptionName after the post is created.
+
+```dart
+    PostService.instance.init(
+      postListActionButton: (category) => PushNotificationToggleIcon(
+        subscriptionName: category.isNullOrEmpty
+            ? 'post-sub-no-category'
+            : "post-sub-$category",
+      ),
+      onCreate: (Post post) async {
+        /// send push notification to subscriber
+        MessagingService.instance.sendMessageToSubscription(
+          subscription: post.category.isNullOrEmpty
+              ? 'post-sub-no-category'
+              : "post-sub-${post.category}",
+          title: 'post title ${post.title}  ${DateTime.now()}',
+          body: 'post body ${post.content}',
+          data: {
+            "action": 'post',
+            'postId': post.id,
+          },
+        );
+      },
+    );
 ```

@@ -4,51 +4,35 @@ This `comment_package` offers a powerful and simple way to add comment functiona
 
 The `comment_package` offers a complete set of UI/UX widgets and logics for managing comments. This includes widgets for creating, updating, deleting, and listing comments, as well as for upload, likes, and much more.
 
-
 # Terms
-
 
 - `First level comments` are comments made(created) directly under a post.
 
-
 # Database Structure of Comment
-
 
 Initially, we considered using the Realtime Database for comments. However, since comments are needed for various parts of the app, not just posts, we require something more flexible. Therefore, Firestore is a better choice than the Realtime Database.
 
-
 - `/comments/{commentId}` is the collection and document to store comments.
 
-
-
 - To get the `first level comments`, you can use one of the following condition.
+
   - condition: if `parentId is empty`, then it's the first level comment.
   - condition: if `depth=0`.
 
-
 - `documentReference` is the document of the comment belongs to.
+
   - If it is a reference of a user document. Then the comments that has the same documentReference ar the comments of the user. You may set it as a review feature of user's public profile.
   - This doucment reference can be any document reference. It can be a online shopping mall's product item document, or any thing.
 
 - `hasChild` field becomes true when the comment has a child.
+
   - It is not saved in the database, and is set inside clident side.
   - it is only available when the comments are transformed with `CommentService.instance.fromQuerySnapshot` method.
   - `hasChild` is used for sorting and displaying purpose.
 
-
 - `deleted` is set to true if the comment is deleted. It is false by default. So, you can filter comments that are not deleted.
 
-
-
-
-
-
-
-
-
-
 # Widgets
-
 
 ## CommentInputBox
 
@@ -59,9 +43,6 @@ CommentInputBox(
   parent: comment,
 ),
 ```
-
-
-
 
 ```dart
 SliverToBoxAdapter(
@@ -77,18 +58,13 @@ SliverToBoxAdapter(
 
 ## Displaying comments
 
-
 The `easy_comment` provides two list view widgets for displaying comments.
 
 You can copy the code from `easy_comment` and build your own comment list view widget for different UI/UX,
 
-
-
-
 ### CommentListView
 
-The first one is `CommentListView`. This is similar two `ListView`. 
-
+The first one is `CommentListView`. This is similar two `ListView`.
 
 You can use `CommentListView` like below to display the comments.
 
@@ -104,7 +80,6 @@ CommentListView(
 
 For the `itemBuilder`, you may use one of `CommentDetail`, `CommentListDetail`, `CommentListArrowDetail`, or `CommentListVerticalLineDetail`. Or you can copy the code and build your own.
 
-
 Example: Below is an example of using the available widgets.
 
 ```dart
@@ -117,8 +92,6 @@ CommentListView(
   },
 ),
 ```
-
-
 
 ### CommentListTreeView
 
@@ -137,13 +110,48 @@ SliverToBoxAdapter(
 CommentListTreeView(documentReference: task.ref),
 ```
 
+# onCreate CallBack
 
+The `onCreate` is a callback after the comment is created.
+You can use this callback to do something comment post is created.
 
+Usage: (e.g. send push notification to ancestor uid)
 
+In the example below, we can send push notification to ancestor uid after the comment is created. It contains the newly created `comment` information.
 
+First we get the ancestor uids after the comment is created, then we send a push notification to the ancestor uids.
+
+```dart
+    CommentService.instance.init(
+      onCreate: (Comment comment) async {
+        /// get ancestor uid
+        List<String> ancestorUids =
+            await CommentService.instance.getAncestorsUid(comment.id);
+        /// get post information
+        Post post = await Post.get(comment.documentReference.id);
+        if (myUid != null && post.uid != myUid) {
+          ancestorUids.add(post.uid);
+        }
+
+        if (ancestorUids.isEmpty) return;
+
+        /// set push notification to remaining uids
+        /// can get comment or post to send more informative push notification
+        MessagingService.instance.sendMessageToUids(
+          uids: ancestorUids,
+          title: 'title ${DateTime.now()}',
+          body: 'ancestorComment test ${comment.content}',
+          data: {
+            "action": 'comment',
+            'commentId': comment.id,
+            'postId': comment.documentReference.id,
+          },
+        );
+      },
+    );
+```
 
 # Development Tips
-
 
 ## Testing
 
