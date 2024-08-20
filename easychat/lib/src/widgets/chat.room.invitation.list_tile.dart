@@ -141,6 +141,7 @@ class _ChatRoomInvitationListTileState
           ),
         ],
       ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
     );
   }
 }

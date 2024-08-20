@@ -100,6 +100,7 @@ class ChatRoomListTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+            const Text(""),
           ],
         );
 
