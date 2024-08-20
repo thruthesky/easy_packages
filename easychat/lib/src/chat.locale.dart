@@ -129,6 +129,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Open Chats',
     'ko': '공개 채팅',
   },
+  "must login to chat": {
+    'en': 'Must login to chat',
+    'ko': "채팅하려면 로그인해야 합니다.",
+  },
 
   // chat.room.screen.dart
   'no name': {

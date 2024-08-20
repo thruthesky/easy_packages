@@ -16,12 +16,14 @@ import 'package:example/etc/zone_error_handler.dart';
 // import 'package:example/firebase_options.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
+import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 
 void main() async {
   /// Uncaught Exception 핸들링
@@ -398,6 +400,14 @@ class MyAppState extends State<MyApp> {
           body:
               '${my.displayName} Has invited you to join the chat room ${room.id} ${room.name}',
           data: {"action": 'chatInvite', 'roomId': room.id},
+        );
+      },
+      loginButtonBuilder: (context) {
+        return TextButton(
+          child: Text("Login".t),
+          onPressed: () {
+            context.push(SignInScreen.routeName);
+          },
         );
       },
     );

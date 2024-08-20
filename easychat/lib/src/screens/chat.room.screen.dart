@@ -28,8 +28,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   StreamSubscription? roomSubscription;
   ValueNotifier<int> roomNotifier = ValueNotifier(0);
 
-  // Future<void> Function()? beforeSendMessage;
-
   @override
   void initState() {
     super.initState();
@@ -274,7 +272,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         ),
                       ],
                     );
-                  }),
+                  },
+                ),
     );
   }
 }

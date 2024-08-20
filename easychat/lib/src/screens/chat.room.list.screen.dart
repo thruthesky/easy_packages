@@ -1,5 +1,6 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomListScreen extends StatefulWidget {
@@ -60,11 +61,27 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
           ),
         ],
       ),
-      body: ChatRoomListView(
-        queryOption: queryOption,
-        itemBuilder: (context, room, index) {
-          return ChatRoomListTile(
-            room: room,
+      body: AuthStateChanges(
+        builder: (user) {
+          if (user == null || user.isAnonymous) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("must login to chat".t),
+                  if (ChatService.instance.loginButtonBuilder != null)
+                    ChatService.instance.loginButtonBuilder!(context),
+                ],
+              ),
+            );
+          }
+          return ChatRoomListView(
+            queryOption: queryOption,
+            itemBuilder: (context, room, index) {
+              return ChatRoomListTile(
+                room: room,
+              );
+            },
           );
         },
       ),
