@@ -115,7 +115,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                             radius: 50,
                           ),
                           const SizedBox(
-                            height: 8,
+                            height: 16,
                           ),
                           Text(
                             user.displayName,
@@ -126,6 +126,9 @@ class UserPublicProfileScreen extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
+                          ),
+                          const SizedBox(
+                            height: 4,
                           ),
                           if (user.stateMessage.notEmpty)
                             Text(

@@ -40,7 +40,12 @@ class ChatService {
   /// [uid] uid of the user that is being invited
   Function({required ChatRoom room, required String uid})? onInvite;
 
-  Widget Function(ChatRoom room)? chatRoomNewMessageBuilder;
+  Widget Function(int no)? chatRoomNewMessageBuilder;
+
+  /// This is used in Chat Room list screen.
+  ///
+  /// Why? Login in different apps may have different way to present.
+  Widget Function(BuildContext context)? loginButtonBuilder;
 
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
@@ -52,7 +57,8 @@ class ChatService {
         onSendMessage,
     Function({required ChatRoom room, required String uid})? onInvite,
     Widget Function(ChatRoom)? chatRoomActionButton,
-    Widget Function(ChatRoom room)? chatRoomNewMessageBuilder,
+    Widget Function(int no)? chatRoomNewMessageBuilder,
+    Widget Function(BuildContext context)? loginButtonBuilder,
   }) {
     UserService.instance.init();
 
@@ -67,6 +73,7 @@ class ChatService {
     this.chatRoomActionButton = chatRoomActionButton;
     this.onSendMessage = onSendMessage;
     this.onInvite = onInvite;
+    this.loginButtonBuilder = loginButtonBuilder;
   }
 
   /// Firebase CollectionReference for Chat Room docs
@@ -249,7 +256,19 @@ class ChatService {
     );
   }
 
+  /// states for chat message reply
   ValueNotifier<ChatMessage?> reply = ValueNotifier<ChatMessage?>(null);
   bool get replyEnabled => reply.value != null;
   clearReply() => reply.value = null;
+
+  /// Get chat rooms
+  ///
+  ///
+  Future<List<ChatRoom>> getChatRooms({
+    required fs.Query query,
+  }) async {
+    final snapshot = await query.get();
+    if (snapshot.size == 0) return [];
+    return snapshot.docs.map((e) => ChatRoom.fromSnapshot(e)).toList();
+  }
 }

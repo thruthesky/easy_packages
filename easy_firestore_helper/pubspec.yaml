@@ -1,0 +1,28 @@
+name: easy_firestore_helper
+description: "A helper package to make firestore easier to use."
+version: 0.0.1
+homepage: https://github.com/thruthesky/easy_packages
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cloud_firestore: ^5.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+
+repository: https://github.com/thruthesky/easy-packages/main/tree/easy_firestore_helper
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - firebase
+  - firestore
+  - firestore-helper
+  - easy-packages

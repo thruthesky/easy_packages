@@ -19,16 +19,19 @@ isSingleChatRoom(String roomId) {
 ///
 /// 주의, 자기 자신과 대화를 할 수 있으니, 그 경우에는 자기 자신의 uid 를 리턴한다.
 String? getOtherUserUidFromRoomId(String roomId) {
+  //
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) return null;
   final splits = roomId.split(chatRoomDivider);
   if (splits.length != 2) {
     return null;
   }
   for (final uid in splits) {
-    if (uid != FirebaseAuth.instance.currentUser!.uid) {
+    if (uid != currentUser.uid) {
       return uid;
     }
   }
-  return FirebaseAuth.instance.currentUser!.uid;
+  return currentUser.uid;
 }
 
 /// Returns a chat room ID from a user's uid.

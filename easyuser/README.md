@@ -67,6 +67,8 @@ This is the nature of Firebase Auth.
 
 
 
+- Note that, anonymous user will have the document in Firestore.
+
 
 
 

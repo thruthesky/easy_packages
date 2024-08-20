@@ -1,6 +1,7 @@
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/youtube_player_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart'
     hide YoutubePlayerBuilder;
 
@@ -81,13 +82,18 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   @override
   void didUpdateWidget(covariant YoutubeFullscreenBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.post.hasYoutube == false) {
-      return;
-    }
-    if (oldWidget.post.youtube['id'] != widget.post.youtube['id']) {
-      youtubeController?.load(widget.post.youtube['id']);
-      youtubeController?.pause();
-    }
+
+    /// adding postframecallback on this diUpdatewidget to make sure the UI is rendeder first
+    /// before changing the screen base on the current post and old post
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (widget.post.hasYoutube == false) {
+        return;
+      }
+      if (oldWidget.post.youtube['id'] != widget.post.youtube['id']) {
+        youtubeController?.load(widget.post.youtube['id']);
+        youtubeController?.pause();
+      }
+    });
   }
 
   @override
