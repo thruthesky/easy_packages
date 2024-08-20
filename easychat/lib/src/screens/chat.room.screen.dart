@@ -48,8 +48,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       $user = await User.get(getOtherUserUidFromRoomId($room!.id)!);
     }
 
-    // listen to the chat room
-    roomSubscription =
+    await onRoomReady();
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  onRoomReady() async {
+    if ($room == null) return;
+    // Auto Join Groups when it is open chat
+    if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
+      await $room!.join();
+    }
+    roomSubscription ??=
         ChatService.instance.roomCol.doc($room!.id).snapshots().listen(
       (doc) {
         $room!.copyFromSnapshot(doc);
@@ -57,11 +67,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         roomNotifier.value = $room!.updatedAt.millisecondsSinceEpoch;
       },
     );
-    // Auto Join Groups when it is open chat
-    if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
-      await $room!.join();
-    }
-    setState(() {});
   }
 
   @override
@@ -74,13 +79,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Future<void> loadOrCreateRoomForSingleChat() async {
     $room = await ChatRoom.get(singleChatRoomId($user!.uid));
     if ($room != null) return;
-    // In case the room doesn't exists, we create the room.
+    // In case the room doesn't exists, we will create the room.
     // Automatically this will invite the other user.
-    // The other user wont normally see the message in chat room
-    // list. However the other user may see the messages if the
-    // other user opens the chat room.
-    final newRoomRef = await ChatRoom.createSingle($user!.uid);
-    $room = await ChatRoom.get(newRoomRef.id);
   }
 
   String title(ChatRoom room) {
@@ -98,7 +98,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   bool get iAmInvited => $room?.invitedUsers.contains(myUid!) ?? false;
   bool get iRejected => $room?.rejectedUsers.contains(myUid!) ?? false;
 
-  String notMemberMessage(ChatRoom room) {
+  String notMemberMessage(ChatRoom? room) {
     if (iAmInvited) {
       return 'unaccepted yet, accept before reading message'.t;
     }
@@ -116,7 +116,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///   -- the user must joined the room even if it's open chat.
   ///
   bool get canViewChatMessage {
-    return $room!.joined;
+    return $room?.joined == true;
   }
 
   @override
@@ -178,13 +178,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           if (ChatService.instance.chatRoomActionButton != null &&
               $room != null)
             ChatService.instance.chatRoomActionButton!($room!),
-          Builder(builder: (context) {
-            return DrawerButton(
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-            );
-          })
+          Builder(
+            builder: (context) {
+              return DrawerButton(
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+              );
+            },
+          )
         ],
       ),
       endDrawer: ValueListenableBuilder(
@@ -200,11 +202,43 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           // for ($room!.open && !canViewChatMessage)
           // showing loading widget at first because the user must join
           // the room first.
-          $room == null || ($room!.open && !canViewChatMessage)
+          ($room == null && $user == null) ||
+                  ($room != null && $room!.open && !canViewChatMessage)
               ? const Center(child: CircularProgressIndicator.adaptive())
               : ValueListenableBuilder(
                   valueListenable: roomNotifier,
                   builder: (_, hc, __) {
+                    if ($room == null && $user != null) {
+                      // this will happen if this user will send a
+                      // message for the first time.
+                      // Upon sending the message, it will create
+                      // a single chat room and invite the other user.
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                "no message yet. can send a message.".t,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          SafeArea(
+                            top: false,
+                            child: ChatRoomInputBox(
+                              beforeSend: (_) async {
+                                final newRoomRef =
+                                    await ChatRoom.createSingle($user!.uid);
+                                $room = await ChatRoom.get(newRoomRef.id);
+                                await onRoomReady();
+                                if (mounted) setState(() {});
+                                return $room!;
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    }
                     if (!canViewChatMessage) {
                       return Container(
                         decoration: BoxDecoration(
@@ -220,7 +254,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(notMemberMessage($room!)),
+                                Text(notMemberMessage($room)),
                                 if (iAmInvited) ...[
                                   const SizedBox(height: 24),
                                   Row(

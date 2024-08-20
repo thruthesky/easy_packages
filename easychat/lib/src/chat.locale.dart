@@ -161,6 +161,11 @@ final localeTexts = <String, Map<String, String>>{
     'ko': "채팅 초대",
   },
 
+  "no message yet. can send a message.": {
+    'en': "No message yet.\nYou can send a message.",
+    'ko': "메시지가 없습니다.\n메시지를 보낼 수 있습니다.",
+  },
+
   // received.chat.room.invite_list.screen.dart
   'accept/reject chat requests': {
     'en': 'Accept/Reject Chat Requests',
