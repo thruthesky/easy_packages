@@ -95,6 +95,9 @@ class ChatService {
           .doc(roomId)
           .collection('chat-room-meta');
 
+  // TODO
+  // fs.CollectionReference usersCol(String roomId) =>
+
   /// DocumentReference for chat room private settings.
   fs.DocumentReference roomPrivateDoc(String roomId) =>
       roomMetaCol(roomId).doc('private');
