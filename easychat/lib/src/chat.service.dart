@@ -58,6 +58,7 @@ class ChatService {
     Function({required ChatRoom room, required String uid})? onInvite,
     Widget Function(ChatRoom)? chatRoomActionButton,
     Widget Function(int no)? chatRoomNewMessageBuilder,
+    Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
   }) {
     UserService.instance.init();
@@ -65,7 +66,6 @@ class ChatService {
     initialized = true;
 
     this.chatRoomNewMessageBuilder = chatRoomNewMessageBuilder;
-
     this.$showChatRoomListScreen =
         $showChatRoomListScreen ?? this.$showChatRoomListScreen;
     this.$showChatRoomEditScreen =
