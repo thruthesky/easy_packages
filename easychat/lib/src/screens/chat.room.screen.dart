@@ -83,14 +83,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // Automatically this will invite the other user.
   }
 
-  String title(ChatRoom room) {
-    // Single chat or gruop chat can have name.
-    if (room.name.trim().isNotEmpty) {
-      return room.name;
-    }
-    //
+  String title(ChatRoom? room) {
     if ($user != null) {
       return $user!.displayName.or('no name'.t);
+    }
+    // Single chat or group chat can have name.
+    if ((room?.name ?? "").trim().isNotEmpty) {
+      return room!.name;
     }
     return 'chat room'.t;
   }
@@ -125,54 +124,48 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       appBar: AppBar(
         title: ValueListenableBuilder(
           valueListenable: roomNotifier,
-          builder: (_, hc, __) => $room == null
-              ? const SizedBox.shrink()
-              : Row(
-                  children: [
-                    if ($room!.group) ...[
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color:
-                              Theme.of(context).colorScheme.tertiaryContainer,
-                        ),
-                        width: 36,
-                        height: 36,
-                        clipBehavior: Clip.hardEdge,
-                        child:
-                            $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
-                                ? CachedNetworkImage(
-                                    imageUrl: $room!.iconUrl!,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) {
-                                      dog("Error in Image Chat Room Screen: $error");
-                                      return const Icon(Icons.error);
-                                    },
-                                  )
-                                : const Icon(Icons.people),
-                      ),
-                      const SizedBox(width: 12),
-                    ] else if ($room!.single) ...[
-                      if ($user != null)
-                        GestureDetector(
-                          child: UserAvatar(
-                            user: $user!,
-                            size: 36,
-                            radius: 15,
-                          ),
-                          onTap: () =>
-                              UserService.instance.showPublicProfileScreen(
-                            context,
-                            user: $user!,
-                          ),
-                        ),
-                      const SizedBox(width: 12),
-                    ],
-                    Expanded(
-                      child: Text(title($room!)),
-                    ),
-                  ],
+          builder: (_, hc, __) => Row(
+            children: [
+              if ($user != null || $room!.single) ...[
+                GestureDetector(
+                  child: UserAvatar(
+                    user: $user!,
+                    size: 36,
+                    radius: 15,
+                  ),
+                  onTap: () => UserService.instance.showPublicProfileScreen(
+                    context,
+                    user: $user!,
+                  ),
                 ),
+                const SizedBox(width: 12),
+              ] else if ($room!.group) ...[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                  ),
+                  width: 36,
+                  height: 36,
+                  clipBehavior: Clip.hardEdge,
+                  child: $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: $room!.iconUrl!,
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) {
+                            dog("Error in Image Chat Room Screen: $error");
+                            return const Icon(Icons.error);
+                          },
+                        )
+                      : const Icon(Icons.people),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: Text(title($room)),
+              ),
+            ],
+          ),
         ),
         actions: [
           if (ChatService.instance.chatRoomActionButton != null &&
