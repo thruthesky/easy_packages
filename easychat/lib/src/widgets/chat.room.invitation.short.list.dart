@@ -27,7 +27,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
       // However, it may cost more read for users who don't accept or
       // reject chat rooms. But it is not common.
       // stream: ChatRoomQuery.receivedInvites().limit(10).snapshots(),
-      stream: ChatRoomQuery.receivedInvites().snapshots(),
+      stream: ChatRoomQuery.receivedInvites().limit(4).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
@@ -51,8 +51,10 @@ class ChatRoomInvitationShortList extends StatelessWidget {
               padding: padding ?? const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  ChatService.instance.chatRoomInvitationCountBuilder
-                          ?.call(chatRooms.length) ??
+                  ChatService.instance.chatRoomNewMessageBuilder?.call(
+                          chatRooms.length > 3
+                              ? "3+"
+                              : chatRooms.length.toString()) ??
                       Badge(
                         label: Text("${chatRooms.length}"),
                       ),
