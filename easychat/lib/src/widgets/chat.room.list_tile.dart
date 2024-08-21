@@ -19,6 +19,7 @@ class ChatRoomListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     if (room.group) {
       return ListTile(
+        minTileHeight: 70,
         leading: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -75,34 +76,32 @@ class ChatRoomListTile extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontStyle: FontStyle.italic),
         )
-      : Row(
-          children: [
-            if (room.lastMessageUrl != null &&
-                room.lastMessageUrl!.isNotEmpty) ...[
-              const Icon(Icons.photo, size: 16),
-              const SizedBox(width: 4),
-            ],
-            if (room.lastMessageText != null &&
-                room.lastMessageText!.isNotEmpty)
-              Flexible(
-                child: Text(
-                  room.lastMessageText!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              )
-            else if (room.lastMessageUrl != null &&
-                room.lastMessageUrl!.isNotEmpty)
-              Flexible(
-                child: Text(
-                  "[${'photo'.t}]",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            const Text(""),
-          ],
-        );
+      : room.lastMessageText.isNullOrEmpty && room.lastMessageUrl.isNullOrEmpty
+          ? null
+          : Row(
+              children: [
+                if (!room.lastMessageUrl.isNullOrEmpty) ...[
+                  const Icon(Icons.photo, size: 16),
+                  const SizedBox(width: 4),
+                ],
+                if (!room.lastMessageText.isNullOrEmpty)
+                  Flexible(
+                    child: Text(
+                      room.lastMessageText!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+                else if (!room.lastMessageUrl.isNullOrEmpty)
+                  Flexible(
+                    child: Text(
+                      "[${'photo'.t}]",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+              ],
+            );
 
   Widget get trailing {
     return Column(
