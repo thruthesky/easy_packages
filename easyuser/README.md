@@ -263,6 +263,42 @@ MyDoc(
 And to make it short, you can use `MyDocReady`.
 
 
+`AuthStateChanges` 위젯은 단순히, `Firebase.instance.authStateChanges` 내장하여 사용자의 Firestore 로그인 상태에 따라, UI 위젯을 빌드 할 수 있도록 해 놓은 것이다. 내부적으로 StreamBuilder 를 사용하므로, StreamBuilder 의 특성을 그대로 이용하면 된다.
+
+
+
+
+
+
+### MyDoc
+
+로그인한 사용자의 정보를 액세스 할 수 있다. 즉, 나의 이름이나 나이, 성별 등의 정보를 읽고 수정 할 수 있다.
+
+주의 할 것은 로그인을 해도 builder 의 파라메타가 null 일 수 있다. 따라서 로그인을 했는지 하지 않았는지로 사용하지 않도록 한다.
+
+다만, 나의 정보를 나타낼 때, 데이터가 로딩되었으면 위젯을 보여주고, 로딩되지 않았으면, 사용자 데이터를 로딩 중이라고는 표시 할 수 있다.
+
+
+
+
+## MyDoc on offline
+
+- There are times that you rely on `MyDoc` to initialize the app.
+  - For instance, you may want to enable the microphone under the `MyDoc(builder: ...)`.
+    - And what if there is no internet?
+      - When the app starts, the phone may not have internet, As some phone is asking to connect the "Mobile Data or Wifi only",
+      - But the screen is built and displayed together with the widget of `MyDoc(builder: ...)`.
+        - And, `MyDoc(builder: ...)` must be called even if there is no internet. And even if it does not get data from database.
+          - Or, `MyDoc(builder: ...)` may not be called and the app may not get initialized.
+    - To solve this issue, `UserService.listenDocumentChanges()` will fire `UserService.changes` rxdart event immediately, event before it gets the user's document data from database.
+      - and when the app goes online
+        - The user can sign-in
+          - signing-in triggers `updatedAt` or `lastLoginAt`,
+            - Then, the user document change will be detected
+              - And `MyDoc` will be rebuilded.
+
+
+
 ## UserDoc
 
 - You can display any user's data using `UserDoc`.
@@ -499,23 +535,6 @@ UserBlocked(
 # Known Issues
 
 
-## MyDoc widget not working
-
-- You must know that `MyDoc` widget may not work as expected when the mobile phone has no internet at start up.
-  - For instance,
-    - when the app starts,
-      - the app shows a screen and it uses `MyDoc`. And inside its `builder` method, the app is using (initializing) the microphone.
-        - So, to initialize the microphone, `MyDoc(builder: ...)` must be called.
-        - Even if the user didn't signed in, the app may use for Anonymous login.
-        - So, the developer may think, `MyDoc(builder: ...)` will be called in anyway.
-    - When the app starts, the phone may not have internet, As some phone is asking to connect the "Mobile Data or Wifi only",
-      - But the screen is built and displayed together with the widget of `MyDoc(builder: ...)`.
-    - And later, when the user choose to use internet, the phone has internet now. But `MyDoc(builder:...)` may not be rebuild again, since it failed to sign-in even as anonymous.
-    - So, the best way to handle it is to use `MyDoc()` if the internet is available.
-
-
-
-
 
 @TODO ///// `---------------  아래 부터 문서 작업을 할 것: 아래는 과거 버전의 문서이다. 작업해서 위로 올린다. ----------------`
 
@@ -529,27 +548,6 @@ UserBlocked(
 관리자는 앱을 실행하여, 회원 가입하고, 최초 1회 `관리자되기` 버튼을 클릭하는 사용자가 `root` 관리자가 된다. 이 후 부터는 `root` 권한을 가진 관리자가 다른 사용자를 관리자로 임명하여 아래의 권한을 줄 수 있으며, 다른 관리자에게 `root` 권한을 줄 수 있다.
 
 자세한 정보는 [관리자 문서](./admin.md)를 참고한다.
-
-
-
-## 사용자 위젯
-
-### 파이어베이스 로그인 AuthStateChanges
-
-`AuthStateChanges` 위젯은 단순히, `Firebase.instance.authStateChanges` 내장하여 사용자의 Firestore 로그인 상태에 따라, UI 위젯을 빌드 할 수 있도록 해 놓은 것이다. 내부적으로 StreamBuilder 를 사용하므로, StreamBuilder 의 특성을 그대로 이용하면 된다.
-
-
-
-
-
-
-### MyDoc
-
-로그인한 사용자의 정보를 액세스 할 수 있다. 즉, 나의 이름이나 나이, 성별 등의 정보를 읽고 수정 할 수 있다.
-
-주의 할 것은 로그인을 해도 builder 의 파라메타가 null 일 수 있다. 따라서 로그인을 했는지 하지 않았는지로 사용하지 않도록 한다.
-
-다만, 나의 정보를 나타낼 때, 데이터가 로딩되었으면 위젯을 보여주고, 로딩되지 않았으면, 사용자 데이터를 로딩 중이라고는 표시 할 수 있다.
 
 
 
