@@ -38,16 +38,35 @@ class MessagingService {
   Function? onNotificationPermissionDenied;
   Function? onNotificationPermissionNotDetermined;
 
+  /// Firebase function API url [sendmessageToTokens] API to send push notification via tokens
   late final String sendMessageToTokensApi;
+
+  /// Firebase function API url [sendmessageToUids] API to send push notification via uids
   late final String sendMessageToUidsApi;
+
+  /// Firebase function API url [sendmessageToSubscription] API to send push notification via subscription
   late final String sendMessageToSubscriptionApi;
 
   bool initialized = false;
+
+  /// Current Device token
   String? token;
 
   /// Initialize Messaging Service
   ///
   /// [onBackgroundMessage] - Function to handle background messages.
+  ///   This is invoked when the app is closed(terminated). (NOT running the app.)
+  ///   Usage: (updating icon badge, etc.)
+  ///
+  /// [onForegroundMessage] will be called when the user(or device) receives a push notification
+  /// while the app is running and in foreground state.
+  ///
+  /// [onMessageOpenedFromBackground] will be called when the user tapped on the push notification
+  ///
+  /// [onMessageOpenedFromTerminated] will be called when the user tapped on the push notification
+  /// on system tray while the app was closed(terminated).
+  ///
+  ///
   init({
     required String sendMessageToTokensApi,
     required String sendMessageToUidsApi,
@@ -162,6 +181,8 @@ class MessagingService {
     await ref.set(currentUser!.uid);
   }
 
+  /// Subscribe to default topics, such as individual platform topics and `allUserTopics`.
+  ///
   Future _subscribeToTopics() async {
     // web does not support topics: https://firebase.google.com/docs/cloud-messaging/flutter/topic-messaging#subscribe_the_client_app_to_a_topic
     if (kIsWeb) return;
@@ -233,8 +254,8 @@ class MessagingService {
   /// If error throw error message
   ///
   preResponse(http.Response response) {
-    dog('Response status: ${response.statusCode}');
-    dog('Response body: ${response.body}');
+    dog('preResponse status: ${response.statusCode}');
+    dog('preResponse body: ${response.body}');
     final decode = jsonDecode(response.body);
     if (decode is Map && decode['error'] is String) {
       throw "messaging/response-error ${decode['error']}";
@@ -242,7 +263,8 @@ class MessagingService {
     return List<String>.from(decode);
   }
 
-  /// Send a message to the users
+  /// Send a message to the users via tokens
+  /// Send messages to specific token
   Future<List<String>> sendMessageToTokens({
     required List<String> tokens,
     required String title,
@@ -264,7 +286,12 @@ class MessagingService {
     return preResponse(response);
   }
 
-  /// Send a message to the users
+  /// Send a message to the users with list of uid
+  /// [uids] are the list of uid to send the notification
+  /// If the logic requires you to excluded uids that are subscribe to specific fcm-subscription,
+  /// you can use [excludeSubscribers] and set to true, and profile the [subscriptionName].
+  /// This will remove any uid from the list that are existing on `fcm-subscription/$subscriptionName`
+  ///
   Future<List<String>> sendMessageToUids({
     required List<String> uids,
     required String title,
@@ -290,7 +317,10 @@ class MessagingService {
     return preResponse(response);
   }
 
-  /// Send a message to the users
+  /// Send a message to the users via subscriptions
+  /// [subscription] is the string use to check in cloud function if there are subscribers
+  /// `fcm-subscriptions/$subscription` path will be check if any uid are added here will receive the push notification
+  ///
   Future<List<String>> sendMessageToSubscription({
     required String subscription,
     required String title,
@@ -312,6 +342,10 @@ class MessagingService {
     return preResponse(response);
   }
 
+  /// Prepare http post request
+  /// Parse the given API url
+  /// Attach header with ['Content-Type': 'application/json']
+  /// and jsonEncoded the body data
   Future<http.Response> httpPost(String url, Map<String, dynamic> body) {
     return http.post(
       Uri.parse(url),

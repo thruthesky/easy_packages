@@ -15,7 +15,8 @@ class ReportService {
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
-  /// Callback after report is created. usage, eg. push notification after report to admin or user
+  /// Callback after report is created.
+  /// Usage: e.g. send push notification after report to admin or user
   Function(Report)? onCreate;
 
   init({
