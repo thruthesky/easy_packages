@@ -100,6 +100,37 @@ MessagingService.instance.getTokens([
    );
 ```
 
+# Android Head-up Notification
+
+- Showing head-up notification on android need extra code to implement.
+- The following code uses `flutter_local_notifications` package to handle the creation of the notification channel.
+
+```dart
+    /// Android Head-up Notification
+    if (isAndroid) {
+      /// Set a channel for high importance notifications.
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        description: 'This channel is used for important notifications.', //
+        importance: Importance.max, // max 로 해야 Head-up display 가 잘 된다.
+        showBadge: true,
+        enableVibration: true,
+        playSound: true,
+      );
+
+      /// Register the channel with the system.
+      /// If there is already a registed channel (with same id), then it will be re-registered.
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+    }
+```
+
 ## Sending push notification
 
 - To send push notification you can use the following `sendMessage`, `sendMessageToUid`, and `sendMessageToSubscription` methods.
