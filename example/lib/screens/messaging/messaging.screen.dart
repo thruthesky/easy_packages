@@ -175,7 +175,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                     // if (uidController.text.isEmpty) {
                     //   return;
                     // }
-                    MessagingService.instance.sendMessageToUid(
+                    MessagingService.instance.sendMessageToUids(
                       uids: uidController.text.split(','),
                       title: 'From uid ${titleController.text}',
                       body: 'From uid ${bodyController.text}',
@@ -189,7 +189,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                     // if (tokenController.text.isEmpty) {
                     //   return;
                     // }
-                    MessagingService.instance.sendMessage(
+                    MessagingService.instance.sendMessageToTokens(
                       tokens: tokenController.text.split(','),
                       title: 'From token ${titleController.text}',
                       body: 'From token ${bodyController.text}',

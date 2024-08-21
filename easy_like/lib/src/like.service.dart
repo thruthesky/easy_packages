@@ -5,9 +5,10 @@ class LikeService {
   static LikeService get instance => _instance ??= LikeService._();
   LikeService._();
 
-  /// Callback after on Like event. usage, eg. push notification
+  /// Callback after on Like event.
+  /// Usage: e.g. send push notification to the user of the event. (post, comment, profile, etc)
   ///
-  /// [like] the like object
+  /// [like] the like object contains `Like` information
   ///
   /// [isLiked] whether the like is liked or not. If the user has liked it, then it is true.
   /// If the user has unliked it (from the state of liked), then it is false.
