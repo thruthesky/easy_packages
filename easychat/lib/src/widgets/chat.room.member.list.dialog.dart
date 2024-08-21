@@ -13,18 +13,26 @@ class ChatRoomMemberListDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final maxHeight = height * 0.8;
-    final width = MediaQuery.of(context).size.width;
-    final maxWidth = width * 0.8;
     return AlertDialog(
-      title: Text(
-        "members".t,
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              "members".t,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.close),
+          ),
+        ],
       ),
       contentPadding: const EdgeInsets.all(8),
       content: SizedBox(
-        width: maxWidth,
-        height: maxHeight,
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height * 0.8,
         child: ListView.builder(
           itemCount: room.userUids.length,
           itemBuilder: (context, index) {

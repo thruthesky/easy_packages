@@ -319,7 +319,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     ReportService.instance.report(
                       context: context,
                       documentReference: room!.ref,
-                      otherUid: user!.uid,
+                      otherUid: user?.uid ?? room!.masterUsers.first,
                     );
                   },
                 )
