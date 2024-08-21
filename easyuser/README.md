@@ -272,11 +272,11 @@ And to make it short, you can use `MyDocReady`.
 
 ### MyDoc
 
-로그인한 사용자의 정보를 액세스 할 수 있다. 즉, 나의 이름이나 나이, 성별 등의 정보를 읽고 수정 할 수 있다.
 
-주의 할 것은 로그인을 해도 builder 의 파라메타가 null 일 수 있다. 따라서 로그인을 했는지 하지 않았는지로 사용하지 않도록 한다.
+You can access the information of the logged-in user with `MyDoc`. You can read and modify information such as my name, age, and gender.
 
-다만, 나의 정보를 나타낼 때, 데이터가 로딩되었으면 위젯을 보여주고, 로딩되지 않았으면, 사용자 데이터를 로딩 중이라고는 표시 할 수 있다.
+Note that even if you are logged in, the parameters of the builder can be null. Therefore, do not use it to determine whether you are logged in or not.
+
 
 
 
