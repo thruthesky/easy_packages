@@ -112,13 +112,6 @@ class ChatService {
           .doc(roomId)
           .collection('chat-room-meta');
 
-  // TODO continue
-  fs.CollectionReference usersCol(String roomId) =>
-      fs.FirebaseFirestore.instance
-          .collection('chat-rooms')
-          .doc(roomId)
-          .collection('users');
-
   /// DocumentReference for chat room private settings.
   fs.DocumentReference roomPrivateDoc(String roomId) =>
       roomMetaCol(roomId).doc('private');
