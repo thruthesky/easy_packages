@@ -325,6 +325,9 @@ class UserException implements Exception {
 
 
 
+
+
+
 ## intialValue and cache
 
 초기값과 캐시 속성은 많은 위젯에서 공통적으로 사용이 된다.
@@ -360,7 +363,6 @@ Use `FirestoreQueryBuilder` or `FirebaseDatabaseQueryBuilder`. Use query builder
 
 
 내부적으로  `FirestoreQueryBuilder` 를 사용한다.
-
 
 
 
@@ -424,5 +426,23 @@ UserService.instance.init(
 
 
 - Note that, the callback **must pass** the BuildContext.
+
+
+
+## Customizing Action Buttons
+
+There are times that you would like to edit the action buttons on the default screens.
+
+For instance, you want to edit the action buttons on user public profile screen.
+
+The easy packages have a rule for this work.
+
+- You can customize the action buttons by adding button in front and back of existing buttons.
+  - The name of the builder must begin with `prefixActionBuilderOn` or `suffixActionBuilderOn`.
+    - eg: `prefixActionBuilderOnXxxScreen`, `suffixActionBuilderOnXxxScreen`
+
+- You can customze the whole action buttons by replacing the complete action buttons of a screen.
+  - The name of the builder must begin with `actionBuilderOn`.
+  - ex: `actionBuilderOnXxxScreen`.
 
 

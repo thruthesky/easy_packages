@@ -54,6 +54,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
               padding: padding ?? const EdgeInsets.all(16),
               child: Row(
                 children: [
+                  /// TODO bug: it always shows 4 even if there is more than 4.
                   ChatService.instance.chatRoomNewMessageBuilder
                           ?.call(chatRooms.length) ??
                       Badge(
