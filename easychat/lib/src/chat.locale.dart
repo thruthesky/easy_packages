@@ -129,6 +129,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Open Chats',
     'ko': '공개 채팅',
   },
+  "must login to chat": {
+    'en': 'Must login to chat',
+    'ko': "채팅하려면 로그인해야 합니다.",
+  },
 
   // chat.room.screen.dart
   'no name': {
@@ -155,6 +159,11 @@ final localeTexts = <String, Map<String, String>>{
   "chat invitation": {
     'en': "Chat Invitation",
     'ko': "채팅 초대",
+  },
+
+  "no message yet. can send a message.": {
+    'en': "No message yet.\nYou can send a message.",
+    'ko': "메시지가 없습니다.\n메시지를 보낼 수 있습니다.",
   },
 
   // received.chat.room.invite_list.screen.dart
