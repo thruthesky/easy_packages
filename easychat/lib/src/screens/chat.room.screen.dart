@@ -193,7 +193,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         valueListenable: roomNotifier,
         builder: (_, hc, __) {
           return ChatRoomMenuDrawer(
-            room: $room!,
+            room: $room,
             user: $user,
           );
         },

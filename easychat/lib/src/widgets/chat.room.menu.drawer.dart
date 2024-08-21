@@ -10,11 +10,11 @@ import 'package:easy_report/easy_report.dart';
 class ChatRoomMenuDrawer extends StatelessWidget {
   const ChatRoomMenuDrawer({
     super.key,
-    required this.room,
+    this.room,
     this.user,
   });
 
-  final ChatRoom room;
+  final ChatRoom? room;
   final User? user;
 
   Padding horizontalPadding({required Widget child}) => Padding(
@@ -48,7 +48,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (room.group) ...[
+              if (room?.group == true) ...[
                 Container(
                   height: photoHeight(context),
                   width: double.maxFinite,
@@ -58,15 +58,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      room.iconUrl != null && room.iconUrl!.isNotEmpty
+                      room!.iconUrl != null && room!.iconUrl!.isNotEmpty
                           ? CachedNetworkImage(
-                              imageUrl: room.iconUrl!,
+                              imageUrl: room!.iconUrl!,
                               fit: BoxFit.cover,
                             )
                           : const SafeArea(
                               child: Icon(Icons.people, size: 64),
                             ),
-                      if (room.masterUsers.contains(myUid))
+                      if (room!.masterUsers.contains(myUid))
                         Positioned(
                           bottom: 0,
                           right: 0,
@@ -96,7 +96,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 const SizedBox(height: 24),
                 horizontalPadding(
                   child: Text(
-                    room.name,
+                    room!.name,
                     style: Theme.of(context).textTheme.titleLarge,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -105,7 +105,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 const SizedBox(height: 8),
                 horizontalPadding(
                   child: Text(
-                    room.description,
+                    room!.description,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -118,7 +118,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       label(
                         context: context,
                         text: "members counted"
-                            .tr(args: {'num': room.userUids.length}),
+                            .tr(args: {'num': room!.userUids.length}),
                       ),
                       const SizedBox(height: 8),
                     ],
@@ -134,16 +134,16 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   itemExtent: 72,
                   itemBuilder: (context, index) {
                     return UserDoc(
-                      uid: room.userUids[index],
+                      uid: room!.userUids[index],
                       builder: (user) => user == null
                           ? const SizedBox.shrink()
                           : UserListTile(user: user),
                     );
                   },
                   itemCount:
-                      room.userUids.length >= 4 ? 3 : room.userUids.length,
+                      room!.userUids.length >= 4 ? 3 : room!.userUids.length,
                 ),
-                if (room.userUids.length >= 4) ...[
+                if (room!.userUids.length >= 4) ...[
                   InkWell(
                     onTap: () {
                       showMembersDialog(context);
@@ -193,19 +193,19 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         'you cannot invite yourself'.t,
                       );
                     }
-                    if (room.invitedUsers.contains(selectedUser.uid)) {
+                    if (room!.invitedUsers.contains(selectedUser.uid)) {
                       throw ChatException(
                         'already-invited',
                         'the user is already invited'.t,
                       );
                     }
-                    if (room.userUids.contains(selectedUser.uid)) {
+                    if (room!.userUids.contains(selectedUser.uid)) {
                       throw ChatException(
                         'already-member',
                         'the user is already a member'.t,
                       );
                     }
-                    if (room.rejectedUsers.contains(selectedUser.uid)) {
+                    if (room!.rejectedUsers.contains(selectedUser.uid)) {
                       // The chat room is already rejected by the other user, we are
                       // not showing if user rejected the invitation.
                       throw ChatException(
@@ -213,7 +213,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         'the user is already invited'.t,
                       );
                     }
-                    await room.inviteUser(selectedUser.uid);
+                    await room!.inviteUser(selectedUser.uid);
                     if (!context.mounted) return;
                     alert(
                       context: context,
@@ -232,7 +232,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     );
                   },
                 ),
-              ] else if (room.single) ...[
+              ] else if (room?.single == true || user != null) ...[
                 Container(
                   height: photoHeight(context),
                   width: double.maxFinite,
@@ -276,8 +276,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               if (user?.admin != true)
                 label(context: context, text: "options".t),
               const SizedBox(height: 8),
-              if (room.joined) ...[
-                if (room.group && room.masterUsers.contains(my.uid))
+              if (room?.joined == true) ...[
+                if (room!.group && room!.masterUsers.contains(my.uid))
                   ListTile(
                     title: Text("update".t),
                     onTap: () {
@@ -285,7 +285,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           .showChatRoomEditScreen(context, room: room);
                     },
                   ),
-                if (room.group)
+                if (room!.group)
                   ListTile(
                     title: Text("leave".t),
                     onTap: () async {
@@ -295,7 +295,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         message: Text('leaving room confirmation'.t),
                       );
                       if (re != true) return;
-                      room.leave();
+                      room!.leave();
                       if (!context.mounted) return;
                       // two pops since we are opening both
                       // drawer and room screen.
@@ -305,7 +305,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   ),
               ],
               if (user?.admin != true) ...[
-                if (room.single)
+                if (room?.single == true || user != null)
                   ListTile(
                     title: Text("block".t),
                     onTap: () async {
@@ -318,7 +318,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   onTap: () {
                     ReportService.instance.report(
                       context: context,
-                      documentReference: room.ref,
+                      documentReference: room!.ref,
                       otherUid: user!.uid,
                     );
                   },
@@ -338,7 +338,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return ChatRoomMemberListDialog(room: room);
+        return ChatRoomMemberListDialog(room: room!);
       },
     );
   }
