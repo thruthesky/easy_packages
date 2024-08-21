@@ -42,6 +42,8 @@ class ChatService {
 
   Widget Function(int no)? chatRoomNewMessageBuilder;
 
+  Widget Function(int invites)? chatRoomInvitationCountBuilder;
+
   /// This is used in Chat Room list screen.
   ///
   /// Why? Login in different apps may have different way to present.
@@ -58,6 +60,7 @@ class ChatService {
     Function({required ChatRoom room, required String uid})? onInvite,
     Widget Function(ChatRoom)? chatRoomActionButton,
     Widget Function(int no)? chatRoomNewMessageBuilder,
+    Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
   }) {
     UserService.instance.init();
@@ -65,6 +68,7 @@ class ChatService {
     initialized = true;
 
     this.chatRoomNewMessageBuilder = chatRoomNewMessageBuilder;
+    this.chatRoomInvitationCountBuilder = chatRoomInvitationCountBuilder;
 
     this.$showChatRoomListScreen =
         $showChatRoomListScreen ?? this.$showChatRoomListScreen;
