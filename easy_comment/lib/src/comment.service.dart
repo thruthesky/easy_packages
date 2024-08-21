@@ -14,7 +14,8 @@ class CommentService {
   CollectionReference get col =>
       FirebaseFirestore.instance.collection('comments');
 
-  /// Callback on comment create, use this if you want to do task after comment is created., eg. push notification
+  /// Callback on comment create, use this if you want to do task after comment is created.,
+  /// Usage: e.g. send push notification to comment ancestors after comment is created
   /// Callback will have the [Comment] of the newly created `comment`, can be use to retrieve comment information.
   Function(Comment)? onCreate;
 

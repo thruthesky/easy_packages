@@ -496,6 +496,24 @@ UserBlocked(
 
 
 
+# Known Issues
+
+
+## MyDoc widget not working
+
+- You must know that `MyDoc` widget may not work as expected when the mobile phone has no internet at start up.
+  - For instance,
+    - when the app starts,
+      - the app shows a screen and it uses `MyDoc`. And inside its `builder` method, the app is using (initializing) the microphone.
+        - So, to initialize the microphone, `MyDoc(builder: ...)` must be called.
+        - Even if the user didn't signed in, the app may use for Anonymous login.
+        - So, the developer may think, `MyDoc(builder: ...)` will be called in anyway.
+    - When the app starts, the phone may not have internet, As some phone is asking to connect the "Mobile Data or Wifi only",
+      - But the screen is built and displayed together with the widget of `MyDoc(builder: ...)`.
+    - And later, when the user choose to use internet, the phone has internet now. But `MyDoc(builder:...)` may not be rebuild again, since it failed to sign-in even as anonymous.
+    - So, the best way to handle it is to use `MyDoc()` if the internet is available.
+
+
 
 
 

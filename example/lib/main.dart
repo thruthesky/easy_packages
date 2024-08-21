@@ -250,9 +250,10 @@ class MyAppState extends State<MyApp> {
 
   messagingInit() async {
     MessagingService.instance.init(
-      sendMessageApi: 'https://sendmessage-mkxv2itpca-uc.a.run.app',
+      sendMessageToTokensApi:
+          'https://sendmessagetotokens-mkxv2itpca-uc.a.run.app',
       sendMessageToUidsApi: 'https://sendmessagetouids-mkxv2itpca-uc.a.run.app',
-      sendMessageToSubscriptionsApi:
+      sendMessageToSubscriptionApi:
           'https://sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
@@ -284,9 +285,6 @@ class MyAppState extends State<MyApp> {
         playSound: true,
       );
 
-      // final youtube =
-      //     Youtube(url: 'https://www.youtube.com/watch?v=YBmFxBb9U6g');
-
       /// Register the channel with the system.
       /// If there is already a registed channel (with same id), then it will be re-registered.
       final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -297,16 +295,6 @@ class MyAppState extends State<MyApp> {
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
     }
-
-    // print('youtube id: ${youtube.getVideoId()}');
-
-    // // youtube.getVideoId();
-    // final snippet = await youtube.getSnippet(
-    //   apiKey: 'AIzaSyDguL0DVfgQQ8YJHfSAJm1t8gCetR0-TdY',
-    // );
-    // print(' default url :${snippet.thumbnails['default']}');
-    // print('snippet: ${snippet.statistics}');
-    // });
   }
 
   postInit() {
@@ -340,6 +328,7 @@ class MyAppState extends State<MyApp> {
         List<String> ancestorUids =
             await CommentService.instance.getAncestorsUid(comment.id);
 
+        /// get post information
         Post post = await Post.get(comment.documentReference.id);
         if (myUid != null && post.uid != myUid) {
           ancestorUids.add(post.uid);
@@ -349,7 +338,7 @@ class MyAppState extends State<MyApp> {
 
         /// set push notification to remaining uids
         /// can get comment or post to send more informative push notification
-        MessagingService.instance.sendMessageToUid(
+        MessagingService.instance.sendMessageToUids(
           uids: ancestorUids,
           title: 'title ${DateTime.now()}',
           body: 'ancestorComment test ${comment.content}',
@@ -384,7 +373,7 @@ class MyAppState extends State<MyApp> {
           {required ChatMessage message, required ChatRoom room}) async {
         final uids = room.userUids.where((uid) => uid != myUid).toList();
         if (uids.isEmpty) return;
-        MessagingService.instance.sendMessageToUid(
+        MessagingService.instance.sendMessageToUids(
           uids: uids,
           subscriptionName: room.id,
           excludeSubscribers: true,
@@ -394,7 +383,7 @@ class MyAppState extends State<MyApp> {
         );
       },
       onInvite: ({required ChatRoom room, required String uid}) async {
-        MessagingService.instance.sendMessageToUid(
+        MessagingService.instance.sendMessageToUids(
           uids: [uid],
           title: 'Chat Invite ${DateTime.now()}',
           body:
@@ -418,7 +407,7 @@ class MyAppState extends State<MyApp> {
       onCreate: (Report report) async {
         /// set push notification. e.g. send push notification to reportee
         /// or developer can send push notification to admin
-        MessagingService.instance.sendMessageToUid(
+        MessagingService.instance.sendMessageToUids(
           uids: [report.reportee],
           title: 'You have been reported',
           body: 'Report reason ${report.reason}',
@@ -449,7 +438,7 @@ class MyAppState extends State<MyApp> {
 
           /// can get more information base from the documentReference
           /// can give more details on the push notification
-          MessagingService.instance.sendMessageToUid(
+          MessagingService.instance.sendMessageToUids(
             uids: [post.uid],
             title: 'Your post got liked',
             body: '${my.displayName} liked ${post.title}',

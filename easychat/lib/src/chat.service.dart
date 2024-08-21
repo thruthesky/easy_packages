@@ -27,16 +27,19 @@ class ChatService {
   Future<fs.DocumentReference?> Function(BuildContext context,
       {ChatRoom? room})? $showChatRoomEditScreen;
 
-  /// Add extra widget on chatroom,. eg. push notification toggle button
+  /// Add custom widget on chatroom header,.
+  /// e.g. push notification toggle button to unsubscribe/subscribe to notification
   Widget Function(ChatRoom)? chatRoomActionButton;
 
-  /// Callback on chatMessage send, use this if you want to do task after message is created., eg. push notification
-  /// Callback will have the new [ChatMessage] information
+  /// Callback on chatMessage send, use this if you want to do task after message is created.,
+  /// Usage: e.g. send push notification after message is created
+  /// Callback will have the new [message] ChatMessage information and [room] ChatRoom information
   Function({required ChatMessage message, required ChatRoom room})?
       onSendMessage;
 
-  /// Callback on after userInvite. Can be use if you want to do task after invite. eg. send push notification
-  /// [room] current room
+  /// Callback on after userInvite. Can be use if you want to do task after invite.
+  /// Usage: e.g. send push notification after user was invited
+  /// [room] current ChatRoom
   /// [uid] uid of the user that is being invited
   Function({required ChatRoom room, required String uid})? onInvite;
 
