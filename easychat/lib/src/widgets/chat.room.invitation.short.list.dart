@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomInvitationShortList extends StatelessWidget {
@@ -24,11 +23,11 @@ class ChatRoomInvitationShortList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: ChatService.instance.roomCol
-          .where('invitedUsers', arrayContains: myUid)
-          .orderBy(ChatRoom.field.updatedAt, descending: true)
-          .limit(4)
-          .snapshots(),
+      // No longer limiting. //
+      // However, it may cost more read for users who don't accept or
+      // reject chat rooms. But it is not common.
+      // stream: ChatRoomQuery.receivedInvites().limit(10).snapshots(),
+      stream: ChatRoomQuery.receivedInvites().limit(4).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');
@@ -41,11 +40,9 @@ class ChatRoomInvitationShortList extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const SizedBox.shrink();
         }
-
         final docs = snapshot.data!.docs;
         final chatRooms =
             docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
-
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,11 +51,12 @@ class ChatRoomInvitationShortList extends StatelessWidget {
               padding: padding ?? const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  ChatService.instance.chatRoomNewMessageBuilder
-                          ?.call(chatRooms.length) ??
+                  ChatService.instance.chatRoomNewMessageBuilder?.call(
+                          chatRooms.length > 3
+                              ? "3+"
+                              : chatRooms.length.toString()) ??
                       Badge(
-                        label: Text(
-                            "${chatRooms.length < 4 ? chatRooms.length : '3+'}"),
+                        label: Text("${chatRooms.length}"),
                       ),
                   const SizedBox(width: 8),
                   Flexible(
@@ -75,14 +73,14 @@ class ChatRoomInvitationShortList extends StatelessWidget {
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: chatRooms.length,
+              itemCount: chatRooms.length <= 3 ? chatRooms.length : 4,
               separatorBuilder: separatorBuilder ??
                   (context, index) => const SizedBox.shrink(),
               itemBuilder: (listViewContext, index) {
                 final room = chatRooms[index];
                 // The fourth invitation and other nexts should be in
                 // see more.
-                if (index == 3 && chatRooms.length == 4) {
+                if (index == 3 && chatRooms.length > 3) {
                   return TextButton(
                     style: TextButton.styleFrom(),
                     child: Align(

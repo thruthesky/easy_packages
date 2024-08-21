@@ -40,7 +40,8 @@ class ChatService {
   /// [uid] uid of the user that is being invited
   Function({required ChatRoom room, required String uid})? onInvite;
 
-  Widget Function(int no)? chatRoomNewMessageBuilder;
+  /// It gets String parameter because the [no] can be something like "3+"
+  Widget Function(String no)? chatRoomNewMessageBuilder;
 
   /// This is used in Chat Room list screen.
   ///
@@ -57,7 +58,8 @@ class ChatService {
         onSendMessage,
     Function({required ChatRoom room, required String uid})? onInvite,
     Widget Function(ChatRoom)? chatRoomActionButton,
-    Widget Function(int no)? chatRoomNewMessageBuilder,
+    Widget Function(String no)? chatRoomNewMessageBuilder,
+    Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
   }) {
     UserService.instance.init();
@@ -65,7 +67,6 @@ class ChatService {
     initialized = true;
 
     this.chatRoomNewMessageBuilder = chatRoomNewMessageBuilder;
-
     this.$showChatRoomListScreen =
         $showChatRoomListScreen ?? this.$showChatRoomListScreen;
     this.$showChatRoomEditScreen =

@@ -144,6 +144,9 @@ class UserPublicProfileScreen extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                ...?UserService.instance
+                                    .prefixActionBuilderOnPublicProfileScreen
+                                    ?.call(user),
                                 TextButton(
                                   onPressed: () async {
                                     await i.block(
