@@ -56,6 +56,8 @@ class ChatService {
   Widget Function(BuildContext context)?
       rejectedChatRoomInviteListScreenBuilder;
 
+  Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
@@ -73,6 +75,7 @@ class ChatService {
         receivedChatRoomInviteListScreenBuilder,
     Widget Function(BuildContext context)?
         rejectedChatRoomInviteListScreenBuilder,
+    Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
   }) {
     UserService.instance.init();
 
@@ -91,6 +94,7 @@ class ChatService {
         receivedChatRoomInviteListScreenBuilder;
     this.rejectedChatRoomInviteListScreenBuilder =
         rejectedChatRoomInviteListScreenBuilder;
+    this.membersDialogBuilder = membersDialogBuilder;
   }
 
   /// Firebase CollectionReference for Chat Room docs
@@ -108,8 +112,12 @@ class ChatService {
           .doc(roomId)
           .collection('chat-room-meta');
 
-  // TODO
-  // fs.CollectionReference usersCol(String roomId) =>
+  // TODO continue
+  fs.CollectionReference usersCol(String roomId) =>
+      fs.FirebaseFirestore.instance
+          .collection('chat-rooms')
+          .doc(roomId)
+          .collection('users');
 
   /// DocumentReference for chat room private settings.
   fs.DocumentReference roomPrivateDoc(String roomId) =>

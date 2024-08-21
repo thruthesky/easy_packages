@@ -338,7 +338,9 @@ class ChatRoomMenuDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return ChatRoomMemberListDialog(room: room!);
+        return ChatService.instance.membersDialogBuilder
+                ?.call(context, room!) ??
+            ChatRoomMemberListDialog(room: room!);
       },
     );
   }
