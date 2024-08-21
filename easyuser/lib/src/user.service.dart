@@ -68,6 +68,10 @@ class UserService {
   /// Current user of Firebase Auth
   fa.User? get currentUser => fa.FirebaseAuth.instance.currentUser;
 
+  /// Buttons on user profile sreen.
+  List<Widget> Function(User)? prefixActionBuilderOnPublicProfileScreen;
+  List<Widget> Function(User)? suffixActionBuilderOnPublicProfileScreen;
+
   /// True if the user is signed in with phone number.
   bool get isPhoneSignIn =>
       currentUser?.providerData
@@ -79,12 +83,20 @@ class UserService {
     bool enableAnonymousSignIn = false,
     Widget Function(BuildContext, User?)? showPublicProfileScreen,
     Widget Function()? showProfileUpdateScreen,
+    List<Widget> Function(User)? prefixActionBuilderOnPublicProfileScreen,
+    List<Widget> Function(User)? suffixActionBuilderOnPublicProfileScreen,
   }) {
     if (initialized) {
       dog('UserService is already initialized; It will not initialize again.');
       return;
     }
     initialized = true;
+
+    this.prefixActionBuilderOnPublicProfileScreen =
+        prefixActionBuilderOnPublicProfileScreen;
+    this.suffixActionBuilderOnPublicProfileScreen =
+        suffixActionBuilderOnPublicProfileScreen;
+
     this.enableAnonymousSignIn = enableAnonymousSignIn;
     listenDocumentChanges();
     $showPublicProfileScreen = showPublicProfileScreen;
