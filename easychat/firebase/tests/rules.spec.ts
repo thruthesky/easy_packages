@@ -62,7 +62,6 @@ async function clearAndResetFirestoreContext(): Promise<void> {
 // ===========================================================
 // ================= Chat Room Viewing Test ==================
 // ===========================================================
-
 describe("Chat Room Viewing Test", async () => {
   const appleGroup: ChatRoom = {
     name: "apple group",
@@ -126,6 +125,16 @@ describe("Chat Room Viewing Test", async () => {
   });
   it("[Fail] Outsider User get doc of Chat Room (2)", async () => {
     await assertFails(getDoc(doc(durianDb, getRoomPath(appleGroupId))));
+  });
+  it("[Pass] Outsider User get doc of Open Chat Room", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      open: true,
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+
+    await assertSucceeds(getDoc(doc(guavaDb, getRoomPath(appleGroupId))));
   });
 });
 

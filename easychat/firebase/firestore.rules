@@ -92,7 +92,7 @@ service cloud.firestore {
       }
 
       // Chat Room Rules
-      allow read: if isMember() || isInvited() || isRejectedUser();
+      allow read: if isMember() || isMaster() || isInvited() || isRejectedUser() || isOpenGroup();
       allow create: if willBeOnlyMember() 
                       && willBeOnlyMaster()
                       && (
