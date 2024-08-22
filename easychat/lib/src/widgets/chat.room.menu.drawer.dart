@@ -170,69 +170,68 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     },
                   ),
                 ],
-                if (room?.masterUsers.contains(myUid) == true)
-                  ListTile(
-                    title: Text('invite more users'.t),
-                    onTap: () async {
-                      final selectedUser =
-                          await UserService.instance.showUserSearchDialog(
-                        context,
-                        itemBuilder: (user, index) {
-                          return UserListTile(
-                            user: user,
-                            onTap: () {
-                              Navigator.of(context).pop(user);
-                            },
-                          );
-                        },
-                        exactSearch: true,
+                ListTile(
+                  title: Text('invite more users'.t),
+                  onTap: () async {
+                    final selectedUser =
+                        await UserService.instance.showUserSearchDialog(
+                      context,
+                      itemBuilder: (user, index) {
+                        return UserListTile(
+                          user: user,
+                          onTap: () {
+                            Navigator.of(context).pop(user);
+                          },
+                        );
+                      },
+                      exactSearch: true,
+                    );
+                    if (selectedUser == null) return;
+                    if (selectedUser.uid == my.uid) {
+                      throw ChatException(
+                        'inviting-yourself',
+                        'you cannot invite yourself'.t,
                       );
-                      if (selectedUser == null) return;
-                      if (selectedUser.uid == my.uid) {
-                        throw ChatException(
-                          'inviting-yourself',
-                          'you cannot invite yourself'.t,
-                        );
-                      }
-                      if (room!.invitedUsers.contains(selectedUser.uid)) {
-                        throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
-                        );
-                      }
-                      if (room!.userUids.contains(selectedUser.uid)) {
-                        throw ChatException(
-                          'already-member',
-                          'the user is already a member'.t,
-                        );
-                      }
-                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                        // The chat room is already rejected by the other user, we are
-                        // not showing if user rejected the invitation.
-                        throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
-                        );
-                      }
-                      await room!.inviteUser(selectedUser.uid);
-                      if (!context.mounted) return;
-                      alert(
-                        context: context,
-                        title: Text('invited user'.t),
-                        message: Text(
-                          // Check It translated properly
-                          // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
-                          'user has been invited'.tr(
-                            args: {
-                              'username': selectedUser.displayName.isEmpty
-                                  ? selectedUser.name
-                                  : selectedUser.displayName,
-                            },
-                          ),
+                    }
+                    if (room!.invitedUsers.contains(selectedUser.uid)) {
+                      throw ChatException(
+                        'already-invited',
+                        'the user is already invited'.t,
+                      );
+                    }
+                    if (room!.userUids.contains(selectedUser.uid)) {
+                      throw ChatException(
+                        'already-member',
+                        'the user is already a member'.t,
+                      );
+                    }
+                    if (room!.rejectedUsers.contains(selectedUser.uid)) {
+                      // The chat room is already rejected by the other user, we are
+                      // not showing if user rejected the invitation.
+                      throw ChatException(
+                        'already-invited',
+                        'the user is already invited'.t,
+                      );
+                    }
+                    await room!.inviteUser(selectedUser.uid);
+                    if (!context.mounted) return;
+                    alert(
+                      context: context,
+                      title: Text('invited user'.t),
+                      message: Text(
+                        // Check It translated properly
+                        // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
+                        'user has been invited'.tr(
+                          args: {
+                            'username': selectedUser.displayName.isEmpty
+                                ? selectedUser.name
+                                : selectedUser.displayName,
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
+                ),
               ] else if (room?.single == true || user != null) ...[
                 Container(
                   height: photoHeight(context),
