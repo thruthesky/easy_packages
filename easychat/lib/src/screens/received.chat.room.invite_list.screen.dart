@@ -4,16 +4,9 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ReceivedChatRoomInviteListScreen extends StatefulWidget {
+class ReceivedChatRoomInviteListScreen extends StatelessWidget {
   const ReceivedChatRoomInviteListScreen({super.key});
 
-  @override
-  State<ReceivedChatRoomInviteListScreen> createState() =>
-      _ReceivedChatRoomInviteListScreenState();
-}
-
-class _ReceivedChatRoomInviteListScreenState
-    extends State<ReceivedChatRoomInviteListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

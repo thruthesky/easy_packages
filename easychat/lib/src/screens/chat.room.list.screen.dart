@@ -29,7 +29,7 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'chat room list screen title: ${queryOption.name.toLowerCase().t}'),
+            'chat room list screen title: ${queryOption.name.toLowerCase()}'.t),
         actions: [
           IconButton(
             onPressed: () {
@@ -53,7 +53,8 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
                     (q) => PopupMenuItem(
                       value: q,
                       child: Text(
-                          'chat room list screen option: ${q.name.toLowerCase().t}'),
+                          'chat room list screen option: ${q.name.toLowerCase()}'
+                              .t),
                     ),
                   )
                   .toList();
