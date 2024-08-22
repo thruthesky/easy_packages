@@ -14,7 +14,7 @@ export './src/widgets/user.doc.dart';
 export './src/widgets/user.avatar.dart';
 export './src/widgets/user.list_tile.dart';
 export './src/widgets/user.list_view.dart';
-export './src/widgets/user_state_change.dart';
+export 'src/widgets/user_change.dart';
 export './src/widgets/firestore.user.list_view.dart';
 export './src/widgets/firestore.user.doc.dart';
 export './src/widgets/user.photo.list_view.dart';

@@ -1,3 +1,6 @@
+## 0.0.25
+* Add. `UserChange` widget.
+
 ## 0.0.24
 * Update. Document update.
 

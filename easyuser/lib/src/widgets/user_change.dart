@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class UserStateChange extends StatelessWidget {
-  /// UserStateChange
+class UserChange extends StatelessWidget {
+  /// UserChange
   ///
   /// Use this widget to listen to the user state (signed-in, signed-out, different user & token refresh)
   /// ex: linking credential
@@ -12,7 +12,7 @@ class UserStateChange extends StatelessWidget {
   /// [builder] is the UI builder callback that will be called when the user's
   /// authentication state changes.
   ///
-  const UserStateChange({super.key, required this.builder});
+  const UserChange({super.key, required this.builder});
 
   final Widget Function(User?) builder;
 
