@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 extension EasyHelperMediaQueryExtension on BuildContext {
   double get screenWidth => MediaQuery.of(this).size.width;
 
+  double get screenHeight => MediaQuery.of(this).size.height;
+
+  /// Get the device orientation.
+  Orientation get orientation => MediaQuery.of(this).orientation;
+
   /// Extra small screen means if the width is smaller than 375
   /// It is used to check if the user is using a small device like iPhone SE.
   bool get isExtraSmallScreen => screenWidth <= 375;
@@ -30,4 +35,10 @@ extension EasyHelperMediaQueryExtension on BuildContext {
 
   /// If the width of the device is less than or equal to 460, it is a phone screen.
   bool get isPhoneScreen => isExtraSmallScreen || isSmallScreen;
+
+  /// Check if the device is in portrait mode.
+  bool get isPortrait => orientation == Orientation.portrait;
+
+  /// Check if the device is in landscape mode.
+  bool get isLandscape => orientation == Orientation.landscape;
 }

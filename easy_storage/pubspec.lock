@@ -170,10 +170,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_helpers
-      sha256: "21b830cf7b5c8b41c2b850cbd854e9e2d4eb7b19e0eb51770fe8a2b26632ab87"
+      sha256: "25d45ea1a8a65655a5be4aa43dc11c5784079f9bdbcd6c777f596a865bf93c39"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.11"
+    version: "0.0.13"
   easy_locale:
     dependency: "direct main"
     description:

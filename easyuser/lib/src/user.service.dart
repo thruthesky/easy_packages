@@ -131,7 +131,7 @@ class UserService {
 
       /// User signed out
       if (faUser == null) {
-        // dog('Firebase User is null. User signed out.');
+        dog('Firebase User is null. User signed out.');
         user = null;
         changes.add(user);
 
@@ -140,13 +140,36 @@ class UserService {
         blockChanges.add(blocks);
         initAnonymousSignIn();
       } else {
-        /// User signed in -------------------------------------------------
+        /// User signed in (or changed)
+
+        /// The signed user's ref.
+        final signedInUserRef =
+            FirebaseFirestore.instance.collection('users').doc(faUser.uid);
+
+        /// * Fire user document update immediately *
+        /// This is required for the case where the app(or device) has no
+        /// internet. This will trigger the [UserService.instance.changes] to
+        /// update the user document. And this will lead [MyDoc] to be rebuild.
+        ///
+        /// Refer README.md for more details.
+        try {
+          // If there is cache, use it.
+          final snapshot = await signedInUserRef.get(
+            const GetOptions(source: Source.cache),
+          );
+          user = User.fromSnapshot(snapshot);
+          changes.add(user);
+        } catch (e) {
+          // If there is no cache, use the uid.
+          user = User.fromUid(faUser.uid);
+          changes.add(user);
+        }
 
         /// User is anonymous
         if (faUser.isAnonymous) {
-          // dog('User signed in. The Firebase User is anonymous');
+          dog('User signed in. The Firebase User is anonymous');
         } else {
-          // dog('User signed in. The Firebase User is NOT anonymous');
+          dog('User signed in. The Firebase User is NOT anonymous');
         }
 
         /// User signed in. Listen to the user's document changes.
@@ -155,11 +178,8 @@ class UserService {
         /// 사용자 문서 초기화
         await initUserLogin(faUser.uid);
 
-        firestoreMyDocSubscription = FirebaseFirestore.instance
-            .collection('users')
-            .doc(faUser.uid)
-            .snapshots()
-            .listen((snapshot) {
+        firestoreMyDocSubscription =
+            signedInUserRef.snapshots().listen((snapshot) {
           // 주의: 여기서는 어떤 경우에도 사용자 문서를 업데이트해서는 안된다.
           if (snapshot.exists) {
             user = User.fromSnapshot(snapshot);

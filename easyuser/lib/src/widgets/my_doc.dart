@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +29,7 @@ class MyDoc extends StatelessWidget {
       initialData: UserService.instance.user,
       stream: UserService.instance.changes,
       builder: (_, snapshot) {
+        log('-------> MyDoc --> build(); waiting for ever?: snapshot.connectionState == ConnectionState.waiting: ${snapshot.connectionState == ConnectionState.waiting}, snapshot.hasData: ${snapshot.hasData}');
         if (snapshot.connectionState == ConnectionState.waiting &&
             snapshot.hasData == false) {
           return const SizedBox.shrink();
