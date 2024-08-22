@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easyuser/easyuser.dart';
@@ -357,6 +356,7 @@ class ChatRoom {
       ref = col.doc(id);
       await ref.set(newRoom);
     }
+
     return ref;
   }
 
@@ -577,8 +577,6 @@ class ChatRoom {
   }
 
   Future<void> mayDeleteLastMessage(String deletedMessageId) async {
-    dog("lastMessageId: $lastMessageId");
-    dog("deletedMessageId: $deletedMessageId");
     if (lastMessageId == deletedMessageId) {
       await ref.set({
         field.lastMessageText: FieldValue.delete(),
@@ -593,8 +591,6 @@ class ChatRoom {
     String? updatedMessageText,
     String? updatedMessageUrl,
   }) async {
-    dog("lastMessageId: $lastMessageId");
-    dog("updatedMessageId: $messageId");
     if (lastMessageId == messageId) {
       await ref.set({
         field.lastMessageText: updatedMessageText,

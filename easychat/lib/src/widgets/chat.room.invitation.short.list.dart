@@ -47,59 +47,50 @@ class ChatRoomInvitationShortList extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: padding ?? const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  ChatService.instance.chatRoomNewMessageBuilder?.call(
-                          chatRooms.length > 3
-                              ? "3+"
-                              : chatRooms.length.toString()) ??
-                      Badge(
-                        label: Text("${chatRooms.length}"),
+            GestureDetector(
+              onTap: () {
+                // showGeneralDialog(
+                //   context: context,
+                //   pageBuilder: (context, a1, a2) {
+                //     return const ReceivedChatRoomInviteListScreen();
+                //   },
+                // );
+
+                ChatService.instance.showInviteListScreen(context);
+              },
+              child: Padding(
+                padding: padding ?? const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    ChatService.instance.chatRoomNewMessageBuilder?.call(
+                            chatRooms.length > 3
+                                ? "3+"
+                                : chatRooms.length.toString()) ??
+                        Badge(
+                          label: Text("${chatRooms.length}"),
+                        ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "message request/invitations".t,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      "message request/invitations".t,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                    if (chatRooms.length > 3) Text('see more requests'.t),
+                  ],
+                ),
               ),
             ),
             ListView.separated(
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: chatRooms.length <= 3 ? chatRooms.length : 4,
+              itemCount: chatRooms.length <= 3 ? chatRooms.length : 3,
               separatorBuilder: separatorBuilder ??
                   (context, index) => const SizedBox.shrink(),
               itemBuilder: (listViewContext, index) {
                 final room = chatRooms[index];
-                // The fourth invitation and other nexts should be in
-                // see more.
-                if (index == 3 && chatRooms.length > 3) {
-                  return TextButton(
-                    style: TextButton.styleFrom(),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text('see more requests'.t),
-                      ),
-                    ),
-                    onPressed: () {
-                      showGeneralDialog(
-                        context: context,
-                        pageBuilder: (context, a1, a2) {
-                          return const ReceivedChatRoomInviteListScreen();
-                        },
-                      );
-                    },
-                  );
-                }
                 return itemBuilder?.call(context, room, index) ??
                     ChatRoomInvitationListTile(
                       room: room,

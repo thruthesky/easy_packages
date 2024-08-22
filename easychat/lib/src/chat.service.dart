@@ -51,6 +51,16 @@ class ChatService {
   /// Why? Login in different apps may have different way to present.
   Widget Function(BuildContext context)? loginButtonBuilder;
 
+  /// Builder for showing a screen for chat room invites received by user.
+  Widget Function(BuildContext context)?
+      receivedChatRoomInviteListScreenBuilder;
+
+  /// Builder for showing a screen for chat room invites rejected by user.
+  Widget Function(BuildContext context)?
+      rejectedChatRoomInviteListScreenBuilder;
+
+  Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder;
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
@@ -64,6 +74,11 @@ class ChatService {
     Widget Function(String no)? chatRoomNewMessageBuilder,
     Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
+    Widget Function(BuildContext context)?
+        receivedChatRoomInviteListScreenBuilder,
+    Widget Function(BuildContext context)?
+        rejectedChatRoomInviteListScreenBuilder,
+    Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
   }) {
     UserService.instance.init();
 
@@ -78,6 +93,11 @@ class ChatService {
     this.onSendMessage = onSendMessage;
     this.onInvite = onInvite;
     this.loginButtonBuilder = loginButtonBuilder;
+    this.receivedChatRoomInviteListScreenBuilder =
+        receivedChatRoomInviteListScreenBuilder;
+    this.rejectedChatRoomInviteListScreenBuilder =
+        rejectedChatRoomInviteListScreenBuilder;
+    this.membersDialogBuilder = membersDialogBuilder;
   }
 
   /// Firebase CollectionReference for Chat Room docs
@@ -121,7 +141,9 @@ class ChatService {
   ) {
     return showGeneralDialog(
       context: context,
-      pageBuilder: (_, __, ___) => const ReceivedChatRoomInviteListScreen(),
+      pageBuilder: (_, __, ___) =>
+          receivedChatRoomInviteListScreenBuilder?.call(context) ??
+          const ReceivedChatRoomInviteListScreen(),
     );
   }
 
@@ -165,7 +187,9 @@ class ChatService {
   ) {
     return showGeneralDialog(
       context: context,
-      pageBuilder: (_, __, ___) => const RejectedChatRoomInviteListScreen(),
+      pageBuilder: (_, __, ___) =>
+          rejectedChatRoomInviteListScreenBuilder?.call(context) ??
+          const RejectedChatRoomInviteListScreen(),
     );
   }
 

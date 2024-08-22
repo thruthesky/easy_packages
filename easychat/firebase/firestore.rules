@@ -6,7 +6,6 @@ service cloud.firestore {
       allow read, write: if false;
     }
     
-
     match /chat-rooms/{roomId} {
       function willBeSingle() {
         return request.resource.data.keys().hasAny(["single"]) 
@@ -30,10 +29,12 @@ service cloud.firestore {
         return request.resource.data.users.keys().hasOnly(resource.data.users.keys());
       }
       function isMember() {
-        return request.auth.uid in resource.data.users.keys();
+        return resource.data.keys().hasAll(['users']) 
+                && request.auth.uid in resource.data.users.keys();
       }
       function isMaster() {
-        return request.auth.uid in resource.data.masterUsers;
+        return resource.data.keys().hasAll(['masterUsers']) 
+                && request.auth.uid in resource.data.masterUsers;
       }
       function willBeMember() {
         return request.auth.uid in request.resource.data.users.keys();
@@ -45,16 +46,15 @@ service cloud.firestore {
         return !willBeMember() && isMember() && onlyRemovingOneMember();
       }
       function isOpenGroup() {
-        return resource.data.keys().hasAny(['group', 'open'])
-                && resource.data.open == true
-                && resource.data.group == true;
+        return resource.data.keys().hasAll([ 'open']) 
+                && resource.data.open == true;
       }
       function isSingleChat() {
         return 'single' in resource.data.keys()
                 && resource.data.single;
       }
       function isInvited() {
-        return resource.data.keys().hasAny(['invitedUsers'])
+        return  resource.data.keys().hasAll(['invitedUsers']) 
                 && request.auth.uid in resource.data.invitedUsers;
       }
       function willBeRejectedUser() {
@@ -63,7 +63,7 @@ service cloud.firestore {
       }
       function isRejectedUser() {
         return resource.data.keys().hasAny(['rejectedUsers'])
-                && request.auth.uid in resource.data.rejectedUsers;
+          && request.auth.uid in resource.data.rejectedUsers;
       }
       function isRejecting() {
         return isInvited()
@@ -91,8 +91,14 @@ service cloud.firestore {
         return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
       }
 
+      // function hasOrderField() {
+      //   return 
+      //     'users' in resource.data.keys() &&
+      //   request.auth.uid in resource.data['users'].keys();
+      //   // && 'o' in resource.data.users[request.auth.uid];
+      // }
       // Chat Room Rules
-      allow read: if isMember();
+      allow read: if isMember() || isMaster() || isInvited() || isRejectedUser() || isOpenGroup();
       allow create: if willBeOnlyMember() 
                       && willBeOnlyMaster()
                       && (
