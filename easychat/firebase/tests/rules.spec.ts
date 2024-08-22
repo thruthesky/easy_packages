@@ -38,6 +38,24 @@ const eggPlantId = "eggPlant";
 const flowerId = "flower";
 const guavaId = "guava";
 
+const chatRooms = "chat-rooms";
+const field = {
+  // Single Order is the single order that is affected by read
+  singleOrder: "sO",
+  // Single Time Order is the single order that is only determined when the message was sent
+  singleTimeOrder: "sTO",
+  // Group Order is the group order that is affected by read
+  groupOrder: "gO",
+  // Group Time Order is the group order that is only determined when the message was sent
+  groupTimeOrder: "gTO",
+  // Order is the order that is affected by read wheter it is single or group
+  order: "o",
+  // Time Order is the order that is only determined when the message was sent
+  timeOrder: "tO",
+  // New Message Counter is the number of new message
+  newMessageCounter: "nMC",
+};
+
 let unauthedDb: firebase.firestore.Firestore;
 let appleDb: firebase.firestore.Firestore;
 let bananaDb: firebase.firestore.Firestore;
@@ -69,6 +87,10 @@ describe("Chat Room Viewing Test", async () => {
     masterUsers: [appleId, bananaId],
     users: {
       [appleId]: {
+        o: 1,
+        tO: 1,
+        sO: 1,
+        gO: 1,
         nMC: 0,
       },
       [bananaId]: {
@@ -133,8 +155,203 @@ describe("Chat Room Viewing Test", async () => {
     await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
       merge: true,
     });
-
     await assertSucceeds(getDoc(doc(guavaDb, getRoomPath(appleGroupId))));
+  });
+  it("[Pass] All Mine Query", async () => {
+    const query = appleDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.order, ">", 0)
+      .orderBy("users." + appleId + "." + field.order, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] allMineByTime Query", async () => {
+    const query = appleDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.timeOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.timeOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] open group chat Query", async () => {
+    const updateIntoOpen = {
+      open: true,
+    } as ChatRoom;
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), updateIntoOpen, {
+      merge: true,
+    });
+    const query = appleDb
+      .collection(chatRooms)
+      .where("open", "==", true)
+      .orderBy("updatedAt", "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] single Query", async () => {
+    const query = appleDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.singleOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.singleOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] singleByTime Query", async () => {
+    const query = appleDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.singleTimeOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.singleTimeOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] group Query", async () => {
+    const query = appleDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.groupOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.groupOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] groupByTime Query", async () => {
+    const query = appleDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.groupTimeOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.groupTimeOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] received invites query", async () => {
+    const query = eggPlantDb
+      .collection(chatRooms)
+      .where("invitedUsers", "array-contains", eggPlantId)
+      .orderBy("updatedAt", "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] rejected invites query", async () => {
+    const query = flowerDb
+      .collection(chatRooms)
+      .where("rejectedUsers", "array-contains", flowerId)
+      .orderBy("updatedAt", "desc");
+    await assertSucceeds(query.get());
+  });
+
+  it("[Pass] All Mine Query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + guavaId + "." + field.order, ">", 0)
+      .orderBy("users." + guavaId + "." + field.order, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] allMineByTime Query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + guavaId + "." + field.timeOrder, ">", 0)
+      .orderBy("users." + guavaId + "." + field.timeOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] open group chat Query (2)", async () => {
+    const updateIntoOpen = {
+      open: true,
+    } as ChatRoom;
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), updateIntoOpen, {
+      merge: true,
+    });
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("open", "==", true)
+      .orderBy("updatedAt", "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] single Query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + guavaId + "." + field.singleOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.singleOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] singleByTime Query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + guavaId + "." + field.singleTimeOrder, ">", 0)
+      .orderBy("users." + guavaId + "." + field.singleTimeOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] group Query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + guavaId + "." + field.groupOrder, ">", 0)
+      .orderBy("users." + guavaId + "." + field.groupOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] groupByTime Query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + guavaId + "." + field.groupTimeOrder, ">", 0)
+      .orderBy("users." + guavaId + "." + field.groupTimeOrder, "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] received invites query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("invitedUsers", "array-contains", guavaId)
+      .orderBy("updatedAt", "desc");
+    await assertSucceeds(query.get());
+  });
+  it("[Pass] rejected invites query (2)", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("rejectedUsers", "array-contains", guavaId)
+      .orderBy("updatedAt", "desc");
+    await assertSucceeds(query.get());
+  });
+
+  it("[Fail] All Mine Query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.order, ">", 0)
+      .orderBy("users." + appleId + "." + field.order, "desc");
+    await assertFails(query.get());
+  });
+  it("[Fail] allMineByTime Query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.timeOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.timeOrder, "desc");
+    await assertFails(query.get());
+  });
+  it("[Fail] single Query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.singleOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.singleOrder, "desc");
+    await assertFails(query.get());
+  });
+  it("[Fail] singleByTime Query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.singleTimeOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.singleTimeOrder, "desc");
+    await assertFails(query.get());
+  });
+  it("[Fail] group Query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.groupOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.groupOrder, "desc");
+    await assertFails(query.get());
+  });
+  it("[Fail] groupByTime Query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("users." + appleId + "." + field.groupTimeOrder, ">", 0)
+      .orderBy("users." + appleId + "." + field.groupTimeOrder, "desc");
+    await assertFails(query.get());
+  });
+  it("[Fail] received invites query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("invitedUsers", "array-contains", eggPlantId)
+      .orderBy("updatedAt", "desc");
+    await assertFails(query.get());
+  });
+  it("[Fail] rejected invites query using different uid", async () => {
+    const query = guavaDb
+      .collection(chatRooms)
+      .where("rejectedUsers", "array-contains", flowerId)
+      .orderBy("updatedAt", "desc");
+    await assertFails(query.get());
   });
 });
 
