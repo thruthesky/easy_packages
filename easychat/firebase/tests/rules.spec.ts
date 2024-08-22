@@ -60,6 +60,76 @@ async function clearAndResetFirestoreContext(): Promise<void> {
 }
 
 // ===========================================================
+// ================= Chat Room Viewing Test ==================
+// ===========================================================
+
+describe("Chat Room Viewing Test", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+
+  it("[Pass] Master get doc of Chat Room (1)", async () => {
+    await assertSucceeds(getDoc(doc(appleDb, getRoomPath(appleGroupId))));
+  });
+  it("[Pass] Master get doc of Chat Room (2)", async () => {
+    await assertSucceeds(getDoc(doc(bananaDb, getRoomPath(appleGroupId))));
+  });
+  it("[Pass] Member get doc of Chat Room", async () => {
+    await assertSucceeds(getDoc(doc(carrotDb, getRoomPath(appleGroupId))));
+  });
+  it("[Pass] Invited User get doc of Chat Room", async () => {
+    await assertSucceeds(getDoc(doc(eggPlantDb, getRoomPath(appleGroupId))));
+  });
+  it("[Pass] Rejected User get doc of Chat Room", async () => {
+    await assertSucceeds(getDoc(doc(flowerDb, getRoomPath(appleGroupId))));
+  });
+  it("[Fail] Outsider User get doc of Chat Room (1)", async () => {
+    await assertFails(getDoc(doc(guavaDb, getRoomPath(appleGroupId))));
+  });
+  it("[Fail] Outsider User get doc of Chat Room (2)", async () => {
+    await assertFails(getDoc(doc(durianDb, getRoomPath(appleGroupId))));
+  });
+});
+
+// ===========================================================
 // ================ Chat Room Creation Test ==================
 // ===========================================================
 describe("Chat Room Creation Test", async () => {

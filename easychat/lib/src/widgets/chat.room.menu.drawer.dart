@@ -304,7 +304,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     },
                   ),
               ],
-              if (user?.admin != true) ...[
+              if (user != null && !user!.admin) ...[
                 if (room?.single == true || user != null)
                   ListTile(
                     title: Text("block".t),
@@ -318,7 +318,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   onTap: () {
                     ReportService.instance.report(
                       context: context,
-                      documentReference: room!.ref,
+                      documentReference: room?.ref ?? user!.ref,
                       otherUid: user?.uid ?? room!.masterUsers.first,
                     );
                   },
