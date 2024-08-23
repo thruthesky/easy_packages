@@ -77,6 +77,8 @@ class ChatRoomListTile extends StatelessWidget {
           if (!snapshot.hasData) {
             return const Text("...");
           }
+          // Maybe we can cache here to prevent the sudden "..." when the order is
+          // being changed when there is new user.
           if (snapshot.data?.snapshot.value == null) {
             return Text(
               "no message yet".t,
