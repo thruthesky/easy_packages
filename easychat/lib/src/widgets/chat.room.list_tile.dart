@@ -81,7 +81,6 @@ class ChatRoomListTile extends StatelessWidget {
           stream:
               ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
           builder: (context, snapshot) {
-            dog("rebuild");
             if (!snapshot.hasData) {
               return const Text("...");
             }
