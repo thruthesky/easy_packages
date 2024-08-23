@@ -61,16 +61,27 @@ ChatService.instance.init();
 - `masterUsers` is the uid list of master user. See [Masters](#masters)
 - `createdAt` is the Firestore Timestamp when the chat room created.
 - `updatedAt` is the Timestamp when the chat room information updated.
-- `lastMessageText` is the last message. It may not exist.
-- `lastMessageAt` is the Timestamp of the last message sent.
-- `lastMessageUid` is the user's uid who sent the last message
-- `lastMessageUrl` is the photo or file url of the last message. It may not exist.
+- `lastMessageText` - removed at Aug 23, 2024 for security issue see the chat room security below.
+- `lastMessageAt` - removed at Aug 23, 2024 for security issue see the chat room security below.
+- `lastMessageUid` - removed at Aug 23, 2024 for security issue see the chat room security below.
+- `lastMessageUrl` - removed at Aug 23, 2024 for security issue see the chat room security below.
 - `open` if it is set to true, the chat room is open chat. So, it is listed in the open chat rom list and anyone can join the chat room without invitation.
 - `hasPassword` is set to true if the chat room has a password. See [Password](#password)
 
 - `single` - is true when the room is single chat
 - `group` - is true when the room is group chat
 - `open` - is true when the room is open group chat.
+
+
+
+
+
+### Chat room security
+
+- Chat room information must not be public. Only members and invited users, and the rejected users read it.
+  - Invite users are included to read the chat room information NOT because once is was invited, but because there is no easy way of displaying the list of chat rooms that the user has rejected.
+  - To secure the chat room information from the rejected users, the chat room information should maintain as less information as possible. For this reason, the chat room does not store the last message.
+  - So, to dispaly the last chat message on chat room list, the package listens the last message of the chat room.
 
 #### Cost of Firestore
 
@@ -109,7 +120,6 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
   - Or the chat package saves the number of new messages in each chat room.
   - And much more.
 
-# Logic
 
 ## Group Chat and 1:1 Chat
 
@@ -161,6 +171,12 @@ The solution is that,
     - If they are the same, then the user can enter the chat room.
 
 This is the way how it can compare the chat password.
+
+
+
+
+
+
 
 # Development Tip
 
