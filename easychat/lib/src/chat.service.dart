@@ -230,7 +230,7 @@ class ChatService {
 
     if (model.hasData) {
       await message.update(
-        previewUrl: model.firstLink!,
+        previewUrl: model.firstLink,
         previewTitle: model.title,
         previewDescription: model.description,
         previewImageUrl: model.image,
