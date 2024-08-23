@@ -56,6 +56,7 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
           ? (details) async {
               final value = await showMenu(
