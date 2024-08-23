@@ -56,6 +56,7 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
           ? (details) async {
               final value = await showMenu(
@@ -117,7 +118,16 @@ class ChatBubble extends StatelessWidget {
                         child: const CircularProgressIndicator(),
                       );
                     }
-                    return UserAvatar(user: user);
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        UserService.instance.showPublicProfileScreen(
+                          context,
+                          user: user,
+                        );
+                      },
+                      child: UserAvatar(user: user),
+                    );
                   },
                 ),
               ),
