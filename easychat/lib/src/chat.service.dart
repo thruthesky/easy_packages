@@ -209,11 +209,7 @@ class ChatService {
       url: photoUrl,
       replyTo: replyTo,
     );
-    await room.updateNewMessagesMeta(
-      lastMessageId: newMessage.id,
-      lastMessageText: text,
-      lastMessageUrl: photoUrl,
-    );
+    await room.updateNewMessagesMeta();
     updateUrlPreview(newMessage, text);
 
     onSendMessage?.call(message: newMessage, room: room);

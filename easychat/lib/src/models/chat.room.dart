@@ -22,12 +22,7 @@ class ChatRoom {
     open: 'open',
     single: 'single',
     group: 'group',
-    // lastMessageText: 'lastMessageText',
-    // lastMessageAt: 'lastMessageAt',
-    // lastMessageUid: 'lastMessageUid',
-    // lastMessageUrl: 'lastMessageUrl',
-    // lastMessageId: 'lastMessageId',
-    // lastMessageDeleted: 'lastMessageDeleted',
+    lastMessageAt: 'lastMessageAt',
     verifiedUserOnly: 'verifiedUserOnly',
     urlForVerifiedUserOnly: 'urlForVerifiedUserOnly',
     uploadForVerifiedUserOnly: 'uploadForVerifiedUserOnly',
@@ -85,12 +80,12 @@ class ChatRoom {
   /// [group] is true if the chat room is group chat.
   bool group;
 
-  String? lastMessageId;
-  String? lastMessageText;
+  /// [lastMessageAt] is the time when last message was sent to chat room.
   DateTime? lastMessageAt;
-  String? lastMessageUid;
-  String? lastMessageUrl;
-  bool? lastMessageDeleted;
+
+  // TODO review
+  // TODO!
+  String? lastMessageCache;
 
   /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
   ///
@@ -147,12 +142,7 @@ class ChatRoom {
     this.rejectedUsers = const [],
     required this.createdAt,
     required this.updatedAt,
-    this.lastMessageId,
-    this.lastMessageText,
     this.lastMessageAt,
-    this.lastMessageUid,
-    this.lastMessageUrl,
-    this.lastMessageDeleted,
     this.verifiedUserOnly = false,
     this.urlForVerifiedUserOnly = false,
     this.uploadForVerifiedUserOnly = false,
@@ -189,6 +179,9 @@ class ChatRoom {
       updatedAt: json[field.updatedAt] is Timestamp
           ? (json[field.updatedAt] as Timestamp).toDate()
           : DateTime.now(),
+      lastMessageAt: json[field.lastMessageAt] is Timestamp
+          ? (json[field.lastMessageAt] as Timestamp).toDate()
+          : DateTime.now(),
       verifiedUserOnly: json[field.verifiedUserOnly],
       urlForVerifiedUserOnly: json[field.urlForVerifiedUserOnly],
       uploadForVerifiedUserOnly: json[field.uploadForVerifiedUserOnly],
@@ -215,6 +208,7 @@ class ChatRoom {
       field.rejectedUsers: rejectedUsers,
       field.createdAt: createdAt,
       field.updatedAt: updatedAt,
+      field.lastMessageAt: lastMessageAt,
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
       field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
@@ -244,10 +238,7 @@ class ChatRoom {
     rejectedUsers = room.rejectedUsers;
     createdAt = room.createdAt;
     updatedAt = room.updatedAt;
-    lastMessageText = room.lastMessageText;
     lastMessageAt = room.lastMessageAt;
-    lastMessageUid = room.lastMessageUid;
-    lastMessageUrl = room.lastMessageUrl;
     verifiedUserOnly = room.verifiedUserOnly;
     urlForVerifiedUserOnly = room.urlForVerifiedUserOnly;
     uploadForVerifiedUserOnly = room.uploadForVerifiedUserOnly;
@@ -373,11 +364,7 @@ class ChatRoom {
     bool? open,
     bool? single,
     bool? group,
-    String? lastMessageText,
     Object? lastMessageAt,
-    String? lastMessageUid,
-    String? lastMessageUrl,
-    bool? lastMessageDeleted,
   }) async {
     if (single == true && (group == true || open == true)) {
       throw 'chat-room-update/single-cannot-be-group-or-open Single chat room cannot be group or open';
@@ -410,6 +397,7 @@ class ChatRoom {
     final timestampAtLastMessage = lastMessageAt != null
         ? Timestamp.fromDate(lastMessageAt!)
         : FieldValue.serverTimestamp();
+
     await ref.set(
       {
         field.invitedUsers: FieldValue.arrayRemove([myUid!]),
@@ -471,11 +459,7 @@ class ChatRoom {
 
   /// [updateNewMessagesMeta] is used to update all unread data for all
   /// users inside the chat room.
-  Future<void> updateNewMessagesMeta({
-    String? lastMessageId,
-    String? lastMessageText,
-    String? lastMessageUrl,
-  }) async {
+  Future<void> updateNewMessagesMeta() async {
     final serverTimestamp = FieldValue.serverTimestamp();
     final Map<String, Map<String, Object>> updateUserData = users.map(
       (uid, value) {
@@ -520,6 +504,7 @@ class ChatRoom {
       field.users: {
         ...updateUserData,
       },
+      field.lastMessageAt: serverTimestamp,
     }, SetOptions(merge: true));
   }
 
