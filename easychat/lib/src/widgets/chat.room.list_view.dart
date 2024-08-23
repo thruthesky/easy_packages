@@ -65,32 +65,33 @@ class ChatRoomListView extends StatelessWidget {
                 child: emptyBuilder?.call(context) ??
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: const EdgeInsets.symmetric(vertical: 128),
                         child: Text(
                           "chat list is empty".t,
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-              ),
-            SliverList.separated(
-              itemCount: snapshot.docs.length,
-              separatorBuilder: (context, index) =>
-                  separatorBuilder?.call(context, index) ?? const Divider(),
-              itemBuilder: (context, index) {
-                if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
-                  snapshot.fetchMore();
-                }
+              )
+            else
+              SliverList.separated(
+                itemCount: snapshot.docs.length,
+                separatorBuilder: (context, index) =>
+                    separatorBuilder?.call(context, index) ?? const Divider(),
+                itemBuilder: (context, index) {
+                  if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
+                    snapshot.fetchMore();
+                  }
 
-                final room = ChatRoom.fromSnapshot(snapshot.docs[index]);
-                if (itemBuilder != null) {
-                  return itemBuilder!(context, room, index);
-                }
-                return ChatRoomListTile(
-                  room: room,
-                );
-              },
-            ),
+                  final room = ChatRoom.fromSnapshot(snapshot.docs[index]);
+                  if (itemBuilder != null) {
+                    return itemBuilder!(context, room, index);
+                  }
+                  return ChatRoomListTile(
+                    room: room,
+                  );
+                },
+              ),
           ],
         );
       },

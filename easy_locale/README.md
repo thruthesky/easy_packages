@@ -307,7 +307,7 @@ To prevent this, you may use `lo.merge()` which does not require the locale, thu
 
 All the translations of the easy packages must use `lo.merge()` to set its own translation.
 
-And you can call the `lo.merge()` to apply the translations of your app. And you may override the package's translation by using the same text key.
+And you can call the `lo.merge()` in your app to apply the translations of your app. And you may override the package's translation by using the same text key.
 
 ```dart
 // init user package

@@ -187,6 +187,7 @@ class LocaleService {
   /// It overrides the existing translation text.
   merge(Map<String, Map<String, dynamic>> texts) {
     texts.forEach((key, value) {
+      key = key.toLowerCase();
       if (localeTexts[key] == null) {
         localeTexts[key] = {};
       }
