@@ -274,6 +274,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'The last message was deleted',
     'ko': '마지막 메시지가 삭제되었습니다',
   },
+  'no message yet': {
+    'en': 'No message yet',
+    'ko': '메시지가 없습니다',
+  },
 
   // chat.room.list_view.dart
   // 'something went wrong' -> chat.room.invitation.short.list.dart

@@ -197,12 +197,11 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                 // Should delete the old url if it is different.
                 if (message.url != url && url != null && message.url != null)
                   StorageService.instance.delete(message.url!),
-                ChatService.instance.updateMessage(
-                  message: message,
+                message.update(
                   text: textController.text.trim(),
                   url: url,
                   isEdit: true,
-                )
+                ),
               ];
               // This will prevent deleting the new photo
               url = null;

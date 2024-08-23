@@ -3,6 +3,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomListTile extends StatelessWidget {
@@ -38,7 +39,7 @@ class ChatRoomListTile extends StatelessWidget {
         title: Text(
           room.name.trim().isNotEmpty ? room.name : "Group Chat",
         ),
-        subtitle: subtitle,
+        subtitle: subtitle(context),
         trailing: trailing,
         onTap: () => onTapTile(context, room, null),
       );
@@ -59,7 +60,7 @@ class ChatRoomListTile extends StatelessWidget {
                   : Text(user.displayName.trim().isNotEmpty
                       ? user.displayName
                       : '...'),
-              subtitle: subtitle,
+              subtitle: subtitle(context),
               trailing: trailing,
               onTap: () => onTapTile(context, room, user),
             );
@@ -69,39 +70,76 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? get subtitle => room.lastMessageDeleted == true
-      ? Text(
-          'last message was deleted'.t,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontStyle: FontStyle.italic),
-        )
-      : room.lastMessageText.isNullOrEmpty && room.lastMessageUrl.isNullOrEmpty
-          ? null
-          : Row(
-              children: [
-                if (!room.lastMessageUrl.isNullOrEmpty) ...[
-                  const Icon(Icons.photo, size: 16),
-                  const SizedBox(width: 4),
-                ],
-                if (!room.lastMessageText.isNullOrEmpty)
-                  Flexible(
-                    child: Text(
-                      room.lastMessageText!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                else if (!room.lastMessageUrl.isNullOrEmpty)
-                  Flexible(
-                    child: Text(
-                      "[${'photo'.t}]",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+  Widget? subtitle(BuildContext context) => StreamBuilder<DatabaseEvent>(
+        key: ValueKey("LastMessageText_${room.id}"),
+        stream: ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text("...");
+          }
+          // Maybe we can cache here to prevent the sudden "..." when the order is
+          // being changed when there is new user.
+          if (snapshot.data?.snapshot.value == null) {
+            return Text(
+              "no message yet".t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          }
+          final firstRecord =
+              Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
+                  .entries
+                  .first;
+          final messageJson =
+              Map<String, dynamic>.from(firstRecord.value as Map);
+          final lastMessage =
+              ChatMessage.fromJson(messageJson, firstRecord.key);
+
+          if (lastMessage.deleted) {
+            return Text(
+              'last message was deleted'.t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          }
+          return Row(
+            children: [
+              if (!lastMessage.url.isNullOrEmpty) ...[
+                const Icon(Icons.photo, size: 16),
+                const SizedBox(width: 4),
+              ],
+              if (!lastMessage.text.isNullOrEmpty)
+                Flexible(
+                  child: Text(
+                    lastMessage.text!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              else if (!lastMessage.url.isNullOrEmpty)
+                Flexible(
+                  child: Text(
+                    "[${'photo'.t}]",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withAlpha(110),
                     ),
                   ),
-              ],
-            );
+                ),
+            ],
+          );
+        },
+      );
 
   Widget get trailing {
     return Column(

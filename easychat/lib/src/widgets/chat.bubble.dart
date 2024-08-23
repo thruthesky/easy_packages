@@ -83,7 +83,7 @@ class ChatBubble extends StatelessWidget {
                     message: message,
                   );
                 } else if (value == items.delete) {
-                  ChatService.instance.deleteMessage(message);
+                  await message.delete();
                 }
               }
             }
@@ -280,17 +280,6 @@ class ChatBubble extends StatelessWidget {
                                           child: Text(message.text!),
                                         ),
                                       ],
-                                      if (message.previewUrl != null)
-                                        Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          child: UrlPreview(
-                                            previewUrl: message.previewUrl!,
-                                            title: message.previewTitle,
-                                            description:
-                                                message.previewDescription,
-                                            imageUrl: message.previewImageUrl,
-                                          ),
-                                        ),
                                     ],
                                   ),
                                 ),
@@ -302,6 +291,16 @@ class ChatBubble extends StatelessWidget {
                       if (message.uid != myUid) timeText(context),
                     ],
                   ),
+                  if (message.previewUrl != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+                      child: UrlPreview(
+                        previewUrl: message.previewUrl!,
+                        title: message.previewTitle,
+                        description: message.previewDescription,
+                        imageUrl: message.previewImageUrl,
+                      ),
+                    ),
                 ],
               ),
             ),
