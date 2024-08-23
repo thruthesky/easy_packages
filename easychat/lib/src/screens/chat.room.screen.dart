@@ -55,6 +55,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   onRoomReady() async {
     if ($room == null) return;
+    if ($room!.blockedUsers.contains(myUid)) return;
     // Auto Join Groups when it is open chat
     if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
       await $room!.join();
@@ -192,6 +193,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         },
       ),
       body:
+
+          // TODO need to review for blocked users
           // for ($room!.open && !canViewChatMessage)
           // showing loading widget at first because the user must join
           // the room first.
@@ -201,37 +204,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               : ValueListenableBuilder(
                   valueListenable: roomNotifier,
                   builder: (_, hc, __) {
-                    if ($room == null && $user != null) {
-                      // this will happen if this user will send a
-                      // message for the first time.
-                      // Upon sending the message, it will create
-                      // a single chat room and invite the other user.
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                "no message yet. can send a message.".t,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          SafeArea(
-                            top: false,
-                            child: ChatRoomInputBox(
-                              beforeSend: (_) async {
-                                final newRoomRef =
-                                    await ChatRoom.createSingle($user!.uid);
-                                $room = await ChatRoom.get(newRoomRef.id);
-                                await onRoomReady();
-                                if (mounted) setState(() {});
-                                return $room!;
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    }
                     if (!canViewChatMessage) {
                       return Container(
                         decoration: BoxDecoration(
@@ -278,6 +250,37 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             ),
                           ),
                         ),
+                      );
+                    }
+                    if ($room == null && $user != null) {
+                      // this will happen if this user will send a
+                      // message for the first time.
+                      // Upon sending the message, it will create
+                      // a single chat room and invite the other user.
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                "no message yet. can send a message.".t,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          SafeArea(
+                            top: false,
+                            child: ChatRoomInputBox(
+                              beforeSend: (_) async {
+                                final newRoomRef =
+                                    await ChatRoom.createSingle($user!.uid);
+                                $room = await ChatRoom.get(newRoomRef.id);
+                                await onRoomReady();
+                                if (mounted) setState(() {});
+                                return $room!;
+                              },
+                            ),
+                          ),
+                        ],
                       );
                     }
                     return Column(

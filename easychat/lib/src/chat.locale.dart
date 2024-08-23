@@ -244,6 +244,12 @@ final localeTexts = <String, Map<String, String>>{
   // chat.new_message_counter.dart
   // Nothing to translate
 
+  // chat.room.blocked.users.dialog.dart
+  'blocked users': {
+    'en': 'Blocked Users',
+    'ko': '차단된 사용자들',
+  },
+
   // chat.room.input_box.dart
   // 'something went wrong' -> chat.messages.list_view.dart
   // Nothing else to translate
@@ -297,6 +303,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Members ({num})',
     'ko': '멤버 ({num})',
   },
+  'blocked users counted': {
+    'en': 'Blocked Users ({num})',
+    'ko': '차단된 사용자들 ({num})',
+  },
   'and more members': {
     'en': '... and more.',
     'ko': '... 더 많은 멤버',
@@ -304,6 +314,10 @@ final localeTexts = <String, Map<String, String>>{
   'see all members': {
     'en': 'See All Members',
     'ko': '모든 멤버 보기',
+  },
+  'see all blocked users': {
+    'en': 'See All Blocked Users',
+    'ko': '모든 차단된 사용자 보기',
   },
   'invite more users': {
     'en': 'Invite More Users',

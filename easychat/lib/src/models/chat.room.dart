@@ -527,4 +527,30 @@ class ChatRoom {
       }
     }, SetOptions(merge: true));
   }
+
+  kick(String uid) async {
+    await ref.set({
+      field.users: {
+        uid: FieldValue.delete(),
+      },
+      field.updatedAt: FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  block(String uid) async {
+    await ref.set({
+      field.users: {
+        uid: FieldValue.delete(),
+      },
+      field.blockedUsers: FieldValue.arrayUnion([uid]),
+      field.updatedAt: FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  unblock(String uid) async {
+    await ref.set({
+      field.blockedUsers: FieldValue.arrayRemove([uid]),
+      field.updatedAt: FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
 }

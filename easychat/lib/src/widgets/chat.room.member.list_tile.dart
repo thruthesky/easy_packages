@@ -1,3 +1,5 @@
+import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/chat.room.member.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_helpers/easy_helpers.dart';
@@ -6,36 +8,36 @@ class ChatRoomMemberListTile extends StatelessWidget {
   const ChatRoomMemberListTile({
     super.key,
     required this.user,
-    this.onTap,
-    this.trailing,
-    this.contentPadding,
+    required this.room,
   });
 
   final User user;
-  final Function()? onTap;
-  final Widget? trailing;
-  final EdgeInsetsGeometry? contentPadding;
+  final ChatRoom? room;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: contentPadding,
-      trailing: trailing,
-      leading: UserAvatar(user: user),
+      leading: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          UserService.instance.showPublicProfileScreen(
+            context,
+            user: user,
+          );
+        },
+        child: UserAvatar(user: user),
+      ),
       title: Text(
         user.displayName,
       ),
       subtitle: Text(
         user.createdAt?.short ?? '',
       ),
+      trailing: const Icon(Icons.more_vert),
       onTap: () {
-        if (onTap != null) {
-          onTap!();
-          return;
-        }
-        showGeneralDialog(
+        showDialog(
           context: context,
-          pageBuilder: (_, __, ___) => UserPublicProfileScreen(user: user),
+          builder: (context) => ChatRoomMemberDialog(room: room, user: user),
         );
       },
     );
