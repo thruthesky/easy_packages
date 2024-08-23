@@ -301,17 +301,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
 # Merging texts
 
-The `lo.set()` needs a locale to set(or replace) the text. And you may write the code to get it **asynchrounously**. And the translated text may not appear immediately. It means, there might be a flickering with the text code and the text.
+The `lo.set()` needs a locale to set(or replace) the text. And you may write the code to get the locale **asynchrounously**. And because of the async, the translation may be applied late and the translated may not appear immediately. And it may lead a flickering with the text code and the text.
 
 To prevent this, you may use `lo.merge()` which does not require the locale, thus it will set(or replace) the text **synchrounously**. And there will be no flickering.
 
-You can call the `lo.merge()` method like below just before you use it.
+All the translations of the easy packages must use `lo.merge()` to set its own translation.
+
+And you can call the `lo.merge()` to apply the translations of your app. And you may override the package's translation by using the same text key.
 
 ```dart
+// init user package
+UserService.instance.init();
+// override the name translation.
+// the `lo.merge` must be called after the package init to override the package's translation.
 lo.merge({
-  'test': {
-    'en': 'Test',
-    'ko': '테스트',
+  'name': {
+    'en': 'User name',
+    'ko': '사용자 이름',
   },
 });
 ```

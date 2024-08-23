@@ -7,11 +7,13 @@ class AnonymousAvatar extends StatelessWidget {
     this.size = 48,
     this.radius = 20,
     this.border,
+    this.icon,
   });
 
   final double size;
   final double radius;
   final Border? border;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +21,12 @@ class AnonymousAvatar extends StatelessWidget {
       size: size,
       radius: radius,
       border: border,
-      child: Icon(
-        Icons.person,
-        size: size / 1.5,
+      child: Center(
+        child: icon ??
+            Icon(
+              Icons.person,
+              size: size / 1.5,
+            ),
       ),
     );
   }

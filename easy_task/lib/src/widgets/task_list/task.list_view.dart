@@ -18,7 +18,7 @@ class TaskListView extends StatelessWidget {
         return TaskListTile(key: ValueKey(task.id), task: task);
       },
       emptyBuilder: (context) => Center(
-        child: Text('No task found'.t),
+        child: Text('task list is empty'.t),
       ),
       errorBuilder: (context, error, stackTrace) {
         dog('error: $error');

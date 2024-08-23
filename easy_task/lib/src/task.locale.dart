@@ -9,9 +9,9 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Want to create a project?',
     'ko': '프로젝트를 만들까요?',
   },
-  'no task found': {
-    'en': 'No task found',
-    'ko': '할 일이 없습니다',
+  'task list is empty': {
+    'en': 'There is no task. Create one to get started.',
+    'ko': '할 일이 없습니다. 할 일을 만들어 보세요.',
   },
   'all': {
     'en': 'All',

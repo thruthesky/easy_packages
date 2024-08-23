@@ -55,8 +55,10 @@ class FirestoreLimitedQueryBuilder extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
-          return loadingBuilder?.call() ??
-              const CircularProgressIndicator.adaptive();
+          return Center(
+            child: loadingBuilder?.call() ??
+                const CircularProgressIndicator.adaptive(),
+          );
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return emptyBuilder?.call() ?? const SizedBox.shrink();
