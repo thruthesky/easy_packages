@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_url_preview/easy_url_preview.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,7 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
           ? (details) async {
               final value = await showMenu(
@@ -118,6 +120,7 @@ class ChatBubble extends StatelessWidget {
                       );
                     }
                     return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () {
                         UserService.instance.showPublicProfileScreen(
                           context,
@@ -277,6 +280,17 @@ class ChatBubble extends StatelessWidget {
                                           child: Text(message.text!),
                                         ),
                                       ],
+                                      if (message.previewUrl != null)
+                                        Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: UrlPreview(
+                                            previewUrl: message.previewUrl!,
+                                            title: message.previewTitle,
+                                            description:
+                                                message.previewDescription,
+                                            imageUrl: message.previewImageUrl,
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),

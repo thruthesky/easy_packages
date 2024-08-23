@@ -35,6 +35,11 @@ class ChatMessage {
   final bool deleted;
   int? editedAt;
 
+  String? previewUrl;
+  String? previewTitle;
+  String? previewDescription;
+  String? previewImageUrl;
+
   bool get isEdited => editedAt != null;
 
   DatabaseReference get ref =>
@@ -51,6 +56,10 @@ class ChatMessage {
     this.replyTo,
     required this.deleted,
     this.editedAt,
+    this.previewUrl,
+    this.previewTitle,
+    this.previewDescription,
+    this.previewImageUrl,
   });
 
   factory ChatMessage.fromSnapshot(DataSnapshot snapshot) {
@@ -77,6 +86,10 @@ class ChatMessage {
       // Reason: There is no use for saving false in deleted.
       deleted: json[ChatMessageField.deleted] ?? false,
       editedAt: json[ChatMessageField.editedAt],
+      previewUrl: json[ChatMessageField.previewUrl],
+      previewTitle: json[ChatMessageField.previewTitle],
+      previewDescription: json[ChatMessageField.previewDescription],
+      previewImageUrl: json[ChatMessageField.previewImageUrl],
     );
   }
 
