@@ -117,7 +117,15 @@ class ChatBubble extends StatelessWidget {
                         child: const CircularProgressIndicator(),
                       );
                     }
-                    return UserAvatar(user: user);
+                    return GestureDetector(
+                      onTap: () {
+                        UserService.instance.showPublicProfileScreen(
+                          context,
+                          user: user,
+                        );
+                      },
+                      child: UserAvatar(user: user),
+                    );
                   },
                 ),
               ),
