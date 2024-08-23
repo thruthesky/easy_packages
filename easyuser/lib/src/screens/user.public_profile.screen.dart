@@ -137,6 +137,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                               child: Text(
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                                 user.stateMessage!,
                                 style: Theme.of(context)
                                     .textTheme
