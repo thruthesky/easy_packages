@@ -15,6 +15,11 @@ class ChatMessageField {
   static const replyTo = 'replyTo';
   static const deleted = 'deleted';
   static const editedAt = 'editedAt';
+  static const previewUrl = 'previewUrl';
+  static const previewTitle = 'previewTitle';
+  static const previewDescription = 'previewDescription';
+  static const previewImageUrl = 'previewImageUrl';
+
   ChatMessageField._();
 }
 
@@ -134,6 +139,10 @@ class ChatMessage {
     String? url,
     ChatMessage? replyTo,
     bool isEdit = false,
+    String? previewUrl,
+    String? previewTitle,
+    String? previewDescription,
+    String? previewImageUrl,
   }) async {
     final updateData = {
       if (text != null) ChatMessageField.text: text,
@@ -155,6 +164,12 @@ class ChatMessage {
           ChatMessageField.deleted: replyTo.deleted,
         },
       if (isEdit) ChatMessageField.editedAt: ServerValue.timestamp,
+      if (previewUrl != null) ChatMessageField.previewUrl: previewUrl,
+      if (previewTitle != null) ChatMessageField.previewTitle: previewTitle,
+      if (previewDescription != null)
+        ChatMessageField.previewDescription: previewDescription,
+      if (previewImageUrl != null)
+        ChatMessageField.previewImageUrl: previewImageUrl,
     };
     await ref.update(updateData);
     this.text = text;
@@ -178,10 +193,14 @@ class ChatMessage {
       if (url != null) StorageService.instance.delete(url!),
       if (replyTo?.url != null) StorageService.instance.delete(replyTo!.url!),
       ref.update({
+        ChatMessageField.deleted: true,
         ChatMessageField.text: null,
         ChatMessageField.url: null,
         ChatMessageField.replyTo: null,
-        ChatMessageField.deleted: true,
+        ChatMessageField.previewUrl: null,
+        ChatMessageField.previewTitle: null,
+        ChatMessageField.previewDescription: null,
+        ChatMessageField.previewImageUrl: null,
       }),
     ];
     // If error is caught here, check all the futures.
