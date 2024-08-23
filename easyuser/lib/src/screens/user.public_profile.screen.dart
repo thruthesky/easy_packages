@@ -131,14 +131,21 @@ class UserPublicProfileScreen extends StatelessWidget {
                             height: 4,
                           ),
                           if (user.stateMessage.notEmpty)
-                            Text(
-                              user.stateMessage!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    color: Colors.white,
-                                  ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                user.stateMessage!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      color: Colors.white,
+                                    ),
+                              ),
                             ),
                           if (user.uid != my.uid)
                             Row(
