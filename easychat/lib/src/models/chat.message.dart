@@ -15,6 +15,11 @@ class ChatMessageField {
   static const replyTo = 'replyTo';
   static const deleted = 'deleted';
   static const editedAt = 'editedAt';
+  static const previewUrl = 'previewUrl';
+  static const previewTitle = 'previewTitle';
+  static const previewDescription = 'previewDescription';
+  static const previewImageUrl = 'previewImageUrl';
+
   ChatMessageField._();
 }
 
@@ -29,6 +34,11 @@ class ChatMessage {
   ChatMessage? replyTo;
   final bool deleted;
   int? editedAt;
+
+  String? previewUrl;
+  String? previewTitle;
+  String? previewDescription;
+  String? previewImageUrl;
 
   bool get isEdited => editedAt != null;
 
@@ -46,6 +56,10 @@ class ChatMessage {
     this.replyTo,
     required this.deleted,
     this.editedAt,
+    this.previewUrl,
+    this.previewTitle,
+    this.previewDescription,
+    this.previewImageUrl,
   });
 
   factory ChatMessage.fromSnapshot(DataSnapshot snapshot) {
@@ -72,6 +86,10 @@ class ChatMessage {
       // Reason: There is no use for saving false in deleted.
       deleted: json[ChatMessageField.deleted] ?? false,
       editedAt: json[ChatMessageField.editedAt],
+      previewUrl: json[ChatMessageField.previewUrl],
+      previewTitle: json[ChatMessageField.previewTitle],
+      previewDescription: json[ChatMessageField.previewDescription],
+      previewImageUrl: json[ChatMessageField.previewImageUrl],
     );
   }
 
@@ -134,6 +152,10 @@ class ChatMessage {
     String? url,
     ChatMessage? replyTo,
     bool isEdit = false,
+    String? previewUrl,
+    String? previewTitle,
+    String? previewDescription,
+    String? previewImageUrl,
   }) async {
     final updateData = {
       if (text != null) ChatMessageField.text: text,
@@ -155,6 +177,12 @@ class ChatMessage {
           ChatMessageField.deleted: replyTo.deleted,
         },
       if (isEdit) ChatMessageField.editedAt: ServerValue.timestamp,
+      if (previewUrl != null) ChatMessageField.previewUrl: previewUrl,
+      if (previewTitle != null) ChatMessageField.previewTitle: previewTitle,
+      if (previewDescription != null)
+        ChatMessageField.previewDescription: previewDescription,
+      if (previewImageUrl != null)
+        ChatMessageField.previewImageUrl: previewImageUrl,
     };
     await ref.update(updateData);
     this.text = text;
@@ -178,10 +206,14 @@ class ChatMessage {
       if (url != null) StorageService.instance.delete(url!),
       if (replyTo?.url != null) StorageService.instance.delete(replyTo!.url!),
       ref.update({
+        ChatMessageField.deleted: true,
         ChatMessageField.text: null,
         ChatMessageField.url: null,
         ChatMessageField.replyTo: null,
-        ChatMessageField.deleted: true,
+        ChatMessageField.previewUrl: null,
+        ChatMessageField.previewTitle: null,
+        ChatMessageField.previewDescription: null,
+        ChatMessageField.previewImageUrl: null,
       }),
     ];
     // If error is caught here, check all the futures.

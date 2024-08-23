@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
+import 'package:easy_url_preview/easy_url_preview.dart';
 
 /// Chat Service
 ///
@@ -201,6 +203,7 @@ class ChatService {
   }) async {
     if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
     await _shouldBeOrBecomeMember(room);
+
     final newMessage = await ChatMessage.create(
       roomId: room.id,
       text: text,
@@ -212,7 +215,27 @@ class ChatService {
       lastMessageText: text,
       lastMessageUrl: photoUrl,
     );
+    updateUrlPreview(newMessage, text);
+
     onSendMessage?.call(message: newMessage, room: room);
+  }
+
+  /// URL Preview 업데이트
+  ///
+  /// 채팅 메시지 자체에 업데이트하므로, 한번만 가져온다.
+  Future updateUrlPreview(ChatMessage message, String? text) async {
+    /// Update url preview
+    final model = UrlPreviewModel();
+    await model.load(text);
+
+    if (model.hasData) {
+      await message.update(
+        previewUrl: model.firstLink,
+        previewTitle: model.title,
+        previewDescription: model.description,
+        previewImageUrl: model.image,
+      );
+    }
   }
 
   Future updateMessage({
