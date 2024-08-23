@@ -83,10 +83,6 @@ class ChatRoom {
   /// [lastMessageAt] is the time when last message was sent to chat room.
   DateTime? lastMessageAt;
 
-  // TODO review
-  // TODO!
-  String? lastMessageCache;
-
   /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
   ///
   /// Note that, [verifiedUserOnly] is not supported at this time.

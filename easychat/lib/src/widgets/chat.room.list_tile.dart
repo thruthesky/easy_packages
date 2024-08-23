@@ -3,6 +3,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomListTile extends StatelessWidget {
@@ -69,7 +70,7 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? subtitle(BuildContext context) => StreamBuilder(
+  Widget? subtitle(BuildContext context) => StreamBuilder<DatabaseEvent>(
         key: ValueKey("LastMessageText_${room.id}"),
         stream: ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
         builder: (context, snapshot) {
