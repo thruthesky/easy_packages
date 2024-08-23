@@ -14,14 +14,17 @@ export 'src/screens/rejected.chat.room.invite_list.screen.dart';
 export './src/widgets/chat.bubble.dart';
 export './src/widgets/chat.bubble.reply.dart';
 export './src/widgets/chat.messages.list_view.dart';
+export './src/widgets/chat.new_message_counter.dart';
 export './src/widgets/chat.room.input_box.dart';
 export './src/widgets/chat.room.invitation.list_tile.dart';
-export './src/widgets/chat.room.list_view.dart';
-export './src/widgets/chat.room.list_tile.dart';
 export './src/widgets/chat.room.invitation.short.list.dart';
-export './src/widgets/chat.new_message_counter.dart';
-export './src/widgets/edit.chat.message.dialog.dart';
+export './src/widgets/chat.room.list_tile.dart';
+export './src/widgets/chat.room.list_view.dart';
+export './src/widgets/chat.room.member.list_tile.dart';
+export './src/widgets/chat.room.member.list.dialog.dart';
+export './src/widgets/chat.room.menu.drawer.dart';
 export './src/widgets/chat.room.replying_to.dart';
+export './src/widgets/edit.chat.message.dialog.dart';
 
 // Functions ==================================================
 export './src/chat.functions.dart';

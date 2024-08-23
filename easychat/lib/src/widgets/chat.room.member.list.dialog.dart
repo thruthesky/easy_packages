@@ -1,5 +1,6 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/widgets/chat.room.member.list_tile.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,7 @@ class ChatRoomMemberListDialog extends StatelessWidget {
                 if (user == null) {
                   return const SizedBox.shrink();
                 }
-                return UserListTile(user: user);
+                return ChatRoomMemberListTile(user: user);
               },
             );
           },

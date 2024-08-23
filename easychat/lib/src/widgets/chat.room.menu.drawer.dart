@@ -3,6 +3,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.member.list.dialog.dart';
+import 'package:easychat/src/widgets/chat.room.member.list_tile.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_report/easy_report.dart';
@@ -137,7 +138,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       uid: room!.userUids[index],
                       builder: (user) => user == null
                           ? const SizedBox.shrink()
-                          : UserListTile(user: user),
+                          : ChatRoomMemberListTile(user: user),
                     );
                   },
                   itemCount:
