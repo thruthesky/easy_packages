@@ -5,6 +5,7 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
+import 'package:easy_url_preview/easy_url_preview.dart';
 
 /// Chat Service
 ///
@@ -229,7 +230,7 @@ class ChatService {
     if (text == null || text == '') {
       return;
     }
-    // TODO ongoing
+
     /// Update url preview
     final model = UrlPreviewModel();
     await model.load(text);

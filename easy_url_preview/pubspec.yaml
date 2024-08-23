@@ -1,6 +1,6 @@
 name: easy_url_preview
 description: "Helps to get and display the url preview"
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/thruthesky/easy-packages
 
 environment:
@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cached_network_image: ^3.4.1
+  # This version works with firebsae_core_web 0.5.1
+  cached_network_image: ^3.3.1
   url_launcher: ^6.3.0
   html: ^0.15.4
   http: ^1.2.2
@@ -22,8 +23,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-
-flutter:
 
 repository: https://github.com/thruthesky/easy-packages/main/tree/easy_url_preview
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
