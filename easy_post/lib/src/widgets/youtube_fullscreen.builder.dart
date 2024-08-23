@@ -118,9 +118,9 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
                   ),
                 );
               }),
-          const CurrentPosition(),
-          const ProgressBar(
-            colors: ProgressBarColors(
+          CurrentPosition(),
+          ProgressBar(
+            colors: const ProgressBarColors(
                 playedColor: Colors.white,
                 handleColor: Colors.white,
                 backgroundColor: Colors.grey),
@@ -129,8 +129,8 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
           const SizedBox(
             width: 8,
           ),
-          const RemainingDuration(),
-          const FullScreenButton(),
+          RemainingDuration(),
+          FullScreenButton(),
         ],
         topActions: const [],
         controller: youtubeController!,

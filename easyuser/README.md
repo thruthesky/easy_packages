@@ -240,6 +240,17 @@ AuthStateChanges(
 ```
 
 
+## UserChange
+
+- This widget notifies about changes to any user updates including the account link sign-in.
+
+- This is a superset of both `authStateChanges` and `idTokenChanges`. It provides events on all user changes, such as when credentials are linked, unlinked and when updates to the user profile are made. The purpose of this widget is for listening to realtime updates to the user state (signed-in, signed-out, different user & token refresh).
+
+- In any case, you can use `UserChange` over `AuthStateChange`.
+
+
+
+
 ## MyDoc
 
 
