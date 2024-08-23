@@ -11,7 +11,7 @@ dependencies:
   cloud_firestore: ^5.0.2
   collection: ^1.18.0
   easy_helpers: ^0.0.11
-  easy_locale: ^0.0.10
+  easy_locale: ^0.0.11
   easy_storage: ^0.0.14
   easyuser: ^0.0.24
   firebase_ui_firestore: ^1.6.4
@@ -22,8 +22,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-
-flutter:
 
 repository: https://github.com/thruthesky/easy-packages/main/tree/easy_comment
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
