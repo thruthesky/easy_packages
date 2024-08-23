@@ -38,7 +38,7 @@ class ChatRoomListTile extends StatelessWidget {
         title: Text(
           room.name.trim().isNotEmpty ? room.name : "Group Chat",
         ),
-        subtitle: subtitle,
+        subtitle: subtitle(context),
         trailing: trailing,
         onTap: () => onTapTile(context, room, null),
       );
@@ -59,7 +59,7 @@ class ChatRoomListTile extends StatelessWidget {
                   : Text(user.displayName.trim().isNotEmpty
                       ? user.displayName
                       : '...'),
-              subtitle: subtitle,
+              subtitle: subtitle(context),
               trailing: trailing,
               onTap: () => onTapTile(context, room, user),
             );
@@ -69,63 +69,74 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? get subtitle => room.lastMessageDeleted == true
-      ? Text(
-          'last message was deleted'.t,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontStyle: FontStyle.italic),
-        )
-      : StreamBuilder(
-          key: ValueKey("LastMessageText_${room.id}"),
-          stream:
-              ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Text("...");
-            }
-            if (snapshot.data?.snapshot.value == null) {
-              return Text(
-                "no message yet".t,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontStyle: FontStyle.italic),
-              );
-            }
-            final firstRecord =
-                Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
-                    .entries
-                    .first;
-            final messageJson =
-                Map<String, dynamic>.from(firstRecord.value as Map);
-            final lastMessage =
-                ChatMessage.fromJson(messageJson, firstRecord.key);
-            return Row(
-              children: [
-                if (!lastMessage.url.isNullOrEmpty) ...[
-                  const Icon(Icons.photo, size: 16),
-                  const SizedBox(width: 4),
-                ],
-                if (!lastMessage.text.isNullOrEmpty)
-                  Flexible(
-                    child: Text(
-                      lastMessage.text!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                else if (!lastMessage.url.isNullOrEmpty)
-                  Flexible(
-                    child: Text(
-                      "[${'photo'.t}]",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+  Widget? subtitle(BuildContext context) => StreamBuilder(
+        key: ValueKey("LastMessageText_${room.id}"),
+        stream: ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text("...");
+          }
+          if (snapshot.data?.snapshot.value == null) {
+            return Text(
+              "no message yet".t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          }
+          final firstRecord =
+              Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
+                  .entries
+                  .first;
+          final messageJson =
+              Map<String, dynamic>.from(firstRecord.value as Map);
+          final lastMessage =
+              ChatMessage.fromJson(messageJson, firstRecord.key);
+
+          if (lastMessage.deleted) {
+            return Text(
+              'last message was deleted'.t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          }
+          return Row(
+            children: [
+              if (!lastMessage.url.isNullOrEmpty) ...[
+                const Icon(Icons.photo, size: 16),
+                const SizedBox(width: 4),
+              ],
+              if (!lastMessage.text.isNullOrEmpty)
+                Flexible(
+                  child: Text(
+                    lastMessage.text!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              else if (!lastMessage.url.isNullOrEmpty)
+                Flexible(
+                  child: Text(
+                    "[${'photo'.t}]",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withAlpha(110),
                     ),
                   ),
-              ],
-            );
-          },
-        );
+                ),
+            ],
+          );
+        },
+      );
 
   Widget get trailing {
     return Column(

@@ -22,12 +22,12 @@ class ChatRoom {
     open: 'open',
     single: 'single',
     group: 'group',
-    lastMessageText: 'lastMessageText',
-    lastMessageAt: 'lastMessageAt',
-    lastMessageUid: 'lastMessageUid',
-    lastMessageUrl: 'lastMessageUrl',
-    lastMessageId: 'lastMessageId',
-    lastMessageDeleted: 'lastMessageDeleted',
+    // lastMessageText: 'lastMessageText',
+    // lastMessageAt: 'lastMessageAt',
+    // lastMessageUid: 'lastMessageUid',
+    // lastMessageUrl: 'lastMessageUrl',
+    // lastMessageId: 'lastMessageId',
+    // lastMessageDeleted: 'lastMessageDeleted',
     verifiedUserOnly: 'verifiedUserOnly',
     urlForVerifiedUserOnly: 'urlForVerifiedUserOnly',
     uploadForVerifiedUserOnly: 'uploadForVerifiedUserOnly',
@@ -189,14 +189,6 @@ class ChatRoom {
       updatedAt: json[field.updatedAt] is Timestamp
           ? (json[field.updatedAt] as Timestamp).toDate()
           : DateTime.now(),
-      lastMessageId: json[field.lastMessageId],
-      lastMessageText: json[field.lastMessageText],
-      lastMessageAt: json[field.lastMessageAt] is Timestamp
-          ? (json[field.lastMessageAt] as Timestamp).toDate()
-          : DateTime.now(),
-      lastMessageUid: json[field.lastMessageUid],
-      lastMessageUrl: json[field.lastMessageUrl],
-      lastMessageDeleted: json[field.lastMessageDeleted],
       verifiedUserOnly: json[field.verifiedUserOnly],
       urlForVerifiedUserOnly: json[field.urlForVerifiedUserOnly],
       uploadForVerifiedUserOnly: json[field.uploadForVerifiedUserOnly],
@@ -223,12 +215,6 @@ class ChatRoom {
       field.rejectedUsers: rejectedUsers,
       field.createdAt: createdAt,
       field.updatedAt: updatedAt,
-      field.lastMessageId: lastMessageId,
-      field.lastMessageText: lastMessageText,
-      field.lastMessageAt: lastMessageAt,
-      field.lastMessageUid: lastMessageUid,
-      field.lastMessageUrl: lastMessageUrl,
-      field.lastMessageDeleted: lastMessageDeleted,
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
       field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
@@ -406,12 +392,6 @@ class ChatRoom {
       if (open != null) field.open: open,
       if (single != null) field.single: single,
       if (group != null) field.group: group,
-      if (lastMessageText != null) field.lastMessageText: lastMessageText,
-      if (lastMessageAt != null) field.lastMessageAt: lastMessageAt,
-      if (lastMessageUid != null) field.lastMessageUid: lastMessageUid,
-      if (lastMessageUrl != null) field.lastMessageUrl: lastMessageUrl,
-      if (lastMessageDeleted != null)
-        field.lastMessageDeleted: lastMessageDeleted,
       field.updatedAt: FieldValue.serverTimestamp(),
     };
 
@@ -537,15 +517,6 @@ class ChatRoom {
       },
     );
     await ref.set({
-      field.lastMessageId: lastMessageId,
-      if (lastMessageText != null) field.lastMessageText: lastMessageText,
-      field.lastMessageAt: FieldValue.serverTimestamp(),
-      field.lastMessageUid: myUid!,
-      if (lastMessageUrl != null)
-        field.lastMessageUrl: lastMessageUrl
-      else
-        field.lastMessageUrl: FieldValue.delete(),
-      field.lastMessageDeleted: false,
       field.users: {
         ...updateUserData,
       },
@@ -574,28 +545,5 @@ class ChatRoom {
         }
       }
     }, SetOptions(merge: true));
-  }
-
-  Future<void> mayDeleteLastMessage(String deletedMessageId) async {
-    if (lastMessageId == deletedMessageId) {
-      await ref.set({
-        field.lastMessageText: FieldValue.delete(),
-        field.lastMessageUrl: FieldValue.delete(),
-        field.lastMessageDeleted: true,
-      }, SetOptions(merge: true));
-    }
-  }
-
-  Future<void> mayUpdateLastMessage({
-    required String messageId,
-    String? updatedMessageText,
-    String? updatedMessageUrl,
-  }) async {
-    if (lastMessageId == messageId) {
-      await ref.set({
-        field.lastMessageText: updatedMessageText,
-        field.lastMessageUrl: updatedMessageUrl,
-      }, SetOptions(merge: true));
-    }
   }
 }

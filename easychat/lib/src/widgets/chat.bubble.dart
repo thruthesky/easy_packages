@@ -83,7 +83,7 @@ class ChatBubble extends StatelessWidget {
                     message: message,
                   );
                 } else if (value == items.delete) {
-                  ChatService.instance.deleteMessage(message);
+                  await message.delete();
                 }
               }
             }
