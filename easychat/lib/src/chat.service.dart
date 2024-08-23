@@ -215,11 +215,8 @@ class ChatService {
       lastMessageText: text,
       lastMessageUrl: photoUrl,
     );
+    updateUrlPreview(newMessage, text);
 
-    // TODO
-    if (text?.hasUrl == true) {
-      updateUrlPreview(newMessage, text);
-    }
     onSendMessage?.call(message: newMessage, room: room);
   }
 
@@ -227,22 +224,17 @@ class ChatService {
   ///
   /// 채팅 메시지 자체에 업데이트하므로, 한번만 가져온다.
   Future updateUrlPreview(ChatMessage message, String? text) async {
-    if (text == null || text == '') {
-      return;
-    }
-
     /// Update url preview
     final model = UrlPreviewModel();
     await model.load(text);
 
     if (model.hasData) {
-      final data = {
-        'previewUrl': model.firstLink!,
-        if (model.title != null) 'previewTitle': model.title,
-        if (model.description != null) 'previewDescription': model.description,
-        if (model.image != null) 'previewImageUrl': model.image,
-      };
-      await message.update(data);
+      await message.update(
+        previewUrl: model.firstLink!,
+        previewTitle: model.title,
+        previewDescription: model.description,
+        previewImageUrl: model.image,
+      );
     }
   }
 

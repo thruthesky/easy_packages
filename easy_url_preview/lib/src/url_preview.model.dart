@@ -29,7 +29,16 @@ class UrlPreviewModel {
     this.image,
   });
 
+  /// Load the URL preview.
+  ///
+  /// If [text] is null or empty, it returns nothing.
   Future load(String? text) async {
+    //
+    if (text == null || text.isEmpty) {
+      return;
+    }
+
+    //
     this.text = text;
     firstLink = getFirstLink();
     if (firstLink == null ||
@@ -114,6 +123,8 @@ class UrlPreviewModel {
     return null;
   }
 
+  /// Get the content of the URL.
+  ///
   Future<String> getUrlContent() async {
     final md5Key = md5.convert(firstLink!.codeUnits).toString();
 

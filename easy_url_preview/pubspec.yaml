@@ -1,6 +1,6 @@
 name: easy_url_preview
 description: "Helps to get and display the url preview"
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/thruthesky/easy-packages
 
 environment:
