@@ -47,7 +47,9 @@ class Task {
   final bool completed;
 
   /// [parent] is the id of the parent task. If the task is a root level task,
-  /// then this field will be null. The parent may be a project or a task.
+  /// then this field will be null. The parent may be a task or a project.
+  /// If this take is a child task of a project, then the parent will be the
+  /// project id.
   final String? parent;
 
   /// [child] is true if the task is a child task. Otherwise, it is false. If
@@ -102,6 +104,11 @@ class Task {
       'project': project,
       'urls': urls,
     };
+  }
+
+  @override
+  String toString() {
+    return toJson().toString();
   }
 
   /// Get the task with the given [id].

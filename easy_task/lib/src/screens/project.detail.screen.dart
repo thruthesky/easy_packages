@@ -83,6 +83,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                   .orderBy('createdAt', descending: true),
               itemBuilder: (context, snapshot) {
                 final task = Task.fromSnapshot(snapshot);
+                print('task: $task');
                 return TaskListTile(task: task);
               },
             ),
