@@ -152,6 +152,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': "You have rejected this chat. Unable to show message.",
     'ko': "이 채팅을 거절하셨습니다. 메시지를 보여줄 수 없습니다.",
   },
+  'please wait': {
+    'en': 'Please wait...',
+    'ko': '잠시만 기다려주세요...',
+  },
   'the chat room may be private or deleted': {
     'en': "The Chat Room may be private and/or deleted.",
     'ko': "채팅방은 비공개 또는 삭제될 수 있습니다.",
@@ -160,7 +164,18 @@ final localeTexts = <String, Map<String, String>>{
     'en': "Chat Invitation",
     'ko': "채팅 초대",
   },
-
+  'loading': {
+    'en': 'Loading...',
+    'ko': '로딩...',
+  },
+  'rejected chat': {
+    'en': "Rejected Chat",
+    'ko': "반려된 채팅",
+  },
+  'unable to chat': {
+    'en': "Unable to Chat",
+    'ko': "채팅할 수 없습니다.",
+  },
   "no message yet. can send a message.": {
     'en': "No message yet.\nYou can send a message.",
     'ko': "메시지가 없습니다.\n메시지를 보낼 수 있습니다.",
@@ -181,10 +196,7 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Rejected Chat Requests',
     'ko': '반려된 채팅 요청',
   },
-  'rejected chat': {
-    'en': 'Rejected Chat',
-    'ko': '반려된 채팅',
-  },
+  // 'rejected chat':  ====> chat.room.screen.dart
   'you have rejected chat already, accept the chat instead?': {
     'en': "You have rejected the chat already. Accept and continue chat?",
     'ko': "이미 이 채팅을 거절하셨습니다. 수락하고 계속 채팅하시겠습니까?"

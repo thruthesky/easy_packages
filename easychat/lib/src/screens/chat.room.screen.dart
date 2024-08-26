@@ -29,6 +29,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   bool isLoading = true;
 
+  /// Reason: we are using room notifier to listen on updates
+  ///         this means that when room is ready and user is joining
+  ///         we have to wait for the ValueListenable to react on
+  ///         the update on the room. At first The state will show
+  ///         that user is not a member and can't show the message.
+  ///         After short time, it will show the messages.
+  ///
+  /// I think this is important for UX and prevent people to be confused
+  /// when joining into an open chat room and seeing a quick message
+  /// flashing upon entering room.
+  bool isJoiningNow = false;
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +73,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if ($room!.blockedUsers.contains(myUid)) return;
     // Auto Join Groups when it is open chat
     if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
+      isJoiningNow = true;
       await $room!.join();
     }
     roomSubscription ??=
@@ -108,8 +121,25 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (iRejected) {
       return 'the chat was rejected, unable to show message'.t;
     }
+    if (isJoiningNow) {
+      return 'please wait'.t;
+    }
     // Else, it should be handled by the Firestore rulings.
     return 'the chat room may be private or deleted'.t;
+  }
+
+  String notMemberTitle(ChatRoom? room) {
+    if (iAmInvited) {
+      return "chat invitation".t;
+    }
+    if (iRejected) {
+      return 'rejected chat'.t;
+    }
+    if (isJoiningNow) {
+      return 'loading'.t;
+    }
+    // Else, it should be handled by the Firestore rulings.
+    return 'unable to chat'.t;
   }
 
   /// Returns true if the login user can view the chat messages.
@@ -222,13 +252,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         ),
                         child: Center(
                           child: AlertDialog(
-                            title: Text("chat invitation".t),
+                            title: Text(notMemberTitle($room)),
                             content: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(notMemberMessage($room)),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    notMemberMessage($room),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
                                 if (iAmInvited) ...[
                                   const SizedBox(height: 24),
                                   Row(
@@ -261,6 +297,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         ),
                       );
                     }
+                    isJoiningNow = false;
                     if ($room == null && $user != null) {
                       // this will happen if this user will send a
                       // message for the first time.

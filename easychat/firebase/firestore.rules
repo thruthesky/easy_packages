@@ -126,19 +126,19 @@ service cloud.firestore {
         || (
           isJoining()
           && (isOpenGroup() || isInvited() || isRejectedUser())
-          && onlyUpdating(['users', 'invitedUsers', 'rejectedUsers'])
+          && onlyUpdating(['users', 'invitedUsers', 'rejectedUsers', 'updatedAt'])
         )
         || (
           isLeaving()
-          && onlyUpdating(['users'])
+          && onlyUpdating(['users', 'updatedAt'])
         )
         || (
           isRejecting()
-          && onlyUpdating(['rejectedUsers', 'invitedUsers'])
+          && onlyUpdating(['rejectedUsers', 'invitedUsers', 'updatedAt'])
         )
         || (
           isMember()
-          && onlyUpdating(['lastMessageAt',  'users'])
+          && onlyUpdating(['lastMessageAt',  'users', 'updatedAt'])
           && sameMembers()
         );
         allow delete: if isMaster();
