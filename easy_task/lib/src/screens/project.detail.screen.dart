@@ -24,43 +24,50 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
             title: Text('Project Details'),
           ),
           SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('User ID: ${task.creator}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Project: ${task.project}',
-                    style: const TextStyle(fontSize: 16)),
-                Text('Title: ${task.title}',
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                Text('Description: ${task.description}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Created At: ${task.createdAt}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Updated At: ${task.updatedAt}',
-                    style: const TextStyle(fontSize: 16)),
-                Row(
-                  children: [
-                    ElevatedButton(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('User ID: ${task.creator}',
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text('Project: ${task.project}',
+                      style: const TextStyle(fontSize: 16)),
+                  Text('Title: ${task.title}',
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text('Description: ${task.description}',
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text('Created At: ${task.createdAt}',
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text('Updated At: ${task.updatedAt}',
+                      style: const TextStyle(fontSize: 16)),
+                  Row(
+                    children: [
+                      ElevatedButton(
                         onPressed: () {
                           TaskService.instance.showChildTaskCreateScreen(
                             context,
                             parentTask: task,
                           );
                         },
-                        child: const Text('Add Task')),
-                    ElevatedButton(
-                        onPressed: () => TaskService.instance
-                            .showTaskUpdateScreen(context, task),
-                        child: const Text('Update Project')),
-                  ],
-                ),
-              ],
+                        child: const Text('Add Task'),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      ElevatedButton(
+                          onPressed: () => TaskService.instance
+                              .showTaskUpdateScreen(context, task),
+                          child: const Text('Update Project')),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           SliverToBoxAdapter(
