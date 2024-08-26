@@ -919,7 +919,7 @@ describe("Group Chat Room Update Test", async () => {
     );
   });
 
-  it("[Pass] Update Room last message as Member", async () => {
+  it("[Fail] Update Room last message as Member (old way)", async () => {
     const appleGroupUpdate: ChatRoom = {
       lastMessageText: "lastMessageText",
       lastMessageAt: 123123,
@@ -927,6 +927,20 @@ describe("Group Chat Room Update Test", async () => {
       lastMessageUrl: "lastMessageUrl",
       lastMessageId: "lastMessageId",
       lastMessageDeleted: false,
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
+        appleGroupUpdate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Update Room lastMessageAt as Member", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      lastMessageAt: 123123,
     };
     await assertSucceeds(
       setDoc(
@@ -2333,5 +2347,204 @@ describe("Delete Doc", async () => {
   });
   it("[Fail] Outsider delete doc", async () => {
     await assertFails(deleteDoc(doc(guavaDb, getRoomPath(appleGroupId))));
+  });
+});
+
+// =======================================================================
+// ========================= Block User Test =============================
+// =======================================================================
+
+describe("Block User in Room", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [durianId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+  it("[Pass] Master block outsider in her room", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await assertSucceeds(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Pass] Master block member in her room", async () => {
+    // Users should be kicked out from the room first
+    // But it is not a security issue if master blocked a member
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(bananaId),
+    };
+    await assertSucceeds(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Pass] Master block member in her room (2)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(carrotId),
+    };
+    await assertSucceeds(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member block user in room", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member block master in room", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(appleId),
+    };
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member block member in room", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(durianId),
+    };
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+
+  it("[Pass] Master user tries to unblock", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+
+    const appleGroupUpdateRemoveBlock: ChatRoom = {
+      blockedUsers: arrayRemove(guavaId),
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(appleDb, getRoomPath(appleGroupId)),
+        appleGroupUpdateRemoveBlock,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Block user tries to unblock", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+
+    const appleGroupUpdateRemoveBlock: ChatRoom = {
+      blockedUsers: arrayRemove(guavaId),
+    };
+    await assertFails(
+      setDoc(
+        doc(guavaDb, getRoomPath(appleGroupId)),
+        appleGroupUpdateRemoveBlock,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Member user tries to unblock a different user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+    const appleGroupUpdateRemoveBlock: ChatRoom = {
+      blockedUsers: arrayRemove(guavaId),
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, getRoomPath(appleGroupId)),
+        appleGroupUpdateRemoveBlock,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Fail] Member leaves the room and tries to unblock a different user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+    const appleGroupUpdateRemoveBlock: ChatRoom = {
+      users: {
+        [carrotId]: deleteField(),
+      },
+      blockedUsers: arrayRemove(guavaId),
+    };
+    await assertFails(
+      setDoc(
+        doc(carrotDb, getRoomPath(appleGroupId)),
+        appleGroupUpdateRemoveBlock,
+        {
+          merge: true,
+        }
+      )
+    );
   });
 });

@@ -24,7 +24,6 @@ service cloud.firestore {
       function willBeOnlyMember() {
         return request.resource.data.users.keys().hasOnly([request.auth.uid]);
       }
-
       function sameOrRemovingMembers() {
         return request.resource.data.users.keys().hasOnly(resource.data.users.keys());
       }
@@ -43,7 +42,9 @@ service cloud.firestore {
         return !isMember() && willBeMember() && onlyAddingOneMember();
       }
       function isLeaving() {
-        return !willBeMember() && isMember() && onlyRemovingOneMember();
+        return !willBeMember()
+        && isMember() 
+        && onlyRemovingOneMember();
       }
       function isOpenGroup() {
         return resource.data.keys().hasAll([ 'open']) 
@@ -125,12 +126,19 @@ service cloud.firestore {
         || (
           isJoining()
           && (isOpenGroup() || isInvited() || isRejectedUser())
+          && onlyUpdating(['users', 'invitedUsers', 'rejectedUsers'])
         )
-        || isLeaving()
-        || isRejecting()
+        || (
+          isLeaving()
+          && onlyUpdating(['users'])
+        )
+        || (
+          isRejecting()
+          && onlyUpdating(['rejectedUsers', 'invitedUsers'])
+        )
         || (
           isMember()
-          && onlyUpdating(['lastMessageText', 'lastMessageAt', 'lastMessageUid', 'lastMessageUrl', 'lastMessageId', 'lastMessageDeleted', 'users'])
+          && onlyUpdating(['lastMessageAt',  'users'])
           && sameMembers()
         );
         allow delete: if isMaster();
