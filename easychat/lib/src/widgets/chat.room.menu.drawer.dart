@@ -191,13 +191,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         exactSearch: true,
                       );
                       if (selectedUser == null) return;
-                      if (selectedUser.uid == my.uid) {
+                      if (room!.invitedUsers.contains(selectedUser.uid)) {
                         throw ChatException(
-                          'inviting-yourself',
-                          'you cannot invite yourself'.t,
+                          'already-invited',
+                          'the user is already invited'.t,
                         );
                       }
-                      if (room!.invitedUsers.contains(selectedUser.uid)) {
+                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
+                        // The chat room is already rejected by the other user, we are
+                        // not showing if user rejected the invitation.
                         throw ChatException(
                           'already-invited',
                           'the user is already invited'.t,
@@ -209,12 +211,17 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           'the user is already a member'.t,
                         );
                       }
-                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                        // The chat room is already rejected by the other user, we are
-                        // not showing if user rejected the invitation.
+                      if (room!.blockedUsers.contains(selectedUser.uid)) {
                         throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
+                          'chat-blocked',
+                          'the user is blocked from the chat room and cannot invite'
+                              .t,
+                        );
+                      }
+                      if (selectedUser.uid == my.uid) {
+                        throw ChatException(
+                          'inviting-yourself',
+                          'you cannot invite yourself'.t,
                         );
                       }
                       await room!.inviteUser(selectedUser.uid);

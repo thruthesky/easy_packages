@@ -11,6 +11,13 @@ final localeTexts = <String, Map<String, String>>{
     'ko': '보내기',
   },
 
+  // chat.room.dart
+  'failed joining. something went wrong. the room may be private or deleted.': {
+    'en':
+        'Failed joining chat room. Something went wrong. The room may be private or deleted',
+    'ko': "채팅방에 참여하지 못했습니다. 문제가 발생했습니다. 방이 비공개이거나 삭제되었을 수 있습니다.",
+  },
+
   // chat.room.edit.screen.dart
   'chat room create': {
     'en': 'Chat Room Create',
@@ -335,10 +342,6 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Invite More Users',
     'ko': '더 많은 사용자 초대',
   },
-  'you cannot invite yourself': {
-    'en': 'You cannot invite yourself.',
-    'ko': '자신을 초대할 수 없습니다.',
-  },
   'the user is already invited': {
     'en': 'The user is already invited.',
     'ko': '이 사용자는 이미 초대되었습니다.',
@@ -346,6 +349,14 @@ final localeTexts = <String, Map<String, String>>{
   'the user is already a member': {
     'en': 'The user is already a member.',
     'ko': '이 사용자는 이미 멤버입니다.',
+  },
+  'the user is blocked from the chat room and cannot invite': {
+    'en': 'The user is blocked from the chat room and cannot invite',
+    'ko': '채팅방에서 차단된 사용자이므로 초대할 수 없습니다',
+  },
+  'you cannot invite yourself': {
+    'en': 'You cannot invite yourself.',
+    'ko': '자신을 초대할 수 없습니다.',
   },
   'invited user': {
     'en': 'Invited User',

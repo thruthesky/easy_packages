@@ -2547,4 +2547,137 @@ describe("Block User in Room", async () => {
       )
     );
   });
+  it("[Fail] Join open room when user is blocked", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      open: true,
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+    const appleGroupUpdateBlock: ChatRoom = {
+      users: {
+        [guavaId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdateBlock, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Join open room when user is blocked (2)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      open: true,
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await assertSucceeds(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+    const appleGroupUpdateBlock: ChatRoom = {
+      users: {
+        [guavaId]: {
+          nMC: 0,
+        },
+      },
+      blockedUsers: arrayRemove(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdateBlock, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Accept invitation and join room when user is blocked", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+    const appleGroupUpdateBlock: ChatRoom = {
+      users: {
+        [guavaId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdateBlock, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Accept invitation and join room when user is blocked (2)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+    const appleGroupUpdateBlock: ChatRoom = {
+      users: {
+        [guavaId]: {
+          nMC: 0,
+        },
+      },
+      blockedUsers: arrayRemove(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdateBlock, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Accept invitation and join room when user is blocked (3)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+    const appleGroupUpdateBlock: ChatRoom = {
+      users: {
+        [guavaId]: {
+          nMC: 0,
+        },
+      },
+      invitedUsers: arrayRemove(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdateBlock, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Accept invitation and join room when user is blocked (4)", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+      blockedUsers: arrayUnion(guavaId),
+    };
+    await setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+      merge: true,
+    });
+    const appleGroupUpdateBlock: ChatRoom = {
+      users: {
+        [guavaId]: {
+          nMC: 0,
+        },
+      },
+      blockedUsers: arrayRemove(guavaId),
+      invitedUsers: arrayRemove(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdateBlock, {
+        merge: true,
+      })
+    );
+  });
 });

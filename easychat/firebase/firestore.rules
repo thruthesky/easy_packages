@@ -91,6 +91,10 @@ service cloud.firestore {
       function onlyUpdating(fields) {
         return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
       }
+      function isBlocked() {
+        return resource.data.keys().hasAny(['blockedUsers'])
+          && request.auth.uid in resource.data.blockedUsers;
+      }
 
       // function hasOrderField() {
       //   return 
@@ -127,6 +131,7 @@ service cloud.firestore {
           isJoining()
           && (isOpenGroup() || isInvited() || isRejectedUser())
           && onlyUpdating(['users', 'invitedUsers', 'rejectedUsers', 'updatedAt'])
+          && !isBlocked()
         )
         || (
           isLeaving()
