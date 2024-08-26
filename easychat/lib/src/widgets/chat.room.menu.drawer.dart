@@ -244,7 +244,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     },
                   ),
                 if (room!.blockedUsers.isNotEmpty) ...[
-                  // TODO show blocked users screen
                   InkWell(
                     child: Column(
                       children: [

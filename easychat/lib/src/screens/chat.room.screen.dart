@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
@@ -94,10 +95,22 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> loadOrCreateRoomForSingleChat() async {
-    $room = await ChatRoom.get(singleChatRoomId($user!.uid));
+    try {
+      $room = await ChatRoom.get(singleChatRoomId($user!.uid));
+    } on FirebaseException catch (e) {
+      // Check if the error is a permission-denied error
+      if (e.code != 'permission-denied') {
+        rethrow;
+      }
+    }
+
     if ($room != null) return;
-    // In case the room doesn't exists, we will create the room.
-    // Automatically this will invite the other user.
+    createAndLoadSingleChat();
+  }
+
+  Future<void> createAndLoadSingleChat() async {
+    final newRoomRef = await ChatRoom.createSingle($user!.uid);
+    $room = await ChatRoom.get(newRoomRef.id);
   }
 
   String title(ChatRoom? room) {
@@ -316,13 +329,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           SafeArea(
                             top: false,
                             child: ChatRoomInputBox(
-                              beforeSend: (_) async {
-                                final newRoomRef =
-                                    await ChatRoom.createSingle($user!.uid);
-                                $room = await ChatRoom.get(newRoomRef.id);
-                                await onRoomReady();
-                                if (mounted) setState(() {});
-                                return $room!;
+                              // TODO cleanup
+                              // beforeSend: (_) async {
+                              //   final newRoomRef =
+                              //       await ChatRoom.createSingle($user!.uid);
+                              //   $room = await ChatRoom.get(newRoomRef.id);
+                              //   await onRoomReady();
+                              //   if (mounted) setState(() {});
+                              //   return $room!;
+                              // },
+                              room: $room,
+
+                              onSend: (text, photoUrl, replyTo) {
+                                mayInviteOtherUser();
                               },
                             ),
                           ),
@@ -351,5 +370,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   },
                 ),
     );
+  }
+
+  mayInviteOtherUser() {
+    if (!$room!.single) return;
+    if ($room!.userUids.length == 2) return;
+    $room!.inviteUser($user!.uid);
   }
 }

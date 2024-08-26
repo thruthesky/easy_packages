@@ -124,7 +124,11 @@ service cloud.firestore {
           && sameOrRemovingMembers()
           && (
             !isSingleChat()
-            || (isSingleChat() && notUpdating(['invitedUsers','single']))
+            || (
+                isSingleChat() 
+                && notUpdating(['single'])
+                && willBeAtMostOne('invitedUsers')
+            )
           )
         )
         || (

@@ -11,19 +11,11 @@ class ChatRoomInputBox extends StatefulWidget {
   const ChatRoomInputBox({
     super.key,
     this.room,
-    this.beforeSend,
-  }) : assert(room != null || beforeSend != null);
+    this.onSend,
+  });
 
   final ChatRoom? room;
-
-  /// before sending the message, we can do something if the room is
-  /// not ready.
-  ///
-  /// Return the ChatRoom where to send the message.
-  ///
-  /// Why? Made this for the logic when user entered chat room. It should only
-  /// create room and invite the other user if the user sent the first message.
-  final FutureOr<ChatRoom> Function(ChatRoom? room)? beforeSend;
+  final Function(String? text, String? photoUrl, ChatMessage? replyTo)? onSend;
 
   @override
   State<ChatRoomInputBox> createState() => _ChatRoomInputBoxState();
@@ -245,16 +237,26 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   Future sendTextMessage() async {
     if (controller.text.isEmpty && url == null) return;
     if (ChatService.instance.reply.value != null &&
-        ChatService.instance.reply.value?.roomId != this.room?.id) {
+        ChatService.instance.reply.value?.roomId != room?.id) {
+      // TODO tr
       throw ChatException("wrong-room-reply-message", "Room id mismatch.");
     }
+    if (room == null) {
+      // TODO tr
+      throw ChatException('room-not-ready', "room is not ready. please wait.");
+    }
     setState(() => submitable = false);
-    final room = await widget.beforeSend?.call(this.room) ?? this.room;
+
     final sendMessageFuture = ChatService.instance.sendMessage(
       room!,
       text: controller.text.trim(),
       photoUrl: url,
       replyTo: ChatService.instance.reply.value,
+    );
+    widget.onSend?.call(
+      controller.text.trim(),
+      url,
+      ChatService.instance.reply.value,
     );
     url = null;
     ChatService.instance.clearReply();

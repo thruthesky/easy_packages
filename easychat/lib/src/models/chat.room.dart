@@ -340,7 +340,7 @@ class ChatRoom {
       group: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      invitedUsers: otherUid == myUid ? null : [otherUid],
+      invitedUsers: null,
       users: [myUid!],
       masterUsers: [myUid!],
     );
