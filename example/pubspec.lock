@@ -267,7 +267,7 @@ packages:
       path: "../easy_locale"
       relative: true
     source: path
-    version: "0.0.10"
+    version: "0.0.11"
   easy_messaging:
     dependency: "direct main"
     description:

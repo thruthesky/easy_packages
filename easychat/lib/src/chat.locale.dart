@@ -129,8 +129,8 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Open Chats',
     'ko': '공개 채팅',
   },
-  "must login to chat": {
-    'en': 'Must login to chat',
+  "login to chat": {
+    'en': 'Please, login to chat.',
     'ko': "채팅하려면 로그인해야 합니다.",
   },
 
@@ -416,12 +416,4 @@ final localeTexts = <String, Map<String, String>>{
 
 applyChatLocales() async {
   lo.merge(localeTexts);
-
-  // final locale = await currentLocale;
-  // if (locale == null) return;
-
-  // for (var entry in localeTexts.entries) {
-  //   if (lo.get(key: entry.key, locale: locale) != null) continue;
-  //   lo.set(key: entry.key, locale: locale, value: entry.value[locale]);
-  // }
 }

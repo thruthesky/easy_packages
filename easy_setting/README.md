@@ -1,7 +1,7 @@
 # Easy settings
 
-`easy_setting` package provides an easy and nice UI/UX and the logic to manage user's settings in Firestore.
-
+- `easy_setting` package provides an easy and nice UI/UX and the logic to manage user's settings in Firestore.
+- It can handle any kinds of settings.
 
 
 ## How to use
@@ -17,6 +17,7 @@ Setting(
     return ListTile(
       title: Text('System count: ${sm.value<int>('count') ?? 0}'),
       onTap: () {
+        // Update any form of data.
         sm.update({'count': (sm.value<int>('count') ?? 0) + 1});
       },
     );

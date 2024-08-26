@@ -1,3 +1,6 @@
+## 0.0.26
+* Update. `icon` widget property in `AnonymousAvatar`.
+
 ## 0.0.25
 * Add. `UserChange` widget.
 

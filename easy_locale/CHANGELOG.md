@@ -1,3 +1,6 @@
+## 0.0.11
+* Fix. `key` in `merge`.
+
 ## 0.0.10
 * Add. `merge`.
 
