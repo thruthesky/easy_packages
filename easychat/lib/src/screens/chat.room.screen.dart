@@ -311,43 +311,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       );
                     }
                     isJoiningNow = false;
-                    if ($room == null && $user != null) {
-                      // this will happen if this user will send a
-                      // message for the first time.
-                      // Upon sending the message, it will create
-                      // a single chat room and invite the other user.
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                "no message yet. can send a message.".t,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          SafeArea(
-                            top: false,
-                            child: ChatRoomInputBox(
-                              // TODO cleanup
-                              // beforeSend: (_) async {
-                              //   final newRoomRef =
-                              //       await ChatRoom.createSingle($user!.uid);
-                              //   $room = await ChatRoom.get(newRoomRef.id);
-                              //   await onRoomReady();
-                              //   if (mounted) setState(() {});
-                              //   return $room!;
-                              // },
-                              room: $room,
-
-                              onSend: (text, photoUrl, replyTo) {
-                                mayInviteOtherUser();
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    }
                     return Column(
                       children: [
                         Expanded(
@@ -363,6 +326,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           top: false,
                           child: ChatRoomInputBox(
                             room: $room!,
+                            onSend: (text, photoUrl, replyTo) {
+                              mayInviteOtherUser();
+                            },
                           ),
                         ),
                       ],
@@ -375,6 +341,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   mayInviteOtherUser() {
     if (!$room!.single) return;
     if ($room!.userUids.length == 2) return;
-    $room!.inviteUser($user!.uid);
+    $room!.inviteUser(getOtherUserUidFromRoomId($room!.id)!);
   }
 }
