@@ -72,10 +72,6 @@ ChatService.instance.init();
 - `group` - is true when the room is group chat
 - `open` - is true when the room is open group chat.
 
-
-
-
-
 ### Chat room security
 
 - Chat room information must not be public. Only members and invited users, and the rejected users read it.
@@ -178,9 +174,9 @@ This is the way how it can compare the chat password.
 
 
 
-# Development Tip
+## Development Tip
 
-## Opening chat room create in main.dart
+### Opening chat room create in main.dart
 
 ```dart
 class MyAppState extends State<MyApp> {
@@ -191,9 +187,9 @@ class MyAppState extends State<MyApp> {
     });
 ```
 
-## Chat to admin
+### Chat to admin
 
-### 1:1 chat
+#### 1:1 chat
 
 - If there is only one admin, you can create a 1:1 chat room with the user.
 
@@ -214,14 +210,14 @@ UserDoc(
 ),
 ```
 
-### Group chat (NOT SUPPORTED, YET)
+#### Group chat (NOT SUPPORTED, YET)
 
 This feature is not supported, yet.
 
 - ~~If there are many admins who want to participate in the customer care chat, list all the uid of admins.~~
 - ~~then, create a group chat room with the list of admins and the login user.~~
 
-# chatRoomActionButton
+## chatRoomActionButton
 
 You can add extra button on the header in chat room.
 The `chatRoomActionButton` contains the chat room information.
@@ -241,7 +237,7 @@ Usage: (e.g. adding extra icon on the chat room header)
     );
 ```
 
-# onSendMessage CallBack
+## onSendMessage CallBack
 
 Using `onSendMessage` is a callback after the message is sent.
 It contains the `ChatMessage` information and the `ChatRoom` information.
@@ -283,7 +279,7 @@ With this we can exclude Subscribers from push notification.
     );
 ```
 
-# onInvite Callback
+## onInvite Callback
 
 The `onInvite` callback is triggered after a user was invited to the chat room.
 This is called from `ChatRoom` -> `inviteUser` method.
@@ -307,8 +303,27 @@ ChatService.instance.init(
     );
 ```
 
-# chatRoomNewMessageBuilder
+## chatRoomNewMessageBuilder
 
 The `ChatNewMessageCounter` is for displaying the number of new message of the whole chat rooms.
 
 If you want to display the number of new messages of each chat room, you can use `chatRoomNewMessageBuilder` builder.
+
+
+## Chat Room Blocking
+
+User can be blocked in a chat room. This is different from user blocking by a user. This block functionality will make the masters block the chat room member.
+
+When a master blocks a user in chat room, the user will be kicked out of the chat room. The user will not be able to re-join the chat room.
+
+This is only applicable to group chats, for open or not open, since the user can block another user directly.
+
+### Chat Room Blocking Security Rule
+
+The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such this as "array-not-contains" in firestore query.
+
+However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
+
+What we can also do is to filter out the room docs that blocked the user in Room List view. (For now, this is not implemented.)
+
+For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.

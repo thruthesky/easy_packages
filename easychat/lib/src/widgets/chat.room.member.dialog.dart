@@ -15,7 +15,6 @@ class ChatRoomMemberDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      // title: Text("Member setting"),
       contentPadding: EdgeInsets.zero,
       clipBehavior: Clip.hardEdge,
       content: Column(
@@ -51,65 +50,67 @@ class ChatRoomMemberDialog extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 36),
-          if (room?.masterUsers.contains(myUid) == true &&
-              user.uid != myUid &&
-              room?.blockedUsers.contains(user.uid) == false) ...[
-            const Divider(
-              height: 0,
-            ),
-            InkWell(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "Kick",
-                    style: Theme.of(context).textTheme.titleMedium,
+          if (room?.masterUsers.contains(myUid) == true) ...[
+            if (user.uid != myUid &&
+                room?.blockedUsers.contains(user.uid) == false) ...[
+              const Divider(
+                height: 0,
+              ),
+              InkWell(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "Kick",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
                 ),
+                onTap: () {
+                  room!.kick(user.uid);
+                  Navigator.of(context).pop();
+                },
               ),
-              onTap: () {
-                room!.kick(user.uid);
-                Navigator.of(context).pop();
-              },
-            ),
-            const Divider(
-              height: 0,
-            ),
-            InkWell(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "Block",
-                    style: Theme.of(context).textTheme.titleMedium,
+              const Divider(
+                height: 0,
+              ),
+              InkWell(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "Block",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
                 ),
+                onTap: () {
+                  room!.block(user.uid);
+                  Navigator.of(context).pop();
+                },
               ),
-              onTap: () {
-                room!.block(user.uid);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-          if (room?.blockedUsers.contains(user.uid) == true) ...[
-            const Divider(
-              height: 0,
-            ),
-            InkWell(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "Unblock",
-                    style: Theme.of(context).textTheme.titleMedium,
+            ],
+            if (room?.blockedUsers.contains(user.uid) == true &&
+                user.uid != myUid) ...[
+              const Divider(
+                height: 0,
+              ),
+              InkWell(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "Unblock",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
                 ),
+                onTap: () {
+                  room!.unblock(user.uid);
+                  Navigator.of(context).pop();
+                },
               ),
-              onTap: () {
-                room!.unblock(user.uid);
-                Navigator.of(context).pop();
-              },
-            ),
+            ],
           ],
         ],
       ),

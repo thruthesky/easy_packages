@@ -3,7 +3,6 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easychat/src/widgets/chat.room.menu.drawer.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +27,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   StreamSubscription? roomSubscription;
   ValueNotifier<int> roomNotifier = ValueNotifier(0);
 
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -50,7 +51,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
     await onRoomReady();
     if (!mounted) return;
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   onRoomReady() async {
@@ -114,9 +117,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   /// It check if
   /// - the user has already joined the chat room,
   ///   -- the user must joined the room even if it's open chat.
+  /// - room is null (which means there is no room yet) and
+  ///   user is not null (which means the room will be created when
+  ///   sent the first message)
   ///
   bool get canViewChatMessage {
-    return $room?.joined == true;
+    return (($room == null && $user != null) || $room?.joined == true) &&
+        $room?.blockedUsers.contains(myUid) != true;
   }
 
   @override
@@ -125,59 +132,64 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       appBar: AppBar(
         title: ValueListenableBuilder(
           valueListenable: roomNotifier,
-          builder: (_, hc, __) => Row(
-            children: [
-              if ($user != null || $room!.single) ...[
-                GestureDetector(
-                  child: UserAvatar(
-                    user: $user!,
-                    size: 36,
-                    radius: 15,
-                  ),
-                  onTap: () => UserService.instance.showPublicProfileScreen(
-                    context,
-                    user: $user!,
-                  ),
+          builder: (_, hc, __) => !canViewChatMessage
+              ? const SizedBox.shrink()
+              : Row(
+                  children: [
+                    if ($user != null || $room!.single) ...[
+                      GestureDetector(
+                        child: UserAvatar(
+                          user: $user!,
+                          size: 36,
+                          radius: 15,
+                        ),
+                        onTap: () =>
+                            UserService.instance.showPublicProfileScreen(
+                          context,
+                          user: $user!,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                    ] else if ($room!.group) ...[
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color:
+                              Theme.of(context).colorScheme.tertiaryContainer,
+                        ),
+                        width: 36,
+                        height: 36,
+                        clipBehavior: Clip.hardEdge,
+                        child:
+                            $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: $room!.iconUrl!,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) {
+                                      dog("Error in Image Chat Room Screen: $error");
+                                      return const Icon(Icons.error);
+                                    },
+                                  )
+                                : const Icon(Icons.people),
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: Text(title($room)),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-              ] else if ($room!.group) ...[
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  width: 36,
-                  height: 36,
-                  clipBehavior: Clip.hardEdge,
-                  child: $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: $room!.iconUrl!,
-                          fit: BoxFit.cover,
-                          errorWidget: (context, url, error) {
-                            dog("Error in Image Chat Room Screen: $error");
-                            return const Icon(Icons.error);
-                          },
-                        )
-                      : const Icon(Icons.people),
-                ),
-                const SizedBox(width: 12),
-              ],
-              Expanded(
-                child: Text(title($room)),
-              ),
-            ],
-          ),
         ),
         actions: [
           if (ChatService.instance.chatRoomActionButton != null &&
               $room != null)
             ChatService.instance.chatRoomActionButton!($room!),
-          Builder(
-            builder: (context) {
+          ValueListenableBuilder(
+            valueListenable: roomNotifier,
+            builder: (context, hc, child) {
+              if (!canViewChatMessage) return const SizedBox.shrink();
               return DrawerButton(
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
               );
             },
           )
@@ -186,6 +198,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
         builder: (_, hc, __) {
+          if (!canViewChatMessage) return const SizedBox.shrink();
           return ChatRoomMenuDrawer(
             room: $room,
             user: $user,
@@ -193,13 +206,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         },
       ),
       body:
-
-          // TODO need to review for blocked users
-          // for ($room!.open && !canViewChatMessage)
           // showing loading widget at first because the user must join
           // the room first.
-          ($room == null && $user == null) ||
-                  ($room != null && $room!.open && !canViewChatMessage)
+          isLoading
               ? const Center(child: CircularProgressIndicator.adaptive())
               : ValueListenableBuilder(
                   valueListenable: roomNotifier,
