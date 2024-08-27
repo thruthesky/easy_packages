@@ -19,34 +19,29 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  TaskListOptions options = TaskListOptions(
-    completed: false,
-    menu: 'all',
-  );
+  String menu = 'all';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Task List'.t),
-        actions: [
-          const TaskCreateButton(),
-          TaskListHeaderMenu(options: options, onTap: () => setState(() {}))
+        actions: const [
+          TaskCreateButton(),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: TaskListTabMenu(
-            options: options,
-            onTap: (menu) {
+            onTap: (v) {
               setState(() {
-                options.menu = menu;
+                menu = v;
               });
             },
           ),
         ),
       ),
       body: TaskListView(
-        options: options,
+        menu: menu,
       ),
     );
   }

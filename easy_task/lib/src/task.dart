@@ -157,6 +157,22 @@ class Task {
       'urls': urls,
     });
 
+    /// if parent exist, count child and update parent childCount
+    if (parent != null) {
+      /// count childCount
+      final getChildCount = await col
+          .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+          .where('parent', isEqualTo: parent)
+          .count()
+          .get();
+
+      ///  save childCount and reset complete status
+      await col.doc(parent).update({
+        'childCount': getChildCount.count ?? 0,
+        'completed': false,
+      });
+    }
+
     ///
     TaskService.instance.countRebuildNotifier.value = ref.id;
     return ref;
@@ -178,15 +194,50 @@ class Task {
     });
   }
 
-  /// Delete the task
+  /// toggle the task
   Future<void> toggleCompleted(bool isCompleted) async {
     ///
     await ref.update({
       'completed': isCompleted,
       'updatedAt': FieldValue.serverTimestamp(),
     });
+
+    if (parent != null) {
+      updateParentChildCount();
+    }
+
     if (child == false) {
       TaskService.instance.countRebuildNotifier.value = id;
+    }
+  }
+
+  /// Update the parent childCount
+  /// Count childCount, if has data then count completedChildCount.
+  /// If childCount is equal to completedChildCount meaning all task are complete.
+  /// Save [completedChildCount] and [completed] status
+  ///
+  Future<void> updateParentChildCount() async {
+    /// count child
+    final getChildCount = await col
+        .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+        .where('parent', isEqualTo: parent)
+        .count()
+        .get();
+
+    if (getChildCount.count != null && getChildCount.count! > 0) {
+      /// Count the completed child
+      final getCompleteChildCount = await col
+          .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+          .where('parent', isEqualTo: parent)
+          .where('completed', isEqualTo: true)
+          .count()
+          .get();
+
+      /// Update parent completed child Count
+      await col.doc(parent).update({
+        'completedChildCount': getCompleteChildCount.count ?? 0,
+        'completed': getCompleteChildCount.count == getChildCount.count,
+      });
     }
   }
 }

@@ -16,36 +16,34 @@ class TaskFilter {
   ///
   /// You can use it for query, count, etc.
   ///
-  static Query filter(TaskListOptions options) {
-    assert(options.menu == 'all' ||
-        options.menu == 'task' ||
-        options.menu == 'project' ||
-        options.menu == 'latest');
+  static Query filter(String menu) {
+    assert(menu == 'all' ||
+        menu == 'task' ||
+        menu == 'project' ||
+        menu == 'complete' ||
+        menu == 'latest');
 
     Query q = Task.col;
 
-    if (options.menu == 'all') {
-      q = q.where(allMenuFilter);
-    } else if (options.menu == 'task') {
-      q = q.where(taskMenuFilter);
-    } else if (options.menu == 'project') {
-      q = q.where(projectMenuFilter);
-    } else if (options.menu == 'latest') {
+    if (menu == 'all') {
+      q = q.where(allMenuFilter).where('completed', isEqualTo: false);
+    } else if (menu == 'task') {
+      q = q.where(taskMenuFilter).where('completed', isEqualTo: false);
+    } else if (menu == 'project') {
+      q = q.where(projectMenuFilter).where('completed', isEqualTo: false);
+    } else if (menu == 'complete') {
+      q = q.where(allMenuFilter).where('completed', isEqualTo: true);
+    } else if (menu == 'latest') {
       q = q
           .where('creator', isEqualTo: currentUser!.uid)
           .where('project', isEqualTo: false);
     }
 
-    // if the menu is all or tasks, then apply the completed filter
-    if (options.menu != 'project') {
-      q = q.where('completed', isEqualTo: options.completed);
-    }
-
     return q;
   }
 
-  static Query query(TaskListOptions options) {
-    Query q = filter(options);
+  static Query query(String menu) {
+    Query q = filter(menu);
     q = q.orderBy('createdAt', descending: true);
     return q;
   }

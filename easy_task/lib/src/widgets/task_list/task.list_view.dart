@@ -5,14 +5,14 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TaskListView extends StatelessWidget {
-  const TaskListView({super.key, required this.options});
+  const TaskListView({super.key, required this.menu});
 
-  final TaskListOptions options;
+  final String menu;
 
   @override
   Widget build(BuildContext context) {
     return FirestoreListView(
-      query: TaskFilter.query(options),
+      query: TaskFilter.query(menu),
       itemBuilder: (context, snapshot) {
         final task = Task.fromSnapshot(snapshot);
         return TaskListTile(key: ValueKey(task.id), task: task);
