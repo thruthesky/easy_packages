@@ -328,6 +328,10 @@ What we can also do is to filter out the room docs that blocked the user in Room
 
 For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
 
+### Group Chats with blocked user
+
+User can be blocked
+
 ## Chat Room Processes
 
 ### Process for Creating Group Chat
@@ -339,12 +343,12 @@ flowchart TD
   --> createChatRoom[/User Open Chat Room\nCreate Screen/]
   --> userEnter[/User enter details of the chat room\nincluding name, description or if the room is open chat/]
   --> saveChatRoom[Save]
-  --> saveToDb[(System save the\nchatroom into\nFirestore)]
+  --> saveToDb[(System saves the\nchatroom into\nFirestore)]
   --> showChatRoom[/System shows chat room to user\nwith input box, menu etc/]
   --> final([End\nUser can do anything in Chat Room])
 
 ```
-### Process for Creating Single Chat
+### Process for Creating/Opening Single Chat
 
 ```mermaid
 
@@ -399,8 +403,7 @@ flowchart TD
   --false--> systemShowsKickAndBlock[/System shows Kick and Block buttons/]
   --> masterTapsBlock[/User A taps Block/]
   --> systemKickMember[System kicks out User B]
-  --> systemRemoveUserB[(Update\nRemove User B in Users)]
-  --> systemAddsInBlock[(Update\nAdd User B in BlockedUsers)]
+  --> systemAddsInBlock[(Update\nRemove User B in Users\nAdd User B in BlockedUsers)]
   --> final
 
   isBlocked--true--> systemShowsUnblock[/System shows Unblock button/]
