@@ -324,6 +324,6 @@ The room doc should be allowed to be read even if the user is blocked, because i
 
 However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
 
-What we can also do is to filter out the room docs that blocked the user in Room List view. (For now, this is not implemented.)
+What we can also do is to filter out the room docs that blocked the user in Room List view.
 
 For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
