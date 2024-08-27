@@ -11,12 +11,10 @@ class ChatRoomListTile extends StatelessWidget {
     super.key,
     required this.room,
     this.onTap,
-    this.showLastMessage = true,
   });
 
   final ChatRoom room;
   final Function(BuildContext context, ChatRoom room, User? user)? onTap;
-  final bool showLastMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +69,15 @@ class ChatRoomListTile extends StatelessWidget {
   }
 
   Widget? subtitle(BuildContext context) {
-    dog("Roomm is open chat? ${room.open}");
-    dog("Show last message? $showLastMessage");
-    if (!showLastMessage) {
-      return Text(room.description);
+    if (!room.userUids.contains(myUid)) {
+      return Text(
+        room.description,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+        ),
+      );
     }
     return StreamBuilder<DatabaseEvent>(
       key: ValueKey("LastMessageText_${room.id}"),
@@ -157,7 +160,7 @@ class ChatRoomListTile extends StatelessWidget {
                   "${room.users[myUid!]!.newMessageCounter}",
                 ),
               ),
-        Text((room.lastMessageAt ?? room.updatedAt).short),
+        Text((room.updatedAt).short),
       ],
     );
   }

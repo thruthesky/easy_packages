@@ -108,7 +108,6 @@ class ChatRoomListView extends StatelessWidget {
                   dog("ChatRoomListTile showLastMessage: ${!room.open}");
                   return ChatRoomListTile(
                     room: room,
-                    showLastMessage: !room.open,
                   );
                 },
               ),

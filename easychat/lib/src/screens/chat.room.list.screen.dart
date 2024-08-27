@@ -81,7 +81,6 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
             itemBuilder: (context, room, index) {
               return ChatRoomListTile(
                 room: room,
-                showLastMessage: !room.open,
               );
             },
           );
