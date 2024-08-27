@@ -341,6 +341,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   mayInviteOtherUser() {
     if (!$room!.single) return;
     if ($room!.userUids.length == 2) return;
-    $room!.inviteUser(getOtherUserUidFromRoomId($room!.id)!);
+    final otherUserUid = getOtherUserUidFromRoomId($room!.id)!;
+    if ($room!.rejectedUsers.contains(otherUserUid)) return;
+    if ($room!.invitedUsers.contains(otherUserUid)) return;
+    $room!.inviteUser(otherUserUid);
   }
 }
