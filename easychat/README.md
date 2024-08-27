@@ -327,3 +327,72 @@ However, we should not allow blocked user to put himself in members (or chat roo
 What we can also do is to filter out the room docs that blocked the user in Room List view.
 
 For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
+
+## Chat Room Processes
+
+### Process for Creating Group Chat
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser must be logged in])
+  --> createChatRoom[/User Open Chat Room\nCreate Screen/]
+  --> userEnter[/User enter details of the chat room\nincluding name, description or if the room is open chat/]
+  --> saveChatRoom[Save]
+  --> saveToDb[(System save the\nchatroom into\nFirestore)]
+  --> showChatRoom[/System shows chat room to user\nwith input box, menu etc/]
+  --> final([End\nUser can do anything in Chat Room])
+
+```
+### Process for Creating Single Chat
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser must be logged in])
+  --> userLook[User looks for a\n user to chat]
+  --> userChatOpen[/User open single chat\nor tapped `CHAT` /]
+  --> openChatRoom[[Open Chat Room Dialog\nshowChatRoomDialog]]
+  --> userClosed[/User closed group chat/]
+  --> final([End\n])
+
+```
+
+### Process for Opening Chat Room (showChatRoomDialog)
+
+```mermaid
+
+flowchart TD
+  start([Start\nshowChatRoomDialog])
+  --> loadChatRoom{{Attempt to Load Chat Room}}
+  --> isPermissionDenied{Permission\nDenied?}
+  isPermissionDenied--false--> setChatRoom[Set Current Chat Room]
+  isPermissionDenied--true--> isSingleChatRoom{single?}
+  isSingleChatRoom --true--> attemptToCreate[Attempt to create\nsingle chat room]
+  isSingleChatRoom --false--> dontShowAboutChatRoom([ERROR: No Permission])
+  attemptToCreate --> setChatRoom
+  setChatRoom --> sendMessage[/User entered text and url\nand pressed `SEND`/]
+  --> isSingle{single\nchat?}
+  isSingle--false--> userCanDoOther[User may now do other things\nSend another message\nView Menu\netc.]
+  isSingle--true--> otherUserInMembers{otherUserUid is\nin members?}
+  otherUserInMembers --true--> userCanDoOther
+  otherUserInMembers --false--> inviteOtherUser[System invites\nOther User]
+  inviteOtherUser --> userCanDoOther
+  --> final([End\n])
+
+```
+
+
+### Process for Blocking User in Group Chat
+
+```mermaid
+flowchart TD
+  start([Start\nUser A and User B belongs to a same group\nwhere User A is the master])
+  --> openChatRoom[/User A opened the chat Room/]
+  --> openMenu[[showChatRoomDialog]]
+  --> userOpenMenu[/User Pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System show chat room menu drawer/]
+  --> userTapsMember[/User taps member /]
+  
+
+```
