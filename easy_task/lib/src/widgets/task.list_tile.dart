@@ -15,6 +15,8 @@ class TaskListTile extends StatefulWidget {
 }
 
 class _TaskListTileState extends State<TaskListTile> {
+  /// [checked] is used to show the checkbox value before the task is disappeared
+  /// This is used only for the root level tasks.
   bool checked = false;
 
   @override
@@ -24,13 +26,17 @@ class _TaskListTileState extends State<TaskListTile> {
   }
 
   @override
-  void didUpdateWidget(covariant TaskListTile oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    checked = widget.task.completed;
-  }
-
-  @override
   Widget build(BuildContext context) {
+    /// If the task is root level task, show the changes of checkbox selection
+    /// before disappearing the task
+    bool checkboxValue;
+    if (widget.task.parent == null) {
+      checkboxValue = checked;
+    } else {
+      /// If the task is a child, then simply use the task's completed value,
+      /// because the task will not be disappeared.
+      checkboxValue = widget.task.completed;
+    }
     return InkWell(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -41,17 +47,17 @@ class _TaskListTileState extends State<TaskListTile> {
                 ? const SizedBox(
                     width: 48, height: 48, child: Icon(Icons.diversity_1))
                 : Checkbox(
-                    value: checked,
+                    value: checkboxValue,
                     onChanged: (bool? value) {
                       if (value != null) {
-                        setState(() {
-                          checked = value;
-                        });
-
                         if (widget.task.parent != null) {
                           widget.task.toggleCompleted(value);
                           return;
                         }
+
+                        setState(() {
+                          checked = value;
+                        });
 
                         /// Delay the task completion to show the animation
                         /// Purpose: to let the user know why the task is not being disappeared immediately
