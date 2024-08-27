@@ -61,24 +61,6 @@ class ChatRoomMemberDialog extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      "Kick",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                ),
-                onTap: () {
-                  room!.kick(user.uid);
-                  Navigator.of(context).pop();
-                },
-              ),
-              const Divider(
-                height: 0,
-              ),
-              InkWell(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
                       "Block",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
