@@ -20,6 +20,8 @@ class Task {
     required this.completed,
     required this.parent,
     required this.child,
+    required this.childCount,
+    required this.completedChildCount,
     required this.project,
     required this.urls,
   });
@@ -44,7 +46,17 @@ class Task {
   final DateTime updatedAt;
 
   /// [completed] is true if the task is completed. Otherwise, it is false.
+  /// For projects, if all the child tasks are completed, then the project is
+  /// considered as completed and this will be set to true.
   final bool completed;
+
+  /// [childCount] is the number of child tasks. This field is only for the
+  /// project tasks.
+  final int childCount;
+
+  /// [completedChildCount] is the number of completed child tasks. This field
+  /// is only for the project tasks.
+  final int completedChildCount;
 
   /// [parent] is the id of the parent task. If the task is a root level task,
   /// then this field will be null. The parent may be a task or a project.
@@ -85,6 +97,8 @@ class Task {
       completed: json['completed'] ?? false,
       parent: json['parent'],
       child: json['child'],
+      childCount: json['childCount'] ?? 0,
+      completedChildCount: json['completedChildCount'] ?? 0,
       project: json['project'],
       urls: List<String>.from(json['urls'] ?? []),
     );
@@ -101,6 +115,8 @@ class Task {
       'completed': completed,
       'parent': parent,
       'child': child,
+      'childCount': childCount,
+      'completedChildCount': completedChildCount,
       'project': project,
       'urls': urls,
     };
@@ -164,6 +180,7 @@ class Task {
 
   /// Delete the task
   Future<void> toggleCompleted(bool isCompleted) async {
+    ///
     await ref.update({
       'completed': isCompleted,
       'updatedAt': FieldValue.serverTimestamp(),
