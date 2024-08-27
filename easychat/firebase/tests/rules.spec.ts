@@ -2681,3 +2681,233 @@ describe("Block User in Room", async () => {
     );
   });
 });
+
+describe("Try To Updated Created at", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [durianId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+    createdAt: 1312,
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+  it("[Fail] Master updated created at", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      createdAt: 10000,
+    };
+    await assertFails(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Pass] Master added created at", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const appleUpdate = {
+        createdAt: deleteField(),
+      };
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleUpdate,
+        {
+          merge: true,
+        }
+      );
+    });
+    const appleGroupUpdate: ChatRoom = {
+      createdAt: 10000,
+    };
+    await assertSucceeds(
+      setDoc(doc(appleDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member added created at", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const appleUpdate = {
+        createdAt: deleteField(),
+      };
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleUpdate,
+        {
+          merge: true,
+        }
+      );
+    });
+    const appleGroupUpdate: ChatRoom = {
+      createdAt: 10000,
+    };
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] outsider added created at", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const appleUpdate = {
+        createdAt: deleteField(),
+      };
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleUpdate,
+        {
+          merge: true,
+        }
+      );
+    });
+    const appleGroupUpdate: ChatRoom = {
+      createdAt: 10000,
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Member updated created at", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      createdAt: 10000,
+    };
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider updated created at", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      createdAt: 10000,
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Pass] Create group room with updated at", async () => {
+    const bananaGroupCreate: ChatRoom = {
+      createdAt: 10000,
+      name: "banana group",
+      group: true,
+      masterUsers: [bananaId],
+      users: {
+        [bananaId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, getRoomPath(generateRandomId())),
+        bananaGroupCreate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Create single room with updated at", async () => {
+    const bananaGroupCreate: ChatRoom = {
+      createdAt: 10000,
+      name: "banana group",
+      single: true,
+      masterUsers: [bananaId],
+      users: {
+        [bananaId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, getRoomPath(generateRandomId())),
+        bananaGroupCreate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Create single room without updated at", async () => {
+    const bananaGroupCreate: ChatRoom = {
+      name: "banana group",
+      single: true,
+      masterUsers: [bananaId],
+      users: {
+        [bananaId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, getRoomPath(generateRandomId())),
+        bananaGroupCreate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+  it("[Pass] Create group room without updated at", async () => {
+    const bananaGroupCreate: ChatRoom = {
+      name: "banana group",
+      group: true,
+      masterUsers: [bananaId],
+      users: {
+        [bananaId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await assertSucceeds(
+      setDoc(
+        doc(bananaDb, getRoomPath(generateRandomId())),
+        bananaGroupCreate,
+        {
+          merge: true,
+        }
+      )
+    );
+  });
+});

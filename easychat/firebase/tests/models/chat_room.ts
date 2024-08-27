@@ -4,6 +4,7 @@ interface ChatRoom {
   id?: string;
   name?: string;
   description?: string;
+  createdAt?: Object;
   // This will include the readings and order
   users?: { [key: string]: ChatUser | FieldValue };
   invitedUsers?: string[] | FieldValue;
@@ -11,6 +12,7 @@ interface ChatRoom {
   blockedUsers?: string[] | FieldValue;
   masterUsers?: string[] | FieldValue;
   hasPassword?: boolean;
+
   open?: boolean;
   single?: boolean;
   group?: boolean;

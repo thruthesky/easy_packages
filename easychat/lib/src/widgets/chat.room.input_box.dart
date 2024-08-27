@@ -238,11 +238,9 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     if (controller.text.isEmpty && url == null) return;
     if (ChatService.instance.reply.value != null &&
         ChatService.instance.reply.value?.roomId != room?.id) {
-      // TODO tr
       throw ChatException("wrong-room-reply-message", "Room id mismatch.");
     }
     if (room == null) {
-      // TODO tr
       throw ChatException('room-not-ready', "room is not ready. please wait.");
     }
     setState(() => submitable = false);

@@ -95,6 +95,10 @@ service cloud.firestore {
         return resource.data.keys().hasAny(['blockedUsers'])
           && request.auth.uid in resource.data.blockedUsers;
       }
+      function updatingCreatedAt() {
+        return resource.data.keys().hasAny(['createdAt'])
+          && request.resource.data.createdAt != resource.data.createdAt
+      }
 
       // function hasOrderField() {
       //   return 
@@ -129,7 +133,8 @@ service cloud.firestore {
                 && notUpdating(['single'])
                 && willBeAtMostOne('invitedUsers')
             )
-          )
+          ) &&
+          !updatingCreatedAt()
         )
         || (
           isJoining()
