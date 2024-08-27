@@ -387,12 +387,25 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  start([Start\nUser A and User B belongs to a same group\nwhere User A is the master])
+  start([Start\nUser A and User B belongs to a same group\nwhere User A is the master\nUser A logged in])
   --> openChatRoom[/User A opened the chat Room/]
   --> openMenu[[showChatRoomDialog]]
   --> userOpenMenu[/User Pressed Chat Room Menu Button/]
   --> systemShowMenu[/System show chat room menu drawer/]
-  --> userTapsMember[/User taps member /]
-  
+  --> userTapsMemberList[/User A taps member list/]
+  --> systemShowsMemberList[/System shows member list/]
+  --> masterTapsUser[/User A taps User B from the list/]
+  --> isBlocked{user B is blocked?}
+  --false--> systemShowsKickAndBlock[/System shows Kick and Block buttons/]
+  --> masterTapsBlock[/User A taps Block/]
+  --> systemKickMember[System kicks out User B]
+  --> systemRemoveUserB[(Update\nRemove User B in Users)]
+  --> systemAddsInBlock[(Update\nAdd User B in BlockedUsers)]
+  --> final
+
+  isBlocked--true--> systemShowsUnblock[/System shows Unblock button/]
+  --> masterTapsUnblock[/User A taps Unblock/]
+  --> systemRemoveUserBInBlock[(Update\nRemove User B in BlockUids)]
+  --> final([End])
 
 ```
