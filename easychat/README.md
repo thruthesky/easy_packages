@@ -328,13 +328,15 @@ What we can also do is to filter out the room docs that blocked the user in Room
 
 For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
 
-### Group Chats with blocked user
+### Group Chats with blocked users
 
-User can be blocked
+User can be blocked as itself or blocked in a chat room.
 
-## Chat Room Processes
+When user blocks other user (the account itself), the rooms should cover/hide the chat messages of the blocked user.
 
-### Process for Creating Group Chat
+## Chat Room Logic Diagrams
+
+### Logic for Creating Group Chat
 
 ```mermaid
 
@@ -348,7 +350,7 @@ flowchart TD
   --> final([End\nUser can do anything in Chat Room])
 
 ```
-### Process for Creating/Opening Single Chat
+### Logic for Creating/Opening Single Chat
 
 ```mermaid
 
@@ -362,7 +364,7 @@ flowchart TD
 
 ```
 
-### Process for Opening Chat Room (showChatRoomDialog)
+### Logic for Opening Chat Room (showChatRoomDialog)
 
 ```mermaid
 
@@ -387,7 +389,7 @@ flowchart TD
 ```
 
 
-### Process for Blocking User in Group Chat
+### Logic for Blocking User in Group Chat
 
 ```mermaid
 flowchart TD
