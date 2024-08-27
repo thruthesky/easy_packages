@@ -113,14 +113,9 @@ class ChatRoom {
 
   /// [domain] is the domain of the chat room. It can be the name of the app.
   ///
-  /// This is used to filter the chat room by the app. For instance, many apps
-  /// can share the same Firebase and Firestore. And each app can have its own
-  /// chat rooms. So, the domain is used to filter the chat rooms by the app.
-  /// In the other way, that some apps want to share the same chat rooms and
-  /// some other apps don't want to share the chat rooms. In this case, the
-  /// domain can be used to filter the chat rooms by the app.
   String domain;
 
+  /// True if the user has seen the last message. Meaning, there is no more new messages in the chat room.
   bool get iSeen => users[myUid!]?.newMessageCounter == 0;
 
   ChatRoom({

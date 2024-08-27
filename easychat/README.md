@@ -6,12 +6,23 @@ For your information, EasyChat:
 
 - Uses Firestore for chat room management for efficiency,
 - Utilizes Realtime Database for cost-saving measures like managing chat messages and tracking new message counts,
-- Allows integration with your existing app to fetch user information,
 - Supports push notification subscriptions and sending,
-- Enables file transfers and URL previews, among others,
+- Enables photo sharing, file transfers and URL previews, among others,
 - Provides everything needed for chat functionality,
 - Comes with a beautiful UI/UX by default,
 - Is optimized for use in large-scale chat applications.
+
+
+## TODO
+
+- Supporting `verifiedUserOnly`, `urlForVerifiedUserOnly`, `uploadForVerifiedUserOnly`.
+- Supporting password.
+- Supporting gender. To let only female or male join.
+
+
+## Overview
+
+- User must login to use any of the chat functionalities.
 
 ## Install
 
@@ -20,6 +31,12 @@ Add `easychat` into your `pubspec.yaml`
 ```sh
 % flutter pub add easychat
 ```
+
+## Example
+
+- See `example/lib/main.dart`.
+
+
 
 ## Initialization
 
@@ -34,43 +51,70 @@ ChatService.instance.init();
 
 ## User database
 
-If your app uses diferent Firestore database structure from what `easychat` expects, you can use the `easyuser` package to setup the user database structure to fit your app.
+`easychat` gets user data from `/mirror-users/<uid>/` node in realtime database. So, your app needs to save your display name and photo url in this node. If your app uses diferent database structure, then simply copy the user's data into `/mirror-users/<uid>/` node.
 
-For instance, if your app manages user information in `/members` collection, and displayName as `nickname`, user's photo as `photoURL` and the name to search is `searchName`, you can set like below.
+For your information, `easychat` uses `easyuser` package to manage the user's data. You don't have to install this package as the dependency of yoru app. It's not required but recommended to understand how `easychat` package works.
+
 
 ```dart
-UserService.instance.init(
-    userCollection: 'members',
-    displayName: 'nickname',
-    searchName: 'searchName',
-    photoUrl: 'photoURL',
-);
 ChatService.instance.init();
 ```
 
 ## Chat Database
 
-### Chat room database struture (Firestore)
+### Chat room database struture
 
-- `/chat-rooms/{roomId}` is the document of chat room information.
-- `users` field has the list of user's uid who joined the chat room.
-  - There is no 1:1 chat room or group chat room. Or you may consider if there are only two users in the room, then it may be 1:1 chat.
+- `/chat-rooms/{roomId}` is the document of chat room information. Chat room documents are saved in Firestore.
+
+- the `room id` has a tripe-hypen(`---`) if it's a 1:1 chat.
+
+- `name` is the name of the chat room.
+
+- `description` is the description of the chat room.
+
+
+- `users` field is a Map that has user's uid as key. And the value of the user is another Map that has key/value for sorting/listing the chat rooms of each user. See the `chat.room.user.dart` for the details of fields.
+  - All chat room users(members) exists in this Map whether it is a 1:1 chat or a group chat.
+
 - `invitedUsers` field has the list of invited user's uid. They cannot enter the chat room, until they confirm it in the app.
+
 - `rejectedUsers` field has the uid list of the rejected users from the invitation. Once the user rejected, his uid is moved from `invitedUsers` to `rejectedUsers`. In this way, the rejected users will not see the invitation in the chat list any more and the inviter cannot invite anymore.
-- `blockedUsers` is the uid list of blocked users by masters.x
+
+- `blockedUsers` is the uid list of blocked users by masters.
+
+
 - `masterUsers` is the uid list of master user. See [Masters](#masters)
+
 - `createdAt` is the Firestore Timestamp when the chat room created.
+
 - `updatedAt` is the Timestamp when the chat room information updated.
-- `lastMessageText` - removed at Aug 23, 2024 for security issue see the chat room security below.
-- `lastMessageAt` - removed at Aug 23, 2024 for security issue see the chat room security below.
-- `lastMessageUid` - removed at Aug 23, 2024 for security issue see the chat room security below.
-- `lastMessageUrl` - removed at Aug 23, 2024 for security issue see the chat room security below.
+
+
 - `open` if it is set to true, the chat room is open chat. So, it is listed in the open chat rom list and anyone can join the chat room without invitation.
+
 - `hasPassword` is set to true if the chat room has a password. See [Password](#password)
 
 - `single` - is true when the room is single chat
+
 - `group` - is true when the room is group chat
+
 - `open` - is true when the room is open group chat.
+
+- `gender` - If it is 'M', only males can joins the chat room. If it is 'F', only femails can join the chat room (NOT SUPPORTED, YET)
+
+- `domain` - It is the domain of the chat room. It is for a grouping chat rooms. It can be the name of the app.
+  - For instance, There are two different apps: A and B. And the two apps are using same Firebase project.
+    - And the developer may want to display only the chat rooms that were created by app A in the app A.
+  - The domain can be initlized by `init` and will be set to the chat room that are created by the app.
+    - And it's upto you how you use it.
+
+
+
+### Chat message database structure
+
+- `/chat-messages/<room-id>` is the path of chat room messages. It is saved in Realtime Database.
+- 
+
 
 ### Chat room security
 
@@ -153,9 +197,11 @@ It really happened to one of my own projects that someone sent very bad words to
 
 ## Password
 
+NOTE: Password is not supported, yet.
+
 The password must kept in secret by the Security rules. Then, how the user can join the chat room without the help of backend? Here is a solution.
 
-- Since the password is secured, the password must not be saved in chat room document.
+- Since the password must be secured for reading, the password must not be saved in chat room document.
 - So, it is saved under `/chat-room/{roomId}/chat-room-meta/private` document.
 - And, client cannot read the password and when the user enters the password, how the client can check if the password is correct or not?
 
@@ -355,36 +401,39 @@ flowchart TD
 ```mermaid
 
 flowchart TD
-  start([Start\nUser must be logged in])
+  start([Start])
   --> userLook[User looks for a\n user to chat]
   --> userChatOpen[/User open single chat\nor tapped `CHAT` /]
   --> openChatRoom[[Open Chat Room Dialog\nshowChatRoomDialog]]
   --> userClosed[/User closed group chat/]
   --> final([End\n])
-
 ```
 
-### Logic for Opening Chat Room (showChatRoomDialog)
+### Logic for Opening Chat Room
+
+- `ChatService.instance.showChatRoomScreen` can open `ChatRoomScreen`.
+  - You may call `ChatRoomScreen` directly from your app.
+
 
 ```mermaid
 
 flowchart TD
-  start([Start\nshowChatRoomDialog])
-  --> loadChatRoom{{Attempt to Load Chat Room}}
-  --> isPermissionDenied{Permission\nDenied?}
-  isPermissionDenied--false--> setChatRoom[Set Current Chat Room]
-  isPermissionDenied--true--> isSingleChatRoom{single?}
-  isSingleChatRoom --true--> attemptToCreate[Attempt to create\nsingle chat room]
+  start([Start\nChatRoomScreen])
+    --> LOAD{Load Chat Room}
+      LOAD--success--> SET_CHAT_ROOM[Set Current Chat Room]
+      LOAD--fail(permission-denied)--> isSingleChatRoom{1:1 chat?}
+      
   isSingleChatRoom --false--> dontShowAboutChatRoom([ERROR: No Permission])
-  attemptToCreate --> setChatRoom
-  setChatRoom --> sendMessage[/User entered text and url\nand pressed `SEND`/]
+    isSingleChatRoom --true--> CREATE_SING_CHAT[Attempt to create\n1:1 chat room]
+  CREATE_SING_CHAT --> SET_CHAT_ROOM
+  SET_CHAT_ROOM --> SEND_MESSAGE[/User entered text and url\nand pressed `SEND`/]
   --> isSingle{single\nchat?}
   isSingle--false--> userCanDoOther[User may now do other things\nSend another message\nView Menu\netc.]
   isSingle--true--> otherUserInMembers{otherUserUid is\nin members?}
   otherUserInMembers --true--> userCanDoOther
   otherUserInMembers --false--> inviteOtherUser[System invites\nOther User]
   inviteOtherUser --> userCanDoOther
-  --> final([End\n])
+  --> SEND_MESSAGE
 
 ```
 

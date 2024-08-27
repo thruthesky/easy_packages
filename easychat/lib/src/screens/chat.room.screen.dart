@@ -7,6 +7,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
+/// Chat room screen
+///
+///
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({
     super.key,
