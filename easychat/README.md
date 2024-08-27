@@ -72,10 +72,6 @@ ChatService.instance.init();
 - `group` - is true when the room is group chat
 - `open` - is true when the room is open group chat.
 
-
-
-
-
 ### Chat room security
 
 - Chat room information must not be public. Only members and invited users, and the rejected users read it.
@@ -178,9 +174,9 @@ This is the way how it can compare the chat password.
 
 
 
-# Development Tip
+## Development Tip
 
-## Opening chat room create in main.dart
+### Opening chat room create in main.dart
 
 ```dart
 class MyAppState extends State<MyApp> {
@@ -191,9 +187,9 @@ class MyAppState extends State<MyApp> {
     });
 ```
 
-## Chat to admin
+### Chat to admin
 
-### 1:1 chat
+#### 1:1 chat
 
 - If there is only one admin, you can create a 1:1 chat room with the user.
 
@@ -214,14 +210,14 @@ UserDoc(
 ),
 ```
 
-### Group chat (NOT SUPPORTED, YET)
+#### Group chat (NOT SUPPORTED, YET)
 
 This feature is not supported, yet.
 
 - ~~If there are many admins who want to participate in the customer care chat, list all the uid of admins.~~
 - ~~then, create a group chat room with the list of admins and the login user.~~
 
-# chatRoomActionButton
+## chatRoomActionButton
 
 You can add extra button on the header in chat room.
 The `chatRoomActionButton` contains the chat room information.
@@ -241,7 +237,7 @@ Usage: (e.g. adding extra icon on the chat room header)
     );
 ```
 
-# onSendMessage CallBack
+## onSendMessage CallBack
 
 Using `onSendMessage` is a callback after the message is sent.
 It contains the `ChatMessage` information and the `ChatRoom` information.
@@ -283,7 +279,7 @@ With this we can exclude Subscribers from push notification.
     );
 ```
 
-# onInvite Callback
+## onInvite Callback
 
 The `onInvite` callback is triggered after a user was invited to the chat room.
 This is called from `ChatRoom` -> `inviteUser` method.
@@ -307,8 +303,164 @@ ChatService.instance.init(
     );
 ```
 
-# chatRoomNewMessageBuilder
+## chatRoomNewMessageBuilder
 
 The `ChatNewMessageCounter` is for displaying the number of new message of the whole chat rooms.
 
 If you want to display the number of new messages of each chat room, you can use `chatRoomNewMessageBuilder` builder.
+
+
+## Chat Room Blocking
+
+User can be blocked in a chat room. This is different from user blocking by a user. This block functionality will make the masters block the chat room member.
+
+When a master blocks a user in chat room, the user will be kicked out of the chat room. The user will not be able to re-join the chat room.
+
+This is only applicable to group chats, for open or not open, since the user can block another user directly.
+
+### Chat Room Blocking Security Rule
+
+The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such this as "array-not-contains" in firestore query.
+
+However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
+
+What we can also do is to filter out the room docs that blocked the user in Room List view.
+
+For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
+
+### Group Chats with blocked users
+
+User can be blocked as itself or blocked in a chat room.
+
+When user blocks other user (the account itself), the rooms should cover/hide the chat messages of the blocked user.
+
+## Chat Room Logic Diagrams
+
+### Logic for Creating Group Chat
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser must be logged in])
+  --> createChatRoom[/User Open Chat Room\nCreate Screen/]
+  --> userEnter[/User enter details of the chat room\nincluding name, description or if the room is open chat/]
+  --> saveChatRoom[Save]
+  --> saveToDb[(System saves the\nchatroom into\nFirestore)]
+  --> showChatRoom[/System shows chat room to user\nwith input box, menu etc/]
+  --> final([End\nUser can do anything in Chat Room])
+
+```
+### Logic for Creating/Opening Single Chat
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser must be logged in])
+  --> userLook[User looks for a\n user to chat]
+  --> userChatOpen[/User open single chat\nor tapped `CHAT` /]
+  --> openChatRoom[[Open Chat Room Dialog\nshowChatRoomDialog]]
+  --> userClosed[/User closed group chat/]
+  --> final([End\n])
+
+```
+
+### Logic for Opening Chat Room (showChatRoomDialog)
+
+```mermaid
+
+flowchart TD
+  start([Start\nshowChatRoomDialog])
+  --> loadChatRoom{{Attempt to Load Chat Room}}
+  --> isPermissionDenied{Permission\nDenied?}
+  isPermissionDenied--false--> setChatRoom[Set Current Chat Room]
+  isPermissionDenied--true--> isSingleChatRoom{single?}
+  isSingleChatRoom --true--> attemptToCreate[Attempt to create\nsingle chat room]
+  isSingleChatRoom --false--> dontShowAboutChatRoom([ERROR: No Permission])
+  attemptToCreate --> setChatRoom
+  setChatRoom --> sendMessage[/User entered text and url\nand pressed `SEND`/]
+  --> isSingle{single\nchat?}
+  isSingle--false--> userCanDoOther[User may now do other things\nSend another message\nView Menu\netc.]
+  isSingle--true--> otherUserInMembers{otherUserUid is\nin members?}
+  otherUserInMembers --true--> userCanDoOther
+  otherUserInMembers --false--> inviteOtherUser[System invites\nOther User]
+  inviteOtherUser --> userCanDoOther
+  --> final([End\n])
+
+```
+
+### Logic for Inviting User in Group Chat
+
+User A wants to invite User B in a group chat.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser A must be logged in])
+  --> userOpenChatRoom[/User A opened the group chat room/]
+  --> openChatRoom[[Open the chat room\nshowChatRoomDialog]]
+  --> userOpenMenu[/User A pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System shows chat room menu drawer/]
+  --> userTapInvite[/User tapped `Invite More User`/]
+  --> systemShowSearch[/System shows search bar/]
+  --> userEnterName[/User A enter User B's name/]
+  --> systemGetData[(Get and search user)]
+  --> hasMatches{has matches?}
+  hasMatches --true--> userTap[/User Taps User B/]
+  hasMatches --false--> systemShowsEmpty[/System shows empty search result/]
+  --> systemShowSearch
+  userTap --> systemUpdates[(Add User B's uid in invitedUsers)]
+  --> systemMessageInvited[/System displays\n`User B has been invited`/]
+  --> final([End])
+```
+
+### Process for Accepting/Rejecting Chat Request/Invitation
+
+User B wants to accept an invitation.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser B must be logged in\nAssuming User B has invitations])
+  --> userOpenChatRoom[/User B opened the\nchat room list screen/]
+  --> loadInvitations{{Load Chat Room Invitations}}
+  --> systemShowsInvitaions[/System shows chat room invitations\nwith accept or reject buttons/]
+  --> userAcceptOrReject{Will user\naccept or reject?}
+ userAcceptOrReject --User don't want to do anything yet--> systemDoesNothing[system does nothing]
+ --> final
+  userAcceptOrReject --User wants to reject--> userRejectInvitation[/User Taps `Reject`/]
+  --> systemRemoveMember[(Update Room\nRemove uid in invitedUsers\nAdd uid in rejectedUsers)]
+  --> final
+  userAcceptOrReject--User wants to accept--> userAcceptInvitation[/User Taps `Accept`/]
+  --> blockInRoom{User B uid\nin blockedUsers?}
+  blockInRoom --false--> systemAddMember[(Update Room\nRemove uid in invitedUsers\nAdd user in chat room users or members)]
+  --> final([End])
+blockInRoom --true--> systemShowsError[/System shows `Error`/]
+  --> systemShowsInvitaions
+```
+
+
+### Logic for Blocking User in Group Chat
+
+```mermaid
+flowchart TD
+  start([Start\nUser A and User B belongs to a same group\nwhere User A is the master\nUser A logged in])
+  --> openChatRoom[/User A opened the chat Room/]
+  --> openMenu[[showChatRoomDialog]]
+  --> userOpenMenu[/User Pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System show chat room menu drawer/]
+  --> userTapsMemberList[/User A taps member list/]
+  --> systemShowsMemberList[/System shows member list/]
+  --> masterTapsUser[/User A taps User B from the list/]
+  --> isBlocked{user B is blocked?}
+  --false--> systemShowsKickAndBlock[/System shows Kick and Block buttons/]
+  --> masterTapsBlock[/User A taps Block/]
+  --> systemKickMember[System kicks out User B]
+  --> systemAddsInBlock[(Update\nRemove User B in Users\nAdd User B in BlockedUsers)]
+  --> final
+
+  isBlocked--true--> systemShowsUnblock[/System shows Unblock button/]
+  --> masterTapsUnblock[/User A taps Unblock/]
+  --> systemRemoveUserBInBlock[(Update\nRemove User B in BlockUids)]
+  --> final([End])
+
+```

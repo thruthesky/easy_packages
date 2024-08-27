@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easychat/src/widgets/chat.room.menu.drawer.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +28,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   StreamSubscription? roomSubscription;
   ValueNotifier<int> roomNotifier = ValueNotifier(0);
 
+  bool isLoading = true;
+
+  /// Reason: we are using room notifier to listen on updates
+  ///         this means that when room is ready and user is joining
+  ///         we have to wait for the ValueListenable to react on
+  ///         the update on the room. At first The state will show
+  ///         that user is not a member and can't show the message.
+  ///         After short time, it will show the messages.
+  ///
+  /// I think this is important for UX and prevent people to be confused
+  /// when joining into an open chat room and seeing a quick message
+  /// flashing upon entering room.
+  bool isJoiningNow = false;
+
   @override
   void initState() {
     super.initState();
@@ -50,13 +64,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
     await onRoomReady();
     if (!mounted) return;
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   onRoomReady() async {
     if ($room == null) return;
+    if ($room!.blockedUsers.contains(myUid)) return;
     // Auto Join Groups when it is open chat
     if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
+      isJoiningNow = true;
       await $room!.join();
     }
     roomSubscription ??=
@@ -77,10 +95,22 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> loadOrCreateRoomForSingleChat() async {
-    $room = await ChatRoom.get(singleChatRoomId($user!.uid));
+    try {
+      $room = await ChatRoom.get(singleChatRoomId($user!.uid));
+    } on FirebaseException catch (e) {
+      // Check if the error is a permission-denied error
+      if (e.code != 'permission-denied') {
+        rethrow;
+      }
+    }
+
     if ($room != null) return;
-    // In case the room doesn't exists, we will create the room.
-    // Automatically this will invite the other user.
+    await createAndLoadSingleChat();
+  }
+
+  Future<void> createAndLoadSingleChat() async {
+    final newRoomRef = await ChatRoom.createSingle($user!.uid);
+    $room = await ChatRoom.get(newRoomRef.id);
   }
 
   String title(ChatRoom? room) {
@@ -104,8 +134,25 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (iRejected) {
       return 'the chat was rejected, unable to show message'.t;
     }
+    if (isJoiningNow) {
+      return 'please wait'.t;
+    }
     // Else, it should be handled by the Firestore rulings.
     return 'the chat room may be private or deleted'.t;
+  }
+
+  String notMemberTitle(ChatRoom? room) {
+    if (iAmInvited) {
+      return "chat invitation".t;
+    }
+    if (iRejected) {
+      return 'rejected chat'.t;
+    }
+    if (isJoiningNow) {
+      return 'loading'.t;
+    }
+    // Else, it should be handled by the Firestore rulings.
+    return 'unable to chat'.t;
   }
 
   /// Returns true if the login user can view the chat messages.
@@ -113,9 +160,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   /// It check if
   /// - the user has already joined the chat room,
   ///   -- the user must joined the room even if it's open chat.
+  /// - room is null (which means there is no room yet) and
+  ///   user is not null (which means the room will be created when
+  ///   sent the first message)
   ///
   bool get canViewChatMessage {
-    return $room?.joined == true;
+    return (($room == null && $user != null) || $room?.joined == true) &&
+        $room?.blockedUsers.contains(myUid) != true;
   }
 
   @override
@@ -124,59 +175,64 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       appBar: AppBar(
         title: ValueListenableBuilder(
           valueListenable: roomNotifier,
-          builder: (_, hc, __) => Row(
-            children: [
-              if ($user != null || $room!.single) ...[
-                GestureDetector(
-                  child: UserAvatar(
-                    user: $user!,
-                    size: 36,
-                    radius: 15,
-                  ),
-                  onTap: () => UserService.instance.showPublicProfileScreen(
-                    context,
-                    user: $user!,
-                  ),
+          builder: (_, hc, __) => !canViewChatMessage
+              ? const SizedBox.shrink()
+              : Row(
+                  children: [
+                    if ($user != null || $room!.single) ...[
+                      GestureDetector(
+                        child: UserAvatar(
+                          user: $user!,
+                          size: 36,
+                          radius: 15,
+                        ),
+                        onTap: () =>
+                            UserService.instance.showPublicProfileScreen(
+                          context,
+                          user: $user!,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                    ] else if ($room!.group) ...[
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color:
+                              Theme.of(context).colorScheme.tertiaryContainer,
+                        ),
+                        width: 36,
+                        height: 36,
+                        clipBehavior: Clip.hardEdge,
+                        child:
+                            $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: $room!.iconUrl!,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) {
+                                      dog("Error in Image Chat Room Screen: $error");
+                                      return const Icon(Icons.error);
+                                    },
+                                  )
+                                : const Icon(Icons.people),
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: Text(title($room)),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-              ] else if ($room!.group) ...[
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  width: 36,
-                  height: 36,
-                  clipBehavior: Clip.hardEdge,
-                  child: $room!.iconUrl != null && $room!.iconUrl!.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: $room!.iconUrl!,
-                          fit: BoxFit.cover,
-                          errorWidget: (context, url, error) {
-                            dog("Error in Image Chat Room Screen: $error");
-                            return const Icon(Icons.error);
-                          },
-                        )
-                      : const Icon(Icons.people),
-                ),
-                const SizedBox(width: 12),
-              ],
-              Expanded(
-                child: Text(title($room)),
-              ),
-            ],
-          ),
         ),
         actions: [
           if (ChatService.instance.chatRoomActionButton != null &&
               $room != null)
             ChatService.instance.chatRoomActionButton!($room!),
-          Builder(
-            builder: (context) {
+          ValueListenableBuilder(
+            valueListenable: roomNotifier,
+            builder: (context, hc, child) {
+              if (!canViewChatMessage) return const SizedBox.shrink();
               return DrawerButton(
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
               );
             },
           )
@@ -185,6 +241,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: ValueListenableBuilder(
         valueListenable: roomNotifier,
         builder: (_, hc, __) {
+          if (!canViewChatMessage) return const SizedBox.shrink();
           return ChatRoomMenuDrawer(
             room: $room,
             user: $user,
@@ -192,46 +249,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         },
       ),
       body:
-          // for ($room!.open && !canViewChatMessage)
           // showing loading widget at first because the user must join
           // the room first.
-          ($room == null && $user == null) ||
-                  ($room != null && $room!.open && !canViewChatMessage)
+          isLoading
               ? const Center(child: CircularProgressIndicator.adaptive())
               : ValueListenableBuilder(
                   valueListenable: roomNotifier,
                   builder: (_, hc, __) {
-                    if ($room == null && $user != null) {
-                      // this will happen if this user will send a
-                      // message for the first time.
-                      // Upon sending the message, it will create
-                      // a single chat room and invite the other user.
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                "no message yet. can send a message.".t,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          SafeArea(
-                            top: false,
-                            child: ChatRoomInputBox(
-                              beforeSend: (_) async {
-                                final newRoomRef =
-                                    await ChatRoom.createSingle($user!.uid);
-                                $room = await ChatRoom.get(newRoomRef.id);
-                                await onRoomReady();
-                                if (mounted) setState(() {});
-                                return $room!;
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    }
                     if (!canViewChatMessage) {
                       return Container(
                         decoration: BoxDecoration(
@@ -241,21 +265,62 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         ),
                         child: Center(
                           child: AlertDialog(
-                            title: Text("chat invitation".t),
+                            title: Text(notMemberTitle($room)),
                             content: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(notMemberMessage($room)),
-                                if (iAmInvited) ...[
+                                if (iAmInvited &&
+                                    $room?.single == true &&
+                                    $user != null) ...[
+                                  const SizedBox(height: 12),
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () => UserService.instance
+                                        .showPublicProfileScreen(context,
+                                            user: $user!),
+                                    child: Row(
+                                      children: [
+                                        UserAvatar(user: $user!),
+                                        const SizedBox(width: 12),
+                                        Column(
+                                          children: [
+                                            Text(
+                                                $user!.displayName
+                                                    .or('no name'.t),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge),
+                                            if ($user!.stateMessage != null &&
+                                                $user!.stateMessage!
+                                                    .isNotEmpty) ...[
+                                              const SizedBox(height: 4),
+                                              Text($user!.stateMessage!),
+                                            ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   const SizedBox(height: 24),
+                                ],
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    notMemberMessage($room),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                if (iAmInvited) ...[
+                                  const SizedBox(height: 48),
                                   Row(
                                     children: [
                                       Expanded(
                                         child: ElevatedButton(
                                           onPressed: () async {
                                             await $room!.acceptInvitation();
+                                            if (!context.mounted) return;
                                             setState(() {});
                                           },
                                           child: Text("accept".t),
@@ -280,6 +345,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         ),
                       );
                     }
+                    isJoiningNow = false;
                     return Column(
                       children: [
                         Expanded(
@@ -295,6 +361,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           top: false,
                           child: ChatRoomInputBox(
                             room: $room!,
+                            onSend: (text, photoUrl, replyTo) {
+                              mayInviteOtherUser();
+                            },
                           ),
                         ),
                       ],
@@ -302,5 +371,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   },
                 ),
     );
+  }
+
+  mayInviteOtherUser() {
+    if (!$room!.single) return;
+    if ($room!.userUids.length == 2) return;
+    final otherUserUid = getOtherUserUidFromRoomId($room!.id)!;
+    if ($room!.rejectedUsers.contains(otherUserUid)) return;
+    if ($room!.invitedUsers.contains(otherUserUid)) return;
+    $room!.inviteUser(otherUserUid);
   }
 }

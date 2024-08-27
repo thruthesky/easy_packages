@@ -1,5 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
@@ -44,6 +45,23 @@ class ChatRoomListView extends StatelessWidget {
         if (snapshot.isFetching && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
+
+        final List<ChatRoom> chatRooms =
+            snapshot.docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
+
+        // Either user did not block the other user in single
+        // or user was not blocked from the group chat
+        final viewableChatRooms = chatRooms.where((room) {
+          if (room.blockedUsers.contains(myUid)) return false;
+          if (room.group) return true;
+          // if single proceed
+          Map<String, dynamic> blocks = UserService.instance.blockChanges.value;
+          if (blocks.containsKey(getOtherUserUidFromRoomId(room.id) ?? "")) {
+            return false;
+          }
+          return true;
+        }).toList();
+
         return CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
@@ -60,7 +78,7 @@ class ChatRoomListView extends StatelessWidget {
                 ],
               ),
             ),
-            if (snapshot.docs.isEmpty)
+            if (viewableChatRooms.isEmpty)
               SliverToBoxAdapter(
                 child: emptyBuilder?.call(context) ??
                     Center(
@@ -75,7 +93,7 @@ class ChatRoomListView extends StatelessWidget {
               )
             else
               SliverList.separated(
-                itemCount: snapshot.docs.length,
+                itemCount: viewableChatRooms.length,
                 separatorBuilder: (context, index) =>
                     separatorBuilder?.call(context, index) ?? const Divider(),
                 itemBuilder: (context, index) {
@@ -83,10 +101,11 @@ class ChatRoomListView extends StatelessWidget {
                     snapshot.fetchMore();
                   }
 
-                  final room = ChatRoom.fromSnapshot(snapshot.docs[index]);
+                  final room = viewableChatRooms[index];
                   if (itemBuilder != null) {
                     return itemBuilder!(context, room, index);
                   }
+                  dog("ChatRoomListTile showLastMessage: ${!room.open}");
                   return ChatRoomListTile(
                     room: room,
                   );

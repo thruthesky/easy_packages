@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easyuser/easyuser.dart';
 
@@ -339,7 +340,7 @@ class ChatRoom {
       group: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      invitedUsers: otherUid == myUid ? null : [otherUid],
+      invitedUsers: null,
       users: [myUid!],
       masterUsers: [myUid!],
     );
@@ -390,6 +391,14 @@ class ChatRoom {
   }
 
   Future<void> acceptInvitation() async {
+    if (blockedUsers.contains(myUid)) {
+      throw ChatException(
+        'chat-join-fail',
+        'failed joining. something went wrong. the room may be private or deleted.'
+            .t,
+      );
+    }
+
     final timestampAtLastMessage = lastMessageAt != null
         ? Timestamp.fromDate(lastMessageAt!)
         : FieldValue.serverTimestamp();
@@ -525,6 +534,23 @@ class ChatRoom {
           ChatRoomUser.field.newMessageCounter: 0,
         }
       }
+    }, SetOptions(merge: true));
+  }
+
+  block(String uid) async {
+    await ref.set({
+      field.users: {
+        uid: FieldValue.delete(),
+      },
+      field.blockedUsers: FieldValue.arrayUnion([uid]),
+      field.updatedAt: FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  unblock(String uid) async {
+    await ref.set({
+      field.blockedUsers: FieldValue.arrayRemove([uid]),
+      field.updatedAt: FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
 }

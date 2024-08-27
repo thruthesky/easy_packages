@@ -31,7 +31,12 @@ class _ChatNewMessageCounterState extends State<ChatNewMessageCounter> {
         int newMessages = 0;
         for (final doc in docs) {
           final room = ChatRoom.fromSnapshot(doc);
-          newMessages += room.users[myUid]?.newMessageCounter ?? 0;
+          int addCount = room.users[myUid]?.newMessageCounter ?? 0;
+          if (UserService.instance.blockChanges.value
+              .containsKey(getOtherUserUidFromRoomId(room.id) ?? "")) {
+            addCount = 0;
+          }
+          newMessages += addCount;
         }
         return newMessages;
       }),

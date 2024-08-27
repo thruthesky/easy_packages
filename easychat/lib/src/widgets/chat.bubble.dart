@@ -60,6 +60,10 @@ class ChatBubble extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
           ? (details) async {
+              if (UserService.instance.blockChanges.value
+                  .containsKey(message.uid)) {
+                return;
+              }
               final value = await showMenu(
                 context: context,
                 position: RelativeRect.fromLTRB(
@@ -95,217 +99,296 @@ class ChatBubble extends StatelessWidget {
         // we will set it into 8.
         // margin: const EdgeInsets.symmetric(vertical: 4),
         margin: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: message.uid != myUid
-              ? MainAxisAlignment.start
-              : MainAxisAlignment.end,
-          children: [
-            if (message.uid != myUid) ...[
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: UserDoc.sync(
-                  uid: message.uid!,
-                  builder: (user) {
-                    if (user == null) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Theme.of(context).colorScheme.primaryContainer,
+        child: UserBlocked(
+            otherUid: message.uid!,
+            builder: (blocked) {
+              if (blocked) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: context.onSurface.withAlpha(50),
+                      ),
+                      width: 48,
+                      height: 48,
+                      child: Icon(
+                        Icons.block,
+                        color: context.onSurface.withAlpha(50),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "blocked user".t,
+                          style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withAlpha(100),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        width: 48,
-                        height: 48,
-                        child: const CircularProgressIndicator(),
-                      );
-                    }
-                    return GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        UserService.instance.showPublicProfileScreen(
-                          context,
-                          user: user,
-                        );
-                      },
-                      child: UserAvatar(user: user),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: maxWidth(context),
-              ),
-              child: Column(
+                        Container(
+                          decoration: BoxDecoration(
+                            color: context.surface,
+                            border: Border.all(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withAlpha(50),
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          constraints: BoxConstraints(
+                            maxWidth: maxWidth(context) * 2 / 3,
+                          ),
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            "this message is comming from a blocked user".t,
+                            style: TextStyle(
+                              fontSize: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge
+                                      ?.fontSize ??
+                                  8,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withAlpha(100),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+              return Row(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: message.uid != myUid
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: message.uid != myUid
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.end,
                 children: [
                   if (message.uid != myUid) ...[
-                    UserDoc.sync(
-                      uid: message.uid!,
-                      builder: (user) {
-                        if (user == null) {
-                          return const Text("...");
-                        }
-                        return Text(user.displayName);
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: UserDoc.sync(
+                        uid: message.uid!,
+                        builder: (user) {
+                          if (user == null) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                              ),
+                              width: 48,
+                              height: 48,
+                              child: const CircularProgressIndicator(),
+                            );
+                          }
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              UserService.instance.showPublicProfileScreen(
+                                context,
+                                user: user,
+                              );
+                            },
+                            child: UserAvatar(user: user),
+                          );
+                        },
+                      ),
                     ),
                     const SizedBox(width: 8),
                   ],
-                  if (message.deleted) ...[
-                    Opacity(
-                      opacity: 0.6,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.outline,
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: maxWidth(context),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: message.uid != myUid
+                          ? CrossAxisAlignment.start
+                          : CrossAxisAlignment.end,
+                      children: [
+                        if (message.uid != myUid) ...[
+                          UserDoc.sync(
+                            uid: message.uid!,
+                            builder: (user) {
+                              if (user == null ||
+                                  user.displayName.trim().isEmpty) {
+                                return const Text("...");
+                              }
+                              return Text(user.displayName);
+                            },
                           ),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: Text(
-                          'this message has been deleted'.t,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
+                          const SizedBox(width: 8),
+                        ],
+                        if (message.deleted) ...[
+                          Opacity(
+                            opacity: 0.6,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
                               ),
-                        ),
-                      ),
-                    )
-                  ],
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: message.uid != myUid
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.end,
-                    children: [
-                      if (message.uid == myUid) timeText(context),
-                      Flexible(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: message.uid == myUid
-                                // ? Theme.of(context).colorScheme.primaryContainer
-                                ? Colors.amber.shade200
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainerHigh,
-                            borderRadius: BorderRadius.only(
-                              topLeft: message.uid == myUid
-                                  ? const Radius.circular(12)
-                                  : Radius.zero,
-                              topRight: message.uid == myUid
-                                  ? Radius.zero
-                                  : const Radius.circular(12),
-                              bottomLeft: const Radius.circular(12),
-                              bottomRight: const Radius.circular(12),
-                            ),
-                          ),
-                          clipBehavior: Clip.hardEdge,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (message.replyTo != null) ...[
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: replyDividerColor(context),
-                                      ),
+                              padding: const EdgeInsets.all(12),
+                              child: Text(
+                                'this message has been deleted'.t,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
                                     ),
-                                  ),
-                                  child: ChatBubbleReply(
-                                    message: message,
-                                    maxWidth: maxWidth(context),
+                              ),
+                            ),
+                          )
+                        ],
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: message.uid != myUid
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.end,
+                          children: [
+                            if (message.uid == myUid) timeText(context),
+                            Flexible(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: message.uid == myUid
+                                      // ? Theme.of(context).colorScheme.primaryContainer
+                                      ? Colors.amber.shade200
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainerHigh,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: message.uid == myUid
+                                        ? const Radius.circular(12)
+                                        : Radius.zero,
+                                    topRight: message.uid == myUid
+                                        ? Radius.zero
+                                        : const Radius.circular(12),
+                                    bottomLeft: const Radius.circular(12),
+                                    bottomRight: const Radius.circular(12),
                                   ),
                                 ),
-                              ],
-                              Transform.translate(
-                                offset: Offset(
-                                  0,
-                                  message.replyTo != null ? -1 : 0,
-                                ),
-                                child: Container(
-                                  decoration: message.replyTo != null
-                                      ? BoxDecoration(
+                                clipBehavior: Clip.hardEdge,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (message.replyTo != null) ...[
+                                      Container(
+                                        decoration: BoxDecoration(
                                           border: Border(
-                                            top: BorderSide(
+                                            bottom: BorderSide(
                                               color: replyDividerColor(context),
                                             ),
                                           ),
-                                        )
-                                      : null,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      if (message.url != null) ...[
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .surfaceContainerHighest,
-                                          ),
-                                          height: photoHeight(context),
-                                          width: maxWidth(context),
-                                          child: CachedNetworkImage(
-                                            key: ValueKey(message.url),
-                                            fadeInDuration: Duration.zero,
-                                            fadeOutDuration: Duration.zero,
-                                            fit: BoxFit.cover,
-                                            imageUrl: message.url!,
-                                            errorWidget: (context, url, error) {
-                                              dog("Error in Image Chat Bubble: $error");
-                                              return Center(
-                                                child: Icon(
-                                                  Icons.error,
-                                                  color: context.error,
-                                                ),
-                                              );
-                                            },
-                                          ),
                                         ),
-                                      ],
-                                      if (message.text != null &&
-                                          message.text!.isNotEmpty) ...[
-                                        Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          child: Text(message.text!),
+                                        child: ChatBubbleReply(
+                                          message: message,
+                                          maxWidth: maxWidth(context),
                                         ),
-                                      ],
+                                      ),
                                     ],
-                                  ),
+                                    Transform.translate(
+                                      offset: Offset(
+                                        0,
+                                        message.replyTo != null ? -1 : 0,
+                                      ),
+                                      child: Container(
+                                        decoration: message.replyTo != null
+                                            ? BoxDecoration(
+                                                border: Border(
+                                                  top: BorderSide(
+                                                    color: replyDividerColor(
+                                                        context),
+                                                  ),
+                                                ),
+                                              )
+                                            : null,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            if (message.url != null) ...[
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .surfaceContainerHighest,
+                                                ),
+                                                height: photoHeight(context),
+                                                width: maxWidth(context),
+                                                child: CachedNetworkImage(
+                                                  key: ValueKey(message.url),
+                                                  fadeInDuration: Duration.zero,
+                                                  fadeOutDuration:
+                                                      Duration.zero,
+                                                  fit: BoxFit.cover,
+                                                  imageUrl: message.url!,
+                                                  errorWidget:
+                                                      (context, url, error) {
+                                                    dog("Error in Image Chat Bubble: $error");
+                                                    return Center(
+                                                      child: Icon(
+                                                        Icons.error,
+                                                        color: context.error,
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                            if (message.text != null &&
+                                                message.text!.isNotEmpty) ...[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(12),
+                                                child: Text(message.text!),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                            if (message.uid != myUid) timeText(context),
+                          ],
                         ),
-                      ),
-                      if (message.uid != myUid) timeText(context),
-                    ],
-                  ),
-                  if (message.previewUrl != null)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
-                      child: UrlPreview(
-                        previewUrl: message.previewUrl!,
-                        title: message.previewTitle,
-                        description: message.previewDescription,
-                        imageUrl: message.previewImageUrl,
-                      ),
+                        if (message.previewUrl != null)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+                            child: UrlPreview(
+                              previewUrl: message.previewUrl!,
+                              title: message.previewTitle,
+                              description: message.previewDescription,
+                              imageUrl: message.previewImageUrl,
+                            ),
+                          ),
+                      ],
                     ),
+                  ),
                 ],
-              ),
-            ),
-          ],
-        ),
+              );
+            }),
       ),
     );
   }
