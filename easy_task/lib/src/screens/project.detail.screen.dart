@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
@@ -15,6 +16,25 @@ class ProjectDetailsScreen extends StatefulWidget {
 
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   Task get task => widget.task;
+
+  @override
+  void initState() {
+    super.initState();
+    dog('ProjectDetailsScreen::initState');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    dog('ProjectDetailsScreen::didChangeDependencies');
+  }
+
+  @override
+  void didUpdateWidget(covariant ProjectDetailsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    dog('ProjectDetailsScreen::didUpdateWidget');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
