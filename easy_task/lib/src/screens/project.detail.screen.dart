@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
@@ -15,6 +16,25 @@ class ProjectDetailsScreen extends StatefulWidget {
 
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   Task get task => widget.task;
+
+  @override
+  void initState() {
+    super.initState();
+    dog('ProjectDetailsScreen::initState');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    dog('ProjectDetailsScreen::didChangeDependencies');
+  }
+
+  @override
+  void didUpdateWidget(covariant ProjectDetailsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    dog('ProjectDetailsScreen::didUpdateWidget');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,43 +44,50 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
             title: Text('Project Details'),
           ),
           SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('User ID: ${task.creator}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Project: ${task.project}',
-                    style: const TextStyle(fontSize: 16)),
-                Text('Title: ${task.title}',
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                Text('Description: ${task.description}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Created At: ${task.createdAt}',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(height: 8),
-                Text('Updated At: ${task.updatedAt}',
-                    style: const TextStyle(fontSize: 16)),
-                Row(
-                  children: [
-                    ElevatedButton(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('User ID: ${task.creator}',
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text('Project: ${task.project}',
+                      style: const TextStyle(fontSize: 16)),
+                  Text('Title: ${task.title}',
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text('Description: ${task.description}',
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text('Created At: ${task.createdAt}',
+                      style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text('Updated At: ${task.updatedAt}',
+                      style: const TextStyle(fontSize: 16)),
+                  Row(
+                    children: [
+                      ElevatedButton(
                         onPressed: () {
                           TaskService.instance.showChildTaskCreateScreen(
                             context,
                             parentTask: task,
                           );
                         },
-                        child: const Text('Add Task')),
-                    ElevatedButton(
-                        onPressed: () => TaskService.instance
-                            .showTaskUpdateScreen(context, task),
-                        child: const Text('Update Project')),
-                  ],
-                ),
-              ],
+                        child: const Text('Add Task'),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      ElevatedButton(
+                          onPressed: () => TaskService.instance
+                              .showTaskUpdateScreen(context, task),
+                          child: const Text('Update Project')),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -76,6 +103,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                   .orderBy('createdAt', descending: true),
               itemBuilder: (context, snapshot) {
                 final task = Task.fromSnapshot(snapshot);
+                print('task: $task');
                 return TaskListTile(task: task);
               },
             ),

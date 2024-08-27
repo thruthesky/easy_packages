@@ -1,3 +1,4 @@
+import 'package:easy_task/easy_task.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:flutter/material.dart';
 import 'package:easyuser/easyuser.dart';
@@ -42,6 +43,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 ] else ...[
                   Text("Display Name: ${user.displayName}"),
                   Text("UID: ${user.uid}"),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () =>
+                        TaskService.instance.showTaskCreateScreen(context),
+                    child: const Text('Task create screen'),
+                  ),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () =>
+                        TaskService.instance.showTaskListScreen(context),
+                    child: const Text('Task list screen'),
+                  ),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () => UserService.instance.signOut(),
+                    child: const Text('Signout'),
+                  ),
                 ],
               ],
             );

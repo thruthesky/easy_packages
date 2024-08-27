@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:easy_task/easy_task.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +24,12 @@ class _TaskListTileState extends State<TaskListTile> {
   }
 
   @override
+  void didUpdateWidget(covariant TaskListTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    checked = widget.task.completed;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       child: Padding(
@@ -42,7 +47,16 @@ class _TaskListTileState extends State<TaskListTile> {
                         setState(() {
                           checked = value;
                         });
-                        Timer(const Duration(milliseconds: 400), () async {
+
+                        if (widget.task.parent != null) {
+                          widget.task.toggleCompleted(value);
+                          return;
+                        }
+
+                        /// Delay the task completion to show the animation
+                        /// Purpose: to let the user know why the task is not being disappeared immediately
+                        /// Without this delay, the task will be disappeared immediately and use may be confused
+                        Timer(const Duration(milliseconds: 460), () async {
                           await widget.task.toggleCompleted(value);
                         });
                       }
