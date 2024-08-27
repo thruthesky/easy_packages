@@ -151,6 +151,10 @@ class ChatBubble extends StatelessWidget {
                         if (user == null || user.displayName.trim().isEmpty) {
                           return const Text("...");
                         }
+                        if (UserService.instance.blockChanges.value
+                            .containsKey(user.uid)) {
+                          return Text("blocked user".t);
+                        }
                         return Text(user.displayName);
                       },
                     ),
