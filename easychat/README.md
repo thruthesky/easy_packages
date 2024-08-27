@@ -388,6 +388,56 @@ flowchart TD
 
 ```
 
+### Logic for Inviting User in Group Chat
+
+User A wants to invite User B in a group chat.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser A must be logged in])
+  --> userOpenChatRoom[/User A opened the group chat room/]
+  --> openChatRoom[[Open the chat room\nshowChatRoomDialog]]
+  --> userOpenMenu[/User A pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System shows chat room menu drawer/]
+  --> userTapInvite[/User tapped `Invite More User`/]
+  --> systemShowSearch[/System shows search bar/]
+  --> userEnterName[/User A enter User B's name/]
+  --> systemGetData[(Get and search user)]
+  --> hasMatches{has matches?}
+  hasMatches --true--> userTap[/User Taps User B/]
+  hasMatches --false--> systemShowsEmpty[/System shows empty search result/]
+  --> systemShowSearch
+  userTap --> systemUpdates[(Add User B's uid in invitedUsers)]
+  --> systemMessageInvited[/System displays\n`User B has been invited`/]
+  --> final([End])
+```
+
+### Process for Accepting/Rejecting Chat Request/Invitation
+
+User B wants to accept an invitation.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser B must be logged in\nAssuming User B has invitations])
+  --> userOpenChatRoom[/User B opened the\nchat room list screen/]
+  --> loadInvitations{{Load Chat Room Invitations}}
+  --> systemShowsInvitaions[/System shows chat room invitations\nwith accept or reject buttons/]
+  --> userAcceptOrReject{Will user\naccept or reject?}
+ userAcceptOrReject --User don't want to do anything yet--> systemDoesNothing[system does nothing]
+ --> final
+  userAcceptOrReject --User wants to reject--> userRejectInvitation[/User Taps `Reject`/]
+  --> systemRemoveMember[(Update Room\nRemove uid in invitedUsers\nAdd uid in rejectedUsers)]
+  --> final
+  userAcceptOrReject--User wants to accept--> userAcceptInvitation[/User Taps `Accept`/]
+  --> blockInRoom{User B uid\nin blockedUsers?}
+  blockInRoom --false--> systemAddMember[(Update Room\nRemove uid in invitedUsers\nAdd user in chat room users or members)]
+  --> final([End])
+blockInRoom --true--> systemShowsError[/System shows `Error`/]
+  --> systemShowsInvitaions
+```
+
 
 ### Logic for Blocking User in Group Chat
 
