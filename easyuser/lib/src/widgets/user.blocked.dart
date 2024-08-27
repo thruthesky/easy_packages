@@ -14,10 +14,12 @@ class UserBlocked extends StatelessWidget {
     super.key,
     required this.otherUid,
     required this.builder,
+    this.loadingBuilder,
   });
 
   final String otherUid;
   final Widget Function(bool blocked) builder;
+  final Widget Function(BuildContext context)? loadingBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class UserBlocked extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             snapshot.hasData == false) {
-          return const SizedBox.shrink();
+          return loadingBuilder?.call(context) ?? const SizedBox.shrink();
         }
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
