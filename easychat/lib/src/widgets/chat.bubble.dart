@@ -148,7 +148,7 @@ class ChatBubble extends StatelessWidget {
                     UserDoc.sync(
                       uid: message.uid!,
                       builder: (user) {
-                        if (user == null) {
+                        if (user == null || user.displayName.trim().isEmpty) {
                           return const Text("...");
                         }
                         return Text(user.displayName);

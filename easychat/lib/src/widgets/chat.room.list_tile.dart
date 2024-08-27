@@ -70,6 +70,9 @@ class ChatRoomListTile extends StatelessWidget {
 
   Widget? subtitle(BuildContext context) {
     if (!room.userUids.contains(myUid)) {
+      if (room.description.trim().isEmpty) {
+        return null;
+      }
       return Text(
         room.description,
         maxLines: 1,
