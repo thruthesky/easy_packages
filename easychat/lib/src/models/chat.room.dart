@@ -537,15 +537,6 @@ class ChatRoom {
     }, SetOptions(merge: true));
   }
 
-  kick(String uid) async {
-    await ref.set({
-      field.users: {
-        uid: FieldValue.delete(),
-      },
-      field.updatedAt: FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
-  }
-
   block(String uid) async {
     await ref.set({
       field.users: {
