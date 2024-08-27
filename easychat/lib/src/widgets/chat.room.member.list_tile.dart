@@ -61,6 +61,8 @@ class ChatRoomMemberListTile extends StatelessWidget {
               ? null
               : Text(
                   user.stateMessage ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
       trailing: const Icon(Icons.more_vert),
       onTap: () {
