@@ -226,9 +226,17 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Delete',
     'ko': '삭제',
   },
+  'blocked user': {
+    'en': 'Blocked User',
+    'ko': '차단된 사용자',
+  },
   'edited': {
     'en': 'Edited',
     'ko': '편집됨',
+  },
+  'this message is comming from a blocked user': {
+    'en': 'This message is comming from a blocked user.',
+    'ko': '차단된 사용자의 메시지입니다.',
   },
   'this message has been deleted': {
     'en': 'This message has been deleted.',

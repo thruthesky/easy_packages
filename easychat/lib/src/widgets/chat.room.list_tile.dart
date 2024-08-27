@@ -118,6 +118,10 @@ class ChatRoomListTile extends StatelessWidget {
             ),
           );
         }
+        if (UserService.instance.blockChanges.value
+            .containsKey(lastMessage.uid)) {
+          return const Text("...");
+        }
         return Row(
           children: [
             if (!lastMessage.url.isNullOrEmpty) ...[
