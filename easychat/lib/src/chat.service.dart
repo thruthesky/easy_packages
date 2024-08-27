@@ -60,7 +60,12 @@ class ChatService {
   Widget Function(BuildContext context)?
       rejectedChatRoomInviteListScreenBuilder;
 
+  /// Builder for showing Dialog for chat member list
   Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder;
+
+  /// Builder for showing Dialog for blocked user list
+  Widget Function(BuildContext context, ChatRoom room)?
+      blockedUsersDialogBuilder;
 
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
@@ -80,6 +85,8 @@ class ChatService {
     Widget Function(BuildContext context)?
         rejectedChatRoomInviteListScreenBuilder,
     Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
+    Widget Function(BuildContext context, ChatRoom room)?
+        blockedUsersDialogBuilder,
   }) {
     UserService.instance.init();
 
@@ -99,6 +106,7 @@ class ChatService {
     this.rejectedChatRoomInviteListScreenBuilder =
         rejectedChatRoomInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
+    this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
   }
 
   /// Firebase CollectionReference for Chat Room docs

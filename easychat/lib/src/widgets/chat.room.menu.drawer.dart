@@ -407,10 +407,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return
-            // TODO create customization
-            // ChatService.instance.membersDialogBuilder
-            //         ?.call(context, room!) ??
+        return ChatService.instance.blockedUsersDialogBuilder
+                ?.call(context, room!) ??
             ChatRoomBlockedUsersDialog(room: room!);
       },
     );

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/widgets.dart';
