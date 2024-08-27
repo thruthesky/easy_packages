@@ -64,16 +64,6 @@ class _TaskListTileState extends State<TaskListTile> {
                       }
                     },
                   ),
-            // Checkbox(
-            //   value: widget.task.completed,
-            //   onChanged: (bool? value) async {
-            //     if (value != null) {
-            //       Timer(const Duration(milliseconds: 400), () async {
-            //         await widget.task.toggleCompleted(value);
-            //       });
-            //     }
-            //   },
-            // ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
