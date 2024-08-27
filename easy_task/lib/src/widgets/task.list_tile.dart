@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:flutter/material.dart';
 
@@ -64,16 +62,6 @@ class _TaskListTileState extends State<TaskListTile> {
                       }
                     },
                   ),
-            // Checkbox(
-            //   value: widget.task.completed,
-            //   onChanged: (bool? value) async {
-            //     if (value != null) {
-            //       Timer(const Duration(milliseconds: 400), () async {
-            //         await widget.task.toggleCompleted(value);
-            //       });
-            //     }
-            //   },
-            // ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
