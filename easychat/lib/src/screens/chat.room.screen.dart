@@ -105,7 +105,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
 
     if ($room != null) return;
-    createAndLoadSingleChat();
+    await createAndLoadSingleChat();
   }
 
   Future<void> createAndLoadSingleChat() async {
@@ -271,6 +271,40 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                if (iAmInvited &&
+                                    $room?.single == true &&
+                                    $user != null) ...[
+                                  const SizedBox(height: 12),
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () => UserService.instance
+                                        .showPublicProfileScreen(context,
+                                            user: $user!),
+                                    child: Row(
+                                      children: [
+                                        UserAvatar(user: $user!),
+                                        const SizedBox(width: 12),
+                                        Column(
+                                          children: [
+                                            Text(
+                                                $user!.displayName
+                                                    .or('no name'.t),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge),
+                                            if ($user!.stateMessage != null &&
+                                                $user!.stateMessage!
+                                                    .isNotEmpty) ...[
+                                              const SizedBox(height: 4),
+                                              Text($user!.stateMessage!),
+                                            ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                ],
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
@@ -279,13 +313,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   ),
                                 ),
                                 if (iAmInvited) ...[
-                                  const SizedBox(height: 24),
+                                  const SizedBox(height: 48),
                                   Row(
                                     children: [
                                       Expanded(
                                         child: ElevatedButton(
                                           onPressed: () async {
                                             await $room!.acceptInvitation();
+                                            if (!context.mounted) return;
                                             setState(() {});
                                           },
                                           child: Text("accept".t),
