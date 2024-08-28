@@ -66,12 +66,11 @@ ChatService.instance.init();
 
 - `/chat-rooms/{roomId}` is the document of chat room information. Chat room documents are saved in Firestore.
 
-- the `room id` has a tripe-hypen(`---`) if it's a 1:1 chat.
+- the `room id` has a triple-hypen(`---`) if it's a 1:1 chat.
 
 - `name` is the name of the chat room.
 
 - `description` is the description of the chat room.
-
 
 - `users` field is a Map that has user's uid as key. And the value of the user is another Map that has key/value for sorting/listing the chat rooms of each user. See the `chat.room.user.dart` for the details of fields.
   - All chat room users(members) exists in this Map whether it is a 1:1 chat or a group chat.
@@ -82,13 +81,11 @@ ChatService.instance.init();
 
 - `blockedUsers` is the uid list of blocked users by masters.
 
-
 - `masterUsers` is the uid list of master user. See [Masters](#masters)
 
 - `createdAt` is the Firestore Timestamp when the chat room created.
 
 - `updatedAt` is the Timestamp when the chat room information updated.
-
 
 - `open` if it is set to true, the chat room is open chat. So, it is listed in the open chat rom list and anyone can join the chat room without invitation.
 
@@ -121,7 +118,7 @@ ChatService.instance.init();
 - Chat room information must not be public. Only members and invited users, and the rejected users read it.
   - Invite users are included to read the chat room information NOT because once is was invited, but because there is no easy way of displaying the list of chat rooms that the user has rejected.
   - To secure the chat room information from the rejected users, the chat room information should maintain as less information as possible. For this reason, the chat room does not store the last message.
-  - So, to dispaly the last chat message on chat room list, the package listens the last message of the chat room.
+  - So, to display the last chat message on chat room list, the package listens the last message of the chat room.
 
 #### Cost of Firestore
 
@@ -167,11 +164,10 @@ For the speed and cost efficiencies, the chat messages are saved under `/chat-me
 - There is only one logic of the chat room and all the chat rooms are considered as a group chat. Even if it's a `1:1 chat`, it is considered as `group chat` and the logic goes same as group chat.
 
 - But why do we need to separate it as a single chat or group chat?
-  - When A chats to B, A wants to chat with B alone in 1:1 chat mode.
-    - Then, the app will create a chat room
-      - And then, some time later, B wants to chat with A in a 1:1 chat mode.
-        - Then, they need to continue the previous chat room.
-        - If there is only group chat, it will create the chat room over and over again and they cannot resume the previous chat room.
+  - When A chats to B, A wants to chat with B alone in 1:1 chat mode. The app will create a chat room meant for A and B alone, which is called single chat.
+  - And then, some time later, B wants to chat with A in a 1:1 chat mode. Then, they need to continue the previous chat room.
+  - If there is only group chat, it will create the chat room over and over again and they cannot resume the previous chat room.
+  - Easy chat uses UIDs of both users to create unique ID for their own private chat room.
 
 ## Masters
 
@@ -231,6 +227,10 @@ class MyAppState extends State<MyApp> {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       ChatService.instance.showChatRoomEditScreen(globalContext);
     });
+    // ...
+  }
+  // ...
+}
 ```
 
 ### Chat to admin
@@ -239,7 +239,7 @@ class MyAppState extends State<MyApp> {
 
 - If there is only one admin, you can create a 1:1 chat room with the user.
 
-- `chatting to admin` is a simple tric.
+- `chatting to admin` is a simple trick.
   - Simply add `Chat to admin` button in the app, then when the button is being pressed, simply open a chat room with uid of the admin. You can pass the admin uid to `ChatService.instance.showChatRoomScreen(uid: ...)`.
 
 ```dart
@@ -355,7 +355,6 @@ The `ChatNewMessageCounter` is for displaying the number of new message of the w
 
 If you want to display the number of new messages of each chat room, you can use `chatRoomNewMessageBuilder` builder.
 
-
 ## Chat Room Blocking
 
 User can be blocked in a chat room. This is different from user blocking by a user. This block functionality will make the masters block the chat room member.
@@ -366,7 +365,7 @@ This is only applicable to group chats, for open or not open, since the user can
 
 ### Chat Room Blocking Security Rule
 
-The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such this as "array-not-contains" in firestore query.
+The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such thing as "array-not-contains" in firestore query.
 
 However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
 
