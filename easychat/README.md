@@ -27,10 +27,6 @@ For your information, EasyChat:
 
 
 
-
-
-
-
 ## Overview
 
 - User must login to use any of the chat functionalities.
@@ -355,14 +351,14 @@ By default `pushNotificationToggleIcon` display enable icon when it is set to tr
 To reverse this we can set `reverse: true`. Which display a disable icon when it is set to true, otherwise false. With this we can exclude Subscribers from push notification.
 
 Why:
-To show the (push-notification) icon enabled when user un-subscribed. And to show it disabled when user subscribe.
+To show the (push-notification) icon is enabled when value in database is set to null. And to show it disabled when the value in database is set to true.
+
+The original (or without reverse) is, push notification icon shows enabled when value in database is set to true, otherwise disabled.
 
 Purpose:
-When a user enters chat room, there is no default value for the push-notification-subscription. And the normal chat app goes, the user subscribes the chat room automatically when he enters the chat room.
+When a user enters chat room, there is no default value for the push-notification-subscription. As usual chat app goes, the user subscribes the chat room automatically when he enters the chat room.
 
-To achevie this, it considers that when user enters chat room (but didn't actually subscribe), the user subscribed the chat room by reversing the subscription and un-subscription.
-
-So, when the user enters the chat room, the push-notification-icon is enabled but the subscription value in database is set to un-subscribed. And when the user presses the push-notification-icon again to disable the notification, it actually save the value in database as subscribed.
+To achieve this, when user enters chat room (but didn't do anything to subscribe), since the default is that user should receive notification, the user is considered subscribed and the value saved is null. The push notification icon will show that the user is subscribed (or enabled). If the user taps the push notification to unsubscribe, the value in database is set to true (which means the user is unsubscribed and the push notification icon will be disabled).
 
 How:
 This logic goes together with the following code snippet;
