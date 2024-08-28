@@ -63,8 +63,14 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                               imageUrl: room!.iconUrl!,
                               fit: BoxFit.cover,
                             )
-                          : const SafeArea(
-                              child: Icon(Icons.people, size: 64),
+                          : SafeArea(
+                              child: Icon(
+                                Icons.people,
+                                size: 64,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
+                              ),
                             ),
                       if (room!.masterUsers.contains(myUid))
                         Positioned(
