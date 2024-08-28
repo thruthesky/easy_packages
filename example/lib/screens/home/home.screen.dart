@@ -4,7 +4,6 @@ import 'package:easy_report/easy_report.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:example/screens/forum/comment.test.screen.dart';
 import 'package:example/screens/locale/locale.screen.dart';
 import 'package:example/screens/forum/forum.screen.dart';
 import 'package:example/screens/menu/menu.screen.dart';
@@ -177,15 +176,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     pageBuilder: (_, __, ___) => const ForumScreen(),
                   ),
                   child: const Text('Easy Forum Screen'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    showGeneralDialog(
-                      context: context,
-                      pageBuilder: (_, __, ___) => const CommentTestScreen(),
-                    );
-                  },
-                  child: const Text('Easy Comment Screen'),
                 ),
                 ElevatedButton(
                   onPressed: () async {

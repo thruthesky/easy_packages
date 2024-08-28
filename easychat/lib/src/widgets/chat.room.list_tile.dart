@@ -55,11 +55,9 @@ class ChatRoomListTile extends StatelessWidget {
           builder: (user) {
             return ListTile(
               leading: user == null ? null : UserAvatar(user: user),
-              title: user == null
-                  ? Text(room.id)
-                  : Text(user.displayName.trim().isNotEmpty
-                      ? user.displayName
-                      : '...'),
+              title: Text(user != null && user.displayName.trim().isNotEmpty
+                  ? user.displayName
+                  : '...'),
               subtitle: subtitle(context),
               trailing: trailing,
               onTap: () => onTapTile(context, room, user),
@@ -70,76 +68,91 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
-  Widget? subtitle(BuildContext context) => StreamBuilder<DatabaseEvent>(
-        key: ValueKey("LastMessageText_${room.id}"),
-        stream: ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Text("...");
-          }
-          // Maybe we can cache here to prevent the sudden "..." when the order is
-          // being changed when there is new user.
-          if (snapshot.data?.snapshot.value == null) {
-            return Text(
-              "no message yet".t,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-              ),
-            );
-          }
-          final firstRecord =
-              Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
-                  .entries
-                  .first;
-          final messageJson =
-              Map<String, dynamic>.from(firstRecord.value as Map);
-          final lastMessage =
-              ChatMessage.fromJson(messageJson, firstRecord.key);
+  Widget? subtitle(BuildContext context) {
+    if (!room.userUids.contains(myUid)) {
+      if (room.description.trim().isEmpty) {
+        return null;
+      }
+      return Text(
+        room.description,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+        ),
+      );
+    }
+    return StreamBuilder<DatabaseEvent>(
+      key: ValueKey("LastMessageText_${room.id}"),
+      stream: ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Text("...");
+        }
+        // Maybe we can cache here to prevent the sudden "..." when the order is
+        // being changed when there is new user.
+        if (snapshot.data?.snapshot.value == null) {
+          return Text(
+            "no message yet".t,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+            ),
+          );
+        }
+        final firstRecord =
+            Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
+                .entries
+                .first;
+        final messageJson = Map<String, dynamic>.from(firstRecord.value as Map);
+        final lastMessage = ChatMessage.fromJson(messageJson, firstRecord.key);
 
-          if (lastMessage.deleted) {
-            return Text(
-              'last message was deleted'.t,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-              ),
-            );
-          }
-          return Row(
-            children: [
-              if (!lastMessage.url.isNullOrEmpty) ...[
-                const Icon(Icons.photo, size: 16),
-                const SizedBox(width: 4),
-              ],
-              if (!lastMessage.text.isNullOrEmpty)
-                Flexible(
-                  child: Text(
-                    lastMessage.text!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                )
-              else if (!lastMessage.url.isNullOrEmpty)
-                Flexible(
-                  child: Text(
-                    "[${'photo'.t}]",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withAlpha(110),
-                    ),
+        if (lastMessage.deleted) {
+          return Text(
+            'last message was deleted'.t,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+            ),
+          );
+        }
+        if (UserService.instance.blockChanges.value
+            .containsKey(lastMessage.uid)) {
+          return const Text("...");
+        }
+        return Row(
+          children: [
+            if (!lastMessage.url.isNullOrEmpty) ...[
+              const Icon(Icons.photo, size: 16),
+              const SizedBox(width: 4),
+            ],
+            if (!lastMessage.text.isNullOrEmpty)
+              Flexible(
+                child: Text(
+                  lastMessage.text!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            else if (!lastMessage.url.isNullOrEmpty)
+              Flexible(
+                child: Text(
+                  "[${'photo'.t}]",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color:
+                        Theme.of(context).colorScheme.onSurface.withAlpha(110),
                   ),
                 ),
-            ],
-          );
-        },
-      );
+              ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget get trailing {
     return Column(
@@ -147,14 +160,14 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
-          ChatService.instance.chatRoomNewMessageBuilder?.call(
+          ChatService.instance.newMessageBuilder?.call(
                   (room.users[myUid]!.newMessageCounter ?? 0).toString()) ??
               Badge(
                 label: Text(
                   "${room.users[myUid!]!.newMessageCounter}",
                 ),
               ),
-        Text((room.lastMessageAt ?? room.updatedAt).short),
+        Text((room.updatedAt).short),
       ],
     );
   }

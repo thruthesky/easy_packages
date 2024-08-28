@@ -4,6 +4,8 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+/// Chat room message data model class
+///
 class ChatMessageField {
   static const id = 'id';
   static const roomId = 'roomId';
@@ -14,7 +16,7 @@ class ChatMessageField {
   static const order = 'order';
   static const replyTo = 'replyTo';
   static const deleted = 'deleted';
-  static const editedAt = 'editedAt';
+  static const updatedAt = 'updatedAt';
   static const previewUrl = 'previewUrl';
   static const previewTitle = 'previewTitle';
   static const previewDescription = 'previewDescription';
@@ -26,21 +28,22 @@ class ChatMessageField {
 class ChatMessage {
   String id;
   String? roomId;
-  String? text;
-  String? url;
   String? uid;
   int createdAt;
+  int? updatedAt;
   int? order;
-  ChatMessage? replyTo;
+  String? text;
+  String? url;
   final bool deleted;
-  int? editedAt;
 
   String? previewUrl;
   String? previewTitle;
   String? previewDescription;
   String? previewImageUrl;
 
-  bool get isEdited => editedAt != null;
+  ChatMessage? replyTo;
+
+  bool get isUpdated => updatedAt != null;
 
   DatabaseReference get ref =>
       ChatService.instance.messageRef(roomId!).child(id);
@@ -55,7 +58,7 @@ class ChatMessage {
     required this.order,
     this.replyTo,
     required this.deleted,
-    this.editedAt,
+    this.updatedAt,
     this.previewUrl,
     this.previewTitle,
     this.previewDescription,
@@ -85,7 +88,7 @@ class ChatMessage {
       // Added '?? false' because this it RTDB
       // Reason: There is no use for saving false in deleted.
       deleted: json[ChatMessageField.deleted] ?? false,
-      editedAt: json[ChatMessageField.editedAt],
+      updatedAt: json[ChatMessageField.updatedAt],
       previewUrl: json[ChatMessageField.previewUrl],
       previewTitle: json[ChatMessageField.previewTitle],
       previewDescription: json[ChatMessageField.previewDescription],
@@ -176,7 +179,7 @@ class ChatMessage {
           ChatMessageField.createdAt: replyTo.createdAt,
           ChatMessageField.deleted: replyTo.deleted,
         },
-      if (isEdit) ChatMessageField.editedAt: ServerValue.timestamp,
+      if (isEdit) ChatMessageField.updatedAt: ServerValue.timestamp,
       if (previewUrl != null) ChatMessageField.previewUrl: previewUrl,
       if (previewTitle != null) ChatMessageField.previewTitle: previewTitle,
       if (previewDescription != null)

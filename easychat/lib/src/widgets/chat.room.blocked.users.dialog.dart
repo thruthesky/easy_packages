@@ -3,8 +3,8 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class ChatRoomMemberListDialog extends StatelessWidget {
-  const ChatRoomMemberListDialog({
+class ChatRoomBlockedUsersDialog extends StatelessWidget {
+  const ChatRoomBlockedUsersDialog({
     super.key,
     required this.room,
   });
@@ -18,7 +18,7 @@ class ChatRoomMemberListDialog extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              "members".t,
+              "blocked users".t,
             ),
           ),
           IconButton(
@@ -34,10 +34,10 @@ class ChatRoomMemberListDialog extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.8,
         height: MediaQuery.of(context).size.height * 0.8,
         child: ListView.builder(
-          itemCount: room.userUids.length,
+          itemCount: room.blockedUsers.length,
           itemBuilder: (context, index) {
             return UserDoc(
-              uid: room.userUids[index],
+              uid: room.blockedUsers[index],
               builder: (user) {
                 if (user == null) {
                   return const SizedBox.shrink();

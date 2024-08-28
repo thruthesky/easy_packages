@@ -24,7 +24,6 @@ service cloud.firestore {
       function willBeOnlyMember() {
         return request.resource.data.users.keys().hasOnly([request.auth.uid]);
       }
-
       function sameOrRemovingMembers() {
         return request.resource.data.users.keys().hasOnly(resource.data.users.keys());
       }
@@ -43,7 +42,9 @@ service cloud.firestore {
         return !isMember() && willBeMember() && onlyAddingOneMember();
       }
       function isLeaving() {
-        return !willBeMember() && isMember() && onlyRemovingOneMember();
+        return !willBeMember()
+        && isMember() 
+        && onlyRemovingOneMember();
       }
       function isOpenGroup() {
         return resource.data.keys().hasAll([ 'open']) 
@@ -90,6 +91,14 @@ service cloud.firestore {
       function onlyUpdating(fields) {
         return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
       }
+      function isBlocked() {
+        return resource.data.keys().hasAny(['blockedUsers'])
+          && request.auth.uid in resource.data.blockedUsers;
+      }
+      function updatingCreatedAt() {
+        return resource.data.keys().hasAny(['createdAt'])
+          && request.resource.data.createdAt != resource.data.createdAt
+      }
 
       // function hasOrderField() {
       //   return 
@@ -106,7 +115,7 @@ service cloud.firestore {
       // To secure the chat room information from the rejected users, the chat room information should maintain
       // as less information as possible. For this reason, the chat room does not store the last message.
       // Refere easychat README.md for more information.
-      allow read: if isMember() || isInvited() || isOpenGroup() ||  isRejectedUser();
+      allow read: if isMember() || isInvited() ||  isRejectedUser() || (isOpenGroup() && !isBlocked());
       allow create: if willBeOnlyMember() 
                       && willBeOnlyMaster()
                       && (
@@ -119,18 +128,31 @@ service cloud.firestore {
           && sameOrRemovingMembers()
           && (
             !isSingleChat()
-            || (isSingleChat() && notUpdating(['invitedUsers','single']))
-          )
+            || (
+                isSingleChat() 
+                && notUpdating(['single'])
+                && willBeAtMostOne('invitedUsers')
+            )
+          ) &&
+          !updatingCreatedAt()
         )
         || (
           isJoining()
           && (isOpenGroup() || isInvited() || isRejectedUser())
+          && onlyUpdating(['users', 'invitedUsers', 'rejectedUsers', 'updatedAt'])
+          && !isBlocked()
         )
-        || isLeaving()
-        || isRejecting()
+        || (
+          isLeaving()
+          && onlyUpdating(['users', 'updatedAt'])
+        )
+        || (
+          isRejecting()
+          && onlyUpdating(['rejectedUsers', 'invitedUsers', 'updatedAt'])
+        )
         || (
           isMember()
-          && onlyUpdating(['lastMessageText', 'lastMessageAt', 'lastMessageUid', 'lastMessageUrl', 'lastMessageId', 'lastMessageDeleted', 'users'])
+          && onlyUpdating(['lastMessageAt',  'users', 'updatedAt'])
           && sameMembers()
         );
         allow delete: if isMaster();

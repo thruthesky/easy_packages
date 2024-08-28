@@ -11,6 +11,13 @@ final localeTexts = <String, Map<String, String>>{
     'ko': '보내기',
   },
 
+  // chat.room.dart
+  'failed joining. something went wrong. the room may be private or deleted.': {
+    'en':
+        'Failed joining chat room. Something went wrong. The room may be private or deleted',
+    'ko': "채팅방에 참여하지 못했습니다. 문제가 발생했습니다. 방이 비공개이거나 삭제되었을 수 있습니다.",
+  },
+
   // chat.room.edit.screen.dart
   'chat room create': {
     'en': 'Chat Room Create',
@@ -152,6 +159,10 @@ final localeTexts = <String, Map<String, String>>{
     'en': "You have rejected this chat. Unable to show message.",
     'ko': "이 채팅을 거절하셨습니다. 메시지를 보여줄 수 없습니다.",
   },
+  'please wait': {
+    'en': 'Please wait...',
+    'ko': '잠시만 기다려주세요...',
+  },
   'the chat room may be private or deleted': {
     'en': "The Chat Room may be private and/or deleted.",
     'ko': "채팅방은 비공개 또는 삭제될 수 있습니다.",
@@ -160,7 +171,18 @@ final localeTexts = <String, Map<String, String>>{
     'en': "Chat Invitation",
     'ko': "채팅 초대",
   },
-
+  'loading': {
+    'en': 'Loading...',
+    'ko': '로딩...',
+  },
+  'rejected chat': {
+    'en': "Rejected Chat",
+    'ko': "반려된 채팅",
+  },
+  'unable to chat': {
+    'en': "Unable to Chat",
+    'ko': "채팅할 수 없습니다.",
+  },
   "no message yet. can send a message.": {
     'en': "No message yet.\nYou can send a message.",
     'ko': "메시지가 없습니다.\n메시지를 보낼 수 있습니다.",
@@ -181,10 +203,7 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Rejected Chat Requests',
     'ko': '반려된 채팅 요청',
   },
-  'rejected chat': {
-    'en': 'Rejected Chat',
-    'ko': '반려된 채팅',
-  },
+  // 'rejected chat':  ====> chat.room.screen.dart
   'you have rejected chat already, accept the chat instead?': {
     'en': "You have rejected the chat already. Accept and continue chat?",
     'ko': "이미 이 채팅을 거절하셨습니다. 수락하고 계속 채팅하시겠습니까?"
@@ -207,9 +226,17 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Delete',
     'ko': '삭제',
   },
+  'blocked user': {
+    'en': 'Blocked User',
+    'ko': '차단된 사용자',
+  },
   'edited': {
     'en': 'Edited',
     'ko': '편집됨',
+  },
+  'this message is comming from a blocked user': {
+    'en': 'This message is comming from a blocked user.',
+    'ko': '차단된 사용자의 메시지입니다.',
   },
   'this message has been deleted': {
     'en': 'This message has been deleted.',
@@ -243,6 +270,12 @@ final localeTexts = <String, Map<String, String>>{
 
   // chat.new_message_counter.dart
   // Nothing to translate
+
+  // chat.room.blocked.users.dialog.dart
+  'blocked users': {
+    'en': 'Blocked Users',
+    'ko': '차단된 사용자들',
+  },
 
   // chat.room.input_box.dart
   // 'something went wrong' -> chat.messages.list_view.dart
@@ -292,10 +325,21 @@ final localeTexts = <String, Map<String, String>>{
     'ko': '멤버',
   },
 
+  // chat.room.member.list.dialog.dart
+  "you have blocked this user. to check, tap this user or here": {
+    'en':
+        'You have blocked this user. To check who is this, you may tap this user or here.',
+    'ko': '이 사용자를 차단했습니다. 이 사용자가 누구인지 확인하려면 이 사용자 또는 여기를 탭하세요.',
+  },
+
   // chat.room.menu.drawer.dart
   'members counted': {
     'en': 'Members ({num})',
     'ko': '멤버 ({num})',
+  },
+  'blocked users counted': {
+    'en': 'Blocked Users ({num})',
+    'ko': '차단된 사용자들 ({num})',
   },
   'and more members': {
     'en': '... and more.',
@@ -305,13 +349,13 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'See All Members',
     'ko': '모든 멤버 보기',
   },
+  'see all blocked users': {
+    'en': 'See All Blocked Users',
+    'ko': '모든 차단된 사용자 보기',
+  },
   'invite more users': {
     'en': 'Invite More Users',
     'ko': '더 많은 사용자 초대',
-  },
-  'you cannot invite yourself': {
-    'en': 'You cannot invite yourself.',
-    'ko': '자신을 초대할 수 없습니다.',
   },
   'the user is already invited': {
     'en': 'The user is already invited.',
@@ -320,6 +364,14 @@ final localeTexts = <String, Map<String, String>>{
   'the user is already a member': {
     'en': 'The user is already a member.',
     'ko': '이 사용자는 이미 멤버입니다.',
+  },
+  'the user is blocked from the chat room and cannot invite': {
+    'en': 'The user is blocked from the chat room and cannot invite',
+    'ko': '채팅방에서 차단된 사용자이므로 초대할 수 없습니다',
+  },
+  'you cannot invite yourself': {
+    'en': 'You cannot invite yourself.',
+    'ko': '자신을 초대할 수 없습니다.',
   },
   'invited user': {
     'en': 'Invited User',
