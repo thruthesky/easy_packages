@@ -1,26 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SettingModel {
+/// DocumentModel is a model class to handle the data from the Firestore database.
+///
+/// It supports the basic CRUD.
+class DocumentModel {
+  final String collectionName;
   final String id;
   final Map<String, dynamic> data;
 
   DocumentReference get ref =>
-      FirebaseFirestore.instance.collection('settings').doc(id);
+      FirebaseFirestore.instance.collection(collectionName).doc(id);
 
-  SettingModel({required this.id, required this.data});
+  DocumentModel({
+    required this.collectionName,
+    required this.id,
+    required this.data,
+  });
 
-  factory SettingModel.fromSnapshot(DocumentSnapshot snapshot) {
-    return SettingModel.fromJson(
-      Map<String, dynamic>.from(snapshot.data() as Map? ?? {}),
+  factory DocumentModel.fromSnapshot(DocumentSnapshot snapshot) {
+    return DocumentModel.fromJson(
+      snapshot.reference.parent.id,
       snapshot.id,
+      Map<String, dynamic>.from(snapshot.data() as Map? ?? {}),
     );
   }
 
-  factory SettingModel.fromJson(
-    Map<String, dynamic> data,
+  factory DocumentModel.fromJson(
+    String collectionName,
     String id,
+    Map<String, dynamic> data,
   ) {
-    return SettingModel(id: id, data: data);
+    return DocumentModel(
+      collectionName: collectionName,
+      id: id,
+      data: data,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -28,10 +42,10 @@ class SettingModel {
   }
 
   /// To get the data from the database.
-  static Future<SettingModel> get(String id) async {
+  static Future<DocumentModel> get(String id) async {
     final snapshot =
         await FirebaseFirestore.instance.collection('settings').doc(id).get();
-    return SettingModel.fromSnapshot(snapshot);
+    return DocumentModel.fromSnapshot(snapshot);
   }
 
   /// To update the field in the database.
