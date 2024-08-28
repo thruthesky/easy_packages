@@ -179,15 +179,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Text('Easy Forum Screen'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    showGeneralDialog(
-                      context: context,
-                      pageBuilder: (_, __, ___) => const CommentTestScreen(),
-                    );
-                  },
-                  child: const Text('Easy Comment Screen'),
-                ),
-                ElevatedButton(
                   onPressed: () async {
                     await confirm(
                       context: context,

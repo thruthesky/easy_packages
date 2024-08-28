@@ -4,6 +4,8 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+/// Chat room message data model class
+///
 class ChatMessageField {
   static const id = 'id';
   static const roomId = 'roomId';
