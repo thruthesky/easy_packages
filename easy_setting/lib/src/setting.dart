@@ -10,10 +10,11 @@ class Setting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Document(
-        collectionName: 'settings',
-        id: id,
-        builder: (model) {
-          return builder(model);
-        });
+      collectionName: 'settings',
+      id: id,
+      builder: (model) {
+        return builder(model);
+      },
+    );
   }
 }

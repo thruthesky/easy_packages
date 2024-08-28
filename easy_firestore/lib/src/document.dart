@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_firestore/easy_firestore.dart';
 import 'package:flutter/material.dart';
 
+/// Document
 class Document extends StatelessWidget {
   const Document({
     super.key,
