@@ -135,27 +135,11 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
 
 
 
-- The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such this as "array-not-contains" in firestore query.
-  - However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
-  - What we can also do is to filter out the room docs that blocked the user in Room List view.
-  - For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
-
-
-- 1:1 chat, group chat information are not allowed to blocked users.
-  - And when it (app) displays the chat room list of the user, it only queries the chat room list that the user is in. So, blocking chat room information for blocked users in 1:1 chat and group chat does not make any issues here. 
-- But the open chat room information is allowed to blocked users.
-  - This is because Firestore(and flutter) have no way to filter the chat rooms by not-having the blocked user uid in `blockedUsers` array field. It only allow `array-contains` but not `array-not-contains`. So, the 
-
-- A, B, C, D
-
-- U1... query to list all the chat room including A, B, C, D.
-  - all the chat room must have no permission dinied error. if one of the chat room throws permission denied error, all query will fails.
-  - For instance, Chat room "B" throws permission denied error for User-K.
-
-  - Because Chat room "B" throws permission error to User-K.
-    - User-K cannot query to get the list of the chat room.
-      - Solve by getting all the chat room except "B".
-
+- Security rules for open chat;
+  - The principle of the security for blocked users.
+    - It allows `blocked users` to read the `open chat room`.
+      - **Because**; any one can read the chat room information. If the blocked user simply logs-out and logs-in another user, and he is able to read the chat room information. Then, what's the use of blocking blocked users not to read the `open chat room` information.
+    - For 1:1 chat rooms and grup chat rooms, they have invitation mechanism and the user needs to be invited to read the chat room.
 
 
 
