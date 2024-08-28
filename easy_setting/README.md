@@ -1,12 +1,14 @@
 # Easy settings
 
-- `easy_setting` package provides an easy and nice UI/UX and the logic to manage user's settings in Firestore.
-- It can handle any kinds of settings.
+- `easy_setting` package provides an easy and nice UI/UX with the logic to manage the settings in Firestore.
+- It can handle any kinds of settings including but not limited to app settings, user settings.
+
+- Each setting is a Firestore document.
+
+- The document id of the setting's document must be unique for the setting.
 
 
 ## How to use
-
-
 
 - To display and update a value, see the code below.
 
