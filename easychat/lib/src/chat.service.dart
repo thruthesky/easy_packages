@@ -45,7 +45,7 @@ class ChatService {
   Function({required ChatRoom room, required String uid})? onInvite;
 
   /// It gets String parameter because the [no] can be something like "3+"
-  Widget Function(String no)? chatRoomNewMessageBuilder;
+  Widget Function(String no)? newMessageBuilder;
 
   /// This is used in Chat Room list screen.
   ///
@@ -77,7 +77,7 @@ class ChatService {
         onSendMessage,
     Function({required ChatRoom room, required String uid})? onInvite,
     Widget Function(ChatRoom)? chatRoomActionButton,
-    Widget Function(String no)? chatRoomNewMessageBuilder,
+    Widget Function(String no)? newMessageBuilder,
     Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
     Widget Function(BuildContext context)?
@@ -92,7 +92,7 @@ class ChatService {
 
     initialized = true;
 
-    this.chatRoomNewMessageBuilder = chatRoomNewMessageBuilder;
+    this.newMessageBuilder = newMessageBuilder;
     this.$showChatRoomListScreen =
         $showChatRoomListScreen ?? this.$showChatRoomListScreen;
     this.$showChatRoomEditScreen =
@@ -181,6 +181,7 @@ class ChatService {
   }
 
   showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
+    assert(user != null || room != null);
     return showGeneralDialog(
       context: context,
       barrierLabel: "Chat Room",

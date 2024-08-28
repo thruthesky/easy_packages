@@ -403,7 +403,7 @@ class ChatBubble extends StatelessWidget {
               ? CrossAxisAlignment.end
               : CrossAxisAlignment.start,
           children: [
-            if (message.isEdited)
+            if (message.isUpdated)
               Text(
                 // "${'edited'.t} • ${DateTime.fromMillisecondsSinceEpoch(message.editedAt!).shortDateTime}",
                 'edited'.t,

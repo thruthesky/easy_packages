@@ -62,7 +62,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                 padding: padding ?? const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    ChatService.instance.chatRoomNewMessageBuilder?.call(
+                    ChatService.instance.newMessageBuilder?.call(
                             chatRooms.length > 3
                                 ? "3+"
                                 : chatRooms.length.toString()) ??
