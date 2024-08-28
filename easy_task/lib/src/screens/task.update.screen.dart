@@ -53,12 +53,14 @@ class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
               minLines: 5,
               maxLines: 10,
             ),
-            const SizedBox(height: 20),
-            CheckboxListTile(
-              value: project,
-              title: Text('Project'.t),
-              onChanged: (v) => setState(() => project = v ?? false),
-            ),
+            if (widget.task.parent == null && widget.task.project == false) ...[
+              const SizedBox(height: 20),
+              CheckboxListTile(
+                value: project,
+                title: Text('Project'.t),
+                onChanged: (v) => setState(() => project = v ?? false),
+              ),
+            ],
             const SizedBox(height: 20),
             UploadForm(
               urls: widget.task.urls,

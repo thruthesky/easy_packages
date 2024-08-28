@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
+import 'package:easy_task/src/screens/task.user_group.create.screen.dart';
+import 'package:easy_task/src/screens/task.user_group.list.screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -93,6 +95,25 @@ class TaskService {
       context: context,
       pageBuilder: (context, _, __) {
         return ProjectDetailsScreen(task: task);
+      },
+    );
+  }
+
+  /// Show the task task group list screen.
+  showGroupListScreen(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return const TaskUserGroupListScreen();
+      },
+    );
+  }
+
+  showGroupCreateScreen(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return const TaskUserGroupCreateScreen();
       },
     );
   }

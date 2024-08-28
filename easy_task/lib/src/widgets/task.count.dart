@@ -28,7 +28,9 @@ class _TaskCountState extends State<TaskCount> {
       builder: (context, task, child) {
         return FutureBuilder<int>(
           initialData: count,
-          future: TaskFilter.filter(widget.menu).count().get().then(
+          future: TaskFilter.filter(
+            widget.menu,
+          ).count().get().then(
                 (snapshot) => snapshot.count ?? 0,
               ),
           builder: (context, snapshot) {
