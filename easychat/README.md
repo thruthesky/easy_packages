@@ -6,12 +6,23 @@ For your information, EasyChat:
 
 - Uses Firestore for chat room management for efficiency,
 - Utilizes Realtime Database for cost-saving measures like managing chat messages and tracking new message counts,
-- Allows integration with your existing app to fetch user information,
 - Supports push notification subscriptions and sending,
-- Enables file transfers and URL previews, among others,
+- Enables photo sharing, file transfers and URL previews, among others,
 - Provides everything needed for chat functionality,
 - Comes with a beautiful UI/UX by default,
 - Is optimized for use in large-scale chat applications.
+
+
+## TODO
+
+- Supporting `verifiedUserOnly`, `urlForVerifiedUserOnly`, `uploadForVerifiedUserOnly`.
+- Supporting password.
+- Supporting gender. To let only female or male join.
+
+
+## Overview
+
+- User must login to use any of the chat functionalities.
 
 ## Install
 
@@ -20,6 +31,12 @@ Add `easychat` into your `pubspec.yaml`
 ```sh
 % flutter pub add easychat
 ```
+
+## Example
+
+- See `example/lib/main.dart`.
+
+
 
 ## Initialization
 
@@ -34,46 +51,69 @@ ChatService.instance.init();
 
 ## User database
 
-If your app uses diferent Firestore database structure from what `easychat` expects, you can use the `easyuser` package to setup the user database structure to fit your app.
+`easychat` gets user data from `/mirror-users/<uid>/` node in realtime database. So, your app needs to save your display name and photo url in this node. If your app uses diferent database structure, then simply copy the user's data into `/mirror-users/<uid>/` node.
 
-For instance, if your app manages user information in `/members` collection, and displayName as `nickname`, user's photo as `photoURL` and the name to search is `searchName`, you can set like below.
+For your information, `easychat` uses `easyuser` package to manage the user's data. You don't have to install this package as the dependency of yoru app. It's not required but recommended to understand how `easychat` package works.
+
 
 ```dart
-UserService.instance.init(
-    userCollection: 'members',
-    displayName: 'nickname',
-    searchName: 'searchName',
-    photoUrl: 'photoURL',
-);
 ChatService.instance.init();
 ```
 
 ## Chat Database
 
-### Chat room database struture (Firestore)
+### Chat room database struture
 
-- `/chat-rooms/{roomId}` is the document of chat room information.
-- `users` field has the list of user's uid who joined the chat room.
-  - There is no 1:1 chat room or group chat room. Or you may consider if there are only two users in the room, then it may be 1:1 chat.
+- `/chat-rooms/{roomId}` is the document of chat room information. Chat room documents are saved in Firestore.
+
+- the `room id` has a tripe-hypen(`---`) if it's a 1:1 chat.
+
+- `name` is the name of the chat room.
+
+- `description` is the description of the chat room.
+
+
+- `users` field is a Map that has user's uid as key. And the value of the user is another Map that has key/value for sorting/listing the chat rooms of each user. See the `chat.room.user.dart` for the details of fields.
+  - All chat room users(members) exists in this Map whether it is a 1:1 chat or a group chat.
+
 - `invitedUsers` field has the list of invited user's uid. They cannot enter the chat room, until they confirm it in the app.
+
 - `rejectedUsers` field has the uid list of the rejected users from the invitation. Once the user rejected, his uid is moved from `invitedUsers` to `rejectedUsers`. In this way, the rejected users will not see the invitation in the chat list any more and the inviter cannot invite anymore.
-- `blockedUsers` is the uid list of blocked users by masters.x
+
+- `blockedUsers` is the uid list of blocked users by masters.
+
+
 - `masterUsers` is the uid list of master user. See [Masters](#masters)
+
 - `createdAt` is the Firestore Timestamp when the chat room created.
+
 - `updatedAt` is the Timestamp when the chat room information updated.
-- `lastMessageText` - removed at Aug 23, 2024 for security issue see the chat room security below.
-- `lastMessageAt` - removed at Aug 23, 2024 for security issue see the chat room security below.
-- `lastMessageUid` - removed at Aug 23, 2024 for security issue see the chat room security below.
-- `lastMessageUrl` - removed at Aug 23, 2024 for security issue see the chat room security below.
+
+
 - `open` if it is set to true, the chat room is open chat. So, it is listed in the open chat rom list and anyone can join the chat room without invitation.
+
 - `hasPassword` is set to true if the chat room has a password. See [Password](#password)
 
 - `single` - is true when the room is single chat
+
 - `group` - is true when the room is group chat
+
 - `open` - is true when the room is open group chat.
 
+- `gender` - If it is 'M', only males can joins the chat room. If it is 'F', only femails can join the chat room (NOT SUPPORTED, YET)
+
+- `domain` - It is the domain of the chat room. It is for a grouping chat rooms. It can be the name of the app.
+  - For instance, There are two different apps: A and B. And the two apps are using same Firebase project.
+    - And the developer may want to display only the chat rooms that were created by app A in the app A.
+  - The domain can be initlized by `init` and will be set to the chat room that are created by the app.
+    - And it's upto you how you use it.
 
 
+
+### Chat message database structure
+
+- `/chat-messages/<room-id>` is the path of chat room messages. It is saved in Realtime Database.
+- 
 
 
 ### Chat room security
@@ -157,9 +197,11 @@ It really happened to one of my own projects that someone sent very bad words to
 
 ## Password
 
+NOTE: Password is not supported, yet.
+
 The password must kept in secret by the Security rules. Then, how the user can join the chat room without the help of backend? Here is a solution.
 
-- Since the password is secured, the password must not be saved in chat room document.
+- Since the password must be secured for reading, the password must not be saved in chat room document.
 - So, it is saved under `/chat-room/{roomId}/chat-room-meta/private` document.
 - And, client cannot read the password and when the user enters the password, how the client can check if the password is correct or not?
 
@@ -178,9 +220,9 @@ This is the way how it can compare the chat password.
 
 
 
-# Development Tip
+## Development Tip
 
-## Opening chat room create in main.dart
+### Opening chat room create in main.dart
 
 ```dart
 class MyAppState extends State<MyApp> {
@@ -191,9 +233,9 @@ class MyAppState extends State<MyApp> {
     });
 ```
 
-## Chat to admin
+### Chat to admin
 
-### 1:1 chat
+#### 1:1 chat
 
 - If there is only one admin, you can create a 1:1 chat room with the user.
 
@@ -214,14 +256,14 @@ UserDoc(
 ),
 ```
 
-### Group chat (NOT SUPPORTED, YET)
+#### Group chat (NOT SUPPORTED, YET)
 
 This feature is not supported, yet.
 
 - ~~If there are many admins who want to participate in the customer care chat, list all the uid of admins.~~
 - ~~then, create a group chat room with the list of admins and the login user.~~
 
-# chatRoomActionButton
+## chatRoomActionButton
 
 You can add extra button on the header in chat room.
 The `chatRoomActionButton` contains the chat room information.
@@ -241,7 +283,7 @@ Usage: (e.g. adding extra icon on the chat room header)
     );
 ```
 
-# onSendMessage CallBack
+## onSendMessage CallBack
 
 Using `onSendMessage` is a callback after the message is sent.
 It contains the `ChatMessage` information and the `ChatRoom` information.
@@ -283,7 +325,7 @@ With this we can exclude Subscribers from push notification.
     );
 ```
 
-# onInvite Callback
+## onInvite Callback
 
 The `onInvite` callback is triggered after a user was invited to the chat room.
 This is called from `ChatRoom` -> `inviteUser` method.
@@ -307,8 +349,167 @@ ChatService.instance.init(
     );
 ```
 
-# chatRoomNewMessageBuilder
+## chatRoomNewMessageBuilder
 
 The `ChatNewMessageCounter` is for displaying the number of new message of the whole chat rooms.
 
 If you want to display the number of new messages of each chat room, you can use `chatRoomNewMessageBuilder` builder.
+
+
+## Chat Room Blocking
+
+User can be blocked in a chat room. This is different from user blocking by a user. This block functionality will make the masters block the chat room member.
+
+When a master blocks a user in chat room, the user will be kicked out of the chat room. The user will not be able to re-join the chat room.
+
+This is only applicable to group chats, for open or not open, since the user can block another user directly.
+
+### Chat Room Blocking Security Rule
+
+The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such this as "array-not-contains" in firestore query.
+
+However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
+
+What we can also do is to filter out the room docs that blocked the user in Room List view.
+
+For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
+
+### Group Chats with blocked users
+
+User can be blocked as itself or blocked in a chat room.
+
+When user blocks other user (the account itself), the rooms should cover/hide the chat messages of the blocked user.
+
+## Chat Room Logic Diagrams
+
+### Logic for Creating Group Chat
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser must be logged in])
+  --> createChatRoom[/User Open Chat Room\nCreate Screen/]
+  --> userEnter[/User enter details of the chat room\nincluding name, description or if the room is open chat/]
+  --> saveChatRoom[Save]
+  --> saveToDb[(System saves the\nchatroom into\nFirestore)]
+  --> showChatRoom[/System shows chat room to user\nwith input box, menu etc/]
+  --> final([End\nUser can do anything in Chat Room])
+
+```
+### Logic for Creating/Opening Single Chat
+
+```mermaid
+
+flowchart TD
+  start([Start])
+  --> userLook[User looks for a\n user to chat]
+  --> userChatOpen[/User open single chat\nor tapped `CHAT` /]
+  --> openChatRoom[[Open Chat Room Dialog\nshowChatRoomDialog]]
+  --> userClosed[/User closed group chat/]
+  --> final([End\n])
+```
+
+### Logic for Opening Chat Room
+
+- `ChatService.instance.showChatRoomScreen` can open `ChatRoomScreen`.
+  - You may call `ChatRoomScreen` directly from your app.
+
+
+```mermaid
+
+flowchart TD
+  start([Start\nChatRoomScreen])
+    --> LOAD{Load Chat Room}
+      LOAD--success--> SET_CHAT_ROOM[Set Current Chat Room]
+      LOAD--fail(permission-denied)--> isSingleChatRoom{1:1 chat?}
+      
+  isSingleChatRoom --false--> dontShowAboutChatRoom([ERROR: No Permission])
+    isSingleChatRoom --true--> CREATE_SING_CHAT[Attempt to create\n1:1 chat room]
+  CREATE_SING_CHAT --> SET_CHAT_ROOM
+  SET_CHAT_ROOM --> SEND_MESSAGE[/User entered text and url\nand pressed `SEND`/]
+  --> isSingle{single\nchat?}
+  isSingle--false--> userCanDoOther[User may now do other things\nSend another message\nView Menu\netc.]
+  isSingle--true--> otherUserInMembers{otherUserUid is\nin members?}
+  otherUserInMembers --true--> userCanDoOther
+  otherUserInMembers --false--> inviteOtherUser[System invites\nOther User]
+  inviteOtherUser --> userCanDoOther
+  --> SEND_MESSAGE
+
+```
+
+### Logic for Inviting User in Group Chat
+
+User A wants to invite User B in a group chat.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser A must be logged in])
+  --> userOpenChatRoom[/User A opened the group chat room/]
+  --> openChatRoom[[Open the chat room\nshowChatRoomDialog]]
+  --> userOpenMenu[/User A pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System shows chat room menu drawer/]
+  --> userTapInvite[/User tapped `Invite More User`/]
+  --> systemShowSearch[/System shows search bar/]
+  --> userEnterName[/User A enter User B's name/]
+  --> systemGetData[(Get and search user)]
+  --> hasMatches{has matches?}
+  hasMatches --true--> userTap[/User Taps User B/]
+  hasMatches --false--> systemShowsEmpty[/System shows empty search result/]
+  --> systemShowSearch
+  userTap --> systemUpdates[(Add User B's uid in invitedUsers)]
+  --> systemMessageInvited[/System displays\n`User B has been invited`/]
+  --> final([End])
+```
+
+### Process for Accepting/Rejecting Chat Request/Invitation
+
+User B wants to accept an invitation.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser B must be logged in\nAssuming User B has invitations])
+  --> userOpenChatRoom[/User B opened the\nchat room list screen/]
+  --> loadInvitations{{Load Chat Room Invitations}}
+  --> systemShowsInvitaions[/System shows chat room invitations\nwith accept or reject buttons/]
+  --> userAcceptOrReject{Will user\naccept or reject?}
+ userAcceptOrReject --User don't want to do anything yet--> systemDoesNothing[system does nothing]
+ --> final
+  userAcceptOrReject --User wants to reject--> userRejectInvitation[/User Taps `Reject`/]
+  --> systemRemoveMember[(Update Room\nRemove uid in invitedUsers\nAdd uid in rejectedUsers)]
+  --> final
+  userAcceptOrReject--User wants to accept--> userAcceptInvitation[/User Taps `Accept`/]
+  --> blockInRoom{User B uid\nin blockedUsers?}
+  blockInRoom --false--> systemAddMember[(Update Room\nRemove uid in invitedUsers\nAdd user in chat room users or members)]
+  --> final([End])
+blockInRoom --true--> systemShowsError[/System shows `Error`/]
+  --> systemShowsInvitaions
+```
+
+
+### Logic for Blocking User in Group Chat
+
+```mermaid
+flowchart TD
+  start([Start\nUser A and User B belongs to a same group\nwhere User A is the master\nUser A logged in])
+  --> openChatRoom[/User A opened the chat Room/]
+  --> openMenu[[showChatRoomDialog]]
+  --> userOpenMenu[/User Pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System show chat room menu drawer/]
+  --> userTapsMemberList[/User A taps member list/]
+  --> systemShowsMemberList[/System shows member list/]
+  --> masterTapsUser[/User A taps User B from the list/]
+  --> isBlocked{user B is blocked?}
+  --false--> systemShowsKickAndBlock[/System shows Kick and Block buttons/]
+  --> masterTapsBlock[/User A taps Block/]
+  --> systemKickMember[System kicks out User B]
+  --> systemAddsInBlock[(Update\nRemove User B in Users\nAdd User B in BlockedUsers)]
+  --> final
+
+  isBlocked--true--> systemShowsUnblock[/System shows Unblock button/]
+  --> masterTapsUnblock[/User A taps Unblock/]
+  --> systemRemoveUserBInBlock[(Update\nRemove User B in BlockUids)]
+  --> final([End])
+
+```

@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/widgets/chat.room.member.list.dialog.dart';
+import 'package:easychat/src/widgets/chat.room.blocked.users.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_report/easy_report.dart';
@@ -137,7 +137,10 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       uid: room!.userUids[index],
                       builder: (user) => user == null
                           ? const SizedBox.shrink()
-                          : UserListTile(user: user),
+                          : ChatRoomMemberListTile(
+                              user: user,
+                              room: room,
+                            ),
                     );
                   },
                   itemCount:
@@ -188,13 +191,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         exactSearch: true,
                       );
                       if (selectedUser == null) return;
-                      if (selectedUser.uid == my.uid) {
+                      if (room!.invitedUsers.contains(selectedUser.uid)) {
                         throw ChatException(
-                          'inviting-yourself',
-                          'you cannot invite yourself'.t,
+                          'already-invited',
+                          'the user is already invited'.t,
                         );
                       }
-                      if (room!.invitedUsers.contains(selectedUser.uid)) {
+                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
+                        // The chat room is already rejected by the other user, we are
+                        // not showing if user rejected the invitation.
                         throw ChatException(
                           'already-invited',
                           'the user is already invited'.t,
@@ -206,12 +211,17 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           'the user is already a member'.t,
                         );
                       }
-                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                        // The chat room is already rejected by the other user, we are
-                        // not showing if user rejected the invitation.
+                      if (room!.blockedUsers.contains(selectedUser.uid)) {
                         throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
+                          'chat-blocked',
+                          'the user is blocked from the chat room and cannot invite'
+                              .t,
+                        );
+                      }
+                      if (selectedUser.uid == my.uid) {
+                        throw ChatException(
+                          'inviting-yourself',
+                          'you cannot invite yourself'.t,
                         );
                       }
                       await room!.inviteUser(selectedUser.uid);
@@ -233,6 +243,53 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       );
                     },
                   ),
+                if (room!.blockedUsers.isNotEmpty) ...[
+                  InkWell(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 24),
+                        label(
+                          context: context,
+                          text: "blocked users counted"
+                              .tr(args: {'num': room!.blockedUsers.length}),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                    onTap: () {
+                      showBlockedUsersDialog(context);
+                    },
+                  ),
+                  ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemExtent: 72,
+                    itemBuilder: (context, index) {
+                      return UserDoc(
+                        uid: room!.blockedUsers[index],
+                        builder: (user) => user == null
+                            ? const SizedBox.shrink()
+                            : ChatRoomMemberListTile(
+                                user: user,
+                                room: room,
+                              ),
+                      );
+                    },
+                    itemCount: room!.blockedUsers.length >= 4
+                        ? 3
+                        : room!.blockedUsers.length,
+                    // itemCount: room!.blockedUsers.length,
+                  ),
+                  if (room!.blockedUsers.length >= 4) ...[
+                    ListTile(
+                      title: Text('see all blocked users'.t),
+                      onTap: () {
+                        showBlockedUsersDialog(context);
+                      },
+                    ),
+                  ],
+                ],
               ] else if (room?.single == true || user != null) ...[
                 Container(
                   height: photoHeight(context),
@@ -342,6 +399,17 @@ class ChatRoomMenuDrawer extends StatelessWidget {
         return ChatService.instance.membersDialogBuilder
                 ?.call(context, room!) ??
             ChatRoomMemberListDialog(room: room!);
+      },
+    );
+  }
+
+  showBlockedUsersDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ChatService.instance.blockedUsersDialogBuilder
+                ?.call(context, room!) ??
+            ChatRoomBlockedUsersDialog(room: room!);
       },
     );
   }

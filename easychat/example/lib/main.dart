@@ -1,4 +1,3 @@
-import 'package:easyuser/easyuser.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:example/screens/home/home.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,9 +26,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    UserService.instance.init(
-        // collectionName: 'my_members_col',
-        );
     ChatService.instance.init();
   }
 
