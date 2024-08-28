@@ -160,7 +160,7 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
-          ChatService.instance.chatRoomNewMessageBuilder?.call(
+          ChatService.instance.newMessageBuilder?.call(
                   (room.users[myUid]!.newMessageCounter ?? 0).toString()) ??
               Badge(
                 label: Text(

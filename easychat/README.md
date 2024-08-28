@@ -15,9 +15,20 @@ For your information, EasyChat:
 
 ## TODO
 
-- Supporting `verifiedUserOnly`, `urlForVerifiedUserOnly`, `uploadForVerifiedUserOnly`.
-- Supporting password.
-- Supporting gender. To let only female or male join.
+- Support: `verifiedUserOnly`, `urlForVerifiedUserOnly`, `uploadForVerifiedUserOnly`.
+- Support: password.
+- Support: gender. To let only female or male join.
+- Support: chat room customization for each user. For instance, the user may
+  - want to pin the chat room on top of the chat room list
+  - want to change the color of the chat room title for the priority
+  - want to chagne the name of the chat room when the chat room name or photo are not set properly or the other user name is not set properly.
+- Support: master can invite another user as master.
+- Support: the chat room invitation as optional. So, users can be invited directly without invitation.
+
+
+
+
+
 
 
 ## Overview
@@ -40,6 +51,8 @@ Add `easychat` into your `pubspec.yaml`
 
 ## Initialization
 
+- You should initialize the `ChatService`. See more on [Developer Guideline](#development-guideline).
+
 ```dart
 ChatService.instance.init();
 ```
@@ -53,12 +66,8 @@ ChatService.instance.init();
 
 `easychat` gets user data from `/mirror-users/<uid>/` node in realtime database. So, your app needs to save your display name and photo url in this node. If your app uses diferent database structure, then simply copy the user's data into `/mirror-users/<uid>/` node.
 
-For your information, `easychat` uses `easyuser` package to manage the user's data. You don't have to install this package as the dependency of yoru app. It's not required but recommended to understand how `easychat` package works.
+For your information, `easychat` uses `easyuser` package to manage the user's data. You don't have to install this package as the dependency of your app. It's not required but recommended to understand how `easyuser` package works.
 
-
-```dart
-ChatService.instance.init();
-```
 
 ## Chat Database
 
@@ -110,7 +119,8 @@ ChatService.instance.init();
 ### Chat message database structure
 
 - `/chat-messages/<room-id>` is the path of chat room messages. It is saved in Realtime Database.
-- 
+
+
 
 
 ### Chat room security
@@ -120,7 +130,32 @@ ChatService.instance.init();
   - To secure the chat room information from the rejected users, the chat room information should maintain as less information as possible. For this reason, the chat room does not store the last message.
   - So, to display the last chat message on chat room list, the package listens the last message of the chat room.
 
-#### Cost of Firestore
+
+- The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such this as "array-not-contains" in firestore query.
+  - However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
+  - What we can also do is to filter out the room docs that blocked the user in Room List view.
+  - For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
+
+
+- 1:1 chat, group chat information are not allowed to blocked users.
+  - And when it (app) displays the chat room list of the user, it only queries the chat room list that the user is in. So, blocking chat room information for blocked users in 1:1 chat and group chat does not make any issues here. 
+- But the open chat room information is allowed to blocked users.
+  - This is because Firestore(and flutter) have no way to filter the chat rooms by not-having the blocked user uid in `blockedUsers` array field. It only allow `array-contains` but not `array-not-contains`. So, the 
+
+- A, B, C, D
+
+- U1... query to list all the chat room including A, B, C, D.
+  - all the chat room must have no permission dinied error. if one of the chat room throws permission denied error, all query will fails.
+  - For instance, Chat room "B" throws permission denied error for User-K.
+
+  - Because Chat room "B" throws permission error to User-K.
+    - User-K cannot query to get the list of the chat room.
+      - Solve by getting all the chat room except "B".
+
+
+
+
+### Cost of Firestore
 
 - Firestore is more expensive compared to Realtime Database.
   - In the previous version, we were able to build the complete chat functionality with Realtime Database, but you(developers) don't like it. That's why we converted it to Firestore. Well, it costs more.
@@ -133,41 +168,47 @@ ChatService.instance.init();
 
 For the speed and cost efficiencies, the chat messages are saved under `/chat-messages/{roomId}` in Realtime Database
 
-- `senderUid` is the chat message sender uid.
-- `createdAt` is the date time of the chat message.
+
+- `id` is the id of the chat message. NOTE, that this id is not saved in the database. It is used in the client side only.
+
+- `roomId` is the room id.
+
+- `uid` is the chat message sender uid.
+
+- `createdAt` is the date time of the chat message creation.
+
+- `updateAt` is the date time of the chat message edition.
+
+
 - `order` is the chat message list order.
+
+
 - `text` is the text of the chat message.
+
 - `url` is the url of photo or file of the chat message.
+
 - `deleted` is true when the message is deleted. if the message is deleted, then text, url, url preview values will be deleted.
+
 - When sending a chat message, if the text contains a URL, the site information is displayed for previewing. The appropriate values are stored in the following fields below the message:
   - `previewUrl` - URL
   - `previewTitle` - Title
   - `previewDescription` - Description
   - `previewImageUrl` - Image
 
-### Chat room settings per each users (RTDB)
 
-- Chat room user setting will be saved under `/chat-room/{uid}/{roomId}` in Realtime Database.
+- `replyTo` is the chat message that the current message is replied to.
 
-- Why is the personal chat room setting required?
-  - Users can customize their chat rooms in several ways, such as:
-    - Naming their chat rooms.
-    - Marking certain chat rooms as favorites.
-    - Subscribing to push notifications for updates.
-  - Or the chat package saves the number of new messages in each chat room.
-  - And much more.
+
+
 
 
 ## Group Chat and 1:1 Chat
 
 - `1:1 chat` is also called `single chat`.
-- There is only one logic of the chat room and all the chat rooms are considered as a group chat. Even if it's a `1:1 chat`, it is considered as `group chat` and the logic goes same as group chat.
+- For single chat, `single` field goes true. For gropu chat, `group` field goes true.
+- The logic between `single` and `group` chat are very much the same.
 
-- But why do we need to separate it as a single chat or group chat?
-  - When A chats to B, A wants to chat with B alone in 1:1 chat mode. The app will create a chat room meant for A and B alone, which is called single chat.
-  - And then, some time later, B wants to chat with A in a 1:1 chat mode. Then, they need to continue the previous chat room.
-  - If there is only group chat, it will create the chat room over and over again and they cannot resume the previous chat room.
-  - Easy chat uses UIDs of both users to create unique ID for their own private chat room.
+
 
 ## Masters
 
@@ -178,7 +219,6 @@ The one who create chat room automatically becomes a master. And he can add anot
 It really happened to one of my own projects that someone sent very bad words to many other users that he does not know. And he ruined the app. So, we have a special feature to prevent this. And this feature is optional.
 
 - Chat invitation is an optional.
-
   - It can be disabled by default with the option that allows each user to enable it.
   - Or it can be enabled by default with the option that each user to disable it.
 
@@ -216,7 +256,19 @@ This is the way how it can compare the chat password.
 
 
 
-## Development Tip
+## Development Guideline
+
+
+
+### Init the chat service
+
+- You need to initialize the chat service as early as the app boots.
+
+```dart
+ChatService.instance.init(
+  //
+)
+```
 
 ### Opening chat room create in main.dart
 
@@ -235,12 +287,15 @@ class MyAppState extends State<MyApp> {
 
 ### Chat to admin
 
-#### 1:1 chat
+#### 1:1 chat with Admin
 
-- If there is only one admin, you can create a 1:1 chat room with the user.
+- To chat with the admin or the developer, you can open a 1:1 chat room.
 
-- `chatting to admin` is a simple trick.
-  - Simply add `Chat to admin` button in the app, then when the button is being pressed, simply open a chat room with uid of the admin. You can pass the admin uid to `ChatService.instance.showChatRoomScreen(uid: ...)`.
+- This is good for an app that has only one admin(or representitive) to entertain the customers(clients) inquery.
+
+- It is a simple trick to `chat with admin`.
+  - Simply add `Chat to admin` menu button in the app, then when the button is being pressed, simply open a chat room with user model of the admin.
+    - You can pass the user model to `ChatService.instance.showChatRoomScreen(user: ...)`.
 
 ```dart
 UserDoc(
@@ -256,7 +311,7 @@ UserDoc(
 ),
 ```
 
-#### Group chat (NOT SUPPORTED, YET)
+#### Group chat with multiple admins
 
 This feature is not supported, yet.
 
@@ -264,6 +319,8 @@ This feature is not supported, yet.
 - ~~then, create a group chat room with the list of admins and the login user.~~
 
 ## chatRoomActionButton
+
+
 
 You can add extra button on the header in chat room.
 The `chatRoomActionButton` contains the chat room information.
@@ -293,9 +350,28 @@ Usage: (e.g. push notification to other users in the chat room)
 You may also use `PushNotificationToggleIcon` widget which came from `easy_messaging` package. It display a toggle push notification icon.
 and make a subscription to rtdb using the room id as subscriptionName.
 The path is `fcm-subscriptions/$subscriptionName/$userId`.
-By default `pushNotificationToggleIcon` display enable icon when it is set to true, otherwise false. To reverse this we can set `reverse: true`.
-Which display a disable icon when it is set to true, otherwise false.
-With this we can exclude Subscribers from push notification.
+By default `pushNotificationToggleIcon` display enable icon when it is set to true, otherwise false.
+
+To reverse this we can set `reverse: true`. Which display a disable icon when it is set to true, otherwise false. With this we can exclude Subscribers from push notification.
+
+Why:
+To show the (push-notification) icon enabled when user un-subscribed. And to show it disabled when user subscribe.
+
+Purpose:
+When a user enters chat room, there is no default value for the push-notification-subscription. And the normal chat app goes, the user subscribes the chat room automatically when he enters the chat room.
+
+To achevie this, it considers that when user enters chat room (but didn't actually subscribe), the user subscribed the chat room by reversing the subscription and un-subscription.
+
+So, when the user enters the chat room, the push-notification-icon is enabled but the subscription value in database is set to un-subscribed. And when the user presses the push-notification-icon again to disable the notification, it actually save the value in database as subscribed.
+
+How:
+This logic goes together with the following code snippet;
+
+- `uids`: This is a list of uids of the whole users in the chat room.
+- `excludeSubscribers`: If it is set to true, the push-notification will be delivers to the users of `uids` except who subscribed.
+
+So, for the case of chat-room-push-notification, if user subscribed, the push-notification-icon appears as disabled(un-subscribed). Hence, the user who unsubscribed are actually subscribed and they (who unsubscribed) are excempted and will not get push-notification.
+
 
 ```dart
     ChatService.instance.init(
@@ -349,29 +425,20 @@ ChatService.instance.init(
     );
 ```
 
-## chatRoomNewMessageBuilder
+## newMessageBuilder
 
 The `ChatNewMessageCounter` is for displaying the number of new message of the whole chat rooms.
 
-If you want to display the number of new messages of each chat room, you can use `chatRoomNewMessageBuilder` builder.
+If you want to display the number of new messages of each chat room, you can use `newMessageBuilder` builder.
+
 
 ## Chat Room Blocking
 
-User can be blocked in a chat room. This is different from user blocking by a user. This block functionality will make the masters block the chat room member.
 
-When a master blocks a user in chat room, the user will be kicked out of the chat room. The user will not be able to re-join the chat room.
+Master(s) can block a user. Then the user is kicked out and cannot enter the chat room again.
 
 This is only applicable to group chats, for open or not open, since the user can block another user directly.
 
-### Chat Room Blocking Security Rule
-
-The room doc should be allowed to be read even if the user is blocked, because it may cause permission problem if the blocked user will be querying for other open group chats. There is no such thing as "array-not-contains" in firestore query.
-
-However, we should not allow blocked user to put himself in members (or chat room user) and it should be in security rule.
-
-What we can also do is to filter out the room docs that blocked the user in Room List view.
-
-For non-open group chat, querying is not an issue since we query chat rooms that the user is a member of, and since blocking user will kick out the user as well.
 
 ### Group Chats with blocked users
 
