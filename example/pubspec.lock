@@ -247,6 +247,13 @@ packages:
       relative: true
     source: path
     version: "0.0.5"
+  easy_firestore:
+    dependency: "direct main"
+    description:
+      path: "../easy_firestore"
+      relative: true
+    source: path
+    version: "0.0.3"
   easy_helpers:
     dependency: "direct main"
     description:

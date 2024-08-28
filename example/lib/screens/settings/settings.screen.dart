@@ -22,32 +22,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Text("Settings"),
           Setting(
             id: 'system',
-            builder: (sm) {
+            builder: (doc) {
               return ListTile(
-                title: Text('System count: ${sm.value<int>('count') ?? 0}'),
+                title: Text('System count: ${doc.value<int>('count') ?? 0}'),
                 onTap: () {
-                  sm.increment('count');
+                  doc.increment('count');
                 },
               );
             },
           ),
           Setting(
             id: FirebaseAuth.instance.currentUser!.uid,
-            builder: (sm) {
+            builder: (doc) {
               return ListTile(
-                title: Text('I like: ${sm.value<String>('fruit') ?? '...'}'),
+                title: Text('I like: ${doc.value<String>('fruit') ?? '...'}'),
                 subtitle: Row(
                   children: [
                     TextButton(
                       child: const Text('Apple'),
                       onPressed: () {
-                        sm.update({'fruit': 'Apple'});
+                        doc.update({'fruit': 'Apple'});
                       },
                     ),
                     TextButton(
                       child: const Text('Banna'),
                       onPressed: () {
-                        sm.update({'fruit': 'Banana'});
+                        doc.update({'fruit': 'Banana'});
                       },
                     ),
                   ],
