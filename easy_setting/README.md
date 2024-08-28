@@ -8,6 +8,19 @@
 - The document id of the setting's document must be unique for the setting.
 
 
+## TODO
+
+- `sync` opotion.
+- Security rules
+
+## Security Rules
+
+- For now, it does not provide any security rules. it's upto you how you define it.
+  - Recommed: secure by id.
+  - For instance,
+    - if the document id begins with `app-` is read only.
+    - if the document id begins with `<uid>-xxx` then, it is readable for everyone and writable for the user only.
+
 ## How to use
 
 - To display and update a value, see the code below.
@@ -61,3 +74,5 @@ Setting(
   },
 ),
 ```
+
+
