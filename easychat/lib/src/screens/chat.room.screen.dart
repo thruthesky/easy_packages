@@ -216,7 +216,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                       return const Icon(Icons.error);
                                     },
                                   )
-                                : const Icon(Icons.people),
+                                : Icon(
+                                    Icons.people,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
+                                  ),
                       ),
                       const SizedBox(width: 12),
                     ],

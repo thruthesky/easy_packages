@@ -27,10 +27,6 @@ For your information, EasyChat:
 
 
 
-
-
-
-
 ## Overview
 
 - User must login to use any of the chat functionalities.
@@ -75,12 +71,11 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
 
 - `/chat-rooms/{roomId}` is the document of chat room information. Chat room documents are saved in Firestore.
 
-- the `room id` has a tripe-hypen(`---`) if it's a 1:1 chat.
+- the `room id` has a triple-hypen(`---`) if it's a 1:1 chat.
 
 - `name` is the name of the chat room.
 
 - `description` is the description of the chat room.
-
 
 - `users` field is a Map that has user's uid as key. And the value of the user is another Map that has key/value for sorting/listing the chat rooms of each user. See the `chat.room.user.dart` for the details of fields.
   - All chat room users(members) exists in this Map whether it is a 1:1 chat or a group chat.
@@ -91,13 +86,11 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
 
 - `blockedUsers` is the uid list of blocked users by masters.
 
-
 - `masterUsers` is the uid list of master user. See [Masters](#masters)
 
 - `createdAt` is the Firestore Timestamp when the chat room created.
 
 - `updatedAt` is the Timestamp when the chat room information updated.
-
 
 - `open` if it is set to true, the chat room is open chat. So, it is listed in the open chat rom list and anyone can join the chat room without invitation.
 
@@ -131,8 +124,7 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
 - Chat room information must not be public. Only members and invited users, and the rejected users read it.
   - Invite users are included to read the chat room information NOT because once is was invited, but because there is no easy way of displaying the list of chat rooms that the user has rejected.
   - To secure the chat room information from the rejected users, the chat room information should maintain as less information as possible. For this reason, the chat room does not store the last message.
-  - So, to dispaly the last chat message on chat room list, the package listens the last message of the chat room.
-
+  - So, to display the last chat message on chat room list, the package listens the last message of the chat room.
 
 
 - Security rules for open chat;
@@ -266,8 +258,11 @@ class MyAppState extends State<MyApp> {
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       ChatService.instance.showChatRoomEditScreen(globalContext);
-    },
-  );
+    });
+    // ...
+  }
+  // ...
+}
 ```
 
 ### Chat to admin
@@ -278,7 +273,7 @@ class MyAppState extends State<MyApp> {
 
 - This is good for an app that has only one admin(or representitive) to entertain the customers(clients) inquery.
 
-- It is a simple tric to `chat with admin`.
+- It is a simple trick to `chat with admin`.
   - Simply add `Chat to admin` menu button in the app, then when the button is being pressed, simply open a chat room with user model of the admin.
     - You can pass the user model to `ChatService.instance.showChatRoomScreen(user: ...)`.
 
@@ -340,14 +335,14 @@ By default `pushNotificationToggleIcon` display enable icon when it is set to tr
 To reverse this we can set `reverse: true`. Which display a disable icon when it is set to true, otherwise false. With this we can exclude Subscribers from push notification.
 
 Why:
-To show the (push-notification) icon enabled when user un-subscribed. And to show it disabled when user subscribe.
+To show the (push-notification) icon is enabled when value in database is set to null. And to show it disabled when the value in database is set to true.
+
+The original (or without reverse) is, push notification icon shows enabled when value in database is set to true, otherwise disabled.
 
 Purpose:
-When a user enters chat room, there is no default value for the push-notification-subscription. And the normal chat app goes, the user subscribes the chat room automatically when he enters the chat room.
+When a user enters chat room, there is no default value for the push-notification-subscription. As usual chat app goes, the user subscribes the chat room automatically when he enters the chat room.
 
-To achevie this, it considers that when user enters chat room (but didn't actually subscribe), the user subscribed the chat room by reversing the subscription and un-subscription.
-
-So, when the user enters the chat room, the push-notification-icon is enabled but the subscription value in database is set to un-subscribed. And when the user presses the push-notification-icon again to disable the notification, it actually save the value in database as subscribed.
+To achieve this, when user enters chat room (but didn't do anything to subscribe), since the default is that user should receive notification, the user is considered subscribed and the value saved is null. The push notification icon will show that the user is subscribed (or enabled). If the user taps the push notification to unsubscribe, the value in database is set to true (which means the user is unsubscribed and the push notification icon will be disabled).
 
 How:
 This logic goes together with the following code snippet;

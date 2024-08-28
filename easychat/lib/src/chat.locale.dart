@@ -328,7 +328,7 @@ final localeTexts = <String, Map<String, String>>{
   // chat.room.member.list.dialog.dart
   "you have blocked this user. to check, tap this user or here": {
     'en':
-        'You have blocked this user. To check who is this, you may tap this user or here.',
+        'You have blocked this user. To check who this is, you may tap this user or here.',
     'ko': '이 사용자를 차단했습니다. 이 사용자가 누구인지 확인하려면 이 사용자 또는 여기를 탭하세요.',
   },
 

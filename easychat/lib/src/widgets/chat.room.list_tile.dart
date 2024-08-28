@@ -34,7 +34,10 @@ class ChatRoomListTile extends StatelessWidget {
                   imageUrl: room.iconUrl!,
                   fit: BoxFit.cover,
                 )
-              : const Icon(Icons.people),
+              : Icon(
+                  Icons.people,
+                  color: Theme.of(context).colorScheme.onTertiaryContainer,
+                ),
         ),
         title: Text(
           room.name.trim().isNotEmpty ? room.name : "Group Chat",

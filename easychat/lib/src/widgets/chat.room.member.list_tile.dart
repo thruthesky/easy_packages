@@ -20,6 +20,7 @@ class ChatRoomMemberListTile extends StatelessWidget {
     final blocked =
         UserService.instance.blockChanges.value.containsKey(user.uid);
     return ListTile(
+      minTileHeight: 72,
       leading: blocked
           ? Container(
               decoration: BoxDecoration(
