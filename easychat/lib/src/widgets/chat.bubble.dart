@@ -145,7 +145,7 @@ class ChatBubble extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           constraints: BoxConstraints(
-                            maxWidth: maxWidth(context) * 2 / 3,
+                            maxWidth: maxWidth(context) * 3 / 4,
                           ),
                           padding: const EdgeInsets.all(12),
                           child: Text(

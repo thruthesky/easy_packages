@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Chat room user field
 ///
-/// Chat room user field is not a list. It's a map. Refere README.md for more
+/// Chat room user field is not a list. It's a map. Refer to README.md for more
 /// information.
 class ChatRoomUser {
   // Field Names =========================

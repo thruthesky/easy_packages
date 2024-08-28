@@ -4,28 +4,25 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-/// Chat room message data model class
-///
-class ChatMessageField {
-  static const id = 'id';
-  static const roomId = 'roomId';
-  static const text = 'text';
-  static const url = 'url';
-  static const uid = 'uid';
-  static const createdAt = 'createdAt';
-  static const order = 'order';
-  static const replyTo = 'replyTo';
-  static const deleted = 'deleted';
-  static const updatedAt = 'updatedAt';
-  static const previewUrl = 'previewUrl';
-  static const previewTitle = 'previewTitle';
-  static const previewDescription = 'previewDescription';
-  static const previewImageUrl = 'previewImageUrl';
-
-  ChatMessageField._();
-}
-
 class ChatMessage {
+  /// Field names for the Chat Message Model
+  static const field = (
+    id: 'id',
+    roomId: 'roomId',
+    text: 'text',
+    url: 'url',
+    uid: 'uid',
+    createdAt: 'createdAt',
+    order: 'order',
+    replyTo: 'replyTo',
+    deleted: 'deleted',
+    updatedAt: 'updatedAt',
+    previewUrl: 'previewUrl',
+    previewTitle: 'previewTitle',
+    previewDescription: 'previewDescription',
+    previewImageUrl: 'previewImageUrl',
+  );
+
   String id;
   String? roomId;
   String? uid;
@@ -71,28 +68,28 @@ class ChatMessage {
   }
 
   static ChatMessage fromJson(Map<String, dynamic> json, String id) {
-    final replyTo = json[ChatMessageField.replyTo] == null
+    final replyTo = json[field.replyTo] == null
         ? null
-        : Map<String, dynamic>.from(json[ChatMessageField.replyTo] as Map);
+        : Map<String, dynamic>.from(json[field.replyTo] as Map);
     return ChatMessage(
       id: id,
-      roomId: json[ChatMessageField.roomId],
-      text: json[ChatMessageField.text],
-      url: json[ChatMessageField.url],
-      uid: json[ChatMessageField.uid],
-      createdAt: json[ChatMessageField.createdAt],
-      order: json[ChatMessageField.order],
+      roomId: json[field.roomId],
+      text: json[field.text],
+      url: json[field.url],
+      uid: json[field.uid],
+      createdAt: json[field.createdAt],
+      order: json[field.order],
       replyTo: replyTo == null
           ? null
-          : ChatMessage.fromJson(replyTo, replyTo[ChatMessageField.id]),
+          : ChatMessage.fromJson(replyTo, replyTo[field.id]),
       // Added '?? false' because this it RTDB
       // Reason: There is no use for saving false in deleted.
-      deleted: json[ChatMessageField.deleted] ?? false,
-      updatedAt: json[ChatMessageField.updatedAt],
-      previewUrl: json[ChatMessageField.previewUrl],
-      previewTitle: json[ChatMessageField.previewTitle],
-      previewDescription: json[ChatMessageField.previewDescription],
-      previewImageUrl: json[ChatMessageField.previewImageUrl],
+      deleted: json[field.deleted] ?? false,
+      updatedAt: json[field.updatedAt],
+      previewUrl: json[field.previewUrl],
+      previewTitle: json[field.previewTitle],
+      previewDescription: json[field.previewDescription],
+      previewImageUrl: json[field.previewImageUrl],
     );
   }
 
@@ -105,27 +102,27 @@ class ChatMessage {
     final replyToData = replyTo == null
         ? null
         : {
-            ChatMessageField.id: replyTo.id,
+            field.id: replyTo.id,
             // Save only upto 20 characters in text
             // This is reply anyway, we don't have to
             // show and save the whole text.
             if (replyTo.text != null)
-              ChatMessageField.text: replyTo.text!.length > 80
+              field.text: replyTo.text!.length > 80
                   ? "${replyTo.text?.substring(0, 77)}..."
                   : replyTo.text,
-            if (replyTo.url != null) ChatMessageField.url: replyTo.url,
-            ChatMessageField.uid: replyTo.uid,
-            ChatMessageField.createdAt: replyTo.createdAt,
-            ChatMessageField.deleted: replyTo.deleted,
+            if (replyTo.url != null) field.url: replyTo.url,
+            field.uid: replyTo.uid,
+            field.createdAt: replyTo.createdAt,
+            field.deleted: replyTo.deleted,
           };
     final newMessageData = {
-      ChatMessageField.roomId: roomId,
-      if (text != null) ChatMessageField.text: text,
-      if (url != null) ChatMessageField.url: url,
-      ChatMessageField.uid: FirebaseAuth.instance.currentUser!.uid,
-      ChatMessageField.createdAt: ServerValue.timestamp,
-      ChatMessageField.order: DateTime.now().millisecondsSinceEpoch * -1,
-      if (replyTo != null) ChatMessageField.replyTo: replyToData,
+      field.roomId: roomId,
+      if (text != null) field.text: text,
+      if (url != null) field.url: url,
+      field.uid: FirebaseAuth.instance.currentUser!.uid,
+      field.createdAt: ServerValue.timestamp,
+      field.order: DateTime.now().millisecondsSinceEpoch * -1,
+      if (replyTo != null) field.replyTo: replyToData,
     };
     final ref = ChatService.instance.messageRef(roomId).push();
     await ref.set(newMessageData);
@@ -161,31 +158,30 @@ class ChatMessage {
     String? previewImageUrl,
   }) async {
     final updateData = {
-      if (text != null) ChatMessageField.text: text,
-      if (url != null) ChatMessageField.url: url,
-      if (url?.isEmpty == true) ChatMessageField.url: null,
+      if (text != null) field.text: text,
+      if (url != null) field.url: url,
+      if (url?.isEmpty == true) field.url: null,
       if (replyTo != null)
-        ChatMessageField.replyTo: {
-          ChatMessageField.id: replyTo.id,
+        field.replyTo: {
+          field.id: replyTo.id,
           // Save only upto 80 characters in text
           // This is reply anyway, we don't have to
           // show and save the whole text.
           if (replyTo.text != null)
-            ChatMessageField.text: replyTo.text!.length > 80
+            field.text: replyTo.text!.length > 80
                 ? "${replyTo.text?.substring(0, 77)}..."
                 : replyTo.text,
-          if (replyTo.url != null) ChatMessageField.url: replyTo.url,
-          ChatMessageField.uid: replyTo.uid,
-          ChatMessageField.createdAt: replyTo.createdAt,
-          ChatMessageField.deleted: replyTo.deleted,
+          if (replyTo.url != null) field.url: replyTo.url,
+          field.uid: replyTo.uid,
+          field.createdAt: replyTo.createdAt,
+          field.deleted: replyTo.deleted,
         },
-      if (isEdit) ChatMessageField.updatedAt: ServerValue.timestamp,
-      if (previewUrl != null) ChatMessageField.previewUrl: previewUrl,
-      if (previewTitle != null) ChatMessageField.previewTitle: previewTitle,
+      if (isEdit) field.updatedAt: ServerValue.timestamp,
+      if (previewUrl != null) field.previewUrl: previewUrl,
+      if (previewTitle != null) field.previewTitle: previewTitle,
       if (previewDescription != null)
-        ChatMessageField.previewDescription: previewDescription,
-      if (previewImageUrl != null)
-        ChatMessageField.previewImageUrl: previewImageUrl,
+        field.previewDescription: previewDescription,
+      if (previewImageUrl != null) field.previewImageUrl: previewImageUrl,
     };
     await ref.update(updateData);
     this.text = text;
@@ -209,14 +205,14 @@ class ChatMessage {
       if (url != null) StorageService.instance.delete(url!),
       if (replyTo?.url != null) StorageService.instance.delete(replyTo!.url!),
       ref.update({
-        ChatMessageField.deleted: true,
-        ChatMessageField.text: null,
-        ChatMessageField.url: null,
-        ChatMessageField.replyTo: null,
-        ChatMessageField.previewUrl: null,
-        ChatMessageField.previewTitle: null,
-        ChatMessageField.previewDescription: null,
-        ChatMessageField.previewImageUrl: null,
+        field.deleted: true,
+        field.text: null,
+        field.url: null,
+        field.replyTo: null,
+        field.previewUrl: null,
+        field.previewTitle: null,
+        field.previewDescription: null,
+        field.previewImageUrl: null,
       }),
     ];
     // If error is caught here, check all the futures.

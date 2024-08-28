@@ -15,6 +15,7 @@ class ChatRoomListView extends StatelessWidget {
     this.invitationSeparatorBuilder,
     this.invitationItemBuilder,
     this.invitationBottomWidget,
+    this.invitationTextPadding,
   });
 
   final ChatRoomQuery queryOption;
@@ -30,6 +31,7 @@ class ChatRoomListView extends StatelessWidget {
       invitationItemBuilder;
 
   final Widget? invitationBottomWidget;
+  final EdgeInsetsGeometry? invitationTextPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +75,7 @@ class ChatRoomListView extends StatelessWidget {
                     bottomWidget: invitationBottomWidget ?? const Divider(),
                     itemBuilder: invitationItemBuilder,
                     separatorBuilder: invitationSeparatorBuilder,
+                    padding: invitationTextPadding,
                   ),
                   const SizedBox(height: 8),
                 ],
