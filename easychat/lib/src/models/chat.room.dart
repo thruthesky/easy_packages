@@ -377,6 +377,10 @@ class ChatRoom {
     await ref.update(updateData);
   }
 
+  /// Invite a user
+  ///
+  /// Note, that updating [updatedAt] is important to keep the order of the
+  /// chat room. It is especially useful to count the number of invitations.
   Future<void> inviteUser(String uid) async {
     await ref.update({
       field.invitedUsers: FieldValue.arrayUnion([uid]),

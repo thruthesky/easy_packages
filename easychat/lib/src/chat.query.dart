@@ -81,6 +81,10 @@ enum ChatRoomQuery {
     return q;
   }
 
+  /// Returns a query for chat rooms where the current user is invited.
+  ///
+  /// Note, that this query is ordered by [ChatRoom.field.updatedAt] in
+  /// descending order. This is important to count the number of invitations.
   static Query receivedInvites() {
     return ChatService.instance.roomCol
         .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
