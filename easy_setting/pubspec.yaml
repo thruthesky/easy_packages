@@ -1,6 +1,6 @@
 name: easy_setting_v2
 description: "Easy setting management. It provides UI widgets and logics that work on Firestore"
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/thruthesky/easy-packages
 
 environment:
@@ -8,7 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  easy_firestore: ^0.0.3
+  easy_firestore: ^0.0.4
   flutter:
     sdk: flutter
 

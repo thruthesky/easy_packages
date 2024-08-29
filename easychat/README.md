@@ -39,6 +39,25 @@ Add `easychat` into your `pubspec.yaml`
 % flutter pub add easychat
 ```
 
+
+### Security Rules
+
+#### Firestore Security Rules
+
+
+#### Realtime Database Security Rules
+
+
+### Index
+
+#### Firestore index
+
+#### Realtime Database index
+
+
+
+
+
 ## Example
 
 - See `example/lib/main.dart`.
@@ -232,6 +251,33 @@ It really happened to one of my own projects that someone sent very bad words to
       - and the chat message is normally saved in the chat room.
     - On B's screen, all the chat room that has B's uid in `invitedUsers` will be displayed on top of the chat list. And B will notice that he is invited.
       - If B accepts the invitation, B's uid will be moved from `invitedUsers` to `users` and normal chat continues.
+
+
+### Database for chat invitation
+
+- It uses `easy_setting_v2` package to save the `chatInvitationCount`.
+
+- `/chat-settings/<uid>/chatInvitationCount`: this field has the number of chat inivitation. This field is open to anyone.
+  - This value of user B is updated when
+    - A invites B
+    - B rejects
+    - B accepts
+  - The `chatInvitationCount` is updated inside the following methods of `ChatRoom` model.
+    - `inviteUser`
+    - `acceptInvitation`
+    - `rejectInvitation`
+  - The `chatInvitationCount` is reset with actual number of invitation every time when app starts. So, if something goes wrong, it will correct by itself.
+
+
+### How to use it
+
+- Initialize the chat service and it will automatically work.
+  - While its initialization, it will reset the number of invitation for its own correction since the security rules are open, it may go wrong and it needs correction. It only works once every app start.
+
+
+- To display the count(number) of all invitations;
+  - Use `ChatInvitationCount` widget.
+
 
 ## Password
 

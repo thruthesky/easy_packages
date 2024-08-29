@@ -4,6 +4,11 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
+/// Chat room invitation list tile.
+///
+/// Use:
+/// - To display the chat room invitation list on top of the chat room list.
+/// - You may use it to display the invitation list on home screen.
 class ChatRoomInvitationListTile extends StatelessWidget {
   const ChatRoomInvitationListTile({
     super.key,
@@ -21,12 +26,12 @@ class ChatRoomInvitationListTile extends StatelessWidget {
   static const EdgeInsetsGeometry _contentPadding =
       EdgeInsets.symmetric(horizontal: 16);
 
-  onTapAccept([User? user]) async {
+  Future onTapAccept([User? user]) async {
     onAccept?.call(room, user);
     await room.acceptInvitation();
   }
 
-  onTapReject([User? user]) async {
+  Future onTapReject([User? user]) async {
     onReject?.call(room, user);
     await room.rejectInvitation();
   }
@@ -70,25 +75,9 @@ class ChatRoomInvitationListTile extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       )
                     : null,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton(
-                  onPressed: () async => onTapAccept(user),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(12),
-                  ),
-                  child: Text("accept".t),
-                ),
-                const SizedBox(width: 4),
-                ElevatedButton(
-                  onPressed: () => onTapReject(user),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(12),
-                  ),
-                  child: Text("reject".t),
-                ),
-              ],
+            trailing: ChatRoomInvitationListTileActions(
+              onTapAccept: () => onTapAccept(user),
+              onTapReject: () => onTapReject(user),
             ),
             contentPadding: _contentPadding,
           );
@@ -127,27 +116,74 @@ class ChatRoomInvitationListTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ElevatedButton(
-            onPressed: onTapAccept,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(12),
-            ),
-            child: Text("accept".t),
-          ),
-          const SizedBox(width: 4),
-          ElevatedButton(
-            onPressed: onTapReject,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(12),
-            ),
-            child: Text("reject".t),
-          ),
-        ],
+      trailing: ChatRoomInvitationListTileActions(
+        onTapAccept: onTapAccept,
+        onTapReject: onTapReject,
       ),
       contentPadding: _contentPadding,
+    );
+  }
+}
+
+/// The actions for the ChatRoomInvitationListTile.
+///
+/// It contains two buttons: accept and reject.
+///
+/// Purpose:
+/// - To display the progress (as disabled) while preventing the user from double clicking the same button.
+class ChatRoomInvitationListTileActions extends StatefulWidget {
+  const ChatRoomInvitationListTileActions({
+    super.key,
+    required this.onTapAccept,
+    required this.onTapReject,
+  });
+
+  final void Function() onTapAccept;
+  final void Function() onTapReject;
+
+  @override
+  State<ChatRoomInvitationListTileActions> createState() =>
+      _ChatRoomInvitationListTileActionsState();
+}
+
+class _ChatRoomInvitationListTileActionsState
+    extends State<ChatRoomInvitationListTileActions> {
+  bool inProgress = false;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ElevatedButton(
+          onPressed: inProgress
+              ? null
+              : () async {
+                  if (inProgress) return;
+                  setState(() => inProgress = true);
+                  widget.onTapAccept();
+                  setState(() => inProgress = false);
+                },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(12),
+          ),
+          child: Text("accept".t),
+        ),
+        const SizedBox(width: 4),
+        ElevatedButton(
+          onPressed: inProgress
+              ? null
+              : () async {
+                  if (inProgress) return;
+                  setState(() => inProgress = true);
+                  widget.onTapReject();
+                  setState(() => inProgress = false);
+                },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(12),
+          ),
+          child: Text("reject".t),
+        ),
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
 import 'package:easy_url_preview/easy_url_preview.dart';
+import 'package:easy_firestore/easy_firestore.dart';
 
 /// Chat Service
 ///
@@ -67,6 +68,12 @@ class ChatService {
   Widget Function(BuildContext context, ChatRoom room)?
       blockedUsersDialogBuilder;
 
+  /// User settings
+  DocumentModel get setting =>
+      DocumentModel(collectionName: 'chat-settings', id: myUid!);
+  DocumentModel otherUserSetting(String uid) =>
+      DocumentModel(collectionName: 'chat-settings', id: uid);
+
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
@@ -107,6 +114,24 @@ class ChatService {
         rejectedChatRoomInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
     this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
+
+    resetInvitationCount();
+  }
+
+  /// Reset the invitation count.
+  ///
+  /// Since the count may goes wrong, because the security rules is open.
+  void resetInvitationCount() async {
+    final countSnapshot = await ChatService.instance.roomCol
+        .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
+        .count()
+        .get();
+
+    setting.update(
+      {
+        'chatInvitationCount': countSnapshot.count,
+      },
+    );
   }
 
   /// Firebase CollectionReference for Chat Room docs
@@ -287,5 +312,24 @@ class ChatService {
     final snapshot = await query.get();
     if (snapshot.size == 0) return [];
     return snapshot.docs.map((e) => ChatRoom.fromSnapshot(e)).toList();
+  }
+
+  /// Why is it in UserService? Not in user.dart model?
+  /// This is because; this method updates other user docuemnt. Not the login user's document.
+  Future<void> increaseInvitationCount(String otherUid) async {
+    await otherUserSetting(otherUid).update(
+      {
+        'chatInvitationCount': fs.FieldValue.increment(1),
+      },
+    );
+  }
+
+  /// It decreases the invitation count of the currently logged-in user.
+  Future<void> decreaseInvitationCount() async {
+    await setting.update(
+      {
+        'chatInvitationCount': fs.FieldValue.increment(-1),
+      },
+    );
   }
 }

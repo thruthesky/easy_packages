@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -381,15 +382,19 @@ class ChatRoom {
   ///
   /// Note, that updating [updatedAt] is important to keep the order of the
   /// chat room. It is especially useful to count the number of invitations.
+  ///
+  ///
   Future<void> inviteUser(String uid) async {
     await ref.update({
       field.invitedUsers: FieldValue.arrayUnion([uid]),
       field.updatedAt: FieldValue.serverTimestamp(),
     });
+    ChatService.instance.increaseInvitationCount(uid);
     ChatService.instance.onInvite?.call(room: this, uid: uid);
   }
 
   Future<void> acceptInvitation() async {
+    print('--> acceptInvitation; id; $id');
     if (blockedUsers.contains(myUid)) {
       throw ChatException(
         'chat-join-fail',
@@ -429,6 +434,8 @@ class ChatRoom {
       },
       SetOptions(merge: true),
     );
+    dog('--> ChatRoom.acceptInvitation: $id');
+    ChatService.instance.decreaseInvitationCount();
   }
 
   /// Alias for [acceptInvitation]. Since they have
@@ -440,6 +447,7 @@ class ChatRoom {
       field.invitedUsers: FieldValue.arrayRemove([myUid!]),
       field.rejectedUsers: FieldValue.arrayUnion([myUid!]),
     });
+    ChatService.instance.decreaseInvitationCount();
   }
 
   Future<void> leave() async {
