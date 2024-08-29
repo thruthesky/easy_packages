@@ -146,7 +146,12 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
       - When User A wants to chat to User B
         - QUESTION: What should happen if User B didn't invite User A? We cannot simple put User A as Member because it violates the idea of Invitations.
 
-    - Both Users left (1)
+    - Both Users left
+      - When User A want to chat to user B,
+        - Can't we allow User A to join room...? This can be against to our idea if we simply put User A as Member, because user A will see chat messages (or old messages) of room that did not invited her. (Supposedly, when you leave, you are no longer allowed to read, unless you are invited or a member.)
+        - To explain the problem, take note that User A (and User B as well) is no longer member of the room. Why should we allow User A to simply join the room, without invitations, in a private chat room?
+        
+
 
     
 
