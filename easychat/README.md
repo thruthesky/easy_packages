@@ -150,6 +150,23 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
 
 
 
+- For single chat rooms, it is important to secure the room to be used only by the users involved (user and other user). To do that, `strictlyFor` is added to fields for security rule, which contains the uids of users involved. Both user can leave the chat room.
+
+  - For leaving, there are multiple scenarios to handle.
+
+    - User A left, User B stayed (1)
+      - When User B chatted the room;
+        - it will invite A to join room. We know what to do because this similar on how single chat begins.
+    
+    - User A left, User B stayed (2)
+      - When User A wants to chat to User B
+        - QUESTION: What should happen if User B didn't invite User A? We cannot simple put User A as Member because it violates the idea of Invitations.
+
+    - Both Users left (1)
+
+    
+
+
 
 ### Cost of Firestore
 
@@ -429,7 +446,6 @@ If you want to display the number of new messages of each chat room, you can use
 
 
 ## Chat Room Blocking
-
 
 Master(s) can block a user. Then the user is kicked out and cannot enter the chat room again.
 
