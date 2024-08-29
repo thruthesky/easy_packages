@@ -1,5 +1,6 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_task/easy_task.dart';
+import 'package:easy_task/src/widgets/task_user_group/task.open.user_group.list.screen.button.dart';
 import 'package:flutter/material.dart';
 
 /// Task list screen
@@ -19,34 +20,30 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  TaskListOptions options = TaskListOptions(
-    completed: false,
-    menu: 'all',
-  );
+  String menu = 'all';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Task List'.t),
-        actions: [
-          const TaskCreateButton(),
-          TaskListHeaderMenu(options: options, onTap: () => setState(() {}))
+        actions: const [
+          TaskOpenGroupListScreenButton(),
+          TaskCreateButton(),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: TaskListTabMenu(
-            options: options,
-            onTap: (menu) {
+            onTap: (v) {
               setState(() {
-                options.menu = menu;
+                menu = v;
               });
             },
           ),
         ),
       ),
       body: TaskListView(
-        options: options,
+        menu: menu,
       ),
     );
   }

@@ -45,6 +45,11 @@ class ProjectDetailsScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text('Updated At: ${task.updatedAt}',
                             style: const TextStyle(fontSize: 16)),
+                        Text('Child count: ${task.childCount}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text(
+                            'Child complete count: ${task.completedChildCount}',
+                            style: const TextStyle(fontSize: 16)),
                         Row(
                           children: [
                             ElevatedButton(
@@ -83,8 +88,8 @@ class ProjectDetailsScreen extends StatelessWidget {
                   .orderBy('createdAt', descending: true),
               itemBuilder: (context, snapshot) {
                 final task = Task.fromSnapshot(snapshot);
-                print(
-                    'ProjectDetailsScreen: FirestoreListView: task: ${task.title}');
+                // debugPrint(
+                //     'ProjectDetailsScreen: FirestoreListView: task: ${task.title}');
                 return TaskListTile(task: task);
               },
             ),

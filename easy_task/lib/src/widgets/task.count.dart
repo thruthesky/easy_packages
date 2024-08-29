@@ -10,11 +10,9 @@ class TaskCount extends StatefulWidget {
   const TaskCount({
     super.key,
     required this.menu,
-    this.completed = false,
   });
 
   final String menu;
-  final bool completed;
 
   @override
   State<TaskCount> createState() => _TaskCountState();
@@ -31,10 +29,7 @@ class _TaskCountState extends State<TaskCount> {
         return FutureBuilder<int>(
           initialData: count,
           future: TaskFilter.filter(
-            TaskListOptions(
-              completed: widget.completed,
-              menu: widget.menu,
-            ),
+            widget.menu,
           ).count().get().then(
                 (snapshot) => snapshot.count ?? 0,
               ),
