@@ -114,81 +114,91 @@ Displaying number of tasks
 
 # Security Rules
 
+## Task Security Rules
+
+```ts
+  match /tasks/{taskId} {
+    allow read: if isMyField('creator');
+    allow create: if willBeMyField('creator');
+    allow update: if isMyField('creator');
+  }
+```
+
 ## Task User Group Security Rules
 
 ```ts
-    match /task-user-group/{userGroupId} {
+  match /task-user-group/{userGroupId} {
 
-      function isMember() {
-        return resource.data.keys().hasAll(['users'])
-                && request.auth.uid in resource.data.users;
-      }
-
-      function mustBeMember() {
-      	return request.auth.uid in request.data.users
-      }
-
-			function isInvited() {
-        return  resource.data.keys().hasAll(['invitedUsers'])
-                && request.auth.uid in resource.data.invitedUsers;
-      }
-
-      function isRejected() {
-        return resource.data.keys().hasAny(['rejectedUsers'])
-          && request.auth.uid in resource.data.rejectedUsers;
-      }
-
-      function willBeMember() {
-        return request.auth.uid in request.resource.data.users;
-      }
-
-			function willBeRejectedUser() {
-        return request.resource.data.keys().hasAny(['rejectedUsers'])
-                && request.auth.uid in request.resource.data.rejectedUsers;
-      }
-
-      function willOnlyAddOneUser() {
-        return resource.data.users.toSet().intersection(request.resource.data.users.toSet()) == resource.data.users.keys().toSet()
-          && request.resource.data.users.toSet().difference(resource.data.users.toSet()).size() == 1;
-      }
-
-      function willOnlyRemoveOneUser() {
-        return request.resource.data.users.toSet().intersection(resource.data.users.toSet()) == request.resource.data.users.keys().toSet()
-                && resource.data.users.toSet().difference(request.resource.data.users.toSet()).size() == 1;
-      }
-
-			function isJoining() {
-        return !isMember()
-        && willBeMember()
-        && willOnlyAddOneUser()
-        && onlyUpdating(['users', 'invitedUsers', 'updatedAt']);
-      }
-
-      function isRejecting() {
-        return isInvited()
-                && willBeRejectedUser()
-                && onlyUpdating(['rejectedUsers', 'invitedUsers', 'updatedAt']);
-      }
-      function isLeaving() {
-        return !isMyDoc()
-        && !willBeMember()
-        && isMember()
-        && willOnlyRemoveOneUser()
-        && onlyUpdating(['users', 'updatedAt']);
-      }
-
-
-      allow read: if isMyDoc()
-      || isMember()
-      || isInvited()
-      || isRejected();
-      allow create: if willBeMyDoc();
-      allow update: if (isMyDoc() && mustBeMember())
-      || isJoining()
-      || isRejecting()
-      || isLeaving();
-      allow delete: if isMyDoc();
+    function isMember() {
+      return resource.data.keys().hasAll(['users'])
+              && request.auth.uid in resource.data.users;
     }
+
+    function mustBeMember() {
+      return request.auth.uid in request.data.users
+    }
+
+    function isInvited() {
+      return  resource.data.keys().hasAll(['invitedUsers'])
+              && request.auth.uid in resource.data.invitedUsers;
+    }
+
+    function isRejected() {
+      return resource.data.keys().hasAny(['rejectedUsers'])
+        && request.auth.uid in resource.data.rejectedUsers;
+    }
+
+    function willBeMember() {
+      return request.auth.uid in request.resource.data.users;
+    }
+
+    function willBeRejectedUser() {
+      return request.resource.data.keys().hasAny(['rejectedUsers'])
+              && request.auth.uid in request.resource.data.rejectedUsers;
+    }
+
+    function willOnlyAddOneUser() {
+      return resource.data.users.toSet().intersection(request.resource.data.users.toSet()) == resource.data.users.keys().toSet()
+        && request.resource.data.users.toSet().difference(resource.data.users.toSet()).size() == 1;
+    }
+
+    function willOnlyRemoveOneUser() {
+      return request.resource.data.users.toSet().intersection(resource.data.users.toSet()) == request.resource.data.users.keys().toSet()
+              && resource.data.users.toSet().difference(request.resource.data.users.toSet()).size() == 1;
+    }
+
+    function isJoining() {
+      return !isMember()
+      && willBeMember()
+      && willOnlyAddOneUser()
+      && onlyUpdating(['users', 'invitedUsers', 'updatedAt']);
+    }
+
+    function isRejecting() {
+      return isInvited()
+              && willBeRejectedUser()
+              && onlyUpdating(['rejectedUsers', 'invitedUsers', 'updatedAt']);
+    }
+    function isLeaving() {
+      return !isMyDoc()
+      && !willBeMember()
+      && isMember()
+      && willOnlyRemoveOneUser()
+      && onlyUpdating(['users', 'updatedAt']);
+    }
+
+
+    allow read: if isMyDoc()
+    || isMember()
+    || isInvited()
+    || isRejected();
+    allow create: if willBeMyDoc();
+    allow update: if (isMyDoc() && mustBeMember())
+    || isJoining()
+    || isRejecting()
+    || isLeaving();
+    allow delete: if isMyDoc();
+  }
 ```
 
 # Custom UI Design
