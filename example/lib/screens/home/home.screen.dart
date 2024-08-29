@@ -302,20 +302,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-class ChatInvitationCount extends StatelessWidget {
-  const ChatInvitationCount({super.key, required this.builder});
-
-  final Widget Function(int count) builder;
-
-  @override
-  Widget build(BuildContext context) {
-    return Setting(
-        id: myUid!,
-        builder: (model) {
-          return Text(
-            'No of chat invitation: ${model.data['chatInvitationCount'] ?? '0'}',
-          );
-        });
-  }
-}

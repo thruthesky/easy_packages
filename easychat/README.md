@@ -231,10 +231,11 @@ It really happened to one of my own projects that someone sent very bad words to
       - If B accepts the invitation, B's uid will be moved from `invitedUsers` to `users` and normal chat continues.
 
 
-### Displaying no of chat inviation
+### Database for chat invitation
 
+- It uses `easy_setting_v2` package to save the `chatInvitationCount`.
 
-- `/users/<uid>/chatInvitationCount`: this field has the number of chat inivitation. This field is open to anyone.
+- `/chat-settings/<uid>/chatInvitationCount`: this field has the number of chat inivitation. This field is open to anyone.
   - This value of user B is updated when
     - A invites B
     - B rejects
@@ -251,6 +252,9 @@ It really happened to one of my own projects that someone sent very bad words to
 - Initialize the chat service and it will automatically work.
   - While its initialization, it will reset the number of invitation for its own correction since the security rules are open, it may go wrong and it needs correction. It only works once every app start.
 
+
+- To display the count(number) of all invitations;
+  - Use `ChatInvitationCount` widget.
 
 
 ## Password

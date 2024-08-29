@@ -70,7 +70,9 @@ class ChatService {
 
   /// User settings
   DocumentModel get setting =>
-      DocumentModel(collectionName: 'settings', id: myUid!);
+      DocumentModel(collectionName: 'chat-settings', id: myUid!);
+  DocumentModel otherUserSetting(String uid) =>
+      DocumentModel(collectionName: 'chat-settings', id: uid);
 
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
@@ -315,9 +317,7 @@ class ChatService {
   /// Why is it in UserService? Not in user.dart model?
   /// This is because; this method updates other user docuemnt. Not the login user's document.
   Future<void> increaseInvitationCount(String otherUid) async {
-    final otherUserSetting =
-        DocumentModel(collectionName: 'settings', id: otherUid);
-    await otherUserSetting.update(
+    await otherUserSetting(otherUid).update(
       {
         'chatInvitationCount': fs.FieldValue.increment(1),
       },

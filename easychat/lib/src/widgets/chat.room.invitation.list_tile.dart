@@ -4,6 +4,11 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
+/// Chat room invitation list tile.
+///
+/// Use:
+/// - To display the chat room invitation list on top of the chat room list.
+/// - You may use it to display the invitation list on home screen.
 class ChatRoomInvitationListTile extends StatelessWidget {
   const ChatRoomInvitationListTile({
     super.key,
