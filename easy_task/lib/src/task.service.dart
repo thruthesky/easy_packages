@@ -4,6 +4,7 @@ import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/screens/task.user_group.create.screen.dart';
 import 'package:easy_task/src/screens/task.user_group.detail.screen.dart';
 import 'package:easy_task/src/screens/task.user_group.edit.screen.dart';
+import 'package:easy_task/src/screens/task.user_group.invite_list.screen.dart';
 import 'package:easy_task/src/screens/task.user_group.list.screen.dart';
 import 'package:easy_task/src/task.user_group.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -135,6 +136,15 @@ class TaskService {
       context: context,
       pageBuilder: (context, _, __) {
         return TaskUserGroupEditScreen(userGroup: userGroup);
+      },
+    );
+  }
+
+  showUserGroupInviteListScreen(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return const TaskUserGroupInviteListScreen();
       },
     );
   }

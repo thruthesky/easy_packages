@@ -28,12 +28,20 @@ class _TaskUserGroupListScreenState extends State<TaskUserGroupListScreen> {
             },
             icon: const Icon(Icons.add),
           ),
+          IconButton(
+              onPressed: () {
+                TaskService.instance.showUserGroupInviteListScreen(context);
+              },
+              icon: const Icon(Icons.list_alt_sharp)),
+          const SizedBox(
+            width: 12,
+          )
         ],
       ),
       body: FirestoreListView(
         query: TaskUserGroup.col.where(
-          'uid',
-          isEqualTo: TaskService.instance.currentUser!.uid,
+          'users',
+          arrayContains: TaskService.instance.currentUser!.uid,
         ),
         itemBuilder: (_, snapshot) {
           final userGroup = TaskUserGroup.fromSnapshot(snapshot);

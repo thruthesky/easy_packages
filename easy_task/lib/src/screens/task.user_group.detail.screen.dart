@@ -75,7 +75,7 @@ class TaskUserGroupDetailScreen extends StatelessWidget {
                     ElevatedButton(
                         onPressed: () => TaskService.instance
                             .showTaskUserGroupEditScreen(context, userGroup),
-                        child: const Text('Edit user group')),
+                        child: Text('Edit task user group'.t)),
                   ],
                 ),
               ],
