@@ -26,7 +26,7 @@ class Task {
     required this.urls,
   });
 
-  /// [i]d is the task id
+  /// [id] is the task id
   final String id;
 
   /// [creator] is the uid of the user who created this task.
@@ -157,6 +157,22 @@ class Task {
       'urls': urls,
     });
 
+    /// if parent exist, count child and update parent childCount
+    if (parent != null) {
+      /// count childCount
+      final getChildCount = await col
+          .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+          .where('parent', isEqualTo: parent)
+          .count()
+          .get();
+
+      ///  save childCount and reset complete status
+      await col.doc(parent).update({
+        'childCount': getChildCount.count ?? 0,
+        'completed': false,
+      });
+    }
+
     ///
     TaskService.instance.countRebuildNotifier.value = ref.id;
     return ref;
@@ -178,15 +194,67 @@ class Task {
     });
   }
 
-  /// Delete the task
+  /// toggle the task
   Future<void> toggleCompleted(bool isCompleted) async {
     ///
     await ref.update({
       'completed': isCompleted,
       'updatedAt': FieldValue.serverTimestamp(),
     });
+
     if (child == false) {
-      TaskService.instance.countRebuildNotifier.value = id;
+      TaskService.instance.countRebuildNotifier.value = "$id$isCompleted";
+    }
+    updateParentChildCount(isCompleted);
+  }
+
+  /// Update the parent childCount
+  /// Count childCount, if has data then count completedChildCount.
+  /// If childCount is equal to completedChildCount meaning all task are complete.
+  /// Save [completedChildCount] and [completed] status
+  /// If the update will change  the total count of on total completion or Project
+  /// e.g. 1) A project with all task has been completed, then it should go to completed list
+  ///      2) A project that has complete status but new task was added, then it should go to project list.
+  ///      3) A complete project then an existing task was uncheck, then it should go to project list.
+  ///
+  Future<void> updateParentChildCount(bool isCompleted) async {
+    if (parent == null) return;
+
+    /// count child
+    final getChildCount = await col
+        .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+        .where('parent', isEqualTo: parent)
+        .count()
+        .get();
+
+    if (getChildCount.count != null && getChildCount.count! > 0) {
+      /// Count the completed child
+      final getCompleteChildCount = await col
+          .where('creator', isEqualTo: TaskService.instance.currentUser!.uid)
+          .where('parent', isEqualTo: parent)
+          .where('completed', isEqualTo: true)
+          .count()
+          .get();
+
+      /// Update parent completed child Count
+      await col.doc(parent).update({
+        'completedChildCount': getCompleteChildCount.count ?? 0,
+        'completed': getCompleteChildCount.count == getChildCount.count,
+      });
+
+      /// If the update result of the update was completion of all the project task,
+      /// Then notify count rebuild
+      if (isCompleted && getCompleteChildCount.count == getChildCount.count) {
+        TaskService.instance.countRebuildNotifier.value = "$id$isCompleted";
+
+        /// If the update result from all complete to uncomplete project task,
+        /// Then notify count rebuild
+      } else if (!isCompleted
+          //// this doesnt work when 2 or more task are uncheck
+          // && (getCompleteChildCount.count ?? 0) + 1 == getChildCount.count
+          ) {
+        TaskService.instance.countRebuildNotifier.value = "$id$isCompleted";
+      }
     }
   }
 }
