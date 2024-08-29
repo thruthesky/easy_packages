@@ -297,9 +297,9 @@ final localeTexts = <String, Map<String, String>>{
     'en': "Message Requests/Invitations!",
     'ko': "메시지 요청/초대!",
   },
-  'see more requests': {
-    'en': "See more...",
-    'ko': "더 많은 요청 보기...",
+  'view all invitations': {
+    'en': 'View All',
+    'ko': '모두 보기',
   },
 
   // chat.room.list_tile.dart
