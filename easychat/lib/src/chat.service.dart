@@ -22,6 +22,8 @@ class ChatService {
   /// Note that, chat service can be initialized multiple times.
   bool initialized = false;
 
+  bool countInvitation = false;
+
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;
@@ -68,6 +70,7 @@ class ChatService {
       blockedUsersDialogBuilder;
 
   init({
+    countInvitation = false,
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
     Future<fs.DocumentReference?> Function(BuildContext context,
@@ -91,6 +94,7 @@ class ChatService {
     UserService.instance.init();
 
     initialized = true;
+    this.countInvitation = countInvitation;
 
     this.newMessageBuilder = newMessageBuilder;
     this.$showChatRoomListScreen =
@@ -292,6 +296,7 @@ class ChatService {
   /// Why is it in UserService? Not in user.dart model?
   /// This is because; this method updates other user docuemnt. Not the login user's document.
   Future<void> increaseInvitationCount(String otherUid) async {
+    if (countInvitation == false) return;
     await UserService.instance.col.doc(otherUid).set(
       {
         'chatInvitationCount': fs.FieldValue.increment(1),
@@ -302,6 +307,7 @@ class ChatService {
 
   /// It decreases the invitation count of the currently logged-in user.
   Future<void> decreaseInvitationCount() async {
+    if (countInvitation == false) return;
     await my.ref.set(
       {
         'chatInvitationCount': fs.FieldValue.increment(-1),
