@@ -40,100 +40,231 @@ class ChatRoomMenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-      child: Drawer(
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: ListTileTheme(
-            data: const ListTileThemeData(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (room?.group == true) ...[
-                  Container(
-                    height: photoHeight(context),
-                    width: double.maxFinite,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.tertiaryContainer,
-                    ),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        room!.iconUrl != null && room!.iconUrl!.isNotEmpty
-                            ? CachedNetworkImage(
-                                imageUrl: room!.iconUrl!,
-                                fit: BoxFit.cover,
-                              )
-                            : SafeArea(
-                                child: Icon(
-                                  Icons.people,
-                                  size: 64,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onTertiaryContainer,
-                                ),
+    return Drawer(
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: ListTileTheme(
+          data: const ListTileThemeData(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (room?.group == true) ...[
+                Container(
+                  height: photoHeight(context),
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      room!.iconUrl != null && room!.iconUrl!.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: room!.iconUrl!,
+                              fit: BoxFit.cover,
+                            )
+                          : SafeArea(
+                              child: Icon(
+                                Icons.people,
+                                size: 64,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                               ),
-                        if (room!.masterUsers.contains(myUid))
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: IconButton(
-                              icon: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surface
-                                      .withAlpha(220),
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                                padding: const EdgeInsets.all(8),
-                                child: const Icon(Icons.edit),
-                              ),
-                              onPressed: () async {
-                                await ChatService.instance
-                                    .showChatRoomEditScreen(
-                                  context,
-                                  room: room,
-                                );
-                              },
                             ),
-                          )
+                      if (room!.masterUsers.contains(myUid))
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surface
+                                    .withAlpha(220),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              child: const Icon(Icons.edit),
+                            ),
+                            onPressed: () async {
+                              await ChatService.instance.showChatRoomEditScreen(
+                                context,
+                                room: room,
+                              );
+                            },
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                horizontalPadding(
+                  child: Text(
+                    room!.name,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                horizontalPadding(
+                  child: Text(
+                    room!.description,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                InkWell(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 24),
+                      label(
+                        context: context,
+                        text: "members counted"
+                            .tr(args: {'num': room!.userUids.length}),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                  onTap: () {
+                    showMembersDialog(context);
+                  },
+                ),
+                ListView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemExtent: 72,
+                  itemBuilder: (context, index) {
+                    return UserDoc(
+                      uid: room!.userUids[index],
+                      builder: (user) => user == null
+                          ? const SizedBox.shrink()
+                          : ChatRoomMemberListTile(
+                              user: user,
+                              room: room,
+                            ),
+                    );
+                  },
+                  itemCount:
+                      room!.userUids.length >= 4 ? 3 : room!.userUids.length,
+                ),
+                if (room!.userUids.length >= 4) ...[
+                  InkWell(
+                    onTap: () {
+                      showMembersDialog(context);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            'and more members'.t,
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  horizontalPadding(
-                    child: Text(
-                      room!.name,
-                      style: Theme.of(context).textTheme.titleLarge,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  ListTile(
+                    title: Text('see all members'.t),
+                    onTap: () {
+                      showMembersDialog(context);
+                    },
                   ),
-                  const SizedBox(height: 8),
-                  horizontalPadding(
-                    child: Text(
-                      room!.description,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                ],
+                if (room?.masterUsers.contains(my.uid) == true)
+                  ListTile(
+                    title: Text('invite more users'.t),
+                    onTap: () async {
+                      final selectedUser =
+                          await UserService.instance.showUserSearchDialog(
+                        context,
+                        itemBuilder: (user, index) {
+                          return UserListTile(
+                            user: user,
+                            onTap: () {
+                              Navigator.of(context).pop(user);
+                            },
+                          );
+                        },
+                        exactSearch: true,
+                      );
+                      if (selectedUser == null) return;
+                      if (room!.invitedUsers.contains(selectedUser.uid)) {
+                        throw ChatException(
+                          'already-invited',
+                          'the user is already invited'.t,
+                        );
+                      }
+                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
+                        // The chat room is already rejected by the other user, we are
+                        // not showing if user rejected the invitation.
+                        throw ChatException(
+                          'already-invited',
+                          'the user is already invited'.t,
+                        );
+                      }
+                      if (room!.userUids.contains(selectedUser.uid)) {
+                        throw ChatException(
+                          'already-member',
+                          'the user is already a member'.t,
+                        );
+                      }
+                      if (room!.blockedUsers.contains(selectedUser.uid)) {
+                        throw ChatException(
+                          'chat-blocked',
+                          'the user is blocked from the chat room and cannot invite'
+                              .t,
+                        );
+                      }
+                      if (selectedUser.uid == my.uid) {
+                        throw ChatException(
+                          'inviting-yourself',
+                          'you cannot invite yourself'.t,
+                        );
+                      }
+                      await room!.inviteUser(selectedUser.uid);
+                      if (!context.mounted) return;
+                      alert(
+                        context: context,
+                        title: Text('invited user'.t),
+                        message: Text(
+                          // Check It translated properly
+                          // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
+                          'user has been invited'.tr(
+                            args: {
+                              'username': selectedUser.displayName.isEmpty
+                                  ? selectedUser.name
+                                  : selectedUser.displayName,
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
+                if (room!.blockedUsers.isNotEmpty) ...[
                   InkWell(
                     child: Column(
                       children: [
                         const SizedBox(height: 24),
                         label(
                           context: context,
-                          text: "members counted"
-                              .tr(args: {'num': room!.userUids.length}),
+                          text: "blocked users counted"
+                              .tr(args: {'num': room!.blockedUsers.length}),
                         ),
                         const SizedBox(height: 8),
                       ],
                     ),
                     onTap: () {
-                      showMembersDialog(context);
+                      showBlockedUsersDialog(context);
                     },
                   ),
                   ListView.builder(
@@ -143,7 +274,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     itemExtent: 72,
                     itemBuilder: (context, index) {
                       return UserDoc(
-                        uid: room!.userUids[index],
+                        uid: room!.blockedUsers[index],
                         builder: (user) => user == null
                             ? const SizedBox.shrink()
                             : ChatRoomMemberListTile(
@@ -152,260 +283,125 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                               ),
                       );
                     },
-                    itemCount:
-                        room!.userUids.length >= 4 ? 3 : room!.userUids.length,
+                    itemCount: room!.blockedUsers.length >= 4
+                        ? 3
+                        : room!.blockedUsers.length,
+                    // itemCount: room!.blockedUsers.length,
                   ),
-                  if (room!.userUids.length >= 4) ...[
-                    InkWell(
-                      onTap: () {
-                        showMembersDialog(context);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              'and more members'.t,
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                    ),
+                  if (room!.blockedUsers.length >= 4) ...[
                     ListTile(
-                      title: Text('see all members'.t),
-                      onTap: () {
-                        showMembersDialog(context);
-                      },
-                    ),
-                  ],
-                  if (room?.masterUsers.contains(my.uid) == true)
-                    ListTile(
-                      title: Text('invite more users'.t),
-                      onTap: () async {
-                        final selectedUser =
-                            await UserService.instance.showUserSearchDialog(
-                          context,
-                          itemBuilder: (user, index) {
-                            return UserListTile(
-                              user: user,
-                              onTap: () {
-                                Navigator.of(context).pop(user);
-                              },
-                            );
-                          },
-                          exactSearch: true,
-                        );
-                        if (selectedUser == null) return;
-                        if (room!.invitedUsers.contains(selectedUser.uid)) {
-                          throw ChatException(
-                            'already-invited',
-                            'the user is already invited'.t,
-                          );
-                        }
-                        if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                          // The chat room is already rejected by the other user, we are
-                          // not showing if user rejected the invitation.
-                          throw ChatException(
-                            'already-invited',
-                            'the user is already invited'.t,
-                          );
-                        }
-                        if (room!.userUids.contains(selectedUser.uid)) {
-                          throw ChatException(
-                            'already-member',
-                            'the user is already a member'.t,
-                          );
-                        }
-                        if (room!.blockedUsers.contains(selectedUser.uid)) {
-                          throw ChatException(
-                            'chat-blocked',
-                            'the user is blocked from the chat room and cannot invite'
-                                .t,
-                          );
-                        }
-                        if (selectedUser.uid == my.uid) {
-                          throw ChatException(
-                            'inviting-yourself',
-                            'you cannot invite yourself'.t,
-                          );
-                        }
-                        await room!.inviteUser(selectedUser.uid);
-                        if (!context.mounted) return;
-                        alert(
-                          context: context,
-                          title: Text('invited user'.t),
-                          message: Text(
-                            // Check It translated properly
-                            // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
-                            'user has been invited'.tr(
-                              args: {
-                                'username': selectedUser.displayName.isEmpty
-                                    ? selectedUser.name
-                                    : selectedUser.displayName,
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  if (room!.blockedUsers.isNotEmpty) ...[
-                    InkWell(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 24),
-                          label(
-                            context: context,
-                            text: "blocked users counted"
-                                .tr(args: {'num': room!.blockedUsers.length}),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
+                      title: Text('see all blocked users'.t),
                       onTap: () {
                         showBlockedUsersDialog(context);
                       },
                     ),
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemExtent: 72,
-                      itemBuilder: (context, index) {
-                        return UserDoc(
-                          uid: room!.blockedUsers[index],
-                          builder: (user) => user == null
-                              ? const SizedBox.shrink()
-                              : ChatRoomMemberListTile(
-                                  user: user,
-                                  room: room,
-                                ),
-                        );
-                      },
-                      itemCount: room!.blockedUsers.length >= 4
-                          ? 3
-                          : room!.blockedUsers.length,
-                      // itemCount: room!.blockedUsers.length,
-                    ),
-                    if (room!.blockedUsers.length >= 4) ...[
-                      ListTile(
-                        title: Text('see all blocked users'.t),
-                        onTap: () {
-                          showBlockedUsersDialog(context);
-                        },
-                      ),
-                    ],
                   ],
-                ] else if (room?.single == true || user != null) ...[
-                  Container(
-                    height: photoHeight(context),
-                    width: double.maxFinite,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                    ),
-                    child: user != null &&
-                            user!.photoUrl != null &&
-                            user!.photoUrl!.isNotEmpty
-                        ? CachedNetworkImage(
-                            imageUrl: user!.photoUrl!,
-                            fit: BoxFit.cover,
-                          )
-                        : const SafeArea(
-                            child: Icon(Icons.person, size: 64),
-                          ),
+                ],
+              ] else if (room?.single == true || user != null) ...[
+                Container(
+                  height: photoHeight(context),
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
                   ),
-                  const SizedBox(height: 24),
+                  child: user != null &&
+                          user!.photoUrl != null &&
+                          user!.photoUrl!.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: user!.photoUrl!,
+                          fit: BoxFit.cover,
+                        )
+                      : const SafeArea(
+                          child: Icon(Icons.person, size: 64),
+                        ),
+                ),
+                const SizedBox(height: 24),
+                horizontalPadding(
+                  child: Text(
+                    user!.displayName,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (user!.stateMessage != null &&
+                    user!.stateMessage!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
                   horizontalPadding(
                     child: Text(
-                      user!.displayName,
-                      style: Theme.of(context).textTheme.titleLarge,
-                      maxLines: 1,
+                      user!.stateMessage!,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
-                  if (user!.stateMessage != null &&
-                      user!.stateMessage!.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    horizontalPadding(
-                      child: Text(
-                        user!.stateMessage!,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                  ],
                 ],
-                const SizedBox(height: 24),
-                if (user?.admin != true)
-                  label(context: context, text: "options".t),
-                const SizedBox(height: 8),
-                if (room?.joined == true) ...[
-                  if (room!.group && room!.masterUsers.contains(my.uid))
-                    ListTile(
-                      title: Text("update".t),
-                      onTap: () {
-                        ChatService.instance
-                            .showChatRoomEditScreen(context, room: room);
-                      },
-                    ),
-                  if (room!.group)
-                    ListTile(
-                      title: Text("leave".t),
-                      onTap: () async {
-                        final re = await confirm(
-                          context: context,
-                          title: Text("leaving room".t),
-                          message: Text('leaving room confirmation'.t),
-                        );
-                        if (re != true) return;
-                        room!.leave();
-                        if (!context.mounted) return;
-                        // two pops since we are opening both
-                        // drawer and room screen.
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                ],
-                if (user != null && !user!.admin) ...[
-                  if (room?.single == true || user != null)
-                    ListTile(
-                      title: Text("block".t),
-                      onTap: () async {
-                        UserService.instance
-                            .block(context: context, otherUid: user!.uid);
-                      },
-                    ),
-                  ListTile(
-                    title: Text('report'.t),
-                    onTap: () {
-                      ReportService.instance.report(
-                        context: context,
-                        documentReference: room?.ref ?? user!.ref,
-                        otherUid: user?.uid ?? room!.masterUsers.first,
-                      );
-                    },
-                  )
-                ],
-                const SizedBox(
-                  height: 36,
-                ),
-                if (christian) ...[
-                  ListTile(
-                    title: const Text("Test Snackbar"),
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Tesing")));
-                    },
-                  ),
-                ]
               ],
-            ),
+              const SizedBox(height: 24),
+              if (user?.admin != true)
+                label(context: context, text: "options".t),
+              const SizedBox(height: 8),
+              if (room?.joined == true) ...[
+                if (room!.group && room!.masterUsers.contains(my.uid))
+                  ListTile(
+                    title: Text("update".t),
+                    onTap: () {
+                      ChatService.instance
+                          .showChatRoomEditScreen(context, room: room);
+                    },
+                  ),
+                if (room!.group)
+                  ListTile(
+                    title: Text("leave".t),
+                    onTap: () async {
+                      final re = await confirm(
+                        context: context,
+                        title: Text("leaving room".t),
+                        message: Text('leaving room confirmation'.t),
+                      );
+                      if (re != true) return;
+                      room!.leave();
+                      if (!context.mounted) return;
+                      // two pops since we are opening both
+                      // drawer and room screen.
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+              ],
+              if (user != null && !user!.admin) ...[
+                if (room?.single == true || user != null)
+                  ListTile(
+                    title: Text("block".t),
+                    onTap: () async {
+                      UserService.instance
+                          .block(context: context, otherUid: user!.uid);
+                    },
+                  ),
+                ListTile(
+                  title: Text('report'.t),
+                  onTap: () {
+                    ReportService.instance.report(
+                      context: context,
+                      documentReference: room?.ref ?? user!.ref,
+                      otherUid: user?.uid ?? room!.masterUsers.first,
+                    );
+                  },
+                )
+              ],
+              const SizedBox(
+                height: 36,
+              ),
+              if (christian) ...[
+                ListTile(
+                  title: const Text("Test Snackbar"),
+                  onTap: () {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text("Tesing")));
+                  },
+                ),
+              ]
+            ],
           ),
         ),
       ),

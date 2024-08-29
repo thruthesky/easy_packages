@@ -116,6 +116,8 @@ class ChatRoom {
   ///
   String domain;
 
+  bool allMemberCanInvite = false;
+
   /// True if the user has seen the last message. Meaning, there is no more new messages in the chat room.
   bool get iSeen => users[myUid!]?.newMessageCounter == 0;
 

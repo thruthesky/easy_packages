@@ -657,6 +657,7 @@ describe("Group Chat Room Update Test", async () => {
   const appleGroup: ChatRoom = {
     name: "apple group",
     masterUsers: [appleId, bananaId],
+    group: true,
     users: {
       [appleId]: {
         nMC: 0,
@@ -859,8 +860,6 @@ describe("Group Chat Room Update Test", async () => {
     );
   });
 
-  // ================================
-
   it("[Fail] Update Room Name as Member", async () => {
     const appleGroupUpdate: ChatRoom = {
       name: "apple group better name",
@@ -943,13 +942,9 @@ describe("Group Chat Room Update Test", async () => {
       lastMessageAt: 123123,
     };
     await assertSucceeds(
-      setDoc(
-        doc(carrotDb, chatRoomRef + "/" + appleGroupId),
-        appleGroupUpdate,
-        {
-          merge: true,
-        }
-      )
+      setDoc(doc(carrotDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
     );
   });
 
@@ -1499,7 +1494,7 @@ describe("Single Chat Room Invitation Test (Pending Invite)", async () => {
   const appleGroup: ChatRoom = {
     name: "apple and banana",
     single: true,
-    masterUsers: [appleId, bananaId],
+    masterUsers: [appleId],
     users: {
       [appleId]: {
         nMC: 0,
@@ -1533,7 +1528,7 @@ describe("Single Chat Room Invitation Test (Pending Invite)", async () => {
       );
     });
   });
-  it("[Fail] Master invited a user to a Single Chat", async () => {
+  it("[Fail] Master invited another user to a Single Chat", async () => {
     const appleGroupUpdate: ChatRoom = {
       invitedUsers: arrayUnion(eggPlantId),
     };
@@ -1543,7 +1538,19 @@ describe("Single Chat Room Invitation Test (Pending Invite)", async () => {
       })
     );
   });
-  it("[Fail] Member invited a user to a Single Chat", async () => {
+  it("[Fail] Member invited a another to a Single Chat", async () => {
+    const bananaAccept: ChatRoom = {
+      invitedUsers: arrayRemove(bananaId),
+      users: {
+        [bananaId]: {
+          nMC: 0,
+        },
+      },
+    };
+    await setDoc(doc(bananaDb, getRoomPath(appleGroupId)), bananaAccept, {
+      merge: true,
+    });
+
     const appleGroupUpdate: ChatRoom = {
       invitedUsers: arrayUnion(eggPlantId),
     };

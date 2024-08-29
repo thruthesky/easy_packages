@@ -54,6 +54,10 @@ service cloud.firestore {
         return 'single' in resource.data.keys()
                 && resource.data.single;
       }
+      function isGroupChat() {
+        return 'group' in resource.data.keys()
+                && resource.data.group;
+      }
       function isInvited() {
         return  resource.data.keys().hasAll(['invitedUsers']) 
                 && request.auth.uid in resource.data.invitedUsers;
@@ -152,9 +156,21 @@ service cloud.firestore {
         )
         || (
           isMember()
-          && onlyUpdating(['lastMessageAt',  'users', 'updatedAt'])
-          && sameMembers()
-        );
+          && (
+            (
+              isGroupChat()
+              && onlyUpdating(['lastMessageAt', 'invitedUsers',  'users', 'updatedAt'])
+              && sameMembers()
+            )
+            || (
+              isSingleChat()
+              && onlyUpdating(['lastMessageAt', 'users', 'updatedAt'])
+              && sameMembers()
+            )
+          )
+        )
+        
+        ;
         allow delete: if isMaster();
     }
   // EO of Rules
