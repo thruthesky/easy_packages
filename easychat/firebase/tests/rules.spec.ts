@@ -2918,3 +2918,202 @@ describe("Try To Updated Created at", async () => {
     );
   });
 });
+
+describe("Members inviting other user when allMembersCanInvite is true", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    allMembersCanInvite: true,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [durianId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+    createdAt: 1312,
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+  it("[Pass] Member invited other user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+    };
+    await assertSucceeds(
+      setDoc(doc(durianDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider invited himself", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+describe("Members inviting other user when allMembersCanInvite is false", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    group: true,
+    allMembersCanInvite: false,
+    masterUsers: [appleId, bananaId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+      [carrotId]: {
+        nMC: 0,
+      },
+      [durianId]: {
+        nMC: 0,
+      },
+    },
+    invitedUsers: [eggPlantId],
+    rejectedUsers: [flowerId],
+    createdAt: 1312,
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+  it("[Fail] Member invited other user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(durianDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider invited himself", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
+
+describe("Members inviting other user when allMembersCanInvite is true, Single chat", async () => {
+  const appleGroup: ChatRoom = {
+    name: "apple group",
+    single: true,
+    allMembersCanInvite: true,
+    masterUsers: [appleId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+      [bananaId]: {
+        nMC: 0,
+      },
+    },
+    createdAt: 1312,
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the apple's group for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleGroupId)),
+        appleGroup
+      );
+    });
+  });
+  it("[Fail] Member invited other user", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(bananaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Outsider invited himself", async () => {
+    const appleGroupUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(guavaId),
+    };
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleGroupId)), appleGroupUpdate, {
+        merge: true,
+      })
+    );
+  });
+});

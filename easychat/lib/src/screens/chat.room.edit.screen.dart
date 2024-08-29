@@ -29,6 +29,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   bool get isUpdate => widget.room != null;
 
   bool open = false;
+  bool allMembersCanInvite = false;
   bool isLoading = false;
 
   final nameController = TextEditingController();
@@ -45,7 +46,9 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
     }
     nameController.text = room!.name;
     descriptionController.text = room!.description;
+
     open = room!.open;
+    allMembersCanInvite = room!.allMembersCanInvite;
   }
 
   @override
@@ -121,6 +124,20 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 },
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 12, 0, 0),
+              child: CheckboxListTile(
+                title: Text('members can invite'.t),
+                subtitle: Text('all members can invite others to join'.t),
+                value: allMembersCanInvite,
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    allMembersCanInvite = value;
+                  });
+                },
+              ),
+            ),
             const SizedBox(
               height: 24,
             ),
@@ -171,6 +188,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             name: nameController.text,
                             description: descriptionController.text,
                             open: open,
+                            allMembersCanInvite: allMembersCanInvite,
                           );
                         } catch (e) {
                           dog("Error ${e.toString()}");

@@ -173,14 +173,15 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ListTile(
-                    title: Text('see all members'.t),
-                    onTap: () {
-                      showMembersDialog(context);
-                    },
-                  ),
+                  // ListTile(
+                  //   title: Text('see all members'.t),
+                  //   onTap: () {
+                  //     showMembersDialog(context);
+                  //   },
+                  // ),
                 ],
-                if (room?.masterUsers.contains(my.uid) == true)
+                if (room?.masterUsers.contains(my.uid) == true ||
+                    room?.allMembersCanInvite == true)
                   ListTile(
                     title: Text('invite more users'.t),
                     onTap: () async {

@@ -99,6 +99,11 @@ service cloud.firestore {
         return resource.data.keys().hasAny(['blockedUsers'])
           && request.auth.uid in resource.data.blockedUsers;
       }
+
+      function allMembersCanInvite() {
+        return resource.data.keys().hasAny(['allMembersCanInvite'])
+          && resource.data.allMembersCanInvite;
+      }
       function updatingCreatedAt() {
         return resource.data.keys().hasAny(['createdAt'])
           && request.resource.data.createdAt != resource.data.createdAt
@@ -159,8 +164,14 @@ service cloud.firestore {
           && (
             (
               isGroupChat()
-              && onlyUpdating(['lastMessageAt', 'invitedUsers',  'users', 'updatedAt'])
-              && sameMembers()
+              && (
+                onlyUpdating(['lastMessageAt', 'users', 'updatedAt'])
+                || (
+                  allMembersCanInvite()
+                  && onlyUpdating(['lastMessageAt', 'invitedUsers',  'users', 'updatedAt'])
+                )
+
+              ) && sameMembers()
             )
             || (
               isSingleChat()
@@ -168,9 +179,7 @@ service cloud.firestore {
               && sameMembers()
             )
           )
-        )
-        
-        ;
+        );
         allow delete: if isMaster();
     }
   // EO of Rules
