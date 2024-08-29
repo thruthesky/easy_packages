@@ -13,9 +13,11 @@ class ChatRoomEditScreen extends StatefulWidget {
   const ChatRoomEditScreen({
     super.key,
     this.room,
+    this.defaultOpen = false,
   });
 
   final ChatRoom? room;
+  final bool defaultOpen;
 
   @override
   State<ChatRoomEditScreen> createState() => _ChatRoomEditScreenState();
@@ -37,7 +39,10 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   @override
   void initState() {
     super.initState();
-    if (isCreate) return;
+    if (isCreate) {
+      open = widget.defaultOpen;
+      return;
+    }
     nameController.text = room!.name;
     descriptionController.text = room!.description;
     open = room!.open;

@@ -197,11 +197,14 @@ class ChatService {
   /// Show the chat room edit screen. It's for borth create and update.
   /// Return Dialog/Screen that may return DocReference
   Future<fs.DocumentReference?> showChatRoomEditScreen(BuildContext context,
-      {ChatRoom? room}) {
+      {ChatRoom? room, bool defaultOpen = false}) {
     return $showChatRoomEditScreen?.call(context, room: room) ??
         showGeneralDialog<fs.DocumentReference>(
           context: context,
-          pageBuilder: (_, __, ___) => ChatRoomEditScreen(room: room),
+          pageBuilder: (_, __, ___) => ChatRoomEditScreen(
+            room: room,
+            defaultOpen: defaultOpen,
+          ),
         );
   }
 
