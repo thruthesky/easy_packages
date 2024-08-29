@@ -17,6 +17,7 @@ dependencies:
   easy_category: ^0.0.2
   easy_comment:
   easy_engine:
+  easy_firestore:
   easy_helpers:
   easy_like:
   easy_locale:
@@ -58,6 +59,8 @@ dependency_overrides:
     path: ../easy_comment
   easy_engine:
     path: ../easy_engine
+  easy_firestore:
+    path: ../easy_firestore
   easy_helpers:
     path: ../easy_helpers
   easy_like:

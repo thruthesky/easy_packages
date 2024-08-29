@@ -34,7 +34,10 @@ class ChatRoomListTile extends StatelessWidget {
                   imageUrl: room.iconUrl!,
                   fit: BoxFit.cover,
                 )
-              : const Icon(Icons.people),
+              : Icon(
+                  Icons.people,
+                  color: Theme.of(context).colorScheme.onTertiaryContainer,
+                ),
         ),
         title: Text(
           room.name.trim().isNotEmpty ? room.name : "Group Chat",
@@ -160,7 +163,7 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
-          ChatService.instance.chatRoomNewMessageBuilder?.call(
+          ChatService.instance.newMessageBuilder?.call(
                   (room.users[myUid]!.newMessageCounter ?? 0).toString()) ??
               Badge(
                 label: Text(
