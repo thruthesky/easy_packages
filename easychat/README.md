@@ -239,8 +239,11 @@ It really happened to one of my own projects that someone sent very bad words to
     - A invites B
     - B rejects
     - B accepts
-
-
+  - The `chatInvitationCount` is updated inside the following methods of `ChatRoom` model.
+    - `inviteUser`
+    - `acceptInvitation`
+    - `rejectInvitation`
+  - The `chatInvitationCount` is reset with actual number of invitation every time when app starts. So, if something goes wrong, it will correct by itself.
 
 
 ## Password

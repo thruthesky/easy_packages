@@ -189,10 +189,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_locale
-      sha256: c13d884c4dd125fe6263a6ee4279f5607ecdec0c9acf8639d70f1135b944d291
+      sha256: "739a3ffb6928965bb07f4a739be6d88d718ed0921e9d11498b8098bb3d5374cd"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.10"
+    version: "0.0.11"
   easy_report:
     dependency: transitive
     description:
@@ -201,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3"
+  easy_setting_v2:
+    dependency: transitive
+    description:
+      name: easy_setting_v2
+      sha256: "76089cf7f174ad1caf75c5dc3e96bc642418ff4019aca53d7ec08314e0315be2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   easy_storage:
     dependency: transitive
     description:

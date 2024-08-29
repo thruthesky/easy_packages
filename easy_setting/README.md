@@ -10,8 +10,9 @@
 
 ## TODO
 
-- `sync` opotion.
+- `sync` option.
 - Security rules
+- Option for using realtime database over firestore. For instance, there might be some value that is often changes and readable. The easyuser package supports firebsae and rtdb at the same time, mirror the settings data into realtime database and let it use rtdb.
 
 ## Security Rules
 

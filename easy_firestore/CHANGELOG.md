@@ -1,3 +1,6 @@
+## 0.0.4
+* Add. Optional `data` in `DocumentModel`.
+
 ## 0.0.3
 * Add. `Documenet` and `DocumentModel`.
 

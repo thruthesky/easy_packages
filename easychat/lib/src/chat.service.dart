@@ -111,6 +111,21 @@ class ChatService {
         rejectedChatRoomInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
     this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
+
+    resetInvitationCount();
+  }
+
+  /// Since the count may goes wrong, because the security rules is open.
+  void resetInvitationCount() {
+    if (countInvitation == false) return;
+
+
+
+
+      final countSnapshot = await ChatService.instance.roomCol
+          .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
+          .count()
+          .get();
   }
 
   /// Firebase CollectionReference for Chat Room docs
