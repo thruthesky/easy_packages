@@ -1,7 +1,7 @@
 name: easy_messaging
 description: "Provides an easy way of handling Firebase Cloud Messaging service"
 version: 0.0.4
-homepage: https://github.com/thruthesky/easy-packages/main/tree/easy_messaging
+homepage: https://github.com/thruthesky/easy_packages
 
 environment:
   sdk: ">=3.4.4 <4.0.0"
@@ -23,7 +23,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
 
-repository: https://github.com/thruthesky/easy-packages/main/tree/easy_like
+repository: https://github.com/thruthesky/easy_packages/tree/main/easy_like
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
 topics:
   - firebase
