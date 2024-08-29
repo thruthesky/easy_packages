@@ -76,8 +76,9 @@ class _TaskUpdateScreenState extends State<TaskUpdateScreen> {
                   );
                   if (context.mounted) {
                     toast(
-                        context: context,
-                        message: Text('Task updated message'.t));
+                      context: context,
+                      message: Text('Task updated message'.t),
+                    );
                   }
                 },
                 child: Text('Update Task'.t),

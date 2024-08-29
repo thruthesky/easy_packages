@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easy_task/src/screens/task.user_group.create.screen.dart';
+import 'package:easy_task/src/screens/task.user_group.detail.screen.dart';
+import 'package:easy_task/src/screens/task.user_group.edit.screen.dart';
 import 'package:easy_task/src/screens/task.user_group.list.screen.dart';
+import 'package:easy_task/src/task.user_group.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -100,7 +103,7 @@ class TaskService {
   }
 
   /// Show the task task group list screen.
-  showGroupListScreen(BuildContext context) {
+  showUserGroupListScreen(BuildContext context) {
     showGeneralDialog(
       context: context,
       pageBuilder: (context, _, __) {
@@ -109,11 +112,29 @@ class TaskService {
     );
   }
 
-  showGroupCreateScreen(BuildContext context) {
+  showUserGroupCreateScreen(BuildContext context) {
     showGeneralDialog(
       context: context,
       pageBuilder: (context, _, __) {
         return const TaskUserGroupCreateScreen();
+      },
+    );
+  }
+
+  showTaskUserGroupDetailScreen(BuildContext context, TaskUserGroup userGroup) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, __, ___) {
+        return TaskUserGroupDetailScreen(userGroup: userGroup);
+      },
+    );
+  }
+
+  showTaskUserGroupEditScreen(BuildContext context, TaskUserGroup userGroup) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return TaskUserGroupEditScreen(userGroup: userGroup);
       },
     );
   }

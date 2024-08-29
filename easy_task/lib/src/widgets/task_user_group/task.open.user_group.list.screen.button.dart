@@ -10,7 +10,7 @@ class TaskOpenGroupListScreenButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        TaskService.instance.showGroupListScreen(context);
+        TaskService.instance.showUserGroupListScreen(context);
       },
       icon: const Icon(Icons.groups),
     );

@@ -249,8 +249,10 @@ class Task {
 
         /// If the update result from all complete to uncomplete project task,
         /// Then notify count rebuild
-      } else if (!isCompleted &&
-          (getCompleteChildCount.count ?? 0) + 1 == getChildCount.count) {
+      } else if (!isCompleted
+          //// this doesnt work when 2 or more task are uncheck
+          // && (getCompleteChildCount.count ?? 0) + 1 == getChildCount.count
+          ) {
         TaskService.instance.countRebuildNotifier.value = "$id$isCompleted";
       }
     }

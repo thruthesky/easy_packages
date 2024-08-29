@@ -69,7 +69,7 @@ This package is a todo like task manage system which allows users to create task
 
 - A task can be assigned to other user (NOT supported, yet)
 
-- A task can be moved to a project, and vice versa.
+- A task can be moved to a project, and vice versa. ~~~~~
 
 - In the list view, children tasks with `child: true` are not displayed.
 

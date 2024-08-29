@@ -14,4 +14,4 @@ export './src/widgets/task.create.button.dart';
 export './src/widgets/task_list/task.list.tab_menu.dart';
 export './src/widgets/task_list/task.list_view.dart';
 export './src/widgets/task_list/task.list.header_menu.dart';
-export './src/widgets/task.list_tile.dart';
+export 'src/widgets/task_user_group/task.list_tile.dart';

@@ -3,26 +3,27 @@ import 'package:easy_task/easy_task.dart';
 
 class TaskUserGroup {
   static CollectionReference get col =>
-      FirebaseFirestore.instance.collection('taskUserGroups');
+      FirebaseFirestore.instance.collection('task-user-group');
 
   DocumentReference get ref => col.doc(id);
 
   TaskUserGroup({
     required this.id,
-    required this.creator,
+    required this.uid,
     required this.title,
     required this.description,
     required this.createdAt,
     required this.updatedAt,
-    required this.uids,
-    required this.inviteUids,
+    required this.users,
+    required this.invitedUsers,
+    required this.rejectedUsers,
   });
 
   /// [id] is the group id
   final String id;
 
-  /// [creator] is the uid of the user who created this group
-  final String creator;
+  /// [uid] is the uid of the user who created this group
+  final String uid;
 
   /// [title] is the group title
   final String title;
@@ -36,12 +37,16 @@ class TaskUserGroup {
   /// [updatedAt] is the date and time when the group is updated
   final DateTime updatedAt;
 
-  /// [uids] is the uid of the users accepted the invite
-  final List<String> uids;
+  /// [users] is the uid of the users accepted the invite
+  final List<String> users;
 
-  /// [inviteUids] is the uid of the user that has pending invite
-  final List<String> inviteUids;
+  /// [invitedUsers] is the uid of the user that has pending invite
+  final List<String> invitedUsers;
 
+  /// [rejectedUsers] is the uid who rejected the group invite
+  final List<String> rejectedUsers;
+
+  /// Get the task object from the snapshot.
   factory TaskUserGroup.fromSnapshot(DocumentSnapshot snapshot) {
     return TaskUserGroup.fromJson(
         snapshot.data() as Map<String, dynamic>, snapshot.id);
@@ -51,7 +56,7 @@ class TaskUserGroup {
   factory TaskUserGroup.fromJson(Map<String, dynamic> json, String id) {
     return TaskUserGroup(
       id: id,
-      creator: json['creator'],
+      uid: json['uid'],
       title: json['title'],
       description: json['description'],
       createdAt: json['createdAt'] is Timestamp
@@ -60,21 +65,23 @@ class TaskUserGroup {
       updatedAt: json['updatedAt'] is Timestamp
           ? (json['updatedAt'] as Timestamp).toDate()
           : DateTime.now(),
-      uids: List<String>.from(json['uids'] ?? []),
-      inviteUids: List<String>.from(json['inviteUids'] ?? []),
+      users: List<String>.from(json['users'] ?? []),
+      invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
+      rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
     );
   }
 
   /// Convert the task object to the json.
   Map<String, dynamic> toJson() {
     return {
-      'creator': creator,
+      'uid': uid,
       'title': title,
       'description': description,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
-      'uids': uids,
-      'inviteUids': inviteUids,
+      'users': users,
+      'invitedUsers': invitedUsers,
+      'rejectedUsers': rejectedUsers,
     };
   }
 
@@ -99,13 +106,14 @@ class TaskUserGroup {
     String description = '',
   }) async {
     final ref = await col.add({
-      'creator': TaskService.instance.currentUser!.uid,
+      'uid': TaskService.instance.currentUser!.uid,
       'title': title,
       'description': description,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
-      'uids': [],
-      'inviteUids': [],
+      'users': [],
+      'invitedUsers': [],
+      'rejectedUsers': [],
     });
     return ref;
   }
@@ -122,22 +130,26 @@ class TaskUserGroup {
     });
   }
 
-  Future<void> inviteUid(String uid) async {
+  Future<void> inviteUser(String uid) async {
     await ref.update({
-      'inviteUids': FieldValue.arrayUnion([uid]),
+      'invitedUsers': FieldValue.arrayUnion([uid]),
     });
   }
 
   Future<void> acceptInvite() {
     return ref.update({
-      'uids': FieldValue.arrayUnion(inviteUids),
-      'inviteUids': FieldValue.arrayRemove(inviteUids),
+      'users': FieldValue.arrayUnion([TaskService.instance.currentUser!.uid]),
+      'invitedUsers':
+          FieldValue.arrayRemove([TaskService.instance.currentUser!.uid]),
     });
   }
 
   Future<void> rejectInvite() {
     return ref.update({
-      'inviteUids': FieldValue.arrayRemove(inviteUids),
+      'invitedUsers':
+          FieldValue.arrayRemove([TaskService.instance.currentUser!.uid]),
+      'rejectedUsers':
+          FieldValue.arrayUnion([TaskService.instance.currentUser!.uid]),
     });
   }
 
