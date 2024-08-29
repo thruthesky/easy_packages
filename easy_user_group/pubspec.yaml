@@ -1,5 +1,5 @@
 name: easy_user_group
-description: "A new Flutter package project."
+description: "An easy to use user group management package with Firebase as backend."
 version: 0.0.1
 homepage: https://github.com/thruthesky/easy-packages
 
