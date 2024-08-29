@@ -39,6 +39,25 @@ Add `easychat` into your `pubspec.yaml`
 % flutter pub add easychat
 ```
 
+
+### Security Rules
+
+#### Firestore Security Rules
+
+
+#### Realtime Database Security Rules
+
+
+### Index
+
+#### Firestore index
+
+#### Realtime Database index
+
+
+
+
+
 ## Example
 
 - See `example/lib/main.dart`.
@@ -210,6 +229,19 @@ It really happened to one of my own projects that someone sent very bad words to
       - and the chat message is normally saved in the chat room.
     - On B's screen, all the chat room that has B's uid in `invitedUsers` will be displayed on top of the chat list. And B will notice that he is invited.
       - If B accepts the invitation, B's uid will be moved from `invitedUsers` to `users` and normal chat continues.
+
+
+### Displaying no of chat inviation
+
+
+- `/users/<uid>/chatInvitationCount`: this field has the number of chat inivitation. This field is open to anyone.
+  - This value of user B is updated when
+    - A invites B
+    - B rejects
+    - B accepts
+
+
+
 
 ## Password
 

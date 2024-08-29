@@ -13,6 +13,7 @@ export 'src/screens/rejected.chat.room.invite_list.screen.dart';
 // Widgets ====================================================
 export './src/widgets/chat.bubble.dart';
 export './src/widgets/chat.bubble.reply.dart';
+export './src/widgets/chat.invitation_count.dart';
 export './src/widgets/chat.messages.list_view.dart';
 export './src/widgets/chat.new_message_counter.dart';
 export './src/widgets/chat.room.input_box.dart';

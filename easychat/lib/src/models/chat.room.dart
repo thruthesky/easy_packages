@@ -386,6 +386,7 @@ class ChatRoom {
       field.invitedUsers: FieldValue.arrayUnion([uid]),
       field.updatedAt: FieldValue.serverTimestamp(),
     });
+    ChatService.instance.increaseInvitationCount(uid);
     ChatService.instance.onInvite?.call(room: this, uid: uid);
   }
 
@@ -429,6 +430,7 @@ class ChatRoom {
       },
       SetOptions(merge: true),
     );
+    ChatService.instance.decreaseInvitationCount();
   }
 
   /// Alias for [acceptInvitation]. Since they have
@@ -440,6 +442,7 @@ class ChatRoom {
       field.invitedUsers: FieldValue.arrayRemove([myUid!]),
       field.rejectedUsers: FieldValue.arrayUnion([myUid!]),
     });
+    ChatService.instance.decreaseInvitationCount();
   }
 
   Future<void> leave() async {

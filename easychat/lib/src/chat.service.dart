@@ -288,4 +288,25 @@ class ChatService {
     if (snapshot.size == 0) return [];
     return snapshot.docs.map((e) => ChatRoom.fromSnapshot(e)).toList();
   }
+
+  /// Why is it in UserService? Not in user.dart model?
+  /// This is because; this method updates other user docuemnt. Not the login user's document.
+  Future<void> increaseInvitationCount(String otherUid) async {
+    await UserService.instance.col.doc(otherUid).set(
+      {
+        'chatInvitationCount': fs.FieldValue.increment(1),
+      },
+      fs.SetOptions(merge: true),
+    );
+  }
+
+  /// It decreases the invitation count of the currently logged-in user.
+  Future<void> decreaseInvitationCount() async {
+    await my.ref.set(
+      {
+        'chatInvitationCount': fs.FieldValue.increment(-1),
+      },
+      fs.SetOptions(merge: true),
+    );
+  }
 }

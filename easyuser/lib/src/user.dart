@@ -9,6 +9,9 @@ import 'package:memory_cache/memory_cache.dart';
 ///
 /// [private] is the private field that will be used to store the user's data.
 class User {
+  Map<String, dynamic>? data;
+
+  /// [uid] is the user's uid.
   String uid;
 
   /// If the user is an admin, it will be true. If not, it will be false.
@@ -74,6 +77,7 @@ class User {
     this.photoUrl,
     this.stateMessage,
     this.statePhotoUrl,
+    this.data,
   });
 
   /// Create a user with the given [uid].
@@ -148,6 +152,7 @@ class User {
       photoUrl: json['photoUrl'],
       stateMessage: json['stateMessage'],
       statePhotoUrl: json['statePhotoUrl'],
+      data: json,
     );
   }
 
