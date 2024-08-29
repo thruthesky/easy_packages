@@ -177,6 +177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.5"
+  easy_firestore:
+    dependency: transitive
+    description:
+      name: easy_firestore
+      sha256: "209fbf98b28ecb28210f80881d92c57e16a3ee1d1efca277824701648043bb5b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   easy_helpers:
     dependency: transitive
     description:
@@ -205,10 +213,10 @@ packages:
     dependency: transitive
     description:
       name: easy_setting_v2
-      sha256: "76089cf7f174ad1caf75c5dc3e96bc642418ff4019aca53d7ec08314e0315be2"
+      sha256: fdb0dddb0197fc1f5ea0c62295325ad69f2923866b326ca0b2152ca7df55572e
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   easy_storage:
     dependency: transitive
     description:

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
+import 'package:easy_setting_v2/easy_setting.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -309,10 +310,12 @@ class ChatInvitationCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyDoc(builder: (user) {
-      return Text(
-        'No of chat invitation: ${user?.data?['chatInvitationCount'] ?? '0'}',
-      );
-    });
+    return Setting(
+        id: myUid!,
+        builder: (model) {
+          return Text(
+            'No of chat invitation: ${model.data['chatInvitationCount'] ?? '0'}',
+          );
+        });
   }
 }

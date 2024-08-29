@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -393,6 +394,7 @@ class ChatRoom {
   }
 
   Future<void> acceptInvitation() async {
+    print('--> acceptInvitation; id; $id');
     if (blockedUsers.contains(myUid)) {
       throw ChatException(
         'chat-join-fail',
@@ -432,6 +434,7 @@ class ChatRoom {
       },
       SetOptions(merge: true),
     );
+    dog('--> ChatRoom.acceptInvitation: $id');
     ChatService.instance.decreaseInvitationCount();
   }
 

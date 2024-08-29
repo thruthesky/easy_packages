@@ -246,6 +246,13 @@ It really happened to one of my own projects that someone sent very bad words to
   - The `chatInvitationCount` is reset with actual number of invitation every time when app starts. So, if something goes wrong, it will correct by itself.
 
 
+### How to use it
+
+- Initialize the chat service and it will automatically work.
+  - While its initialization, it will reset the number of invitation for its own correction since the security rules are open, it may go wrong and it needs correction. It only works once every app start.
+
+
+
 ## Password
 
 NOTE: Password is not supported, yet.
