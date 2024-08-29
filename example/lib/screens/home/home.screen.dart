@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
+import 'package:easy_setting_v2/easy_setting.dart';
 import 'package:easy_task/easy_task.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -101,6 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         }),
                         Text('User UID: ${user.uid}'),
+                        ChatInvitationCount(
+                          builder: (count) => Text('Invitation Count: $count'),
+                        ),
                       ],
                     ),
             ),
@@ -127,11 +132,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Text("Open Room List"),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    UserService.instance.showUserSearchDialog(
+                  onPressed: () async {
+                    final user =
+                        await UserService.instance.showUserSearchDialog(
                       context,
                       exactSearch: true,
                     );
+                    if (user != null) {
+                      UserService.instance
+                          .showPublicProfileScreen(context, user: user);
+                    }
                   },
                   child: const Text('User Search Dialog: exact search'),
                 ),

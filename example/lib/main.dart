@@ -35,7 +35,6 @@ void main() async {
           // options: DefaultFirebaseOptions.currentPlatform,
           );
 
-      UserService.instance.init();
       runApp(const MyApp());
 
       FlutterError.onError = (FlutterErrorDetails details) {
@@ -56,7 +55,17 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    UserService.instance.init();
+
+    UserService.instance.init(prefixActionBuilderOnPublicProfileScreen: (user) {
+      return [
+        ElevatedButton(
+            onPressed: () {
+              ChatService.instance
+                  .showChatRoomScreen(globalContext, user: user);
+            },
+            child: const Text('Chat')),
+      ];
+    });
 
     StorageService.instance.init(
       uploadBottomSheetPadding: const EdgeInsets.all(16),

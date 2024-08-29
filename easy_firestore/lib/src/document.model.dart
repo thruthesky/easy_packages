@@ -14,7 +14,7 @@ class DocumentModel {
   DocumentModel({
     required this.collectionName,
     required this.id,
-    required this.data,
+    this.data = const {},
   });
 
   factory DocumentModel.fromSnapshot(DocumentSnapshot snapshot) {
