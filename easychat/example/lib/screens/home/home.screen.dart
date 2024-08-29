@@ -1,5 +1,7 @@
+import 'package:example/screens/home/home.buy_and_sell.screen.dart';
+import 'package:example/screens/home/home.chat.screen.dart';
+import 'package:example/screens/home/home.friend.screen.dart';
 import 'package:flutter/material.dart';
-import 'package:easyuser/easyuser.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/Home';
@@ -10,30 +12,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
+      body: IndexedStack(
+        index: index,
+        children: const [
+          HomeFriendScreen(),
+          HomeChatScreen(),
+          HomeBuyAndSellScreen(),
+        ],
       ),
-      body: Column(
-        children: [
-          const Text("Home"),
-          AuthStateChanges(builder: (user) {
-            return user == null
-                ? const EmailPasswordLogin()
-                : Column(
-                    children: [
-                      Text("Welcome ${user.uid}"),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await i.signOut();
-                        },
-                        child: const Text('Sign Out'),
-                      ),
-                    ],
-                  );
-          }),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index,
+        onTap: (index) {
+          setState(() => this.index = index);
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group),
+            label: 'Friends',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Buy & Sell',
+          ),
         ],
       ),
     );

@@ -90,6 +90,9 @@ class UserService {
       dog('UserService is already initialized; It will not initialize again.');
       return;
     }
+
+    dog('UserService::init() begins;');
+
     initialized = true;
 
     this.prefixActionBuilderOnPublicProfileScreen =
