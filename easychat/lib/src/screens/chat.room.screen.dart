@@ -55,11 +55,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     $room = widget.room;
     $user = widget.user;
 
-    // Single chat
+    // Single chat.
     //
     // If room is null, user should not be null.
     // We have to get room from other user.
     if ($room == null) {
+      // Create chat room if user is set.
       await loadOrCreateRoomForSingleChat();
     } else if ($user == null && $room!.single) {
       $user = await User.get(getOtherUserUidFromRoomId($room!.id)!);
@@ -98,14 +99,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> loadOrCreateRoomForSingleChat() async {
-    try {
-      $room = await ChatRoom.get(singleChatRoomId($user!.uid));
-    } on FirebaseException catch (e) {
-      // Check if the error is a permission-denied error
-      if (e.code != 'permission-denied') {
-        rethrow;
-      }
-    }
+    //
+    $room = await ChatRoom.get(singleChatRoomId($user!.uid));
 
     if ($room != null) return;
     await createAndLoadSingleChat();

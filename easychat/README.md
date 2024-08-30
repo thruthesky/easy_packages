@@ -12,6 +12,53 @@ For your information, EasyChat:
 - Comes with a beautiful UI/UX by default,
 - Is optimized for use in large-scale chat applications.
 
+- [EasyChat](#easychat)
+  - [TODO](#todo)
+  - [Overview](#overview)
+  - [Install](#install)
+    - [Security Rules](#security-rules)
+      - [Firestore Security Rules](#firestore-security-rules)
+      - [Realtime Database Security Rules](#realtime-database-security-rules)
+    - [Index](#index)
+      - [Firestore index](#firestore-index)
+      - [Realtime Database index](#realtime-database-index)
+  - [Example](#example)
+  - [Initialization](#initialization)
+  - [Logic](#logic)
+  - [User database](#user-database)
+  - [Chat Database](#chat-database)
+    - [Chat room database struture](#chat-room-database-struture)
+    - [Chat message database structure](#chat-message-database-structure)
+    - [Chat room security](#chat-room-security)
+    - [Cost of Firestore](#cost-of-firestore)
+    - [Chat message database struture (RTDB)](#chat-message-database-struture-rtdb)
+  - [Group Chat and 1:1 Chat](#group-chat-and-11-chat)
+  - [Masters](#masters)
+  - [Chat invitation](#chat-invitation)
+    - [Database for chat invitation](#database-for-chat-invitation)
+    - [How to use it](#how-to-use-it)
+  - [Password](#password)
+  - [Development Guideline](#development-guideline)
+    - [Init the chat service](#init-the-chat-service)
+    - [Opening chat room create in main.dart](#opening-chat-room-create-in-maindart)
+    - [Chat to admin](#chat-to-admin)
+      - [1:1 chat with Admin](#11-chat-with-admin)
+      - [Group chat with multiple admins](#group-chat-with-multiple-admins)
+  - [chatRoomActionButton](#chatroomactionbutton)
+  - [onSendMessage CallBack](#onsendmessage-callback)
+  - [onInvite Callback](#oninvite-callback)
+  - [newMessageBuilder](#newmessagebuilder)
+  - [Chat Room Blocking](#chat-room-blocking)
+    - [Group Chats with blocked users](#group-chats-with-blocked-users)
+  - [Chat Room Logic Diagrams](#chat-room-logic-diagrams)
+    - [Logic for Creating Group Chat](#logic-for-creating-group-chat)
+    - [Logic for Creating/Opening Single Chat](#logic-for-creatingopening-single-chat)
+    - [Logic for Opening Chat Room](#logic-for-opening-chat-room)
+    - [Logic for Inviting User in Group Chat](#logic-for-inviting-user-in-group-chat)
+    - [Process for Accepting/Rejecting Chat Request/Invitation](#process-for-acceptingrejecting-chat-requestinvitation)
+    - [Logic for Blocking User in Group Chat](#logic-for-blocking-user-in-group-chat)
+  - [Known issues and Common problems](#known-issues-and-common-problems)
+
 
 ## TODO
 
@@ -622,3 +669,37 @@ flowchart TD
   --> final([End])
 
 ```
+
+
+### Listing chat roooms
+
+
+- Use `ChatRoomListView` to display the chat rooms.
+- The `ChatRoomListView` uses `CustomScrollView` inside which is a sliver list. It is recommended to set the `ChatRoomListView` widget directly to the body property of a scaffold. 
+  - You can customize the look, of course. But you need to understand how the sliver list view works.
+    - One way you can easily customize is to wrap the `ChatRoomListView` with `Expanded` in Cl]olumn.
+
+
+
+Example:
+```dart
+```
+
+
+
+```mermaid
+flowchart TD
+```
+
+
+
+
+
+
+## Known issues and Common problems
+
+
+- If you see a loader (circular progress) in a list (realtime database list view), check if the `databaseURL` is properly set in the firebase initialization configuration.
+  - See the README of `easyusr` for more details of realtime database setup error.
+
+

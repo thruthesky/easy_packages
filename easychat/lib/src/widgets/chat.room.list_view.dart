@@ -5,6 +5,11 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
+/// Chat room list view
+///
+/// It users sliver list to show chat rooms.
+///
+/// Refer README.md for details.
 class ChatRoomListView extends StatelessWidget {
   const ChatRoomListView({
     super.key,
@@ -16,6 +21,7 @@ class ChatRoomListView extends StatelessWidget {
     this.invitationItemBuilder,
     this.invitationBottomWidget,
     this.invitationTextPadding,
+    this.headerBuilder,
   });
 
   final ChatRoomQuery queryOption;
@@ -32,6 +38,8 @@ class ChatRoomListView extends StatelessWidget {
 
   final Widget? invitationBottomWidget;
   final EdgeInsetsGeometry? invitationTextPadding;
+
+  final Widget Function()? headerBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +74,22 @@ class ChatRoomListView extends StatelessWidget {
 
         return CustomScrollView(
           slivers: [
+            // TODO: support custom app bar.
+            // SliverAppBar(
+            //   title: Text('chat'.t),
+            //   floating: true,
+            //   snap: true,
+            //   actions: [
+            //     IconButton(
+            //       icon: const Icon(Icons.search),
+            //       onPressed: () {},
+            //     ),
+            //   ],
+            // ),
+            if (headerBuilder != null)
+              SliverToBoxAdapter(
+                child: headerBuilder!.call(),
+              ),
             SliverToBoxAdapter(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

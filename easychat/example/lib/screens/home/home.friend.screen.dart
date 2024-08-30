@@ -1,3 +1,5 @@
+import 'package:easychat/easychat.dart';
+import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:easyuser/easyuser.dart';
 
@@ -22,12 +24,21 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
               const Spacer(),
               IconButton(
                 onPressed: () {
-                  showGeneralDialog(
-                    context: context,
-                    pageBuilder: (_, __, ___) {
-                      return const UserProfileUpdateScreen();
-                    },
-                  );
+                  if (UserService.instance.signedIn) {
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (_, __, ___) {
+                        return const UserProfileUpdateScreen();
+                      },
+                    );
+                  } else {
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (_, __, ___) {
+                        return const SignInScreen();
+                      },
+                    );
+                  }
                 },
                 icon: const Icon(Icons.manage_accounts),
               ),
@@ -48,13 +59,20 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                     ),
                   ];
                 },
-                onSelected: (String value) {
+                onSelected: (String value) async {
                   if (value == 'profile') {
                     // Navigator.of(context).pushNamed(UserProfileScreen.routeName);
                   } else if (value == 'signout') {
                     // UserSignOutService.instance.signOut();
                   } else if (value == 'find-friend') {
-                    // Navigator.of(context).pushNamed(UserFindHomeFriendScreen.routeName);
+                    final user =
+                        await UserService.instance.showSearchDialog(context);
+                    if (user != null) {
+                      if (context.mounted) {
+                        ChatService.instance
+                            .showChatRoomScreen(context, user: user);
+                      }
+                    }
                   }
                 },
                 icon: const Icon(Icons.menu),
@@ -62,11 +80,28 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
             ],
           ),
         ),
-        const Text('@TODO: Display no of invitatations'),
-        const Text('@TODO: top 3 invitations'),
-        const Text(
-            '@TODO: Display favorite friends: use easy_user_group pakcage'),
-        const Text('@TODO: Display all 1:1 chats: hide the favorite friends'),
+        Expanded(
+          child: ChatRoomListView(
+            headerBuilder: () {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('my uid: $myUid'),
+                  const Text('@TODO: Display no of invitatations'),
+                  const Text('@TODO: top 3 invitations'),
+                  const Text(
+                      '@TODO: Display favorite friends: use easy_user_group pakcage'),
+                  const Text(
+                      '@TODO: Display all 1:1 chats: hide the favorite friends'),
+                  const Divider(),
+                ],
+              );
+            },
+            // onChatRoomTap: (chatRoom) {
+            //   ChatService.instance.showChatRoomScreen(context, chatRoom: chatRoom);
+            // },
+          ),
+        ),
       ],
     );
   }
