@@ -1,26 +1,25 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_task/easy_task.dart';
-import 'package:easy_task/src/task.user_group.dart';
-import 'package:easy_task/src/widgets/task.user_group.doc.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class TaskUserGroupDetailScreen extends StatelessWidget {
-  const TaskUserGroupDetailScreen({
+class UserGroupDetailScreen extends StatelessWidget {
+  static const String routeName = '/UserGroupDetail';
+  const UserGroupDetailScreen({
     super.key,
     required this.userGroup,
   });
 
-  final TaskUserGroup userGroup;
+  final UserGroup userGroup;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Group Details'.t),
+        title: Text('User Group Details'.t),
       ),
-      body: TaskUserGroupDoc(
+      body: UserGroupDoc(
         userGroup: userGroup,
         sync: true,
         builder: (userGroup) {
@@ -41,15 +40,15 @@ class TaskUserGroupDetailScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text("Users uid: ${userGroup.users}"),
                 const SizedBox(height: 8),
-                Text("Invited Users: ${userGroup.invitedUsers.length}"),
+                Text("Invited Users: ${userGroup.pendingUsers.length}"),
                 const SizedBox(height: 8),
-                Text("Invited uids: ${userGroup.invitedUsers}"),
+                Text("Invited uids: ${userGroup.pendingUsers}"),
                 const SizedBox(height: 8),
-                Text("Reject Users: ${userGroup.rejectedUsers.length}"),
+                Text("Reject Users: ${userGroup.declinedUsers.length}"),
                 const SizedBox(height: 8),
-                Text("Reject Uid: ${userGroup.rejectedUsers}"),
+                Text("Reject Uid: ${userGroup.declinedUsers}"),
                 const SizedBox(height: 16),
-                Row(
+                Wrap(
                   children: [
                     ElevatedButton(
                       onPressed: () async {
@@ -62,20 +61,38 @@ class TaskUserGroupDetailScreen extends StatelessWidget {
                         if (context.mounted) {
                           toast(
                             context: context,
-                            message:
-                                Text('Task User was invited successfully'.t),
+                            message: Text('User was invited successfully'.t),
                           );
                         }
                       },
-                      child: const Text('Invite users'),
+                      child: Text('Invite users'.t),
                     ),
                     const SizedBox(
                       width: 16,
                     ),
                     ElevatedButton(
-                        onPressed: () => TaskService.instance
-                            .showTaskUserGroupEditScreen(context, userGroup),
-                        child: Text('Edit task user group'.t)),
+                      onPressed: () async {
+                        // invite user
+                        final re = await confirm(
+                          context: context,
+                          title: Text('Leave group'.t),
+                          message: Text(
+                            'Are you sure you want to leave this group?'.t,
+                          ),
+                        );
+                        if (re != true) return;
+                        await userGroup.leave();
+                        if (context.mounted) Navigator.of(context).pop();
+                      },
+                      child: Text('Leave group'.t),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    ElevatedButton(
+                        onPressed: () => UserGroupService.instance
+                            .showUserGroupEditScreen(context, userGroup),
+                        child: Text('Edit user group'.t)),
                   ],
                 ),
               ],

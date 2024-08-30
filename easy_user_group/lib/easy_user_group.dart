@@ -1,7 +1,11 @@
-library easy_user_group;
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export './src/user_group.dart';
+export './src/user_group.service.dart';
+export './src/user_group.locale.dart';
+export './src/screens/user_group.list.screen.dart';
+export './src/screens/user_group.create.screen.dart';
+export './src/screens/user_group.detail.screen.dart';
+export './src/screens/user_group.invite_list.screen.dart';
+export './src/screens/user_group.edit.screen.dart';
+export './src/widgets/user_group.doc.dart';
+export './src/widgets/user_group.open.list.screen.button.dart';
+export './src/widgets/user_group.list_tile.dart';

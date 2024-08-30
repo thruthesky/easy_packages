@@ -1,17 +1,17 @@
-import 'package:easy_task/src/task.user_group.dart';
+import 'package:easy_user_group/src/user_group.dart';
 import 'package:flutter/material.dart';
 
-class TaskUserGroupDoc extends StatelessWidget {
-  const TaskUserGroupDoc({
+class UserGroupDoc extends StatelessWidget {
+  const UserGroupDoc({
     super.key,
     required this.userGroup,
     required this.builder,
     this.sync = false,
   });
 
-  final TaskUserGroup userGroup;
+  final UserGroup userGroup;
   final bool sync;
-  final Widget Function(TaskUserGroup) builder;
+  final Widget Function(UserGroup) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class TaskUserGroupDoc extends StatelessWidget {
       return StreamBuilder(
         initialData: userGroup,
         stream: userGroup.ref.snapshots().map(
-              (snapshot) => TaskUserGroup.fromSnapshot(snapshot),
+              (snapshot) => UserGroup.fromSnapshot(snapshot),
             ),
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting &&
@@ -36,7 +36,7 @@ class TaskUserGroupDoc extends StatelessWidget {
 
     return FutureBuilder(
       initialData: userGroup,
-      future: TaskUserGroup.get(userGroup.id),
+      future: UserGroup.get(userGroup.id),
       builder: (_, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             snapshot.hasData == false) {
