@@ -1,36 +1,34 @@
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_task/easy_task.dart';
-import 'package:easy_task/src/task.user_group.dart';
-import 'package:easy_task/src/widgets/task_user_group/task.user_group.list_tile.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
-class TaskUserGroupListScreen extends StatefulWidget {
-  static const String routeName = '/TaskUserGroupList';
-  const TaskUserGroupListScreen({super.key});
+class UserGroupListScreen extends StatefulWidget {
+  static const String routeName = '/UserGroupList';
+  const UserGroupListScreen({super.key});
 
   @override
-  State<TaskUserGroupListScreen> createState() =>
-      _TaskUserGroupListScreenState();
+  State<UserGroupListScreen> createState() => _UserGroupListScreenState();
 }
 
-class _TaskUserGroupListScreenState extends State<TaskUserGroupListScreen> {
+class _UserGroupListScreenState extends State<UserGroupListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Group List'.t),
+        title: Text('User Group List'.t),
         actions: [
           IconButton(
             onPressed: () {
-              TaskService.instance.showUserGroupCreateScreen(context);
+              UserGroupService.instance.showUserGroupCreateScreen(context);
             },
             icon: const Icon(Icons.add),
           ),
           IconButton(
               onPressed: () {
-                TaskService.instance.showUserGroupInviteListScreen(context);
+                UserGroupService.instance
+                    .showUserGroupInviteListScreen(context);
               },
               icon: const Icon(Icons.list_alt_sharp)),
           const SizedBox(
@@ -39,13 +37,15 @@ class _TaskUserGroupListScreenState extends State<TaskUserGroupListScreen> {
         ],
       ),
       body: FirestoreListView(
-        query: TaskUserGroup.col.where(
-          'users',
-          arrayContains: TaskService.instance.currentUser!.uid,
-        ),
+        query: UserGroup.col
+            .where(
+              'users',
+              arrayContains: UserGroupService.instance.currentUser!.uid,
+            )
+            .orderBy('updatedAt', descending: true),
         itemBuilder: (_, snapshot) {
-          final userGroup = TaskUserGroup.fromSnapshot(snapshot);
-          return TaskUserGroupListTile(userGroup: userGroup);
+          final userGroup = UserGroup.fromSnapshot(snapshot);
+          return UserGroupListTile(userGroup: userGroup);
         },
         emptyBuilder: (context) => Center(
           child: Text('user group list is empty'.t),

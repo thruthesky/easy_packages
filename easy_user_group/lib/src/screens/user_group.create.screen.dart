@@ -1,18 +1,17 @@
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_task/src/task.user_group.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
-class TaskUserGroupCreateScreen extends StatefulWidget {
-  static const String routeName = '/TaskUserGroupCreate';
-  const TaskUserGroupCreateScreen({super.key});
+class UserGroupCreateScreen extends StatefulWidget {
+  static const String routeName = '/UserGroupCreate';
+  const UserGroupCreateScreen({super.key});
 
   @override
-  State<TaskUserGroupCreateScreen> createState() =>
-      _TaskUserGroupCreateScreenState();
+  State<UserGroupCreateScreen> createState() => _UserGroupCreateScreenState();
 }
 
-class _TaskUserGroupCreateScreenState extends State<TaskUserGroupCreateScreen> {
+class _UserGroupCreateScreenState extends State<UserGroupCreateScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -20,7 +19,7 @@ class _TaskUserGroupCreateScreenState extends State<TaskUserGroupCreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Task Group Create'.t),
+          title: Text('User Group Create'.t),
           actions: [
             IconButton(
               onPressed: () {},
@@ -34,14 +33,15 @@ class _TaskUserGroupCreateScreenState extends State<TaskUserGroupCreateScreen> {
             child: Column(
               children: [
                 TextField(
-                  decoration: InputDecoration(labelText: 'Task Title'.t),
+                  decoration: InputDecoration(labelText: 'User Group Title'.t),
                   controller: titleController,
                 ),
                 const SizedBox(
                   height: 16,
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Task Description'.t),
+                  decoration:
+                      InputDecoration(labelText: 'User Group Description'.t),
                   controller: descriptionController,
                   minLines: 3,
                   maxLines: 8,
@@ -55,19 +55,19 @@ class _TaskUserGroupCreateScreenState extends State<TaskUserGroupCreateScreen> {
                       toast(context: context, message: Text('input a title'.t));
                       return;
                     }
-                    final ref = await TaskUserGroup.create(
+                    final ref = await UserGroup.create(
                       title: titleController.text,
                       description: descriptionController.text,
                     );
-                    final group = TaskUserGroup.get(ref.id);
-                    if (context.mounted) {
+                    final group = await UserGroup.get(ref.id);
+                    if (context.mounted && group != null) {
                       Navigator.of(context).pop();
                       debugPrint(group.toString());
-                      // TaskService.instance
-                      //     .showTaskGroupDetailScreen(context, group);
+                      UserGroupService.instance
+                          .showUserGroupDetailScreen(context, group);
                     }
                   },
-                  child: Text('Create Task Group'.t),
+                  child: Text('Create User Group'.t),
                 ),
               ],
             ),

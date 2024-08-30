@@ -1,6 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_task/easy_task.dart';
-import 'package:easy_task/src/widgets/task_user_group/task.open.user_group.list.screen.button.dart';
 import 'package:flutter/material.dart';
 
 /// Task list screen
@@ -27,9 +26,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Task List'.t),
-        actions: const [
-          TaskOpenGroupListScreenButton(),
-          TaskCreateButton(),
+        actions: [
+          if (TaskService.instance.taskListActionButton != null)
+            TaskService.instance.taskListActionButton!(),
+          const TaskCreateButton(),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),

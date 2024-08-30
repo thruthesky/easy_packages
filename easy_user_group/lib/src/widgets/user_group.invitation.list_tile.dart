@@ -1,19 +1,19 @@
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_task/src/task.user_group.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class TaskUserGroupInvitationListTile extends StatelessWidget {
-  const TaskUserGroupInvitationListTile({
+class UserGroupInvitationListTile extends StatelessWidget {
+  const UserGroupInvitationListTile({
     super.key,
     required this.userGroup,
     this.onAccept,
     this.onReject,
   });
 
-  final TaskUserGroup userGroup;
-  final Function(TaskUserGroup userGroup, User? user)? onAccept;
-  final Function(TaskUserGroup userGroup, User? user)? onReject;
+  final UserGroup userGroup;
+  final Function(UserGroup userGroup, User? user)? onAccept;
+  final Function(UserGroup userGroup, User? user)? onReject;
 
   static const double _minTileHeight = 70;
 
