@@ -411,7 +411,15 @@ class ChatRoom {
   }
 
   Future<void> acceptInvitation() async {
-    print('--> acceptInvitation; id; $id');
+    await join();
+    if (invitedUsers.contains(myUid)) {
+      await ChatService.instance.decreaseInvitationCount();
+    }
+  }
+
+  /// Alias for [acceptInvitation]. Since they have
+  /// really simmilar logic.
+  Future<void> join() async {
     if (blockedUsers.contains(myUid)) {
       throw ChatException(
         'chat-join-fail',
@@ -419,7 +427,6 @@ class ChatRoom {
             .t,
       );
     }
-
     final timestampAtLastMessage = lastMessageAt != null
         ? Timestamp.fromDate(lastMessageAt!)
         : FieldValue.serverTimestamp();
@@ -451,14 +458,7 @@ class ChatRoom {
       },
       SetOptions(merge: true),
     );
-    dog('--> ChatRoom.acceptInvitation: $id');
-    ChatService.instance.decreaseInvitationCount();
   }
-
-  // TODO review because we have accept invitation count now
-  /// Alias for [acceptInvitation]. Since they have
-  /// really simmilar logic.
-  Future<void> join() => acceptInvitation();
 
   Future<void> rejectInvitation() async {
     await ref.update({
