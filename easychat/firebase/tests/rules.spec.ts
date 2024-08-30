@@ -3261,3 +3261,90 @@ describe("Members inviting other user when allMembersCanInvite is false, Open ch
     );
   });
 });
+
+describe("Single Chat Room Id test", async () => {
+  const appleAndBananaId = appleId + "---" + bananaId;
+  const appleAndBananaRoom: ChatRoom = {
+    name: "apple room",
+    single: true,
+    masterUsers: [appleId],
+    users: {
+      [appleId]: {
+        nMC: 0,
+      },
+    },
+    createdAt: 1312,
+  };
+  let appleGroupId: string = "apple-group-id";
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the Apple and Banana room for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleAndBananaId)),
+        appleAndBananaRoom
+      );
+    });
+  });
+
+  it("[Pass] User tried to read a single chat with his uid", async () => {
+    await assertSucceeds(getDoc(doc(bananaDb, getRoomPath(appleAndBananaId))));
+  });
+  it("[Fail] Different User tried to read a single chat with other uid", async () => {
+    await assertFails(getDoc(doc(guavaDb, getRoomPath(appleAndBananaId))));
+  });
+  it("[Pass] Member User tried to read a single chat with his uid", async () => {
+    await assertSucceeds(getDoc(doc(appleDb, getRoomPath(appleAndBananaId))));
+  });
+  it("[Pass] Member by RoomId tried to read not existing chat", async () => {
+    await assertSucceeds(
+      getDoc(doc(guavaDb, getRoomPath(guavaId + "---" + bananaId)))
+    );
+  });
+  it("[Fail] Not member by RoomId tried to read not existing chat", async () => {
+    await assertFails(
+      getDoc(doc(guavaDb, getRoomPath(carrotId + "---" + bananaId)))
+    );
+  });
+  it("[Pass] Not invited user but the user is the other user in single chat room id, joins", async () => {
+    const roomUpdate: ChatRoom = {
+      users: {
+        [bananaId]: {
+          nMC: 0,
+        },
+      },
+    } as ChatRoom;
+
+    await assertSucceeds(
+      setDoc(doc(bananaDb, getRoomPath(appleAndBananaId)), roomUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Not invited user and the user is not the other user in single chat room id, joins", async () => {
+    const roomUpdate: ChatRoom = {
+      users: {
+        [carrotId]: {
+          nMC: 0,
+        },
+      },
+    } as ChatRoom;
+    await assertFails(
+      setDoc(doc(carrotDb, getRoomPath(appleAndBananaId)), roomUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
