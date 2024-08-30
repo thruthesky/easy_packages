@@ -124,12 +124,15 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 },
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 12, 0, 0),
               child: CheckboxListTile(
+                // When it is open group, basically all members can invite
+                enabled: !open,
                 title: Text('members can invite'.t),
                 subtitle: Text('all members can invite others to join'.t),
-                value: allMembersCanInvite,
+                value: open ? true : allMembersCanInvite,
                 onChanged: (value) {
                   if (value == null) return;
                   setState(() {

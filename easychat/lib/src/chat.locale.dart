@@ -59,6 +59,14 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Anyone can join this chat room.',
     'ko': '누구나 이 채팅방에 참여할 수 있습니다.',
   },
+  'members can invite': {
+    'en': 'Members can invite',
+    'ko': '멤버 초대',
+  },
+  'all members can invite others to join': {
+    'en': 'All members can invite others to join',
+    'ko': '모든 멤버가 다른 사용자에게 초대할 수 있습니다',
+  },
   'create': {
     'en': 'Create',
     'ko': '생성',

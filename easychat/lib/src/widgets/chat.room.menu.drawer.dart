@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easychat/src/development/development.dart';
 import 'package:easychat/src/widgets/chat.room.blocked.users.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +102,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 const SizedBox(height: 24),
                 horizontalPadding(
                   child: Text(
-                    room!.name,
+                    room!.name.isEmpty ? 'chat room'.t : room!.name,
                     style: Theme.of(context).textTheme.titleLarge,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -393,15 +392,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               const SizedBox(
                 height: 36,
               ),
-              if (christian) ...[
-                ListTile(
-                  title: const Text("Test Snackbar"),
-                  onTap: () {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text("Tesing")));
-                  },
-                ),
-              ]
             ],
           ),
         ),
