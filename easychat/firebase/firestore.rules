@@ -167,7 +167,7 @@ service cloud.firestore {
               && (
                 onlyUpdating(['lastMessageAt', 'users', 'updatedAt'])
                 || (
-                  allMembersCanInvite()
+                  (allMembersCanInvite() || isOpenGroup())
                   && onlyUpdating(['lastMessageAt', 'invitedUsers',  'users', 'updatedAt'])
                 )
 

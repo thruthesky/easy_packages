@@ -180,7 +180,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   // ),
                 ],
                 if (room?.masterUsers.contains(my.uid) == true ||
-                    room?.allMembersCanInvite == true)
+                    room?.allMembersCanInvite == true ||
+                    room?.open == true)
                   ListTile(
                     title: Text('invite more users'.t),
                     onTap: () async {
