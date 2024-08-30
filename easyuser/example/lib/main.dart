@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                UserService.instance.showUserSearchDialog(
+                UserService.instance.showSearchDialog(
                   context,
                   exactSearch: true,
                 );

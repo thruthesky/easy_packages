@@ -65,7 +65,7 @@ final localeTexts = <String, Map<String, String>>{
   },
   'all members can invite others to join': {
     'en': 'All members can invite others to join',
-    'ko': '모든 멤버가 다른 사용자에게 초대할 수 있습니다',
+    'ko': '모든 멤버가 다른 사용자를 초대할 수 있습니다',
   },
   'create': {
     'en': 'Create',
