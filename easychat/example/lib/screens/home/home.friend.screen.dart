@@ -63,7 +63,7 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                   if (value == 'profile') {
                     // Navigator.of(context).pushNamed(UserProfileScreen.routeName);
                   } else if (value == 'signout') {
-                    // UserSignOutService.instance.signOut();
+                    UserService.instance.signOut();
                   } else if (value == 'find-friend') {
                     final user =
                         await UserService.instance.showSearchDialog(context);
