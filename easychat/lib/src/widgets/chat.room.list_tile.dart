@@ -96,7 +96,7 @@ class ChatRoomListTile extends StatelessWidget {
         // being changed when there is new user.
         if (snapshot.data?.snapshot.value == null) {
           return Text(
-            "no message yet".t,
+            "single chat no message yet".t,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

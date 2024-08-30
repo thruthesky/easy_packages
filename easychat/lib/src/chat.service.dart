@@ -125,6 +125,7 @@ class ChatService {
   ///
   /// Since the count may goes wrong, because the security rules is open.
   void resetInvitationCount() async {
+    if (UserService.instance.notSignedIn) return;
     final countSnapshot = await ChatService.instance.roomCol
         .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
         .count()
@@ -200,11 +201,14 @@ class ChatService {
   /// Show the chat room edit screen. It's for borth create and update.
   /// Return Dialog/Screen that may return DocReference
   Future<fs.DocumentReference?> showChatRoomEditScreen(BuildContext context,
-      {ChatRoom? room}) {
+      {ChatRoom? room, bool defaultOpen = false}) {
     return $showChatRoomEditScreen?.call(context, room: room) ??
         showGeneralDialog<fs.DocumentReference>(
           context: context,
-          pageBuilder: (_, __, ___) => ChatRoomEditScreen(room: room),
+          pageBuilder: (_, __, ___) => ChatRoomEditScreen(
+            room: room,
+            defaultOpen: defaultOpen,
+          ),
         );
   }
 

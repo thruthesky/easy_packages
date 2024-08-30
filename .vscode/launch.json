@@ -5,13 +5,76 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Easy Chat - iPhone 15 Pro Max",
+            "name": "Christian - iPhone 15 Pro Max - Example",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro Max",
+            "cwd": "example",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define",
+                "DEVELOPER=christian"
+            ]
+        },
+        {
+            "name": "Christian - iPhone SE - Example",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone SE",
+            "cwd": "example",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define",
+                "DEVELOPER=christian"
+            ]
+        },
+        {
+            "name": "Christian - iPhone 15 Pro - Example",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro",
+            "cwd": "example",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define",
+                "DEVELOPER=christian"
+            ]
+        },
+
+        {
+            "name": "EasyChat - iPhone 15 Pro Max - Example",
             "request": "launch",
             "type": "dart",
             "deviceId": "iPhone 15 Pro Max",
             "cwd": "easychat/example",
-            "program": "lib/main.dart"
+            "program": "lib/main.dart",
+            "args": [
+                
+            ]
         },
+        {
+            "name": "EasyChat - iPhone SE - Example",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone SE",
+            "cwd": "easychat/example",
+            "program": "lib/main.dart",
+            "args": [
+                
+            ]
+        },
+        {
+            "name": "EasyChat - iPhone 15 Pro - Example",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro",
+            "cwd": "easychat/example",
+            "program": "lib/main.dart",
+            "args": [
+                
+            ]
+        },
+
         {
             "name": "Easy Like - iPhone 15 Pro Max",
             "request": "launch",

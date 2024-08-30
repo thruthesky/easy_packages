@@ -102,7 +102,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 const SizedBox(height: 24),
                 horizontalPadding(
                   child: Text(
-                    room!.name,
+                    room!.name.isEmpty ? 'chat room'.t : room!.name,
                     style: Theme.of(context).textTheme.titleLarge,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -172,14 +172,16 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ListTile(
-                    title: Text('see all members'.t),
-                    onTap: () {
-                      showMembersDialog(context);
-                    },
-                  ),
+                  // ListTile(
+                  //   title: Text('see all members'.t),
+                  //   onTap: () {
+                  //     showMembersDialog(context);
+                  //   },
+                  // ),
                 ],
-                if (room?.masterUsers.contains(my.uid) == true)
+                if (room?.masterUsers.contains(my.uid) == true ||
+                    room?.allMembersCanInvite == true ||
+                    room?.open == true)
                   ListTile(
                     title: Text('invite more users'.t),
                     onTap: () async {

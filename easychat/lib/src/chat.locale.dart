@@ -59,6 +59,14 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'Anyone can join this chat room.',
     'ko': '누구나 이 채팅방에 참여할 수 있습니다.',
   },
+  'members can invite': {
+    'en': 'Members can invite',
+    'ko': '멤버 초대',
+  },
+  'all members can invite others to join': {
+    'en': 'All members can invite others to join',
+    'ko': '모든 멤버가 다른 사용자를 초대할 수 있습니다',
+  },
   'create': {
     'en': 'Create',
     'ko': '생성',
@@ -297,9 +305,9 @@ final localeTexts = <String, Map<String, String>>{
     'en': "Message Requests/Invitations!",
     'ko': "메시지 요청/초대!",
   },
-  'see more requests': {
-    'en': "See more...",
-    'ko': "더 많은 요청 보기...",
+  'view all invitations': {
+    'en': 'View All',
+    'ko': '모두 보기',
   },
 
   // chat.room.list_tile.dart
@@ -307,9 +315,13 @@ final localeTexts = <String, Map<String, String>>{
     'en': 'The last message was deleted',
     'ko': '마지막 메시지가 삭제되었습니다',
   },
+  'single chat no message yet': {
+    'en': 'Invitation has NOT been sent.',
+    'ko': '친구 초대가 전송되지 않았습니다.',
+  },
   'no message yet': {
-    'en': 'No message yet',
-    'ko': '메시지가 없습니다',
+    'en': 'No message yet. Invitation NOT sent.',
+    'ko': '메시지가 없습니다. 초대가 전송되지 않았습니다.',
   },
 
   // chat.room.list_view.dart

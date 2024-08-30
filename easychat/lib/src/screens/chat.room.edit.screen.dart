@@ -13,9 +13,11 @@ class ChatRoomEditScreen extends StatefulWidget {
   const ChatRoomEditScreen({
     super.key,
     this.room,
+    this.defaultOpen = false,
   });
 
   final ChatRoom? room;
+  final bool defaultOpen;
 
   @override
   State<ChatRoomEditScreen> createState() => _ChatRoomEditScreenState();
@@ -27,6 +29,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   bool get isUpdate => widget.room != null;
 
   bool open = false;
+  bool allMembersCanInvite = false;
   bool isLoading = false;
 
   final nameController = TextEditingController();
@@ -37,10 +40,15 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   @override
   void initState() {
     super.initState();
-    if (isCreate) return;
+    if (isCreate) {
+      open = widget.defaultOpen;
+      return;
+    }
     nameController.text = room!.name;
     descriptionController.text = room!.description;
+
     open = room!.open;
+    allMembersCanInvite = room!.allMembersCanInvite;
   }
 
   @override
@@ -116,6 +124,23 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 },
               ),
             ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 12, 0, 0),
+              child: CheckboxListTile(
+                // When it is open group, basically all members can invite
+                enabled: !open,
+                title: Text('members can invite'.t),
+                subtitle: Text('all members can invite others to join'.t),
+                value: open ? true : allMembersCanInvite,
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    allMembersCanInvite = value;
+                  });
+                },
+              ),
+            ),
             const SizedBox(
               height: 24,
             ),
@@ -166,6 +191,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             name: nameController.text,
                             description: descriptionController.text,
                             open: open,
+                            allMembersCanInvite: allMembersCanInvite,
                           );
                         } catch (e) {
                           dog("Error ${e.toString()}");

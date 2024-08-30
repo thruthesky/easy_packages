@@ -12,6 +12,53 @@ For your information, EasyChat:
 - Comes with a beautiful UI/UX by default,
 - Is optimized for use in large-scale chat applications.
 
+- [EasyChat](#easychat)
+  - [TODO](#todo)
+  - [Overview](#overview)
+  - [Install](#install)
+    - [Security Rules](#security-rules)
+      - [Firestore Security Rules](#firestore-security-rules)
+      - [Realtime Database Security Rules](#realtime-database-security-rules)
+    - [Index](#index)
+      - [Firestore index](#firestore-index)
+      - [Realtime Database index](#realtime-database-index)
+  - [Example](#example)
+  - [Initialization](#initialization)
+  - [Logic](#logic)
+  - [User database](#user-database)
+  - [Chat Database](#chat-database)
+    - [Chat room database struture](#chat-room-database-struture)
+    - [Chat message database structure](#chat-message-database-structure)
+    - [Chat room security](#chat-room-security)
+    - [Cost of Firestore](#cost-of-firestore)
+    - [Chat message database struture (RTDB)](#chat-message-database-struture-rtdb)
+  - [Group Chat and 1:1 Chat](#group-chat-and-11-chat)
+  - [Masters](#masters)
+  - [Chat invitation](#chat-invitation)
+    - [Database for chat invitation](#database-for-chat-invitation)
+    - [How to use it](#how-to-use-it)
+  - [Password](#password)
+  - [Development Guideline](#development-guideline)
+    - [Init the chat service](#init-the-chat-service)
+    - [Opening chat room create in main.dart](#opening-chat-room-create-in-maindart)
+    - [Chat to admin](#chat-to-admin)
+      - [1:1 chat with Admin](#11-chat-with-admin)
+      - [Group chat with multiple admins](#group-chat-with-multiple-admins)
+  - [chatRoomActionButton](#chatroomactionbutton)
+  - [onSendMessage CallBack](#onsendmessage-callback)
+  - [onInvite Callback](#oninvite-callback)
+  - [newMessageBuilder](#newmessagebuilder)
+  - [Chat Room Blocking](#chat-room-blocking)
+    - [Group Chats with blocked users](#group-chats-with-blocked-users)
+  - [Chat Room Logic Diagrams](#chat-room-logic-diagrams)
+    - [Logic for Creating Group Chat](#logic-for-creating-group-chat)
+    - [Logic for Creating/Opening Single Chat](#logic-for-creatingopening-single-chat)
+    - [Logic for Opening Chat Room](#logic-for-opening-chat-room)
+    - [Logic for Inviting User in Group Chat](#logic-for-inviting-user-in-group-chat)
+    - [Process for Accepting/Rejecting Chat Request/Invitation](#process-for-acceptingrejecting-chat-requestinvitation)
+    - [Logic for Blocking User in Group Chat](#logic-for-blocking-user-in-group-chat)
+  - [Known issues and Common problems](#known-issues-and-common-problems)
+
 
 ## TODO
 
@@ -153,6 +200,23 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
       - **Because**; any one can read the chat room information. If the blocked user simply logs-out and logs-in another user, and he is able to read the chat room information. Then, what's the use of blocking blocked users not to read the `open chat room` information.
     - For 1:1 chat rooms and grup chat rooms, they have invitation mechanism and the user needs to be invited to read the chat room.
 
+**[IMPORTANT!]**
+- For single chat rooms, it is important to secure the room to be used only by the users involved (user and other user). To do that, `strictlyFor` is added to fields for security rule, which contains the uids of users involved. Both user can leave the chat room.
+
+  - For leaving, there are multiple scenarios to handle.
+
+    - User A left, User B stayed (1)
+      - When User B chatted the room;
+        - it will invite A to join room. We know what to do because this similar on how single chat begins.
+    
+    - User A left, User B stayed (2)
+      - When User A wants to chat to User B
+        - QUESTION: What should happen if User B didn't invite User A? We cannot simple put User A as Member because it violates the idea of Invitations.
+
+    - Both Users left
+      - When User A want to chat to user B,
+        - Can't we allow User A to join room...? This can be against to our idea if we simply put User A as Member, because user A will see chat messages (or old messages) of room that did not invited her. (Supposedly, when you leave, you are no longer allowed to read, unless you are invited or a member.)
+        - To explain the problem, take note that User A (and User B as well) is no longer member of the room. Why should we allow User A to simply join the room, without invitations, in a private chat room?
 
 
 ### Cost of Firestore
@@ -461,7 +525,6 @@ If you want to display the number of new messages of each chat room, you can use
 
 ## Chat Room Blocking
 
-
 Master(s) can block a user. Then the user is kicked out and cannot enter the chat room again.
 
 This is only applicable to group chats, for open or not open, since the user can block another user directly.
@@ -606,3 +669,37 @@ flowchart TD
   --> final([End])
 
 ```
+
+
+### Listing chat roooms
+
+
+- Use `ChatRoomListView` to display the chat rooms.
+- The `ChatRoomListView` uses `CustomScrollView` inside which is a sliver list. It is recommended to set the `ChatRoomListView` widget directly to the body property of a scaffold. 
+  - You can customize the look, of course. But you need to understand how the sliver list view works.
+    - One way you can easily customize is to wrap the `ChatRoomListView` with `Expanded` in Cl]olumn.
+
+
+
+Example:
+```dart
+```
+
+
+
+```mermaid
+flowchart TD
+```
+
+
+
+
+
+
+## Known issues and Common problems
+
+
+- If you see a loader (circular progress) in a list (realtime database list view), check if the `databaseURL` is properly set in the firebase initialization configuration.
+  - See the README of `easyusr` for more details of realtime database setup error.
+
+

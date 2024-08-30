@@ -6,6 +6,86 @@
   - The Realtime Database is more cost-efficient and loads data faster.
 
 
+- [Easy User](#easy-user)
+- [TODO](#todo)
+- [Installation](#installation)
+  - [Firebase Database Security Rules](#firebase-database-security-rules)
+- [Intialization](#intialization)
+- [Logic](#logic)
+  - [Anonymous](#anonymous)
+- [How to use](#how-to-use)
+  - [Usages](#usages)
+- [Database structure for user](#database-structure-for-user)
+  - [User collection](#user-collection)
+  - [User meta collection](#user-meta-collection)
+  - [개인정보](#개인정보)
+    - [User document fields](#user-document-fields)
+    - [User blocking](#user-blocking)
+    - [Phone number collections](#phone-number-collections)
+- [linkWithCredential](#linkwithcredential)
+- [Widget](#widget)
+  - [User sign-in or sign-out](#user-sign-in-or-sign-out)
+  - [UserChange](#userchange)
+  - [MyDoc](#mydoc)
+    - [MyDoc](#mydoc-1)
+  - [MyDoc on offline](#mydoc-on-offline)
+  - [UserDoc](#userdoc)
+  - [FirestoreUserDoc](#firestoreuserdoc)
+    - [Deleting user document](#deleting-user-document)
+  - [Finding user](#finding-user)
+  - [Trouble shooting](#trouble-shooting)
+- [Update document with following](#update-document-with-following)
+- [EasyUser Helpers](#easyuser-helpers)
+- [User data mirroring to Realtime Database](#user-data-mirroring-to-realtime-database)
+- [Widgets](#widgets)
+  - [UserListView](#userlistview)
+  - [FirestoreUserListView](#firestoreuserlistview)
+  - [MyDoc](#mydoc-2)
+  - [UserDoc](#userdoc-1)
+  - [User block](#user-block)
+- [Geo query](#geo-query)
+- [Known Issues](#known-issues)
+  - [관리자](#관리자)
+    - [UserDoc](#userdoc-2)
+  - [데이터베이스 구조](#데이터베이스-구조)
+  - [사용자 기능 초기화](#사용자-기능-초기화)
+  - [사용자 UI 커스터마이징 (Customizing User UI)](#사용자-ui-커스터마이징-customizing-user-ui)
+    - [로그인 에러 UI (Login Error UI)](#로그인-에러-ui-login-error-ui)
+    - [사용자 정보 수정 페이지 초기화 예제](#사용자-정보-수정-페이지-초기화-예제)
+    - [User profile update screen](#user-profile-update-screen)
+      - [DefaultProfileUpdateForm - 사용자 정보 수정 양식](#defaultprofileupdateform---사용자-정보-수정-양식)
+      - [SimpleProfileUpdateForm](#simpleprofileupdateform)
+  - [사용자 정보 참고](#사용자-정보-참고)
+  - [나의 (로그인 사용자) 정보 액세스](#나의-로그인-사용자-정보-액세스)
+    - [MyDoc 의 initialData 옵션](#mydoc-의-initialdata-옵션)
+    - [관리자 위젯 표시 (Displaying Admin Widgets)](#관리자-위젯-표시-displaying-admin-widgets)
+  - [사용자 정보 수정 (User Information Update)](#사용자-정보-수정-user-information-update)
+  - [Displaying user data](#displaying-user-data)
+    - [UserDoc](#userdoc-3)
+    - [MyDoc](#mydoc-3)
+    - [UserDisplayName](#userdisplayname)
+    - [UserAvatar](#useravatar)
+      - [UserAvatar.fromUid](#useravatarfromuid)
+  - [Block and unblock](#block-and-unblock)
+  - [Widgets](#widgets-1)
+    - [UserDisplayName 사용자 이름 표시](#userdisplayname-사용자-이름-표시)
+    - [UpdateBirthdayField](#updatebirthdayfield)
+    - [UserTile](#usertile)
+  - [좋아요](#좋아요)
+  - [서로 좋아요](#서로-좋아요)
+  - [사용자 로그인 후 정보 액세스](#사용자-로그인-후-정보-액세스)
+  - [사용자 정보 listening](#사용자-정보-listening)
+    - [사용자가 사진 또는 이름을 입력하지 않았으면 강제로 입력하게하는 방법](#사용자가-사진-또는-이름을-입력하지-않았으면-강제로-입력하게하는-방법)
+  - [회원 정보 수정 화면](#회원-정보-수정-화면)
+  - [사용자 공개 프로필 화면](#사용자-공개-프로필-화면)
+    - [사용자 프로필 보기를 할 때, 상대 회원에게 푸시 알림 보내기](#사용자-프로필-보기를-할-때-상대-회원에게-푸시-알림-보내기)
+  - [좋아요](#좋아요-1)
+  - [사용자 계정 정지](#사용자-계정-정지)
+  - [회원 탈퇴](#회원-탈퇴)
+  - [로그인에 따른 위젯 보여주기](#로그인에-따른-위젯-보여주기)
+  - [로그인을 하지 않은 경우,](#로그인을-하지-않은-경우)
+  - [UserModel 에 존재하지 않는 필드 값 읽기/쓰기 - extra](#usermodel-에-존재하지-않는-필드-값-읽기쓰기---extra)
+
 # TODO
 
 - write the unit test for firestore rules in `firebase` folder.
@@ -543,7 +623,18 @@ UserBlocked(
 
 
 
-# Known Issues
+# Known Issues and Common Problems
+
+
+## Realtime Database setup setup related error
+
+- Developer forgot to add the `databaseURL` in firebsae initialization.
+- Then, a user registered.
+  - The user data is not mirrored. And app may produce error because it cannot get the user data (from RTDB).
+- Then, the developer add `databaseURL` and run the app again,
+  - The developer still see the error since the other users' data is not mirrored to rtdb.
+  - When the other user re-run the app, the other user's data may be mirrored from that time and error disappers.
+- This error is one kind that works as expected. You will need to understand how firebase and the code works.
 
 
 

@@ -13,9 +13,7 @@ class ChatInvitationCount extends StatelessWidget {
       collectionName: 'chat-settings',
       id: myUid!,
       builder: (model) {
-        return Text(
-          'No of chat invitation: ${model.data['chatInvitationCount'] ?? '0'}',
-        );
+        return builder(model.data['chatInvitationCount'] ?? 0);
       },
     );
   }
