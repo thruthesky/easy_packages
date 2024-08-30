@@ -28,6 +28,13 @@ class ReceivedChatRoomInviteListScreen extends StatelessWidget {
               itemBuilder: (context, doc) {
                 return ChatRoomInvitationListTile(
                   room: ChatRoom.fromSnapshot(doc),
+                  onAccept: (room, user) {
+                    ChatService.instance.showChatRoomScreen(
+                      context,
+                      room: room,
+                      user: user,
+                    );
+                  },
                 );
               },
               emptyBuilder: (context) => Center(

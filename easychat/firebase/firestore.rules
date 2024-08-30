@@ -54,6 +54,10 @@ service cloud.firestore {
         return 'single' in resource.data.keys()
                 && resource.data.single;
       }
+      function isGroupChat() {
+        return 'group' in resource.data.keys()
+                && resource.data.group;
+      }
       function isInvited() {
         return  resource.data.keys().hasAll(['invitedUsers']) 
                 && request.auth.uid in resource.data.invitedUsers;
@@ -94,6 +98,11 @@ service cloud.firestore {
       function isBlocked() {
         return resource.data.keys().hasAny(['blockedUsers'])
           && request.auth.uid in resource.data.blockedUsers;
+      }
+
+      function allMembersCanInvite() {
+        return resource.data.keys().hasAny(['allMembersCanInvite'])
+          && resource.data.allMembersCanInvite;
       }
       function updatingCreatedAt() {
         return resource.data.keys().hasAny(['createdAt'])
@@ -152,8 +161,24 @@ service cloud.firestore {
         )
         || (
           isMember()
-          && onlyUpdating(['lastMessageAt',  'users', 'updatedAt'])
-          && sameMembers()
+          && (
+            (
+              isGroupChat()
+              && (
+                onlyUpdating(['lastMessageAt', 'users', 'updatedAt'])
+                || (
+                  (allMembersCanInvite() || isOpenGroup())
+                  && onlyUpdating(['lastMessageAt', 'invitedUsers',  'users', 'updatedAt'])
+                )
+
+              ) && sameMembers()
+            )
+            || (
+              isSingleChat()
+              && onlyUpdating(['lastMessageAt', 'users', 'updatedAt'])
+              && sameMembers()
+            )
+          )
         );
         allow delete: if isMaster();
     }

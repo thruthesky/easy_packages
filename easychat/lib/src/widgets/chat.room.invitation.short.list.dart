@@ -49,26 +49,18 @@ class ChatRoomInvitationShortList extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                // showGeneralDialog(
-                //   context: context,
-                //   pageBuilder: (context, a1, a2) {
-                //     return const ReceivedChatRoomInviteListScreen();
-                //   },
-                // );
-
                 ChatService.instance.showInviteListScreen(context);
               },
               child: Padding(
                 padding: padding ?? const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    ChatService.instance.newMessageBuilder?.call(
-                            chatRooms.length > 3
-                                ? "3+"
-                                : chatRooms.length.toString()) ??
-                        Badge(
-                          label: Text("${chatRooms.length}"),
-                        ),
+                    const SizedBox(width: 4),
+                    ChatInvitationCount(
+                      builder: (int no) =>
+                          ChatService.instance.newMessageBuilder?.call("$no") ??
+                          Badge(label: Text("$no")),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -77,7 +69,17 @@ class ChatRoomInvitationShortList extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (chatRooms.length > 3) Text('see more requests'.t),
+                    if (docs.length > 3) ...[
+                      Text(
+                        'view all invitations'.t,
+                        style:
+                            Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                      ),
+                      const SizedBox(width: 6),
+                    ],
                   ],
                 ),
               ),

@@ -33,7 +33,10 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              ChatService.instance.showChatRoomEditScreen(context);
+              ChatService.instance.showChatRoomEditScreen(
+                context,
+                defaultOpen: queryOption == ChatRoomQuery.open,
+              );
             },
             icon: const Icon(Icons.add),
           ),

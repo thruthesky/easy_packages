@@ -27,6 +27,8 @@ interface ChatRoom {
   verifiedUserOnly?: boolean;
   urlForVerifiedUserOnly?: boolean;
   uploadForVerifiedUserOnly?: boolean;
+  allMembersCanInvite?: boolean;
+
   gender?: string;
   domain?: string;
 }
