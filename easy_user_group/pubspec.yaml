@@ -4,7 +4,6 @@ version: 0.0.1
 homepage: https://github.com/thruthesky/easy_packages/
 
 environment:
-  #sdk: ^3.5.1
   sdk: ">=3.4.3 <4.0.0"
   flutter: ">=1.17.0"
 
