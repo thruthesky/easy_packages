@@ -54,7 +54,7 @@ class Snippet {
           'maxres': Thumbnail.fromJson(snippet['thumbnails']['maxres']),
       },
       channelTitle: snippet['channelTitle'],
-      tags: List<String>.from(snippet['tags']),
+      tags: snippet['tags'] != null ? List<String>.from(snippet['tags']) : [],
       categoryId: snippet['categoryId'],
       liveBroadcastContent: snippet['liveBroadcastContent'],
       localized: Localized.fromJson(snippet['localized']),
@@ -131,12 +131,14 @@ class Statistics {
     required this.commentCount,
   });
 
+  /// added default empty string sometimes hte result from api doest have this parameters
   factory Statistics.fromJson(Map<String, dynamic> json) {
     return Statistics(
-        viewCount: json['viewCount'],
-        likeCount: json['likeCount'],
-        favoriteCount: json['favoriteCount'],
-        commentCount: json['commentCount']);
+      viewCount: json['viewCount'] ?? '0',
+      likeCount: json['likeCount'] ?? '0',
+      favoriteCount: json['favoriteCount'] ?? '0',
+      commentCount: json['commentCount'] ?? '0',
+    );
   }
 
   @override
@@ -163,14 +165,15 @@ class ContentDetails {
     required this.projection,
   });
 
+  /// added default empty string sometimes hte result from api doest have this parameters
   factory ContentDetails.fromJson(Map<String, dynamic> json) {
     return ContentDetails(
-      duration: json['duration'],
-      dimension: json['dimension'],
-      definition: json['definition'],
-      caption: json['caption'],
-      licensedContent: json['licensedContent'],
-      projection: json['projection'],
+      duration: json['duration'] ?? '',
+      dimension: json['dimension'] ?? '',
+      definition: json['definition'] ?? '',
+      caption: json['caption'] ?? '',
+      licensedContent: json['licensedContent'] ?? false,
+      projection: json['projection'] ?? '',
     );
   }
 
