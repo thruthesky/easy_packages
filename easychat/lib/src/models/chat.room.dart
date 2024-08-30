@@ -410,15 +410,15 @@ class ChatRoom {
     ChatService.instance.onInvite?.call(room: this, uid: uid);
   }
 
+  /// Alias for [join]. Since they have
+  /// really simmilar logic.
   Future<void> acceptInvitation() async {
     await join();
-    if (invitedUsers.contains(myUid)) {
-      await ChatService.instance.decreaseInvitationCount();
-    }
   }
 
-  /// Alias for [acceptInvitation]. Since they have
-  /// really simmilar logic.
+  /// Let the current user join in chat room
+  ///
+  /// If user is invited, invitation count will decrease
   Future<void> join() async {
     if (blockedUsers.contains(myUid)) {
       throw ChatException(
@@ -458,6 +458,9 @@ class ChatRoom {
       },
       SetOptions(merge: true),
     );
+    if (invitedUsers.contains(myUid)) {
+      await ChatService.instance.decreaseInvitationCount();
+    }
   }
 
   Future<void> rejectInvitation() async {
