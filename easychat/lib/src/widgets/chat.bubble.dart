@@ -31,6 +31,7 @@ class ChatBubble extends StatelessWidget {
     reply: 'reply',
     delete: 'delete',
     edit: 'edit',
+    report: 'report',
   );
 
   List<PopupMenuItem<String>> get menuItems => [
