@@ -121,6 +121,10 @@ class ChatRoom {
   /// True if the user has seen the last message. Meaning, there is no more new messages in the chat room.
   bool get iSeen => users[myUid!]?.newMessageCounter == 0;
 
+  /// Uids for single chat is combination of both users' uids separated by "---"
+  /// Returns list of uids based on the room id.
+  List<String> get uidsFromRoomId => id.contains("---") ? id.split("---") : [];
+
   ChatRoom({
     required this.id,
     required this.name,
