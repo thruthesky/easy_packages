@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_task/easy_task.dart';
+import 'package:easy_user_group/src/user_group.service.dart';
 
-class TaskUserGroup {
-  static CollectionReference get col =>
-      FirebaseFirestore.instance.collection('task-user-group');
+class UserGroup {
+  static CollectionReference get col => UserGroupService.instance.col;
 
   DocumentReference get ref => col.doc(id);
 
-  TaskUserGroup({
+  UserGroup({
     required this.id,
     required this.uid,
     required this.title,
@@ -47,14 +46,14 @@ class TaskUserGroup {
   final List<String> rejectedUsers;
 
   /// Get the task object from the snapshot.
-  factory TaskUserGroup.fromSnapshot(DocumentSnapshot snapshot) {
-    return TaskUserGroup.fromJson(
+  factory UserGroup.fromSnapshot(DocumentSnapshot snapshot) {
+    return UserGroup.fromJson(
         snapshot.data() as Map<String, dynamic>, snapshot.id);
   }
 
   /// Get the task object from the json.
-  factory TaskUserGroup.fromJson(Map<String, dynamic> json, String id) {
-    return TaskUserGroup(
+  factory UserGroup.fromJson(Map<String, dynamic> json, String id) {
+    return UserGroup(
       id: id,
       uid: json['uid'],
       title: json['title'],
@@ -85,28 +84,28 @@ class TaskUserGroup {
     };
   }
 
-  /// convert TaskUserGroup to string
+  /// convert UserGroup to string
   @override
   String toString() {
     return toJson().toString();
   }
 
-  /// Get TaskUserGroup
-  static Future<TaskUserGroup?> get(String id) async {
+  /// Get UserGroup
+  static Future<UserGroup?> get(String id) async {
     final snapshot = await col.doc(id).get();
     if (!snapshot.exists) {
       return null;
     }
-    return TaskUserGroup.fromSnapshot(snapshot);
+    return UserGroup.fromSnapshot(snapshot);
   }
 
-  /// Create new TaskUserGroup
+  /// Create new UserGroup
   static Future<DocumentReference> create({
     required String title,
     String description = '',
   }) async {
     final ref = await col.add({
-      'uid': TaskService.instance.currentUser!.uid,
+      'uid': UserGroupService.instance.currentUser!.uid,
       'title': title,
       'description': description,
       'createdAt': FieldValue.serverTimestamp(),
@@ -118,7 +117,7 @@ class TaskUserGroup {
     return ref;
   }
 
-  /// Update TaskUserGroup information
+  /// Update UserGroup information
   Future<void> update({
     required String title,
     required String description,
@@ -138,18 +137,19 @@ class TaskUserGroup {
 
   Future<void> acceptInvite() {
     return ref.update({
-      'users': FieldValue.arrayUnion([TaskService.instance.currentUser!.uid]),
+      'users':
+          FieldValue.arrayUnion([UserGroupService.instance.currentUser!.uid]),
       'invitedUsers':
-          FieldValue.arrayRemove([TaskService.instance.currentUser!.uid]),
+          FieldValue.arrayRemove([UserGroupService.instance.currentUser!.uid]),
     });
   }
 
   Future<void> rejectInvite() {
     return ref.update({
       'invitedUsers':
-          FieldValue.arrayRemove([TaskService.instance.currentUser!.uid]),
+          FieldValue.arrayRemove([UserGroupService.instance.currentUser!.uid]),
       'rejectedUsers':
-          FieldValue.arrayUnion([TaskService.instance.currentUser!.uid]),
+          FieldValue.arrayUnion([UserGroupService.instance.currentUser!.uid]),
     });
   }
 

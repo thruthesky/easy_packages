@@ -1,22 +1,21 @@
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_task/src/task.user_group.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
-class TaskUserGroupEditScreen extends StatefulWidget {
-  const TaskUserGroupEditScreen({
+class UserGroupEditScreen extends StatefulWidget {
+  const UserGroupEditScreen({
     super.key,
     required this.userGroup,
   });
 
-  final TaskUserGroup userGroup;
+  final UserGroup userGroup;
 
   @override
-  State<TaskUserGroupEditScreen> createState() =>
-      _TaskUserGroupEditScreenState();
+  State<UserGroupEditScreen> createState() => _UserGroupEditScreenState();
 }
 
-class _TaskUserGroupEditScreenState extends State<TaskUserGroupEditScreen> {
+class _UserGroupEditScreenState extends State<UserGroupEditScreen> {
   late TextEditingController titleController;
   late TextEditingController descriptionController;
 

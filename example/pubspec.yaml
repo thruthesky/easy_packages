@@ -28,6 +28,7 @@ dependencies:
   easy_setting_v2:
   easy_storage:
   easy_task:
+  easy_user_group:
   easy_youtube:
   easychat:
   easyuser:
@@ -81,6 +82,8 @@ dependency_overrides:
     path: ../easy_storage
   easy_task:
     path: ../easy_task
+  easy_user_group:
+    path: ../easy_user_group
   easy_youtube:
     path: ../easy_youtube
   easychat:

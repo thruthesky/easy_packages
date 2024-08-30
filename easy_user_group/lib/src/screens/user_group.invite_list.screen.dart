@@ -1,12 +1,12 @@
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_task/src/task.user_group.dart';
-import 'package:easy_task/src/widgets/task_user_group/task_user_group.invitation.list_tile.dart';
+import 'package:easy_user_group/easy_user_group.dart';
+import 'package:easy_user_group/src/widgets/user_group.invitation.list_tile.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-class TaskUserGroupInviteListScreen extends StatelessWidget {
-  const TaskUserGroupInviteListScreen({super.key});
+class UserGroupInviteListScreen extends StatelessWidget {
+  const UserGroupInviteListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +17,12 @@ class TaskUserGroupInviteListScreen extends StatelessWidget {
       body: myUid == null
           ? Center(child: Text('sign-in first'.t))
           : FirestoreListView(
-              query: TaskUserGroup.col
+              query: UserGroup.col
                   .where('invitedUsers', arrayContains: myUid)
                   .orderBy('updatedAt', descending: true),
               itemBuilder: (context, doc) {
-                return TaskUserGroupInvitationListTile(
-                  userGroup: TaskUserGroup.fromSnapshot(doc),
+                return UserGroupInvitationListTile(
+                  userGroup: UserGroup.fromSnapshot(doc),
                 );
               },
               emptyBuilder: (context) => Center(

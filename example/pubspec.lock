@@ -253,7 +253,7 @@ packages:
       path: "../easy_firestore"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   easy_helpers:
     dependency: "direct main"
     description:
@@ -309,7 +309,7 @@ packages:
       path: "../easy_setting"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   easy_storage:
     dependency: "direct main"
     description:

@@ -1,18 +1,16 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_task/easy_task.dart';
-import 'package:easy_task/src/task.user_group.dart';
-import 'package:easy_task/src/widgets/task.user_group.doc.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class TaskUserGroupDetailScreen extends StatelessWidget {
-  const TaskUserGroupDetailScreen({
+class UserGroupDetailScreen extends StatelessWidget {
+  const UserGroupDetailScreen({
     super.key,
     required this.userGroup,
   });
 
-  final TaskUserGroup userGroup;
+  final UserGroup userGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +18,7 @@ class TaskUserGroupDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Task Group Details'.t),
       ),
-      body: TaskUserGroupDoc(
+      body: UserGroupDoc(
         userGroup: userGroup,
         sync: true,
         builder: (userGroup) {
@@ -73,8 +71,8 @@ class TaskUserGroupDetailScreen extends StatelessWidget {
                       width: 16,
                     ),
                     ElevatedButton(
-                        onPressed: () => TaskService.instance
-                            .showTaskUserGroupEditScreen(context, userGroup),
+                        onPressed: () => UserGroupService.instance
+                            .showUserGroupEditScreen(context, userGroup),
                         child: Text('Edit task user group'.t)),
                   ],
                 ),
