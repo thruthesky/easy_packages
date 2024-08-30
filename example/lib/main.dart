@@ -10,6 +10,7 @@ import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_task/easy_task.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:easychat/easychat.dart';
 // import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easyuser/easyuser.dart';
@@ -75,7 +76,7 @@ class MyAppState extends State<MyApp> {
 
     TaskService.instance.init(
       taskListActionButton: () {
-        return IconButton(onPressed: () {}, icon: const Icon(Icons.add));
+        return const UserGroupOpenListScreenButton();
       },
     );
 

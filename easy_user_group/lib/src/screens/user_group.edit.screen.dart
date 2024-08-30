@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
 class UserGroupEditScreen extends StatefulWidget {
+  static const String routeName = '/UserGroupEdit';
   const UserGroupEditScreen({
     super.key,
     required this.userGroup,
@@ -31,7 +32,7 @@ class _UserGroupEditScreenState extends State<UserGroupEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Task Group'.t),
+        title: Text('Edit User Group'.t),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -39,14 +40,15 @@ class _UserGroupEditScreenState extends State<UserGroupEditScreen> {
           child: Column(
             children: [
               TextField(
-                decoration: InputDecoration(labelText: 'Task Title'.t),
+                decoration: InputDecoration(labelText: 'User Group Title'.t),
                 controller: titleController,
               ),
               const SizedBox(
                 height: 16,
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Task Description'.t),
+                decoration:
+                    InputDecoration(labelText: 'User Group Description'.t),
                 controller: descriptionController,
                 minLines: 3,
                 maxLines: 8,
@@ -74,7 +76,7 @@ class _UserGroupEditScreenState extends State<UserGroupEditScreen> {
                     );
                   }
                 },
-                child: Text('Update Task Group'.t),
+                child: Text('Update User Group'.t),
               ),
             ],
           ),

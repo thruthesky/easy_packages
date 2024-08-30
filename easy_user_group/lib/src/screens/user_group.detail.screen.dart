@@ -5,6 +5,7 @@ import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 class UserGroupDetailScreen extends StatelessWidget {
+  static const String routeName = '/UserGroupDetail';
   const UserGroupDetailScreen({
     super.key,
     required this.userGroup,
@@ -16,7 +17,7 @@ class UserGroupDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Group Details'.t),
+        title: Text('User Group Details'.t),
       ),
       body: UserGroupDoc(
         userGroup: userGroup,
@@ -39,15 +40,15 @@ class UserGroupDetailScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text("Users uid: ${userGroup.users}"),
                 const SizedBox(height: 8),
-                Text("Invited Users: ${userGroup.invitedUsers.length}"),
+                Text("Invited Users: ${userGroup.pendingUsers.length}"),
                 const SizedBox(height: 8),
-                Text("Invited uids: ${userGroup.invitedUsers}"),
+                Text("Invited uids: ${userGroup.pendingUsers}"),
                 const SizedBox(height: 8),
-                Text("Reject Users: ${userGroup.rejectedUsers.length}"),
+                Text("Reject Users: ${userGroup.declinedUsers.length}"),
                 const SizedBox(height: 8),
-                Text("Reject Uid: ${userGroup.rejectedUsers}"),
+                Text("Reject Uid: ${userGroup.declinedUsers}"),
                 const SizedBox(height: 16),
-                Row(
+                Wrap(
                   children: [
                     ElevatedButton(
                       onPressed: () async {
@@ -60,12 +61,30 @@ class UserGroupDetailScreen extends StatelessWidget {
                         if (context.mounted) {
                           toast(
                             context: context,
-                            message:
-                                Text('Task User was invited successfully'.t),
+                            message: Text('User was invited successfully'.t),
                           );
                         }
                       },
-                      child: const Text('Invite users'),
+                      child: Text('Invite users'.t),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        // invite user
+                        final re = await confirm(
+                          context: context,
+                          title: Text('Leave group'.t),
+                          message: Text(
+                            'Are you sure you want to leave this group?'.t,
+                          ),
+                        );
+                        if (re != true) return;
+                        await userGroup.leave();
+                        if (context.mounted) Navigator.of(context).pop();
+                      },
+                      child: Text('Leave group'.t),
                     ),
                     const SizedBox(
                       width: 16,
@@ -73,7 +92,7 @@ class UserGroupDetailScreen extends StatelessWidget {
                     ElevatedButton(
                         onPressed: () => UserGroupService.instance
                             .showUserGroupEditScreen(context, userGroup),
-                        child: Text('Edit task user group'.t)),
+                        child: Text('Edit user group'.t)),
                   ],
                 ),
               ],

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
 class UserGroupListScreen extends StatefulWidget {
-  static const String routeName = '/TaskUserGroupList';
+  static const String routeName = '/UserGroupList';
   const UserGroupListScreen({super.key});
 
   @override
@@ -17,7 +17,7 @@ class _UserGroupListScreenState extends State<UserGroupListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Group List'.t),
+        title: Text('User Group List'.t),
         actions: [
           IconButton(
             onPressed: () {
@@ -37,10 +37,12 @@ class _UserGroupListScreenState extends State<UserGroupListScreen> {
         ],
       ),
       body: FirestoreListView(
-        query: UserGroup.col.where(
-          'users',
-          arrayContains: UserGroupService.instance.currentUser!.uid,
-        ),
+        query: UserGroup.col
+            .where(
+              'users',
+              arrayContains: UserGroupService.instance.currentUser!.uid,
+            )
+            .orderBy('updatedAt', descending: true),
         itemBuilder: (_, snapshot) {
           final userGroup = UserGroup.fromSnapshot(snapshot);
           return UserGroupListTile(userGroup: userGroup);

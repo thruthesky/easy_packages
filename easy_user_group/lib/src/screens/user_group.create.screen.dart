@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
 class UserGroupCreateScreen extends StatefulWidget {
-  static const String routeName = '/TaskUserGroupCreate';
+  static const String routeName = '/UserGroupCreate';
   const UserGroupCreateScreen({super.key});
 
   @override
@@ -19,7 +19,7 @@ class _UserGroupCreateScreenState extends State<UserGroupCreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Task Group Create'.t),
+          title: Text('User Group Create'.t),
           actions: [
             IconButton(
               onPressed: () {},
@@ -33,14 +33,15 @@ class _UserGroupCreateScreenState extends State<UserGroupCreateScreen> {
             child: Column(
               children: [
                 TextField(
-                  decoration: InputDecoration(labelText: 'Task Title'.t),
+                  decoration: InputDecoration(labelText: 'User Group Title'.t),
                   controller: titleController,
                 ),
                 const SizedBox(
                   height: 16,
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Task Description'.t),
+                  decoration:
+                      InputDecoration(labelText: 'User Group Description'.t),
                   controller: descriptionController,
                   minLines: 3,
                   maxLines: 8,
@@ -66,7 +67,7 @@ class _UserGroupCreateScreenState extends State<UserGroupCreateScreen> {
                           .showUserGroupDetailScreen(context, group);
                     }
                   },
-                  child: Text('Create Task Group'.t),
+                  child: Text('Create User Group'.t),
                 ),
               ],
             ),

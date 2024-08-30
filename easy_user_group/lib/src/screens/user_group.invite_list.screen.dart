@@ -6,19 +6,20 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 class UserGroupInviteListScreen extends StatelessWidget {
+  static const String routeName = '/UserGroupInviteList';
   const UserGroupInviteListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task User group invite list'.t),
+        title: Text('User group invite list'.t),
       ),
       body: myUid == null
           ? Center(child: Text('sign-in first'.t))
           : FirestoreListView(
-              query: UserGroup.col
-                  .where('invitedUsers', arrayContains: myUid)
+              query: UserGroupService.instance.col
+                  .where('pendingUsers', arrayContains: myUid)
                   .orderBy('updatedAt', descending: true),
               itemBuilder: (context, doc) {
                 return UserGroupInvitationListTile(
@@ -26,7 +27,7 @@ class UserGroupInviteListScreen extends StatelessWidget {
                 );
               },
               emptyBuilder: (context) => Center(
-                child: Text('Task user group invite list is empty'.t),
+                child: Text('User group invite list is empty'.t),
               ),
             ),
     );

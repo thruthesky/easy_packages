@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_user_group/src/user_group.service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserGroup {
   static CollectionReference get col => UserGroupService.instance.col;
+  static User? get currentUser => FirebaseAuth.instance.currentUser;
 
   DocumentReference get ref => col.doc(id);
 
@@ -14,8 +16,8 @@ class UserGroup {
     required this.createdAt,
     required this.updatedAt,
     required this.users,
-    required this.invitedUsers,
-    required this.rejectedUsers,
+    required this.pendingUsers,
+    required this.declinedUsers,
   });
 
   /// [id] is the group id
@@ -39,19 +41,19 @@ class UserGroup {
   /// [users] is the uid of the users accepted the invite
   final List<String> users;
 
-  /// [invitedUsers] is the uid of the user that has pending invite
-  final List<String> invitedUsers;
+  /// [pendingUsers] is the uid of the user that has pending invite
+  final List<String> pendingUsers;
 
-  /// [rejectedUsers] is the uid who rejected the group invite
-  final List<String> rejectedUsers;
+  /// [declinedUsers] is the uid who rejected the group invite
+  final List<String> declinedUsers;
 
-  /// Get the task object from the snapshot.
+  /// Get the user group object from the snapshot.
   factory UserGroup.fromSnapshot(DocumentSnapshot snapshot) {
     return UserGroup.fromJson(
         snapshot.data() as Map<String, dynamic>, snapshot.id);
   }
 
-  /// Get the task object from the json.
+  /// Get the user group object from the json.
   factory UserGroup.fromJson(Map<String, dynamic> json, String id) {
     return UserGroup(
       id: id,
@@ -65,12 +67,12 @@ class UserGroup {
           ? (json['updatedAt'] as Timestamp).toDate()
           : DateTime.now(),
       users: List<String>.from(json['users'] ?? []),
-      invitedUsers: List<String>.from(json['invitedUsers'] ?? []),
-      rejectedUsers: List<String>.from(json['rejectedUsers'] ?? []),
+      pendingUsers: List<String>.from(json['pendingUsers'] ?? []),
+      declinedUsers: List<String>.from(json['declinedUsers'] ?? []),
     );
   }
 
-  /// Convert the task object to the json.
+  /// Convert the user group object to the json.
   Map<String, dynamic> toJson() {
     return {
       'uid': uid,
@@ -79,8 +81,8 @@ class UserGroup {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'users': users,
-      'invitedUsers': invitedUsers,
-      'rejectedUsers': rejectedUsers,
+      'pendingUsers': pendingUsers,
+      'declinedUsers': declinedUsers,
     };
   }
 
@@ -105,14 +107,14 @@ class UserGroup {
     String description = '',
   }) async {
     final ref = await col.add({
-      'uid': UserGroupService.instance.currentUser!.uid,
+      'uid': currentUser!.uid,
       'title': title,
       'description': description,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
-      'users': [],
-      'invitedUsers': [],
-      'rejectedUsers': [],
+      'users': [currentUser!.uid],
+      'pendingUsers': [],
+      'declinedUsers': [],
     });
     return ref;
   }
@@ -131,25 +133,30 @@ class UserGroup {
 
   Future<void> inviteUser(String uid) async {
     await ref.update({
-      'invitedUsers': FieldValue.arrayUnion([uid]),
+      'pendingUsers': FieldValue.arrayUnion([uid]),
     });
   }
 
   Future<void> acceptInvite() {
     return ref.update({
-      'users':
-          FieldValue.arrayUnion([UserGroupService.instance.currentUser!.uid]),
-      'invitedUsers':
-          FieldValue.arrayRemove([UserGroupService.instance.currentUser!.uid]),
+      'users': FieldValue.arrayUnion([currentUser!.uid]),
+      'pendingUsers': FieldValue.arrayRemove([currentUser!.uid]),
+      'updatedAt': FieldValue.serverTimestamp(),
     });
   }
 
   Future<void> rejectInvite() {
     return ref.update({
-      'invitedUsers':
-          FieldValue.arrayRemove([UserGroupService.instance.currentUser!.uid]),
-      'rejectedUsers':
-          FieldValue.arrayUnion([UserGroupService.instance.currentUser!.uid]),
+      'pendingUsers': FieldValue.arrayRemove([currentUser!.uid]),
+      'declinedUsers': FieldValue.arrayUnion([currentUser!.uid]),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> leave() {
+    return ref.update({
+      'users': FieldValue.arrayRemove([currentUser!.uid]),
+      'updatedAt': FieldValue.serverTimestamp(),
     });
   }
 
