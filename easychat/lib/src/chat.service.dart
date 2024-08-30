@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -95,6 +96,8 @@ class ChatService {
     Widget Function(BuildContext context, ChatRoom room)?
         blockedUsersDialogBuilder,
   }) {
+    dog('ChatService::init() begins');
+    dog('UserService.instance.init();');
     UserService.instance.init();
 
     initialized = true;

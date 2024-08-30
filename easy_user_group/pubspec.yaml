@@ -1,0 +1,26 @@
+name: easy_user_group
+description: "An easy to use user group management package with Firebase as backend."
+version: 0.0.1
+homepage: https://github.com/thruthesky/easy_packages
+
+environment:
+  sdk: ^3.5.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+repository: https://github.com/thruthesky/easy_packages/tree/main/easy_user_group
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - user
+  - user-management
+  - user-management-system
+  - firebase
+  - easy-packages

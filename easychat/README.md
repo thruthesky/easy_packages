@@ -24,6 +24,7 @@ For your information, EasyChat:
   - want to chagne the name of the chat room when the chat room name or photo are not set properly or the other user name is not set properly.
 - Support: master can invite another user as master.
 - Support: the chat room invitation as optional. So, users can be invited directly without invitation.
+- Example: Create full featured chat example
 
 
 

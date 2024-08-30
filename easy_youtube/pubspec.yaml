@@ -1,7 +1,7 @@
 name: easy_youtube
 description: "Provides various features to handle YouTube videos easily."
 version: 0.0.3
-homepage: https://github.com/thruthesky/easy-packages
+homepage: https://github.com/thruthesky/easy_packages
 
 environment:
   sdk: ^3.5.0
@@ -18,7 +18,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^4.0.0
 
-repository: https://github.com/thruthesky/easy-packages/main/tree/easy_youtube
+repository: https://github.com/thruthesky/easy_packages/tree/main/easy_youtube
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
 topics:
   - youtube

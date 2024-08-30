@@ -90,6 +90,9 @@ class UserService {
       dog('UserService is already initialized; It will not initialize again.');
       return;
     }
+
+    dog('UserService::init() begins;');
+
     initialized = true;
 
     this.prefixActionBuilderOnPublicProfileScreen =
@@ -354,7 +357,35 @@ class UserService {
 
   /// To easily display userSearchDialog you can use
   /// `UserService.intance.showUserSearchDialog`
+  @Deprecated('Use showSearchDialog instead')
   Future<User?> showUserSearchDialog(
+    BuildContext context, {
+    Widget Function(bool)? emptyBuilder,
+    EdgeInsetsGeometry? padding,
+    Widget Function(User, int)? itemBuilder,
+    bool exactSearch = true,
+    bool searchName = false,
+    bool searchNickname = false,
+  }) {
+    return showDialog<User?>(
+      context: context,
+      builder: (context) => UserSearchDialog(
+        emptyBuilder: emptyBuilder,
+        padding: padding,
+        itemBuilder: itemBuilder,
+        exactSearch: exactSearch,
+        searchName: searchName,
+        searchNickname: searchNickname,
+      ),
+    );
+  }
+
+  /// Display a dialog to search users.
+  ///
+  /// Return:
+  /// - null if the dialog is canceled.
+  /// - User if the user is selected.
+  Future<User?> showSearchDialog(
     BuildContext context, {
     Widget Function(bool)? emptyBuilder,
     EdgeInsetsGeometry? padding,

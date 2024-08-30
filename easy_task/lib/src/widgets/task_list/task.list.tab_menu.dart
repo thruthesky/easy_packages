@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 class TaskListTabMenu extends StatelessWidget {
   const TaskListTabMenu({
     super.key,
-    required this.options,
     required this.onTap,
   });
 
-  final TaskListOptions options;
   final Function(String) onTap;
 
   @override
@@ -22,7 +20,7 @@ class TaskListTabMenu extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text('All'.t),
-                TaskCount(menu: 'all', completed: options.completed),
+                const TaskCount(menu: 'all'),
               ],
             )),
         TextButton(
@@ -31,7 +29,7 @@ class TaskListTabMenu extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text('Tasks'.t),
-                TaskCount(menu: 'task', completed: options.completed),
+                const TaskCount(menu: 'task'),
               ],
             )),
         TextButton(
@@ -40,7 +38,17 @@ class TaskListTabMenu extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text('Projects'.t),
-                TaskCount(menu: 'project', completed: options.completed),
+                const TaskCount(menu: 'project'),
+              ],
+            )),
+        const Spacer(),
+        TextButton(
+            onPressed: () => onTap('complete'),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Completed'.t),
+                const TaskCount(menu: 'complete'),
               ],
             ))
       ],

@@ -1,7 +1,7 @@
 name: easy_locale
 description: "Easy localization & internationalization (i18n) library."
 version: 0.0.11
-homepage: https://github.com/thruthesky/easy-packages
+homepage: https://github.com/thruthesky/easy_packages
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -18,7 +18,7 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   test: ^1.25.2
 
-repository: https://github.com/thruthesky/easy-packages/main/tree/easy_locale
+repository: https://github.com/thruthesky/easy_packages/tree/main/easy_locale
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
 topics:
   - locale
