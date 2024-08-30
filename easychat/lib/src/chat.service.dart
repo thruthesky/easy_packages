@@ -122,6 +122,7 @@ class ChatService {
   ///
   /// Since the count may goes wrong, because the security rules is open.
   void resetInvitationCount() async {
+    if (UserService.instance.notSignedIn) return;
     final countSnapshot = await ChatService.instance.roomCol
         .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
         .count()
