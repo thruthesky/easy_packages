@@ -109,6 +109,11 @@ service cloud.firestore {
           && request.resource.data.createdAt != resource.data.createdAt
       }
 
+      function isMemberByRoomId() {
+        // return roomId.matches('.+---.+') && roomId.split("---").hasAll([request.auth.uid]);
+        return roomId.split("---").hasAll([request.auth.uid]);
+      }
+
       // function hasOrderField() {
       //   return 
       //     'users' in resource.data.keys() &&
@@ -124,7 +129,8 @@ service cloud.firestore {
       // To secure the chat room information from the rejected users, the chat room information should maintain
       // as less information as possible. For this reason, the chat room does not store the last message.
       // Refere easychat README.md for more information.
-      allow read: if isMember() || isInvited() ||  isRejectedUser() || isOpenGroup();
+      allow get: if isMemberByRoomId() || isMember() || isInvited() ||  isRejectedUser() || isOpenGroup();
+      allow list: if isMember() || isInvited() ||  isRejectedUser() || isOpenGroup();
       allow create: if willBeOnlyMember() 
                       && willBeOnlyMaster()
                       && (
@@ -147,7 +153,7 @@ service cloud.firestore {
         )
         || (
           isJoining()
-          && (isOpenGroup() || isInvited() || isRejectedUser())
+          && (isOpenGroup() || isInvited() || isRejectedUser() || isMemberByRoomId())
           && onlyUpdating(['users', 'invitedUsers', 'rejectedUsers', 'updatedAt'])
           && !isBlocked()
         )
