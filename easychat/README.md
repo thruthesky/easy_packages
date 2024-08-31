@@ -313,14 +313,78 @@ It really happened to one of my own projects that someone sent very bad words to
   - The `chatInvitationCount` is reset with actual number of invitation every time when app starts. So, if something goes wrong, it will correct by itself.
 
 
-### How to use it
-
-- Initialize the chat service and it will automatically work.
-  - While its initialization, it will reset the number of invitation for its own correction since the security rules are open, it may go wrong and it needs correction. It only works once every app start.
+### Logic
 
 
-- To display the count(number) of all invitations;
-  - Use `ChatInvitationCount` widget.
+- Initialize the chat service and countig the no of invitation will automatically work.
+  - During initialization, the app will reset the number of invitations to correct any errors caused by open security rules. This correction happens only once at the start of the app.
+
+
+### ChatInvitationCount - Display no of invitations
+
+- To display the count(number) of invitations, use `ChatInvitationCount` widget.
+  - This widget will call the build method with the no of invitation.
+  - It's up to you how you design.
+  - Use `invitation count title` text code which has the plural i18n. You can copy this, update and overrite if you want.
+
+Example:
+```dart
+ChatInvitationCount(
+  builder: (count) => count == 0
+      ? const SizedBox.shrink()
+      : Column(
+          children: [
+            spaceSm,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ListTile(
+                leading: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const FaIcon(
+                      FontAwesomeIcons.envelope,
+                    ),
+                    Positioned(
+                      top: -5,
+                      right: -6,
+                      child: Badge(
+                        label: Text(
+                          '$count',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        backgroundColor: context.error,
+                      ),
+                    ),
+                  ],
+                ),
+                title: Text(
+                  'invitation count title'.tr(
+                    args: {'count': count},
+                    form: count,
+                  ),
+                  style: TextStyle(
+                    color: context.outline,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: context.outline,
+                ),
+                onTap: () {
+                  openMainScreen(1);
+                },
+              ),
+            ),
+          ],
+        ),
+)
+```
 
 
 ## Password

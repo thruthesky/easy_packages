@@ -2,6 +2,44 @@
 
 - This project is composed of several packages, each designed for specific functionalities.
 
+- [Easy Packages](#easy-packages)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Install](#install)
+  - [Install a package into your app](#install-a-package-into-your-app)
+  - [Install as a easy packages developer](#install-as-a-easy-packages-developer)
+- [Packages](#packages)
+  - [Storage](#storage)
+  - [easyuser package](#easyuser-package)
+  - [Chat](#chat)
+  - [Forum](#forum)
+  - [Task](#task)
+  - [Locale](#locale)
+  - [Like and Dislike](#like-and-dislike)
+  - [Category](#category)
+  - [Block](#block)
+  - [Report](#report)
+  - [Engine](#engine)
+- [Other packages](#other-packages)
+- [Coding Style Guide](#coding-style-guide)
+  - [Mermaid](#mermaid)
+  - [Model](#model)
+  - [Widget of Model](#widget-of-model)
+  - [Service](#service)
+  - [Database](#database)
+  - [Fields](#fields)
+  - [Exception](#exception)
+- [Widget](#widget)
+  - [intialValue and cache](#intialvalue-and-cache)
+  - [List Widgets](#list-widgets)
+- [Tests](#tests)
+  - [Unit test](#unit-test)
+  - [Widget test](#widget-test)
+  - [Integration test](#integration-test)
+- [Localization, i18N](#localization-i18n)
+- [Customization](#customization)
+  - [Customizing Action Buttons](#customizing-action-buttons)
+
 # Overview
 
 - **Easy Packages**: A Flutter framework with many UI/UX components and logic modules. It helps you create apps fast for different projects.
@@ -365,6 +403,58 @@ Use `FirestoreQueryBuilder` or `FirebaseDatabaseQueryBuilder`. Use query builder
 내부적으로  `FirestoreQueryBuilder` 를 사용한다.
 
 
+
+
+## Display no of new invitation
+
+
+```dart
+ChatInvitationCount(
+  builder: (count) => count == 0
+      ? const Text('No invitation')
+      : Padding(
+          padding: const EdgeInsets.all(16),
+          child: ListTile(
+            leading: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                const FaIcon(
+                  FontAwesomeIcons.envelope,
+                ),
+                Positioned(
+                  top: -5,
+                  right: -6,
+                  child: Badge(
+                    label: Text(
+                      '$count',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    backgroundColor: context.outline,
+                  ),
+                ),
+              ],
+            ),
+            title: Text(
+              'invitation count title'.tr(
+                args: {'count': count},
+                form: count,
+              ),
+              style: TextStyle(
+                color: context.outline,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
+        ),
+),
+```
 
 
 # Tests

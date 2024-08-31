@@ -1,0 +1,27 @@
+name: easy_connectivity
+description: "An easy package to use the Internet connectivity check."
+version: 0.0.1
+homepage: https://github.com/thruthesky/easy_packages
+
+environment:
+  sdk: ^3.5.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  connectivity_plus: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+repository: https://github.com/thruthesky/easy_packages/tree/main/easy_connectivity
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
+topics:
+  - internet
+  - connectivity
+  - utility
+  - connection
+  - easy-packages

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
@@ -73,11 +72,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     });
   }
 
+  bool get shouldJoinOpenGroupChat =>
+      !$room!.userUids.contains(myUid) && $room!.open && $room!.group;
+
+  bool get shouldJoinSingleChat =>
+      !$room!.userUids.contains(myUid) &&
+      $room!.single &&
+      $room!.uidsFromRoomId.contains(myUid) &&
+      !$room!.invitedUsers.contains(myUid) &&
+      !$room!.rejectedUsers.contains(myUid);
+
   onRoomReady() async {
     if ($room == null) return;
     if ($room!.blockedUsers.contains(myUid)) return;
     // Auto Join Groups when it is open chat
-    if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
+    if (shouldJoinOpenGroupChat || shouldJoinSingleChat) {
       isJoiningNow = true;
       await $room!.join();
     }
@@ -99,7 +108,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> loadOrCreateRoomForSingleChat() async {
-    //
     $room = await ChatRoom.get(singleChatRoomId($user!.uid));
 
     if ($room != null) return;
@@ -376,12 +384,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
+  /// Ivite the other user in 1:1 chat
+  ///
+  /// Invite the other user if the other user is not invited yet.
+  /// This is only for single chat.
+  ///
+  /// Refer README.md for more information.
   mayInviteOtherUser() {
-    if (!$room!.single) return;
+    //
+    if ($room!.group) return;
     if ($room!.userUids.length == 2) return;
+
+    // return if the user has already invited or rejected.
     final otherUserUid = getOtherUserUidFromRoomId($room!.id)!;
     if ($room!.rejectedUsers.contains(otherUserUid)) return;
     if ($room!.invitedUsers.contains(otherUserUid)) return;
+
+    //
     $room!.inviteUser(otherUserUid);
   }
 }
