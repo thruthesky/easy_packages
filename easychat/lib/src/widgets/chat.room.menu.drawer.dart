@@ -351,24 +351,24 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           .showChatRoomEditScreen(context, room: room);
                     },
                   ),
-                if (room!.group)
-                  ListTile(
-                    title: Text("leave".t),
-                    onTap: () async {
-                      final re = await confirm(
-                        context: context,
-                        title: Text("leaving room".t),
-                        message: Text('leaving room confirmation'.t),
-                      );
-                      if (re != true) return;
-                      room!.leave();
-                      if (!context.mounted) return;
-                      // two pops since we are opening both
-                      // drawer and room screen.
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                  ),
+                // if (room!.group)
+                ListTile(
+                  title: Text("leave".t),
+                  onTap: () async {
+                    final re = await confirm(
+                      context: context,
+                      title: Text("leaving room".t),
+                      message: Text('leaving room confirmation'.t),
+                    );
+                    if (re != true) return;
+                    room!.leave();
+                    if (!context.mounted) return;
+                    // two pops since we are opening both
+                    // drawer and room screen.
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                ),
               ],
               if (user != null && !user!.admin) ...[
                 if (room?.single == true || user != null)

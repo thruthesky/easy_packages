@@ -72,11 +72,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     });
   }
 
+  bool get shouldJoinOpenGroupChat =>
+      !$room!.userUids.contains(myUid) && $room!.open && $room!.group;
+
+  bool get shouldJoinSingleChat =>
+      !$room!.userUids.contains(myUid) &&
+      $room!.single &&
+      $room!.uidsFromRoomId.contains(myUid) &&
+      !$room!.invitedUsers.contains(myUid) &&
+      !$room!.rejectedUsers.contains(myUid);
+
   onRoomReady() async {
     if ($room == null) return;
     if ($room!.blockedUsers.contains(myUid)) return;
     // Auto Join Groups when it is open chat
-    if (!$room!.userUids.contains(myUid) && $room!.open && $room!.group) {
+    if (shouldJoinOpenGroupChat || shouldJoinSingleChat) {
       isJoiningNow = true;
       await $room!.join();
     }
@@ -98,7 +108,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> loadOrCreateRoomForSingleChat() async {
-    //
     $room = await ChatRoom.get(singleChatRoomId($user!.uid));
 
     if ($room != null) return;
