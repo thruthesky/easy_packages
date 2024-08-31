@@ -384,12 +384,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
+  /// Ivite the other user in 1:1 chat
+  ///
+  /// Invite the other user if the other user is not invited yet.
+  /// This is only for single chat.
+  ///
+  /// Refer README.md for more information.
   mayInviteOtherUser() {
-    if (!$room!.single) return;
+    //
+    if ($room!.group) return;
     if ($room!.userUids.length == 2) return;
+
+    // return if the user has already invited or rejected.
     final otherUserUid = getOtherUserUidFromRoomId($room!.id)!;
     if ($room!.rejectedUsers.contains(otherUserUid)) return;
     if ($room!.invitedUsers.contains(otherUserUid)) return;
+
+    //
     $room!.inviteUser(otherUserUid);
   }
 }
