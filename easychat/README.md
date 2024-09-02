@@ -91,18 +91,63 @@ Add `easychat` into your `pubspec.yaml`
 
 ### Security Rules
 
+
+- To install the chat, you need to install the security rules for firestore, realtime database, and storage. Plus, you need to install firestore indexes.
+
 #### Firestore Security Rules
+
+- Copy the security rules of the `chat-settings` and the `chat-rooms` from the [easy chat firestore security rules](https://raw.githubusercontent.com/thruthesky/easy_packages/main/easychat/firebase/firestore.rules).
 
 
 #### Realtime Database Security Rules
 
 
+```json
+{
+  "rules": {
+    "mirror-users": {
+      ".read": true,
+      "$uid": {
+        ".write": "$uid === auth.uid",
+      },
+      ".indexOn": ["createdAt"]
+    },
+    // push notification
+    "fcm-tokens": {
+      ".read": true,
+      "$token": {
+        ".write": "newData.val() === auth.uid",
+      },
+      ".indexOn": [".value"],
+    },
+    "fcm-subscriptions": {
+      ".read": true,
+      "$subscriptionId": {
+        "$uid": {
+          ".write": "$uid === auth.uid"
+        }
+      }
+    },
+    "chat-rooms": {
+      "$roomId": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "chat-messages": {
+      "$roomId": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}
+```
+
+
 ### Index
 
 #### Firestore index
-
-#### Realtime Database index
-
 
 
 
