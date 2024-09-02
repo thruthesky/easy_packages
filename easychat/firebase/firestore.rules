@@ -6,6 +6,13 @@ service cloud.firestore {
       allow read, write: if false;
     }
     
+    // CHAT SETTINGS
+    match /chat-settings/{uid} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // CHAT ROOMS
     match /chat-rooms/{roomId} {
       function willBeSingle() {
         return request.resource.data.keys().hasAny(["single"]) 

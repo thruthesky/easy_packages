@@ -1,22 +1,22 @@
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_task/src/task.user_group.dart';
+import 'package:easy_user_group/easy_user_group.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
-class TaskUserGroupEditScreen extends StatefulWidget {
-  const TaskUserGroupEditScreen({
+class UserGroupEditScreen extends StatefulWidget {
+  static const String routeName = '/UserGroupEdit';
+  const UserGroupEditScreen({
     super.key,
     required this.userGroup,
   });
 
-  final TaskUserGroup userGroup;
+  final UserGroup userGroup;
 
   @override
-  State<TaskUserGroupEditScreen> createState() =>
-      _TaskUserGroupEditScreenState();
+  State<UserGroupEditScreen> createState() => _UserGroupEditScreenState();
 }
 
-class _TaskUserGroupEditScreenState extends State<TaskUserGroupEditScreen> {
+class _UserGroupEditScreenState extends State<UserGroupEditScreen> {
   late TextEditingController titleController;
   late TextEditingController descriptionController;
 
@@ -32,7 +32,7 @@ class _TaskUserGroupEditScreenState extends State<TaskUserGroupEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Task Group'.t),
+        title: Text('Edit User Group'.t),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,14 +40,15 @@ class _TaskUserGroupEditScreenState extends State<TaskUserGroupEditScreen> {
           child: Column(
             children: [
               TextField(
-                decoration: InputDecoration(labelText: 'Task Title'.t),
+                decoration: InputDecoration(labelText: 'User Group Title'.t),
                 controller: titleController,
               ),
               const SizedBox(
                 height: 16,
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Task Description'.t),
+                decoration:
+                    InputDecoration(labelText: 'User Group Description'.t),
                 controller: descriptionController,
                 minLines: 3,
                 maxLines: 8,
@@ -75,7 +76,7 @@ class _TaskUserGroupEditScreenState extends State<TaskUserGroupEditScreen> {
                     );
                   }
                 },
-                child: Text('Update Task Group'.t),
+                child: Text('Update User Group'.t),
               ),
             ],
           ),

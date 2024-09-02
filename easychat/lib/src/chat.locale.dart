@@ -1,7 +1,7 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 
-final localeTexts = <String, Map<String, String>>{
+final localeTexts = <String, Map<String, dynamic>>{
   'chat': {
     'en': 'Chat',
     'ko': '채팅',
@@ -461,6 +461,20 @@ final localeTexts = <String, Map<String, String>>{
     'en':
         'You can only send a message to a chat room where you are a member or an invited user, or the room is an open group chat room',
     'ko': "회원이거나 초대된 사용자이거나, 방이 오픈 그룹 채팅방인 경우에만 메시지를 보낼 수 있습니다."
+  },
+
+  // invitation
+  'invitation count title': {
+    'en': {
+      'none': 'There is no invitation.',
+      'one': 'You have a new invitation. {count}',
+      'many': 'You have {count} new invitations.',
+    },
+    'ko': {
+      'none': '초대가 없습니다.',
+      'one': '새로운 채팅 친구 초대가 있습니다.',
+      'many': '새로운 채팅 친구 초대가 {count}개 있습니다.',
+    },
   },
 };
 
