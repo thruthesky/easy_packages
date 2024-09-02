@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -35,14 +34,8 @@ class ChatRoom {
   /// [id] is the chat room id.
   String id;
 
-  static CollectionReference col = ChatService.instance.roomCol;
-
-  /// [messageRef] is the message reference of the chat room.
-  DatabaseReference get messageRef =>
-      FirebaseDatabase.instance.ref("/chat-messages/$id");
-
-  /// [ref] is the docuement reference of the chat room.
-  DocumentReference get ref => col.doc(id);
+  /// [ref] is the data reference of the chat room.
+  DatabaseReference get ref => ChatService.instance.roomsRef.child(id);
 
   /// [name] is the chat room name. If it does not exist, it is empty.
   String name;
@@ -150,8 +143,8 @@ class ChatRoom {
     required this.domain,
   });
 
-  factory ChatRoom.fromSnapshot(DocumentSnapshot doc) {
-    return ChatRoom.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+  factory ChatRoom.fromSnapshot(DataSnapshot data) {
+    return ChatRoom.fromJson(data.value as Map<String, dynamic>, data.key!);
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
@@ -173,14 +166,14 @@ class ChatRoom {
       invitedUsers: List<String>.from(json[field.invitedUsers] ?? []),
       blockedUsers: List<String>.from(json[field.blockedUsers] ?? []),
       rejectedUsers: List<String>.from(json[field.rejectedUsers] ?? []),
-      createdAt: json[field.createdAt] is Timestamp
-          ? (json[field.createdAt] as Timestamp).toDate()
+      createdAt: json[field.createdAt] is num
+          ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt])
           : DateTime.now(),
-      updatedAt: json[field.updatedAt] is Timestamp
-          ? (json[field.updatedAt] as Timestamp).toDate()
+      updatedAt: json[field.updatedAt] is num
+          ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt])
           : DateTime.now(),
-      lastMessageAt: json[field.lastMessageAt] is Timestamp
-          ? (json[field.lastMessageAt] as Timestamp).toDate()
+      lastMessageAt: json[field.lastMessageAt] is num
+          ? DateTime.fromMillisecondsSinceEpoch(json[field.lastMessageAt])
           : DateTime.now(),
       verifiedUserOnly: json[field.verifiedUserOnly],
       urlForVerifiedUserOnly: json[field.urlForVerifiedUserOnly],
@@ -191,6 +184,7 @@ class ChatRoom {
     );
   }
 
+  @Deprecated('Do not use it if it is only for the toString() method.')
   Map<String, dynamic> toJson() {
     return {
       field.name: name,
@@ -219,10 +213,12 @@ class ChatRoom {
     };
   }
 
-  copyFromSnapshot(DocumentSnapshot doc) {
+  @Deprecated('Why do we need this? Use it if it saved time and money')
+  copyFromSnapshot(DataSnapshot doc) {
     copyFrom(ChatRoom.fromSnapshot(doc));
   }
 
+  @Deprecated('Why do we need this? Use it if it saved time and money')
   copyFrom(ChatRoom room) {
     // copy all the fields from the room
     id = room.id;
@@ -258,11 +254,10 @@ class ChatRoom {
   /// [create] creates a new chat room.
   ///
   ///
-  /// Returns the document reference of the chat room.
+  /// Returns the database reference of the chat room.
   ///
-  /// If [id] is null, this will make new room id (preferred for
-  /// group chat)
-  static Future<DocumentReference> create({
+  /// If [id] is null, this will make new room id (preferred for group chat)
+  static Future<DatabaseReference> create({
     String? id,
     String? name,
     String? description,
@@ -272,7 +267,6 @@ class ChatRoom {
     bool group = true,
     bool single = false,
     // String? password, (NOT IMPLEMENTED YET)
-    List<String>? invitedUsers,
     List<String>? users,
     List<String>? masterUsers,
     bool verifiedUserOnly = false,
@@ -289,26 +283,26 @@ class ChatRoom {
       throw 'chat-room-create/single-or-group Single or group chat room must be selected';
     }
 
-    Map<String, dynamic> usersMap = {};
-    if (users != null && users.isNotEmpty) {
-      usersMap = Map.fromEntries(
-        users.map(
-          (uid) => MapEntry(uid, {
-            if (single) ...{
-              ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-              ChatRoomUser.field.singleTimeOrder: FieldValue.serverTimestamp(),
-            },
-            if (group) ...{
-              ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
-              ChatRoomUser.field.groupTimeOrder: FieldValue.serverTimestamp(),
-            },
-            ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-            ChatRoomUser.field.timeOrder: FieldValue.serverTimestamp(),
-            ChatRoomUser.field.newMessageCounter: 1,
-          }),
-        ),
-      );
-    }
+    // Map<String, dynamic> usersMap = {};
+    // if (users != null && users.isNotEmpty) {
+    //   usersMap = Map.fromEntries(
+    //     users.map(
+    //       (uid) => MapEntry(uid, {
+    //         if (single) ...{
+    //           ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
+    //           ChatRoomUser.field.singleTimeOrder: FieldValue.serverTimestamp(),
+    //         },
+    //         if (group) ...{
+    //           ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+    //           ChatRoomUser.field.groupTimeOrder: FieldValue.serverTimestamp(),
+    //         },
+    //         ChatRoomUser.field.order: FieldValue.serverTimestamp(),
+    //         ChatRoomUser.field.timeOrder: FieldValue.serverTimestamp(),
+    //         ChatRoomUser.field.newMessageCounter: 1,
+    //       }),
+    //     ),
+    //   );
+    // }
 
     final newRoom = {
       if (name != null) field.name: name,
@@ -318,8 +312,8 @@ class ChatRoom {
       field.single: single,
       field.group: group,
       field.hasPassword: false,
-      if (invitedUsers != null) field.invitedUsers: invitedUsers,
-      field.users: usersMap,
+      // if (invitedUsers != null) field.invitedUsers: invitedUsers,
+      field.users: [myUid],
       field.masterUsers: [myUid],
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
@@ -327,38 +321,42 @@ class ChatRoom {
       field.allMembersCanInvite: allMembersCanInvite,
       field.gender: gender,
       field.domain: domain,
-      field.createdAt: FieldValue.serverTimestamp(),
-      field.updatedAt: FieldValue.serverTimestamp(),
+      field.createdAt: ServerValue.timestamp,
+      field.updatedAt: ServerValue.timestamp,
     };
 
-    DocumentReference ref;
+    DatabaseReference newChatRoomRef;
     if (id == null) {
-      ref = await col.add(newRoom);
+      newChatRoomRef = ChatService.instance.roomsRef.push();
     } else {
-      ref = col.doc(id);
-      await ref.set(newRoom);
+      newChatRoomRef = ChatService.instance.roomsRef.child(id);
     }
 
-    return ref;
+    await newChatRoomRef.update(newRoom);
+    //
+
+    return newChatRoomRef;
   }
 
   /// [createSingle] creates a new single chat room.
-  static Future<DocumentReference> createSingle(String otherUid) {
-    return create(
+  static Future<DatabaseReference> createSingle(String otherUid,
+      {String domain = ''}) async {
+    return await create(
       group: false,
+      open: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      invitedUsers: null,
       users: [myUid!],
       masterUsers: [myUid!],
+      domain: domain,
     );
   }
 
   /// [get] gets the chat room by id.
   static Future<ChatRoom?> get(String id) async {
-    final snapshotDoc = await ChatRoom.col.doc(id).get();
-    if (snapshotDoc.exists == false) return null;
-    return ChatRoom.fromSnapshot(snapshotDoc);
+    final snapshot = await ChatService.instance.roomRef(id).get();
+    if (snapshot.exists == false) return null;
+    return ChatRoom.fromSnapshot(snapshot);
   }
 
   /// [update] updates the chat room.
@@ -392,7 +390,7 @@ class ChatRoom {
       if (group != null) field.group: group,
       if (allMembersCanInvite != null)
         field.allMembersCanInvite: allMembersCanInvite,
-      field.updatedAt: FieldValue.serverTimestamp(),
+      field.updatedAt: ServerValue.timestamp,
     };
 
     await ref.update(updateData);
@@ -405,12 +403,12 @@ class ChatRoom {
   ///
   ///
   Future<void> inviteUser(String uid) async {
-    await ref.update({
-      field.invitedUsers: FieldValue.arrayUnion([uid]),
-      field.updatedAt: FieldValue.serverTimestamp(),
-    });
-    ChatService.instance.increaseInvitationCount(uid);
-    ChatService.instance.onInvite?.call(room: this, uid: uid);
+    // await ref.update({
+    //   field.invitedUsers: FieldValue.arrayUnion([uid]),
+    //   field.updatedAt: FieldValue.serverTimestamp(),
+    // });
+    // ChatService.instance.increaseInvitationCount(uid);
+    // ChatService.instance.onInvite?.call(room: this, uid: uid);
   }
 
   /// Alias for [join]. Since they have
@@ -430,48 +428,61 @@ class ChatRoom {
             .t,
       );
     }
-    final timestampAtLastMessage = lastMessageAt != null
-        ? Timestamp.fromDate(lastMessageAt!)
-        : FieldValue.serverTimestamp();
 
-    await ref.set(
-      {
-        field.invitedUsers: FieldValue.arrayRemove([myUid!]),
-        field.users: {
-          myUid!: {
-            if (single) ...{
-              ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-              ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
-            },
-            if (group) ...{
-              ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
-              ChatRoomUser.field.groupTimeOrder: timestampAtLastMessage,
-            },
-            ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-            ChatRoomUser.field.timeOrder: timestampAtLastMessage,
-            // need to add new message so that the order will be correct after reading,
-            ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
-          },
-        },
-        // In case, the user rejected the invitation
-        // but actually wants to accept it, then we should
-        // also remove the uid from rejeceted users.
-        field.rejectedUsers: FieldValue.arrayRemove([myUid!]),
-        field.updatedAt: FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
-    if (invitedUsers.contains(myUid)) {
-      await ChatService.instance.decreaseInvitationCount();
-    }
+    await ChatService.instance.joinsRef.child(myUid!).child(ref.key!).update({
+      'singleChatOrder': ServerValue.timestamp,
+      'groupChatOrder': ServerValue.timestamp,
+      'openChatOrder': ServerValue.timestamp,
+      'joinedAt': ServerValue.timestamp,
+    });
+
+    // final timestampAtLastMessage = lastMessageAt != null
+    //     ? Timestamp.fromDate(lastMessageAt!)
+    //     : FieldValue.serverTimestamp();
+
+    // await ref.set(
+    //   {
+    //     field.invitedUsers: FieldValue.arrayRemove([myUid!]),
+    //     field.users: {
+    //       myUid!: {
+    //         if (single) ...{
+    //           ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
+    //           ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
+    //         },
+    //         if (group) ...{
+    //           ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+    //           ChatRoomUser.field.groupTimeOrder: timestampAtLastMessage,
+    //         },
+    //         ChatRoomUser.field.order: FieldValue.serverTimestamp(),
+    //         ChatRoomUser.field.timeOrder: timestampAtLastMessage,
+    //         // need to add new message so that the order will be correct after reading,
+    //         ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
+    //       },
+    //     },
+    //     // In case, the user rejected the invitation
+    //     // but actually wants to accept it, then we should
+    //     // also remove the uid from rejeceted users.
+    //     field.rejectedUsers: FieldValue.arrayRemove([myUid!]),
+    //     field.updatedAt: FieldValue.serverTimestamp(),
+    //   },
+    //   SetOptions(merge: true),
+    // );
+    // if (invitedUsers.contains(myUid)) {
+    //   await ChatService.instance.decreaseInvitationCount();
+    // }
   }
 
+  /// Reject the invitation
+  ///
+  /// Chat room model is only for modeling chat room data and managing the
+  /// default CRUD action. is this method really part of this model?
   Future<void> rejectInvitation() async {
-    await ref.update({
-      field.invitedUsers: FieldValue.arrayRemove([myUid!]),
-      field.rejectedUsers: FieldValue.arrayUnion([myUid!]),
-    });
-    ChatService.instance.decreaseInvitationCount();
+    throw 'Not implemented yet';
+    // await ref.update({
+    //   field.invitedUsers: FieldValue.arrayRemove([myUid!]),
+    //   field.rejectedUsers: FieldValue.arrayUnion([myUid!]),
+    // });
+    // ChatService.instance.decreaseInvitationCount();
   }
 
   Future<void> leave() async {

@@ -6,7 +6,6 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:flutter/material.dart';
 import 'package:easy_url_preview/easy_url_preview.dart';
-import 'package:easy_firestore/easy_firestore.dart';
 
 /// Chat Service
 ///
@@ -23,6 +22,37 @@ class ChatService {
   ///
   /// Note that, chat service can be initialized multiple times.
   bool initialized = false;
+
+  /// Database path for chat room and message
+  /// Database of chat room and message
+  final db.DatabaseReference roomsRef =
+      db.FirebaseDatabase.instance.ref().child('chat/rooms');
+
+  db.DatabaseReference roomRef(String roomId) => roomsRef.child(roomId);
+
+  final db.DatabaseReference messagesRef =
+      db.FirebaseDatabase.instance.ref().child('chat/messages');
+
+  final db.DatabaseReference joinsRef =
+      db.FirebaseDatabase.instance.ref().child('chat/joins');
+
+  /// Firebase chat collection query by new message counter for the current user.
+  fs.Query get myRoomQuery => roomCol.orderBy(
+      '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.newMessageCounter}');
+
+  /// CollectionReference for Chat Room Meta docs
+  fs.CollectionReference roomMetaCol(String roomId) =>
+      fs.FirebaseFirestore.instance
+          .collection('chat-rooms')
+          .doc(roomId)
+          .collection('chat-room-meta');
+
+  /// DocumentReference for chat room private settings.
+  fs.DocumentReference roomPrivateDoc(String roomId) =>
+      roomMetaCol(roomId).doc('private');
+
+  db.DatabaseReference messageRef(String roomId) =>
+      db.FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
 
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
@@ -137,28 +167,6 @@ class ChatService {
       },
     );
   }
-
-  /// Firebase CollectionReference for Chat Room docs
-  fs.CollectionReference get roomCol =>
-      fs.FirebaseFirestore.instance.collection('chat-rooms');
-
-  /// Firebase chat collection query by new message counter for the current user.
-  fs.Query get myRoomQuery => roomCol.orderBy(
-      '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.newMessageCounter}');
-
-  /// CollectionReference for Chat Room Meta docs
-  fs.CollectionReference roomMetaCol(String roomId) =>
-      fs.FirebaseFirestore.instance
-          .collection('chat-rooms')
-          .doc(roomId)
-          .collection('chat-room-meta');
-
-  /// DocumentReference for chat room private settings.
-  fs.DocumentReference roomPrivateDoc(String roomId) =>
-      roomMetaCol(roomId).doc('private');
-
-  db.DatabaseReference messageRef(String roomId) =>
-      db.FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
 
   /// Show the chat room list screen.
   Future showChatRoomListScreen(
@@ -323,6 +331,8 @@ class ChatService {
 
   /// Why is it in UserService? Not in user.dart model?
   /// This is because; this method updates other user docuemnt. Not the login user's document.
+  @Deprecated(
+      'No need to count since it is using realtime database. Simply count all the invites from /chat/invites')
   Future<void> increaseInvitationCount(String otherUid) async {
     await otherUserSetting(otherUid).update(
       {
@@ -332,6 +342,8 @@ class ChatService {
   }
 
   /// It decreases the invitation count of the currently logged-in user.
+  @Deprecated(
+      'No need to count since it is using realtime database. Simply count all the invites from /chat/invites')
   Future<void> decreaseInvitationCount() async {
     await setting.update(
       {

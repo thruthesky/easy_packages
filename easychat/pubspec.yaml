@@ -9,8 +9,6 @@ environment:
 
 dependencies:
   cached_network_image: ^3.3.1
-  cloud_firestore: ^5.0.2
-  easy_firestore: ^0.0.4
   easy_helpers: ^0.0.11
   easy_locale: ^0.0.11
   easy_report: ^0.0.3
@@ -20,7 +18,6 @@ dependencies:
   firebase_auth: ^5.1.1
   firebase_database: ^11.0.2
   firebase_ui_database: ^1.4.4
-  firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter
   rxdart: ^0.28.0

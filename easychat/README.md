@@ -45,4 +45,48 @@ For your information on `easychat` history:
 
 
 
+## Dependencies
+
+- To invite other users, it needs the search users by name. To achevie this, it uses `easyuser` package.
+
+
+## Database Strucutre
+
+
+### Chat room
+
+- `/chat/rooms/<room-id>`: This is the path of chat room data.
+
+- `users`: the uid list of users who joined the chat room.
+
+### Chat message
+
+
+- `/chat/messages/<room-id>`: This is the message list of each chat room.
+
+
+### Chat join
+
+- `/chat/joins/<uid>/<room-id> { ... }`: This is the relation ship bewteen who joined which room.
+  - To list 1:1 chat rooms, it can query like `FirebaseDatabase.instance.ref('chat/joins/' + myUid).orderByChild('singleChatOrder');`
+- `singleChatOrder`: Ordering single chat. It only exists if it is single chat.
+- `groupChatOrder`: Ordering group chat. It only exists if it's group chat.
+- `openChatOrder`: Ordering open chat. It only exists if it's a open gruop chat. It will also have `groupChatOrder`.
+
+
+
+
+### Invited Users
+
+
+- `/chat/invited-users/<room-id>/`: Users 
+
+
+
+
+
+
+
+
+
 

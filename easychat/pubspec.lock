@@ -66,7 +66,7 @@ packages:
     source: hosted
     version: "1.1.1"
   cloud_firestore:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cloud_firestore
       sha256: a31eec60eadaa859f0677bf661d9f86ed15961c716512f64884e59edcb341472
@@ -169,14 +169,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.5"
-  easy_firestore:
-    dependency: "direct main"
-    description:
-      name: easy_firestore
-      sha256: "209fbf98b28ecb28210f80881d92c57e16a3ee1d1efca277824701648043bb5b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.4"
   easy_helpers:
     dependency: "direct main"
     description:
@@ -394,7 +386,7 @@ packages:
     source: hosted
     version: "1.4.4"
   firebase_ui_firestore:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_ui_firestore
       sha256: de7f184194b20f544d259091b1b3125886572acb08fbd68d97178d25fa394fd6

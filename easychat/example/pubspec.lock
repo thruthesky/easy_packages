@@ -177,14 +177,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.5"
-  easy_firestore:
-    dependency: transitive
-    description:
-      name: easy_firestore
-      sha256: "209fbf98b28ecb28210f80881d92c57e16a3ee1d1efca277824701648043bb5b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.4"
   easy_helpers:
     dependency: transitive
     description:
@@ -231,7 +223,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.12"
+    version: "0.1.1"
   easyuser:
     dependency: "direct main"
     description:
