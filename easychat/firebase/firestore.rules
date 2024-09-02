@@ -121,6 +121,14 @@ service cloud.firestore {
         return roomId.split("---").hasAll([request.auth.uid]);
       }
 
+      function onlyInvitingOtherUser() {
+        return request.resource.data.keys().hasAll(["invitedUsers"])
+                && request.resource.data.invitedUsers.size() == 1
+                && roomId.split("---").hasAll([request.resource.data.invitedUsers[0]])
+                
+
+      }
+
       // function hasOrderField() {
       //   return 
       //     'users' in resource.data.keys() &&
@@ -154,6 +162,7 @@ service cloud.firestore {
                 isSingleChat() 
                 && notUpdating(['single'])
                 && willBeAtMostOne('invitedUsers')
+                
             )
           ) &&
           !updatingCreatedAt()
@@ -190,6 +199,10 @@ service cloud.firestore {
               isSingleChat()
               && onlyUpdating(['lastMessageAt', 'users', 'updatedAt'])
               && sameMembers()
+              || ( 
+                onlyUpdating(['invitedUsers', 'updatedAt'])
+                && onlyInvitingOtherUser()
+              )
             )
           )
         );
