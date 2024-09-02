@@ -200,23 +200,8 @@ For your information, `easychat` uses `easyuser` package to manage the user's da
       - **Because**; any one can read the chat room information. If the blocked user simply logs-out and logs-in another user, and he is able to read the chat room information. Then, what's the use of blocking blocked users not to read the `open chat room` information.
     - For 1:1 chat rooms and grup chat rooms, they have invitation mechanism and the user needs to be invited to read the chat room.
 
-**[IMPORTANT!]**
-- For single chat rooms, it is important to secure the room to be used only by the users involved (user and other user). To do that, `strictlyFor` is added to fields for security rule, which contains the uids of users involved. Both user can leave the chat room.
-
-  - For leaving, there are multiple scenarios to handle.
-
-    - User A left, User B stayed (1)
-      - When User B chatted the room;
-        - it will invite A to join room. We know what to do because this similar on how single chat begins.
-    
-    - User A left, User B stayed (2)
-      - When User A wants to chat to User B
-        - QUESTION: What should happen if User B didn't invite User A? We cannot simple put User A as Member because it violates the idea of Invitations.
-
-    - Both Users left
-      - When User A want to chat to user B,
-        - Can't we allow User A to join room...? This can be against to our idea if we simply put User A as Member, because user A will see chat messages (or old messages) of room that did not invited her. (Supposedly, when you leave, you are no longer allowed to read, unless you are invited or a member.)
-        - To explain the problem, take note that User A (and User B as well) is no longer member of the room. Why should we allow User A to simply join the room, without invitations, in a private chat room?
+- In Security rules, user may get doc of single group chat where the user uid is included in the `roomId`, whether it exist or not. The format of single chat is like `otherUid---roomId`, or the combination of uids of the single chat members separated by `---`. However, this is not allowed in listing.
+  - The reason for this one is that, having permission-denied error upon accessing may cause problems when the single chat room doesn't exist. The logic is when single chat room doesn't exist, it should create. The permission-denied error may stop the process.
 
 
 ### Cost of Firestore
