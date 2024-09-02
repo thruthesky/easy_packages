@@ -3348,3 +3348,63 @@ describe("Single Chat Room Id test", async () => {
     );
   });
 });
+
+describe("When other user lefit in the room. He should be allowed to invite the other user is", async () => {
+  const appleAndBananaId = appleId + "---" + bananaId;
+  const appleAndBananaRoom: ChatRoom = {
+    name: "apple room",
+    single: true,
+    masterUsers: [appleId],
+    users: {
+      [bananaId]: {
+        nMC: 0,
+      },
+    },
+    createdAt: 1312,
+  };
+  before(async () => {
+    setLogLevel("error");
+    testEnv = await initializeTestEnvironment({
+      projectId: PROJECT_ID,
+      firestore: {
+        host,
+        port,
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+  });
+  beforeEach(async () => {
+    await clearAndResetFirestoreContext();
+
+    // Create the Apple and Banana room for each test
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(
+        doc(context.firestore(), getRoomPath(appleAndBananaId)),
+        appleAndBananaRoom
+      );
+    });
+  });
+
+  it("[Pass] Member tried to re invite other user (who was the master)", async () => {
+    const roomUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(appleId),
+    } as ChatRoom;
+
+    await assertSucceeds(
+      setDoc(doc(bananaDb, getRoomPath(appleAndBananaId)), roomUpdate, {
+        merge: true,
+      })
+    );
+  });
+  it("[Fail] Nonmember tried to re invite other user (who was the member)", async () => {
+    const roomUpdate: ChatRoom = {
+      invitedUsers: arrayUnion(bananaId),
+    } as ChatRoom;
+
+    await assertFails(
+      setDoc(doc(guavaDb, getRoomPath(appleAndBananaId)), roomUpdate, {
+        merge: true,
+      })
+    );
+  });
+});
