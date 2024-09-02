@@ -1,6 +1,6 @@
 name: easychat
 description: "Full featured and complete chat package for Flutter and Firebase"
-version: 0.0.12
+version: 0.0.13
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:
