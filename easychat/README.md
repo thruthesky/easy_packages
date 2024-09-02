@@ -459,6 +459,12 @@ This feature is not supported, yet.
 - ~~If there are many admins who want to participate in the customer care chat, list all the uid of admins.~~
 - ~~then, create a group chat room with the list of admins and the login user.~~
 
+
+
+
+
+
+
 ## chatRoomActionButton
 
 
@@ -579,6 +585,15 @@ Master(s) can block a user. Then the user is kicked out and cannot enter the cha
 
 This is only applicable to group chats, for open or not open, since the user can block another user directly.
 
+## Single chat room invitation
+
+In chat single chat room, User A (master and member) may invite other user (User B). It will be put in `invitedUsers`. User B may accept the invitation and put uid in `users`, else User B may put uid in reheced users.
+
+User can still leave the room. If User A left then User B want to chat, User B may invite user A upon chat. Same as User B leave the room, User A must send an invitation again.
+
+If both of users are not in room, User A may join in the user if she wants to chat User B.
+
+If both of user views and joins that group, then can chat.
 
 ### Group Chats with blocked users
 
