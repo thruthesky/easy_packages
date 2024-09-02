@@ -95,14 +95,25 @@ class ChatRoomListTile extends StatelessWidget {
         // Maybe we can cache here to prevent the sudden "..." when the order is
         // being changed when there is new user.
         if (snapshot.data?.snapshot.value == null) {
-          return Text(
-            "single chat no message yet".t,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-            ),
-          );
+          if (room.single && room.invitedUsers.isEmpty) {
+            return Text(
+              'single chat no message, no invitations'.t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          } else {
+            return Text(
+              'no message yet'.t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          }
         }
         final firstRecord =
             Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
