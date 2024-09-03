@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -47,9 +48,12 @@ class ChatRoom {
   String? iconUrl;
 
   /// [users] is the uid list of users who are join the room
-  Map<String, ChatRoomUser> users;
+  // Map<String, ChatRoomUser> users;
+  List<String> users;
 
-  List<String> get userUids => users.keys.toList();
+  // List<String> get userUids => users.keys.toList();
+  // TODO clean up and depricate
+  List<String> get userUids => users;
 
   bool get joined => userUids.contains(myUid);
 
@@ -112,7 +116,9 @@ class ChatRoom {
   bool allMembersCanInvite = false;
 
   /// True if the user has seen the last message. Meaning, there is no more new messages in the chat room.
-  bool get iSeen => users[myUid!]?.newMessageCounter == 0;
+  // bool get iSeen => users[myUid!].newMessageCounter == 0;
+  // TODO CLEAN UP
+  bool get iSeen => false;
 
   /// Uids for single chat is combination of both users' uids separated by "---"
   /// Returns list of uids based on the room id.
@@ -144,14 +150,18 @@ class ChatRoom {
   });
 
   factory ChatRoom.fromSnapshot(DataSnapshot data) {
-    return ChatRoom.fromJson(data.value as Map<String, dynamic>, data.key!);
+    return ChatRoom.fromJson(
+        (Map<String, dynamic>.from(data.value as Map)), data.key!);
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
-    final usersMap = Map<String, dynamic>.from((json['users'] ?? {}) as Map);
-    final users = Map<String, ChatRoomUser>.fromEntries(usersMap.entries.map(
-        (entry) =>
-            MapEntry(entry.key, ChatRoomUser.fromJson(json: entry.value))));
+    dog("Users Typing: ${json['users'].runtimeType}");
+    // TODO cleanup
+    // final usersMap = Map<String, dynamic>.from((json['users'] ?? {}) as Map);
+    // final users = List<String>.from(json['users'] as List<Object?>);
+    // final users = Map<String, ChatRoomUser>.fromEntries(usersEntries.map(
+    //     (entry) =>
+    //         MapEntry(entry.key, ChatRoomUser.fromJson(json: entry.value))));
     return ChatRoom(
       id: id,
       name: json[field.name] ?? '',
@@ -161,7 +171,7 @@ class ChatRoom {
       single: json[field.single],
       group: json[field.group],
       hasPassword: json[field.hasPassword],
-      users: users,
+      users: List<String>.from(json[field.users] as List<Object?>),
       masterUsers: List<String>.from(json[field.masterUsers]),
       invitedUsers: List<String>.from(json[field.invitedUsers] ?? []),
       blockedUsers: List<String>.from(json[field.blockedUsers] ?? []),
@@ -194,9 +204,10 @@ class ChatRoom {
       field.single: single,
       field.group: group,
       field.hasPassword: hasPassword,
-      field.users: Map<String, dynamic>.fromEntries(
-        users.map((uid, user) => MapEntry(uid, user.toJson())).entries,
-      ),
+      // TODO, clean up, will be deprecated anyway
+      // field.users: Map<String, dynamic>.fromEntries(
+      //   users.map((uid, user) => MapEntry(uid, user.toJson())).entries,
+      // ),
       field.masterUsers: masterUsers,
       field.invitedUsers: invitedUsers,
       field.blockedUsers: blockedUsers,
@@ -409,6 +420,12 @@ class ChatRoom {
     // });
     // ChatService.instance.increaseInvitationCount(uid);
     // ChatService.instance.onInvite?.call(room: this, uid: uid);
+
+    final Map<String, Object?> invitation = {};
+    // TODO prevent typing
+    invitation['chat/invited-users/$uid/$id'] = ServerValue.timestamp;
+
+    FirebaseDatabase.instance.ref().update(invitation);
   }
 
   /// Alias for [join]. Since they have
@@ -508,7 +525,38 @@ class ChatRoom {
   /// users inside the chat room.
   /// TODO: Change the name of the function readable(meaningful).
   Future<void> updateNewMessagesMeta() async {
-    throw 'Not implemented yet';
+    // final Map<String, dynamic> updateNewMessagesMeta = {
+    //   'chat': {
+    //     'settings': {
+    //       ...users.map(
+    //         (uid) => MapEntry(
+    //           uid,
+    //           {
+    //             'unread-message-count': {
+    //               id: ServerValue.increment(1) // Firebase increment operation
+    //             }
+    //           },
+    //         ),
+    //       )
+    //     }
+    //   }
+    // };
+    final Map<String, Object?> updateNewMessagesMeta = Map.fromEntries(
+      users.where((uid) => uid != myUid).map(
+            (uid) => MapEntry(
+              'chat/settings/$uid/unread-message-count/$id',
+              ServerValue.increment(1),
+            ),
+          ),
+    );
+    // await ref.update(updateNewMessagesMeta);
+    await FirebaseDatabase.instance.ref().update(updateNewMessagesMeta);
+
+    // throw 'Not implemented yet';
+
+    // TODO
+    //
+
     // final serverTimestamp = FieldValue.serverTimestamp();
     // final Map<String, Map<String, Object>> updateUserData = users.map(
     //   (uid, value) {
@@ -567,7 +615,9 @@ class ChatRoom {
   Future<void> resetUnreadMessage() async {
     ChatService.instance.unreadMessageCountRef(id).set(0);
 
-    throw 'Not implemented yet';
+    // throw 'Not implemented yet';
+
+    // TODO review. It must update the order
     // if (!userUids.contains(myUid!)) return;
     // if (users[myUid!]!.newMessageCounter == 0) return;
     // final myReadOrder = users[myUid!]!.timeOrder;

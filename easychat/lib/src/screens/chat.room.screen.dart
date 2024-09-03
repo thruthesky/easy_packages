@@ -32,6 +32,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
+    _room = widget.room;
     init();
   }
 
@@ -45,9 +46,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       await loadOrCreateRoomForSingleChat();
 
       setState(() {});
-    } else {
-      // Group chat.
-      _room = widget.room;
     }
 
     await onRoomReady();
@@ -151,7 +149,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 width: 36,
                 height: 36,
                 clipBehavior: Clip.hardEdge,
-                child: room.iconUrl != null && room.iconUrl!.isNotEmpty
+                child: _room?.iconUrl != null && _room!.iconUrl!.isNotEmpty
                     ? CachedNetworkImage(
                         imageUrl: room.iconUrl!,
                         fit: BoxFit.cover,
@@ -222,10 +220,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///
   /// Refer README.md for more information.
   mayInviteOtherUser() {
+    if (room.group) return;
+    if (room.userUids.length == 2) return;
+
+    room.inviteUser(getOtherUserUidFromRoomId(room.id)!);
+
     throw UnimplementedError();
     //
-    // if ($room!.group) return;
-    // if ($room!.userUids.length == 2) return;
 
     // // return if the user has already invited or rejected.
     // final otherUserUid = getOtherUserUidFromRoomId($room!.id)!;

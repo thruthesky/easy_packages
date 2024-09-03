@@ -176,14 +176,21 @@ class ChatRoomListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
-          ChatService.instance.newMessageBuilder?.call(
-                  (room.users[myUid]!.newMessageCounter ?? 0).toString()) ??
-              Badge(
-                label: Text(
-                  "${room.users[myUid!]!.newMessageCounter}",
-                ),
-              ),
+        // TODO show proper unread count
+        const Badge(
+          label: Text(
+            "131928",
+          ),
+        ),
+
+        // if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
+        //   ChatService.instance.newMessageBuilder?.call(
+        //           (room.users[myUid]!.newMessageCounter ?? 0).toString()) ??
+        //       Badge(
+        //         label: Text(
+        //           "${room.users[myUid!]!.newMessageCounter}",
+        //         ),
+        //       ),
         Text((room.updatedAt).short),
       ],
     );

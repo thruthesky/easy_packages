@@ -89,7 +89,15 @@ For your information on `easychat` history:
 - `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }`: We make it flat because this value will be often be read and updated.
 
 
+---
 
+Christian's  NOTES:
+- Upon send chat message, update other users `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }`.
+- Upon view set your message count `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }` into zero
+
+
+
+---
 
 
 

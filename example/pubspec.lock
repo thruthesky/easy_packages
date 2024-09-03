@@ -295,7 +295,7 @@ packages:
       path: "../easy_realtime_database"
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   easy_report:
     dependency: "direct main"
     description:
@@ -352,7 +352,7 @@ packages:
       path: "../easychat"
       relative: true
     source: path
-    version: "0.0.12"
+    version: "0.1.1"
   easyuser:
     dependency: "direct main"
     description:
