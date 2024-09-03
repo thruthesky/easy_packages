@@ -22,11 +22,18 @@ class ChatRoomInputBox extends StatefulWidget {
 }
 
 class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController textController = TextEditingController();
   final FocusNode textFocus = FocusNode();
 
-  bool get canSubmit => controller.text.isNotEmpty || url != null;
-  bool submitable = false;
+  /// Check if the user can submit the message.
+  /// The user can submit the message if there is a text or a photo.
+  bool get canSubmit => textController.text.trim().isNotEmpty || url != null;
+
+  /// Notifier to notify if the user can submit the message.
+  /// Why: To change the send icon color without rebuilding the whole widget by setState.
+  /// Purpose: To change the send icon color.
+  ValueNotifier<bool> canSubmitNotifier = ValueNotifier(false);
+
   BehaviorSubject<double?> uploadProgress = BehaviorSubject.seeded(null);
   ChatRoom? get room => widget.room;
 
@@ -49,7 +56,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   @override
   void dispose() {
     uploadProgress.close();
-    controller.dispose();
+    textController.dispose();
     ChatService.instance.clearReply();
     textFocus.dispose();
     if (url != null) {
@@ -156,11 +163,9 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                               ),
                               onPressed: () {
                                 StorageService.instance.delete(url);
-                                setState(
-                                  () {
-                                    url = null;
-                                  },
-                                );
+                                setState(() {
+                                  url = null;
+                                });
                               },
                             ),
                           ),
@@ -183,7 +188,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                           ),
                         ),
                         child: TextField(
-                          controller: controller,
+                          controller: textController,
                           focusNode: textFocus,
                           maxLines: 2,
                           minLines: 1,
@@ -206,21 +211,26 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                                 uploadProgress.add(null);
                                 setState(() {
                                   this.url = url;
-                                  submitable = canSubmit;
                                 });
                               },
                             ),
                             suffixIcon: IconButton(
-                              onPressed:
-                                  submitable ? () => sendTextMessage() : null,
-                              icon: const Icon(Icons.send),
+                              onPressed: sendMessage,
+                              icon: ValueListenableBuilder(
+                                valueListenable: canSubmitNotifier,
+                                builder: (_, v, __) {
+                                  return Icon(Icons.send,
+                                      color: v
+                                          ? Theme.of(context).primaryColor
+                                          : Theme.of(context).disabledColor);
+                                },
+                              ),
                             ),
                           ),
                           onChanged: (value) {
-                            if (submitable == canSubmit) return;
-                            setState(() => submitable = canSubmit);
+                            canSubmitNotifier.value = canSubmit;
                           },
-                          onSubmitted: (value) => sendTextMessage(),
+                          onSubmitted: (value) => sendMessage(),
                         ),
                       ),
                     ),
@@ -234,31 +244,49 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     );
   }
 
-  Future sendTextMessage() async {
-    if (controller.text.isEmpty && url == null) return;
-    if (ChatService.instance.reply.value != null &&
-        ChatService.instance.reply.value?.roomId != room?.id) {
+  /// Send message
+  ///
+  /// It can send
+  /// - text message only
+  /// - photo only
+  /// - text message with photo
+  Future sendMessage() async {
+    // If there is no text and no photo, then return.
+    if (canSubmit == false) return;
+
+    // copy the input
+    final text = textController.text.trim();
+    final url = this.url;
+    ChatMessage? reply = ChatService.instance.reply.value;
+
+    // If there is a reply message, but the room id is not the same, then return.
+    // TODO: does this error check is necessary? or any other way to handle it simply?
+    if (reply != null && reply.roomId != room?.id) {
       throw ChatException("wrong-room-reply-message", "Room id mismatch.");
     }
+
+    // If the room is not ready, then return.
     if (room == null) {
       throw ChatException('room-not-ready', "room is not ready. please wait.");
     }
-    setState(() => submitable = false);
 
-    final sendMessageFuture = ChatService.instance.sendMessage(
-      room!,
-      text: controller.text.trim(),
-      photoUrl: url,
-      replyTo: ChatService.instance.reply.value,
-    );
-    widget.onSend?.call(
-      controller.text.trim(),
-      url,
-      ChatService.instance.reply.value,
-    );
-    url = null;
+    // clear to make the input box empty.
+    textController.clear();
+    this.url = null;
     ChatService.instance.clearReply();
-    if (controller.text.isNotEmpty) controller.clear();
-    await sendMessageFuture;
+    setState(() {});
+
+    await ChatService.instance.sendMessage(
+      room!,
+      text: text,
+      photoUrl: url,
+      replyTo: reply,
+    );
+
+    widget.onSend?.call(
+      text,
+      url,
+      reply,
+    );
   }
 }

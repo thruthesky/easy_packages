@@ -53,10 +53,14 @@ String singleChatRoomId(String otherUserUid) {
   return uids.join(chatRoomDivider);
 }
 
-String title(ChatRoom? room, User? user) {
+/// Returns the chat room title for single and group chat.
+String roomTitle(ChatRoom? room, User? user) {
+  assert(room != null || user != null);
+
   if (user != null) {
     return user.displayName.or('no name'.t);
   }
+
   // Single chat or group chat can have name.
   if ((room?.name ?? "").trim().isNotEmpty) {
     return room!.name;

@@ -346,6 +346,16 @@ class UserException implements Exception {
 
 
 
+- `Required`: If it is used with field description, it means the field must exists in the data always.
+
+- `Rear exception`: An exception that should not occure during normal app usage. For instance, the user always need to be a chat room member to send a message. There is no change for any user can send message if they are not a member. If they are not a member of the chat room, they should be able to open, or once they open the chat room they need to become the member, or there must be an error on the chat room screen. So, they never have a change to send a message if they are not a member. In this case, we may still throw an excpetion with comment of `rear exception`. And this kind of exception should not be handled to display to a user. But may be used for a debug or error reporting system like `Firebase Crashlytics`.
+
+
+
+
+
+
+
 
 # Widget
 

@@ -19,7 +19,6 @@ class ChatRoom {
     masterUsers: 'masterUsers',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    hasPassword: 'hasPassword',
     open: 'open',
     single: 'single',
     group: 'group',
@@ -32,7 +31,7 @@ class ChatRoom {
     domain: 'domain',
   );
 
-  /// [id] is the chat room id.
+  /// [id] is the chat room id. This is the key of the chat room data.
   String id;
 
   /// [ref] is the data reference of the chat room.
@@ -49,26 +48,19 @@ class ChatRoom {
 
   /// [users] is the uid list of users who are join the room
   // Map<String, ChatRoomUser> users;
-  List<String> users;
+  Map<String, bool> users;
 
   // List<String> get userUids => users.keys.toList();
   // TODO clean up and depricate
-  List<String> get userUids => users;
+  List<String> get userUids => users.keys.toList();
 
   bool get joined => userUids.contains(myUid);
 
-  List<String> invitedUsers;
-  List<String> rejectedUsers;
   List<String> blockedUsers;
   List<String> masterUsers;
 
   DateTime createdAt;
   DateTime updatedAt;
-
-  /// [hasPassword] is true if the chat room has password
-  ///
-  /// Note, this is not implemented yet.
-  bool hasPassword;
 
   /// [open] is true if the chat room is open chat
   bool open;
@@ -80,24 +72,7 @@ class ChatRoom {
   bool group;
 
   /// [lastMessageAt] is the time when last message was sent to chat room.
-  DateTime? lastMessageAt;
-
-  /// [verifiedUserOnly] is true if only the verified users can enter the chat room.
-  ///
-  /// Note that, [verifiedUserOnly] is not supported at this time.
-  bool verifiedUserOnly;
-
-  /// [urlForVerifiedUserOnly] is true if only the verified users can sent the
-  /// url (or include any url in the text).
-  ///
-  /// Note that, [urlForVerifiedUserOnly] is not supported at this time.
-  bool urlForVerifiedUserOnly;
-
-  /// [uploadForVerifiedUserOnly] is true if only the verified users can sent the
-  /// photo.
-  ///
-  /// Note that, [uploadForVerifiedUserOnly] is not supported at this time.
-  bool uploadForVerifiedUserOnly;
+  int? lastMessageAt;
 
   /// [gender] to filter the chat room by user's gender.
   /// If it's M, then only male can enter the chat room. And if it's F,
@@ -129,21 +104,15 @@ class ChatRoom {
     required this.name,
     required this.description,
     this.iconUrl,
-    this.open = false,
-    this.single = false,
-    this.group = true,
-    this.hasPassword = false,
+    required this.open,
+    required this.single,
+    required this.group,
     required this.users,
     required this.masterUsers,
-    this.invitedUsers = const [],
     this.blockedUsers = const [],
-    this.rejectedUsers = const [],
     required this.createdAt,
     required this.updatedAt,
     this.lastMessageAt,
-    this.verifiedUserOnly = false,
-    this.urlForVerifiedUserOnly = false,
-    this.uploadForVerifiedUserOnly = false,
     this.allMembersCanInvite = false,
     required this.gender,
     required this.domain,
@@ -152,6 +121,20 @@ class ChatRoom {
   factory ChatRoom.fromSnapshot(DataSnapshot data) {
     return ChatRoom.fromJson(
         (Map<String, dynamic>.from(data.value as Map)), data.key!);
+  }
+
+  static Map<String, bool> convertMapToStringBool(
+      Map<Object?, Object?>? original) {
+    if (original == null) return {};
+    Map<String, bool> newMap = {};
+
+    original.forEach((key, value) {
+      if (key is String && value is bool) {
+        newMap[key] = value;
+      }
+    });
+
+    return newMap;
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
@@ -170,24 +153,19 @@ class ChatRoom {
       open: json[field.open],
       single: json[field.single],
       group: json[field.group],
-      hasPassword: json[field.hasPassword],
-      users: List<String>.from(json[field.users] as List<Object?>),
+      users: json[field.users] is Map
+          ? Map<String, bool>.from(json[field.users])
+          : {},
       masterUsers: List<String>.from(json[field.masterUsers]),
-      invitedUsers: List<String>.from(json[field.invitedUsers] ?? []),
       blockedUsers: List<String>.from(json[field.blockedUsers] ?? []),
-      rejectedUsers: List<String>.from(json[field.rejectedUsers] ?? []),
       createdAt: json[field.createdAt] is num
           ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt])
           : DateTime.now(),
       updatedAt: json[field.updatedAt] is num
           ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt])
           : DateTime.now(),
-      lastMessageAt: json[field.lastMessageAt] is num
-          ? DateTime.fromMillisecondsSinceEpoch(json[field.lastMessageAt])
-          : DateTime.now(),
-      verifiedUserOnly: json[field.verifiedUserOnly],
-      urlForVerifiedUserOnly: json[field.urlForVerifiedUserOnly],
-      uploadForVerifiedUserOnly: json[field.uploadForVerifiedUserOnly],
+      lastMessageAt:
+          json[field.lastMessageAt] ?? DateTime.now().millisecondsSinceEpoch,
       allMembersCanInvite: json[field.allMembersCanInvite] ?? false,
       gender: json[field.gender],
       domain: json[field.domain],
@@ -203,33 +181,29 @@ class ChatRoom {
       field.open: open,
       field.single: single,
       field.group: group,
-      field.hasPassword: hasPassword,
       // TODO, clean up, will be deprecated anyway
       // field.users: Map<String, dynamic>.fromEntries(
       //   users.map((uid, user) => MapEntry(uid, user.toJson())).entries,
       // ),
       field.masterUsers: masterUsers,
-      field.invitedUsers: invitedUsers,
       field.blockedUsers: blockedUsers,
-      field.rejectedUsers: rejectedUsers,
       field.createdAt: createdAt,
       field.updatedAt: updatedAt,
       field.lastMessageAt: lastMessageAt,
-      field.verifiedUserOnly: verifiedUserOnly,
-      field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
-      field.uploadForVerifiedUserOnly: uploadForVerifiedUserOnly,
       field.allMembersCanInvite: allMembersCanInvite,
       field.gender: gender,
       field.domain: domain,
     };
   }
 
-  @Deprecated('Why do we need this? Use it if it saved time and money')
+  @Deprecated(
+      'DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
   copyFromSnapshot(DataSnapshot doc) {
     copyFrom(ChatRoom.fromSnapshot(doc));
   }
 
-  @Deprecated('Why do we need this? Use it if it saved time and money')
+  @Deprecated(
+      'DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
   copyFrom(ChatRoom room) {
     // copy all the fields from the room
     id = room.id;
@@ -239,18 +213,12 @@ class ChatRoom {
     open = room.open;
     single = room.single;
     group = room.group;
-    hasPassword = room.hasPassword;
     users = room.users;
     masterUsers = room.masterUsers;
-    invitedUsers = room.invitedUsers;
     blockedUsers = room.blockedUsers;
-    rejectedUsers = room.rejectedUsers;
     createdAt = room.createdAt;
     updatedAt = room.updatedAt;
     lastMessageAt = room.lastMessageAt;
-    verifiedUserOnly = room.verifiedUserOnly;
-    urlForVerifiedUserOnly = room.urlForVerifiedUserOnly;
-    uploadForVerifiedUserOnly = room.uploadForVerifiedUserOnly;
     allMembersCanInvite = room.allMembersCanInvite;
     gender = room.gender;
     domain = room.domain;
@@ -278,7 +246,7 @@ class ChatRoom {
     bool group = true,
     bool single = false,
     // String? password, (NOT IMPLEMENTED YET)
-    List<String>? users,
+    Map<String, bool>? users,
     List<String>? masterUsers,
     bool verifiedUserOnly = false,
     bool urlForVerifiedUserOnly = false,
@@ -322,9 +290,8 @@ class ChatRoom {
       field.open: open,
       field.single: single,
       field.group: group,
-      field.hasPassword: false,
       // if (invitedUsers != null) field.invitedUsers: invitedUsers,
-      field.users: [myUid],
+      field.users: users,
       field.masterUsers: [myUid],
       field.verifiedUserOnly: verifiedUserOnly,
       field.urlForVerifiedUserOnly: urlForVerifiedUserOnly,
@@ -343,21 +310,32 @@ class ChatRoom {
       newChatRoomRef = ChatService.instance.roomsRef.child(id);
     }
 
-    await newChatRoomRef.update(newRoom);
+    final Map<String, Object?> updates = {};
+    updates[newChatRoomRef.path] = newRoom;
+    updates[ChatService.instance.joinRef(newChatRoomRef.key!).path] = {
+      if (single) 'singleChatOrder': ServerValue.timestamp,
+      if (group) 'groupChatOrder': ServerValue.timestamp,
+      if (open) 'openChatOrder': ServerValue.timestamp,
+      'joinedAt': ServerValue.timestamp,
+    };
+    await FirebaseDatabase.instance.ref().update(updates);
+
     //
 
     return newChatRoomRef;
   }
 
   /// [createSingle] creates a new single chat room.
-  static Future<DatabaseReference> createSingle(String otherUid,
-      {String domain = ''}) async {
+  static Future<DatabaseReference> createSingle(
+    String otherUid, {
+    String domain = '',
+  }) async {
     return await create(
       group: false,
       open: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      users: [myUid!],
+      users: {myUid!: false},
       masterUsers: [myUid!],
       domain: domain,
     );
@@ -542,7 +520,7 @@ class ChatRoom {
     //   }
     // };
     final Map<String, Object?> updateNewMessagesMeta = Map.fromEntries(
-      users.where((uid) => uid != myUid).map(
+      userUids.where((uid) => uid != myUid).map(
             (uid) => MapEntry(
               'chat/settings/$uid/unread-message-count/$id',
               ServerValue.increment(1),

@@ -3,8 +3,37 @@
 
 This `easychat` package offers everything you need to build a chat app. With this package, you can easily add a full-featured, attractive chat function to your existing app.
 
+- [EasyChat](#easychat)
+- [Terms](#terms)
+- [TODO](#todo)
+- [Why Realtime Database](#why-realtime-database)
+- [Installation](#installation)
+  - [Secuirty rules](#secuirty-rules)
+    - [Realtime Database Security Rules](#realtime-database-security-rules)
+    - [Storage Rules](#storage-rules)
+    - [Firestore Rules](#firestore-rules)
+    - [Firestore Indexes](#firestore-indexes)
+- [Dependencies](#dependencies)
+- [Database Strucutre](#database-strucutre)
+  - [Chat room](#chat-room)
+  - [Chat message](#chat-message)
+  - [Chat join](#chat-join)
+  - [Chat setting](#chat-setting)
+    - [Saving unread number of messages.](#saving-unread-number-of-messages)
+    - [Changing the chat room name](#changing-the-chat-room-name)
+    - [Saving push notifications](#saving-push-notifications)
+  - [Invited, Rejected Users](#invited-rejected-users)
+- [Known Issues](#known-issues)
 
-## TODO
+# Terms
+
+- `Required`: If it is used with field description, it means the field must exists in the data always.
+- `Rear exception`: An exception that should not occure during normal app usage. For instance, the user always need to be a chat room member to send a message. There is no change for any user can send message if they are not a member. If they are not a member of the chat room, they should be able to open, or once they open the chat room they need to become the member, or there must be an error on the chat room screen. So, they never have a change to send a message if they are not a member. In this case, we may still throw an excpetion with comment of `rear exception`. And this kind of exception should not be handled to display to a user. But may be used for a debug or error reporting system like `Firebase Crashlytics`.
+
+
+
+
+# TODO
 
 - Support: `verifiedUserOnly`, `urlForVerifiedUserOnly`, `uploadForVerifiedUserOnly`.
 - Support: password.
@@ -17,10 +46,12 @@ This `easychat` package offers everything you need to build a chat app. With thi
 - Support: the chat room invitation as optional. So, users can be invited directly without invitation.
 - Support: Favorite chat friend. Display favorites chat friend in horizontal carousel view.
 - Example: Create full featured chat example
+- Document: Add the whole screenshot of the chat screens and functions.
+- Document: Write complete document
 
 
 
-## Why Realtime Database
+# Why Realtime Database
 
 
 For your information on `easychat` history:
@@ -45,27 +76,49 @@ For your information on `easychat` history:
 
 
 
-## Dependencies
+# Installation
+
+## Secuirty rules
+
+### Realtime Database Security Rules
+
+### Storage Rules
+
+### Firestore Rules
+
+`easychat` uses the firestore for some functionalities like reporting the user or chat rooms.
+
+### Firestore Indexes
+
+
+
+
+# Dependencies
 
 - To invite other users, it needs the search users by name. To achevie this, it uses `easyuser` package.
 
 
-## Database Strucutre
+# Database Strucutre
 
 
-### Chat room
+## Chat room
 
 - `/chat/rooms/<room-id>`: This is the path of chat room data.
 
-- `users`: This is a Map of users who joined the room. The key of this map is the uid of the user. The value is boolean. If it's true, the user subscribed the chat room. If it's false, the user has unsubscribed the chat room.
+- `users`: Required. This is a Map of users who joined the room. The key of this map is the uid of the user. The value is boolean. If it's true, the user subscribed the chat room. If it's false, the user has unsubscribed the chat room.
 
-### Chat message
+- `single`:
+- `group`:
+- `open`: 
+
+
+## Chat message
 
 
 - `/chat/messages/<room-id>`: This is the message list of each chat room.
 
 
-### Chat join
+## Chat join
 
 - `/chat/joins/<uid>/<room-id> { ... }`: This is the relation ship bewteen who joined which room.
   - To list 1:1 chat rooms, it can query like `FirebaseDatabase.instance.ref('chat/joins/' + myUid).orderByChild('singleChatOrder');`
@@ -74,7 +127,7 @@ For your information on `easychat` history:
 - `openChatOrder`: Ordering open chat. It only exists if it's a open gruop chat. It will also have `groupChatOrder`.
 
 
-### Chat setting
+## Chat setting
 
 
 - Each user can have indivisual settings.
@@ -84,7 +137,7 @@ For your information on `easychat` history:
   - For the convinience of data modeling, we don't make it too much flat. We put many properties in place for the convinience of managing.
 
 
-#### Saving unread number of messages.
+### Saving unread number of messages.
 
 - `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }`: We make it flat because this value will be often be read and updated.
 
@@ -102,12 +155,12 @@ Christian's  NOTES:
 
 
 
-#### Changing the chat room name
+### Changing the chat room name
 
 - `chat/settings/<uid>/name 
 
 
-#### Saving push notifications
+### Saving push notifications
 
 - Push notification settings for on/off is saved with chat room settings; See chat room settings.
 
@@ -115,7 +168,7 @@ Christian's  NOTES:
 
 
 
-### Invited, Rejected Users
+## Invited, Rejected Users
 
 
 - The lists of invitation and rejection are set to flat due to the data management.
@@ -127,6 +180,9 @@ Christian's  NOTES:
 
 
 
+
+
+# Known Issues
 
 
 

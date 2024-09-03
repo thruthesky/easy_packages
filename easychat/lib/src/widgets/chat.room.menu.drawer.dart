@@ -199,20 +199,21 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         exactSearch: true,
                       );
                       if (selectedUser == null) return;
-                      if (room!.invitedUsers.contains(selectedUser.uid)) {
-                        throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
-                        );
-                      }
-                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                        // The chat room is already rejected by the other user, we are
-                        // not showing if user rejected the invitation.
-                        throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
-                        );
-                      }
+                      // TODO : invitged users and rejecte users
+                      // if (room!.invitedUsers.contains(selectedUser.uid)) {
+                      //   throw ChatException(
+                      //     'already-invited',
+                      //     'the user is already invited'.t,
+                      //   );
+                      // }
+                      // if (room!.rejectedUsers.contains(selectedUser.uid)) {
+                      //   // The chat room is already rejected by the other user, we are
+                      //   // not showing if user rejected the invitation.
+                      //   throw ChatException(
+                      //     'already-invited',
+                      //     'the user is already invited'.t,
+                      //   );
+                      // }
                       if (room!.userUids.contains(selectedUser.uid)) {
                         throw ChatException(
                           'already-member',

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
@@ -24,15 +23,14 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  ChatRoom? _room;
-  ChatRoom get room => _room!;
+  ChatRoom? room;
 
   StreamSubscription? newMessageCountSubscription;
 
   @override
   void initState() {
     super.initState();
-    _room = widget.room;
+    room = widget.room;
     init();
   }
 
@@ -43,7 +41,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // We have to get room from other user.
     if (widget.user != null) {
       // Create chat room if user is set.
-      await loadOrCreateRoomForSingleChat();
+      await loadOrCreateSingleChatRoom();
 
       setState(() {});
     }
@@ -82,9 +80,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     //   await $room!.join();
     // }
     newMessageCountSubscription ??=
-        ChatService.instance.roomRef(room.id).onValue.listen(
+        ChatService.instance.roomRef(room!.id).onValue.listen(
       (event) {
-        room.resetUnreadMessage();
+        room!.resetUnreadMessage();
       },
     );
   }
@@ -95,17 +93,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.dispose();
   }
 
-  Future<void> loadOrCreateRoomForSingleChat() async {
-    _room = await ChatRoom.get(singleChatRoomId(widget.user!.uid));
+  Future<void> loadOrCreateSingleChatRoom() async {
+    dog('chat.room.screen.dart: init() -> loadOrCreateSingleChatRoom()');
+    room = await ChatRoom.get(singleChatRoomId(widget.user!.uid));
 
-    if (_room == null) {
-      await createAndLoadSingleChat();
+    if (room == null) {
+      final newRoomRef = await ChatRoom.createSingle(widget.user!.uid);
+      room = await ChatRoom.get(newRoomRef.key!);
     }
-  }
-
-  Future<void> createAndLoadSingleChat() async {
-    final newRoomRef = await ChatRoom.createSingle(widget.user!.uid);
-    _room = await ChatRoom.get(newRoomRef.key!);
   }
 
   /// Returns true if the login user can view the chat messages.
@@ -149,9 +144,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 width: 36,
                 height: 36,
                 clipBehavior: Clip.hardEdge,
-                child: _room?.iconUrl != null && _room!.iconUrl!.isNotEmpty
+                child: room?.iconUrl != null && room!.iconUrl!.isNotEmpty
                     ? CachedNetworkImage(
-                        imageUrl: room.iconUrl!,
+                        imageUrl: room!.iconUrl!,
                         fit: BoxFit.cover,
                         errorWidget: (context, url, error) {
                           dog("Error in Image Chat Room Screen: $error");
@@ -167,13 +162,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               const SizedBox(width: 12),
             ],
             Expanded(
-              child: Text(title(room, widget.user)),
+              child: Text(roomTitle(room, widget.user)),
             ),
           ],
         ),
         actions: [
           if (ChatService.instance.chatRoomActionButton != null)
-            ChatService.instance.chatRoomActionButton!(room),
+            ChatService.instance.chatRoomActionButton!(room!),
           if (joined)
             DrawerButton(
               onPressed: () => Scaffold.of(context).openEndDrawer(),
@@ -186,7 +181,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               user: widget.user,
             )
           : null,
-      body: _room == null
+      body: room == null
           ? const Center(child: CircularProgressIndicator.adaptive())
           : Column(
               children: [
@@ -195,7 +190,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     alignment: Alignment.bottomCenter,
                     child: ChatMessagesListView(
                       key: const ValueKey("Chat Message List View"),
-                      room: room,
+                      room: room!,
                     ),
                   ),
                 ),
@@ -220,10 +215,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///
   /// Refer README.md for more information.
   mayInviteOtherUser() {
-    if (room.group) return;
-    if (room.userUids.length == 2) return;
+    if (room?.group != true) return;
+    if (room!.userUids.length == 2) return;
 
-    room.inviteUser(getOtherUserUidFromRoomId(room.id)!);
+    room?.inviteUser(getOtherUserUidFromRoomId(room!.id)!);
 
     throw UnimplementedError();
     //

@@ -18,7 +18,7 @@ class ChatRoomListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (room.group) {
+    if (room.group == true) {
       return ListTile(
         minTileHeight: 70,
         leading: Container(
@@ -98,7 +98,7 @@ class ChatRoomListTile extends StatelessWidget {
         // Maybe we can cache here to prevent the sudden "..." when the order is
         // being changed when there is new user.
         if (snapshot.data?.snapshot.value == null) {
-          if (room.single && room.invitedUsers.isEmpty) {
+          if (room.single == true) {
             return Text(
               'single chat no message, no invitations'.t,
               maxLines: 1,

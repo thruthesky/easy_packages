@@ -47,7 +47,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
     nameController.text = room!.name;
     descriptionController.text = room!.description;
 
-    open = room!.open;
+    open = room!.open ?? false;
     allMembersCanInvite = room!.allMembersCanInvite;
   }
 
@@ -164,7 +164,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             open: open,
                             group: true,
                             single: false,
-                            users: [myUid!],
+                            users: {myUid!: false},
                           );
                           chatRoom = await ChatRoom.get(newRoomRef.key!);
                         } catch (e) {

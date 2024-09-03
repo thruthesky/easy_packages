@@ -38,6 +38,9 @@ class ChatService {
   final db.DatabaseReference joinsRef =
       db.FirebaseDatabase.instance.ref().child('chat/joins');
 
+  db.DatabaseReference joinRef(String roomId) =>
+      joinsRef.child(myUid!).child(roomId);
+
   final db.DatabaseReference invitesRef =
       db.FirebaseDatabase.instance.ref().child('chat/invites');
 
@@ -220,14 +223,17 @@ class ChatService {
     );
   }
 
+  /// send message
   Future sendMessage(
     ChatRoom room, {
     String? photoUrl,
     String? text,
     ChatMessage? replyTo,
   }) async {
-    if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
-    await _shouldBeOrBecomeMember(room);
+    if (room.joined == false) {
+      // Rear exception
+      throw ChatException('join-required-to-send-message', 'Join required');
+    }
 
     final newMessage = await ChatMessage.create(
       roomId: room.id,
@@ -262,14 +268,14 @@ class ChatService {
   _shouldBeOrBecomeMember(
     ChatRoom room,
   ) async {
-    if (room.joined) return;
-    if (room.open) return await room.join();
-    if (room.invitedUsers.contains(myUid!) ||
-        room.rejectedUsers.contains(myUid!)) {
-      // The user may mistakenly reject the chat room
-      // The user may accept it by replying.
-      return await room.acceptInvitation();
-    }
+    // if (room.joined) return;
+    // if (room.open) return await room.join();
+    // if (room.invitedUsers.contains(myUid!) ||
+    //     room.rejectedUsers.contains(myUid!)) {
+    //   // The user may mistakenly reject the chat room
+    //   // The user may accept it by replying.
+    //   return await room.acceptInvitation();
+    // }
     throw ChatException(
       "uninvited-chat",
       'can only send message if member, invited or open chat'.t,

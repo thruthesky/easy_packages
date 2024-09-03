@@ -38,7 +38,7 @@ class ChatRoomInvitationListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (room.single) {
+    if (room.single == true) {
       return UserDoc.sync(
         uid: getOtherUserUidFromRoomId(room.id)!,
         builder: (user) {
