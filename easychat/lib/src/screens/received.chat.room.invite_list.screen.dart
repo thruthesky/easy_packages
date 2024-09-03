@@ -23,24 +23,25 @@ class ReceivedChatRoomInviteListScreen extends StatelessWidget {
       ),
       body: myUid == null
           ? Center(child: Text('sign-in first'.t))
-          : FirestoreListView(
-              query: ChatRoomQuery.receivedInvites(),
-              itemBuilder: (context, doc) {
-                return ChatRoomInvitationListTile(
-                  room: ChatRoom.fromSnapshot(doc),
-                  onAccept: (room, user) {
-                    ChatService.instance.showChatRoomScreen(
-                      context,
-                      room: room,
-                      user: user,
-                    );
-                  },
-                );
-              },
-              emptyBuilder: (context) => Center(
-                child: Text('no chat requests'.t),
-              ),
-            ),
+          : const Text('TODO: invitation list screen'),
+      // FirestoreListView(
+      //     query: ChatRoomQuery.receivedInvites(),
+      //     itemBuilder: (context, doc) {
+      //       return ChatRoomInvitationListTile(
+      //         room: ChatRoom.fromSnapshot(doc),
+      //         onAccept: (room, user) {
+      //           ChatService.instance.showChatRoomScreen(
+      //             context,
+      //             room: room,
+      //             user: user,
+      //           );
+      //         },
+      //       );
+      //     },
+      //     emptyBuilder: (context) => Center(
+      //       child: Text('no chat requests'.t),
+      //     ),
+      //   ),
     );
   }
 }

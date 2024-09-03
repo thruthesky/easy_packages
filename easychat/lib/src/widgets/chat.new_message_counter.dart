@@ -21,39 +21,41 @@ class _ChatNewMessageCounterState extends State<ChatNewMessageCounter> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      initialData: initialData,
-      stream: ChatRoomQuery.unread().snapshots().map((snapshot) {
-        if (snapshot.size == 0) {
-          return 0;
-        }
-        final docs = snapshot.docs;
-        int newMessages = 0;
-        for (final doc in docs) {
-          final room = ChatRoom.fromSnapshot(doc);
-          int addCount = room.users[myUid]?.newMessageCounter ?? 0;
-          if (UserService.instance.blockChanges.value
-              .containsKey(getOtherUserUidFromRoomId(room.id) ?? "")) {
-            addCount = 0;
-          }
-          newMessages += addCount;
-        }
-        return newMessages;
-      }),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.hasData == false) {
-          return const SizedBox.shrink();
-        }
-        if (snapshot.hasError) {
-          log(snapshot.error.toString());
-          return Text(snapshot.error.toString());
-        }
+    /// TODO: Implement the real logic
+    return widget.builder(9999);
+    // return StreamBuilder(
+    //   initialData: initialData,
+    //   stream: ChatRoomQuery.unread().snapshots().map((snapshot) {
+    //     if (snapshot.size == 0) {
+    //       return 0;
+    //     }
+    //     final docs = snapshot.docs;
+    //     int newMessages = 0;
+    //     for (final doc in docs) {
+    //       final room = ChatRoom.fromSnapshot(doc);
+    //       int addCount = room.users[myUid]?.newMessageCounter ?? 0;
+    //       if (UserService.instance.blockChanges.value
+    //           .containsKey(getOtherUserUidFromRoomId(room.id) ?? "")) {
+    //         addCount = 0;
+    //       }
+    //       newMessages += addCount;
+    //     }
+    //     return newMessages;
+    //   }),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.connectionState == ConnectionState.waiting &&
+    //         snapshot.hasData == false) {
+    //       return const SizedBox.shrink();
+    //     }
+    //     if (snapshot.hasError) {
+    //       log(snapshot.error.toString());
+    //       return Text(snapshot.error.toString());
+    //     }
 
-        initialData = snapshot.data ?? 0;
+    //     initialData = snapshot.data ?? 0;
 
-        return widget.builder(snapshot.data ?? 0);
-      },
-    );
+    //     return widget.builder(snapshot.data ?? 0);
+    //   },
+    // );
   }
 }

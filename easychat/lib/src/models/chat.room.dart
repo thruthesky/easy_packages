@@ -557,14 +557,16 @@ class ChatRoom {
     // }, SetOptions(merge: true));
   }
 
-  /// [updateMyReadMeta] is used to set as read by the current user.
+  /// [resetUnreadMessage] is used to set as read by the current user.
   /// It means, turning newMessageCounter into zero
   /// and updating the order.
   ///
   /// The update will proceed only if newMessageCounter is not 0.
   /// The Chat Room must be updated or else, it may not proceed
   /// when old room data is 0, since newMessageCounter maybe inaccurate.
-  Future<void> updateMyReadMeta() async {
+  Future<void> resetUnreadMessage() async {
+    ChatService.instance.unreadMessageCountRef(id).set(0);
+
     throw 'Not implemented yet';
     // if (!userUids.contains(myUid!)) return;
     // if (users[myUid!]!.newMessageCounter == 0) return;

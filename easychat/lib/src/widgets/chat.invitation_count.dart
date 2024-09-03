@@ -1,4 +1,3 @@
-import 'package:easy_firestore/easy_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -12,16 +11,9 @@ class ChatInvitationCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// TODO: Implement the real logic
     return AuthStateChanges(
-      builder: (user) => user == null
-          ? builder(0)
-          : Document(
-              collectionName: 'chat-settings',
-              id: user.uid,
-              builder: (model) {
-                return builder(model.data['chatInvitationCount'] ?? 0);
-              },
-            ),
+      builder: (user) => user == null ? builder(0) : builder(9999),
     );
   }
 }

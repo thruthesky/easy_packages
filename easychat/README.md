@@ -57,7 +57,7 @@ For your information on `easychat` history:
 
 - `/chat/rooms/<room-id>`: This is the path of chat room data.
 
-- `users`: the uid list of users who joined the chat room.
+- `users`: This is a Map of users who joined the room. The key of this map is the uid of the user. The value is boolean. If it's true, the user subscribed the chat room. If it's false, the user has unsubscribed the chat room.
 
 ### Chat message
 
@@ -76,20 +76,47 @@ For your information on `easychat` history:
 
 ### Chat setting
 
+
 - Each user can have indivisual settings.
-  - Settings can be divided into two groups;
-    - `chat/settings/global/<uid> { ... }`: This global setting is applied to the whole chat feature. It may have a count of chat rooms, put an option of blocking new invitation.
-    - `chat/settings/rooms/<uid>/<room-id> { ... }`: Each user can have their own chat room settings. It can have a room name to replace the original, options of push notification, etc.
-    - The patterns of the path;
-      - `chat/settings/(scope)/<uid>/...`: right under the `/chat/settings`, the scope will follow.
+  - The chat room settings are saved in `/chat/rooms/<room-id>`.
+
+- `chat/settings/<uid>/<room-id>/{ ... }`: Each user's invisual settings for each chat room. For instance, the user can set his own room name, or make the chat room displayed on top with priority settings, etc.
+  - For the convinience of data modeling, we don't make it too much flat. We put many properties in place for the convinience of managing.
 
 
-### Invited Users
+#### Saving unread number of messages.
+
+- `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }`: We make it flat because this value will be often be read and updated.
 
 
-- `/chat/invited-users/<room-id>/`: Users 
 
-- The counting of invitation had removed by Sept 3, 2024. Since it is using the realtime database, it can do the work fast and cheap.
+
+
+
+
+#### Changing the chat room name
+
+- `chat/settings/<uid>/name 
+
+
+#### Saving push notifications
+
+- Push notification settings for on/off is saved with chat room settings; See chat room settings.
+
+
+
+
+
+### Invited, Rejected Users
+
+
+- The lists of invitation and rejection are set to flat due to the data management.
+
+- `/chat/invited-users/<uid> { room-a: _time_base_order_value_, room-b: ..., ... }`: Users who were invited will be added here.
+- `/chat/rejected-users/<uid> { room-a: _time_base_order_value_, room-b: ..., ... }`: Users who rejected the invitation be added here.
+
+
+
 
 
 

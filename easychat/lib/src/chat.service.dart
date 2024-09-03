@@ -38,6 +38,20 @@ class ChatService {
   final db.DatabaseReference joinsRef =
       db.FirebaseDatabase.instance.ref().child('chat/joins');
 
+  final db.DatabaseReference invitesRef =
+      db.FirebaseDatabase.instance.ref().child('chat/invites');
+
+  db.DatabaseReference inviteRef(String uid) => invitesRef.child(uid);
+
+  db.DatabaseReference unreadMessageCountRef(String roomId) =>
+      db.FirebaseDatabase.instance
+          .ref()
+          .child('chat')
+          .child('settings')
+          .child(myUid!)
+          .child('unread-message-count')
+          .child(roomId);
+
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;

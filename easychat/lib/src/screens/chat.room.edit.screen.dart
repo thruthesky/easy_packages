@@ -98,7 +98,9 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             //       changed. Using ImageUploadCard won't update it.
             ImageUploadCard(
               initialData: room?.iconUrl,
-              ref: room?.ref,
+
+              /// TODO: Support path string for the ref to support both firestore and realtime database.
+              // ref: room?.ref,
               field: room?.ref != null ? "iconUrl" : null,
               onUpload: isCreate
                   ? (url) {
@@ -164,7 +166,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             single: false,
                             users: [myUid!],
                           );
-                          chatRoom = await ChatRoom.get(newRoomRef.id);
+                          chatRoom = await ChatRoom.get(newRoomRef.key!);
                         } catch (e) {
                           dog("Error ${e.toString()}");
                           setState(() {
