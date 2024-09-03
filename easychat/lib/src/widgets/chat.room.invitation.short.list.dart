@@ -1,17 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
 
+/// Display a few chat room invitations as a list.
+///
+///
 class ChatRoomInvitationShortList extends StatelessWidget {
   const ChatRoomInvitationShortList({
     super.key,
+    this.limit = 3,
     this.padding,
     this.itemBuilder,
     this.separatorBuilder,
     this.bottomWidget = const Divider(),
   });
+
+  final int limit;
 
   final EdgeInsetsGeometry? padding;
 
@@ -22,7 +27,7 @@ class ChatRoomInvitationShortList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
+    return DatabaseLimitedListView(
       // No longer limiting. //
       // However, it may cost more read for users who don't accept or
       // reject chat rooms. But it is not common.

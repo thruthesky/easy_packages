@@ -382,11 +382,16 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 ListTile(
                   title: Text('report'.t),
                   onTap: () {
-                    ReportService.instance.report(
-                      context: context,
-                      documentReference: room?.ref ?? user!.ref,
-                      otherUid: user?.uid ?? room!.masterUsers.first,
-                    );
+                    throw UnimplementedError(
+                        'Report service must be updated since it only support Firestore document. Make it support the path of the document. So it can support realtime database.');
+
+                    /// TODO: Report service must accept the path of the document as String.
+                    /// TODO: Report service must have the title, content, reason, photo urls, etc. to report with enough information.
+                    // ReportService.instance.report(
+                    //   context: context,
+                    //   documentReference: room?.ref.path ?? user!.ref.path,
+                    //   otherUid: user?.uid ?? room!.masterUsers.first,
+                    // );
                   },
                 )
               ],

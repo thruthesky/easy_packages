@@ -71,6 +71,9 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
+  /// Returns a subtitle widget for the chat room list tile in chat room list view.
+  ///
+  /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
     if (!room.userUids.contains(myUid)) {
       if (room.description.trim().isEmpty) {

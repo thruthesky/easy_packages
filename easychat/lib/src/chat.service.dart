@@ -33,6 +33,8 @@ class ChatService {
   final db.DatabaseReference messagesRef =
       db.FirebaseDatabase.instance.ref().child('chat/messages');
 
+  db.DatabaseReference messageRef(String roomId) => messagesRef.child(roomId);
+
   final db.DatabaseReference joinsRef =
       db.FirebaseDatabase.instance.ref().child('chat/joins');
 
@@ -123,37 +125,22 @@ class ChatService {
         rejectedChatRoomInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
     this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
-
-    resetInvitationCount();
-  }
-
-  /// Reset the invitation count.
-  ///
-  /// Since the count may goes wrong, because the security rules is open.
-  void resetInvitationCount() async {
-    if (UserService.instance.notSignedIn) return;
-    final countSnapshot = await ChatService.instance.roomCol
-        .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
-        .count()
-        .get();
-
-    setting.update(
-      {
-        'chatInvitationCount': countSnapshot.count,
-      },
-    );
   }
 
   /// Show the chat room list screen.
   Future showChatRoomListScreen(
     BuildContext context, {
-    ChatRoomQuery queryOption = ChatRoomQuery.allMine,
+    bool? single,
+    bool? group,
+    bool? open,
   }) {
     return $showChatRoomListScreen?.call() ??
         showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomListScreen(
-            queryOption: queryOption,
+            single: single,
+            group: group,
+            open: open,
           ),
         );
   }
@@ -177,7 +164,7 @@ class ChatService {
         showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => const ChatRoomListScreen(
-            queryOption: ChatRoomQuery.open,
+            open: true,
           ),
         );
   }
@@ -296,35 +283,10 @@ class ChatService {
 
   /// Get chat rooms
   ///
+  /// Returns a list of chat rooms based on the query.
   ///
-  Future<List<ChatRoom>> getChatRooms({
-    required fs.Query query,
-  }) async {
-    final snapshot = await query.get();
-    if (snapshot.size == 0) return [];
-    return snapshot.docs.map((e) => ChatRoom.fromSnapshot(e)).toList();
-  }
-
-  /// Why is it in UserService? Not in user.dart model?
-  /// This is because; this method updates other user docuemnt. Not the login user's document.
-  @Deprecated(
-      'No need to count since it is using realtime database. Simply count all the invites from /chat/invites')
-  Future<void> increaseInvitationCount(String otherUid) async {
-    await otherUserSetting(otherUid).update(
-      {
-        'chatInvitationCount': fs.FieldValue.increment(1),
-      },
-    );
-  }
-
-  /// It decreases the invitation count of the currently logged-in user.
-  @Deprecated(
-      'No need to count since it is using realtime database. Simply count all the invites from /chat/invites')
-  Future<void> decreaseInvitationCount() async {
-    await setting.update(
-      {
-        'chatInvitationCount': fs.FieldValue.increment(-1),
-      },
-    );
+  ///
+  Future<List<ChatRoom>> getChatRooms() async {
+    throw UnimplementedError();
   }
 }

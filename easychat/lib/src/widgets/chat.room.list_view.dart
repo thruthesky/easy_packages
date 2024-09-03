@@ -1,7 +1,7 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_locale/easy_locale.dart';
 
@@ -13,7 +13,9 @@ import 'package:easy_locale/easy_locale.dart';
 class ChatRoomListView extends StatelessWidget {
   const ChatRoomListView({
     super.key,
-    this.queryOption = ChatRoomQuery.allMine,
+    this.single,
+    this.group,
+    this.open,
     this.itemBuilder,
     this.emptyBuilder,
     this.separatorBuilder,
@@ -24,7 +26,10 @@ class ChatRoomListView extends StatelessWidget {
     this.headerBuilder,
   });
 
-  final ChatRoomQuery queryOption;
+  final bool? single;
+  final bool? group;
+  final bool? open;
+
   final Widget Function(BuildContext context, ChatRoom room, int index)?
       itemBuilder;
   final Widget Function(BuildContext context)? emptyBuilder;
@@ -43,8 +48,8 @@ class ChatRoomListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FirestoreQueryBuilder(
-      query: queryOption.query,
+    return FirebaseDatabaseQueryBuilder(
+      query: ChatService.instance.roomsRef,
       builder: (context, snapshot, child) {
         if (snapshot.hasError) {
           dog('chat.room.list_view.dart Something went wrong: ${snapshot.error}');

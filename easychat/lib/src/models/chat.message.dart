@@ -43,7 +43,7 @@ class ChatMessage {
   bool get isUpdated => updatedAt != null;
 
   DatabaseReference get ref =>
-      ChatService.instance.messageRef(roomId!).child(id);
+      ChatService.instance.messagesRef.child(roomId!).child(id);
 
   ChatMessage({
     required this.id,
@@ -124,7 +124,7 @@ class ChatMessage {
       field.order: DateTime.now().millisecondsSinceEpoch * -1,
       if (replyTo != null) field.replyTo: replyToData,
     };
-    final ref = ChatService.instance.messageRef(roomId).push();
+    final ref = ChatService.instance.messagesRef.child(roomId).push();
     await ref.set(newMessageData);
     return ChatMessage(
       id: ref.key!,

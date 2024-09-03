@@ -78,7 +78,10 @@ For your information on `easychat` history:
 
 - Each user can have indivisual settings.
   - Settings can be divided into two groups;
-    - `chat globlal settings`: This setting is applied to the whole chat feature. It may have a count of chat rooms, invitations,
+    - `chat/settings/global/<uid> { ... }`: This global setting is applied to the whole chat feature. It may have a count of chat rooms, put an option of blocking new invitation.
+    - `chat/settings/rooms/<uid>/<room-id> { ... }`: Each user can have their own chat room settings. It can have a room name to replace the original, options of push notification, etc.
+    - The patterns of the path;
+      - `chat/settings/(scope)/<uid>/...`: right under the `/chat/settings`, the scope will follow.
 
 
 ### Invited Users
@@ -86,7 +89,7 @@ For your information on `easychat` history:
 
 - `/chat/invited-users/<room-id>/`: Users 
 
-
+- The counting of invitation had removed by Sept 3, 2024. Since it is using the realtime database, it can do the work fast and cheap.
 
 
 
