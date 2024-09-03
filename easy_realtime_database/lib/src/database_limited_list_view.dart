@@ -7,36 +7,19 @@ import 'package:flutter/material.dart';
 /// DatabaseLimitedListView
 ///
 /// Why?
-/// If you want to display the 10 most new documents from Firetore, It's not
-/// easy with [FirestoreListView] and [FirestoreQueryBuilder]. So, this widget
-/// is created to solve this problem.
+/// If you want to display the 10 most new documents from DatabaseListView, It's not
+/// easy limit the no of documents to get from Database.
 ///
 /// How?
 ///
-/// A ListView that limits the number of documents to be displayed as a list view.
+/// TODO: support limit to firs,t limit to last
 ///
-/// This rebuilds the items in realtime as the data changes.
 ///
-/// Example:
-/// ```dart
-/// return DatabaseLimitedListView(
-///   query: ChatRoomQuery.unread(),
-///   limit: 3,
-///   separatorBuilder: (p0, p1) => const SizedBox(height: 6),
-///   itemBuilder: (context, doc) => ChatRoomListTile(
-///     room: ChatRoom.fromSnapshot(doc),
-///   ),
-///   padding: const EdgeInsets.symmetric(
-///     horizontal: sm,
-///     vertical: xs,
-///   ),
-/// );
-/// ```
 class DatabaseLimitedListView extends StatelessWidget {
   const DatabaseLimitedListView({
     super.key,
     required this.ref,
-    required this.limit,
+    this.limit = 10,
     this.loadingBuilder,
     this.errorBuilder,
     this.separatorBuilder,
@@ -80,7 +63,7 @@ class DatabaseLimitedListView extends StatelessWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
-  final Widget Function(BuildContext, DataSnapshot) itemBuilder;
+  final Widget Function(BuildContext, MapEntry, int index) itemBuilder;
   final Widget Function()? emptyBuilder;
 
   @override
@@ -106,7 +89,7 @@ class DatabaseLimitedListView extends StatelessWidget {
           return emptyBuilder?.call() ?? const SizedBox.shrink();
         }
 
-        final docs = snapshot.data!.snapshot.value as List<DataSnapshot>;
+        final docs = snapshot.data!.snapshot.value as Map<Object?, Object?>;
 
         return ListView.separated(
           itemCount: docs.length,
@@ -128,10 +111,11 @@ class DatabaseLimitedListView extends StatelessWidget {
           restorationId: restorationId,
           clipBehavior: clipBehavior,
           itemBuilder: (listViewContext, index) {
-            final doc = docs[index];
+            final MapEntry doc = docs.entries.elementAt(index);
             return itemBuilder(
               listViewContext,
               doc,
+              index,
             );
           },
         );

@@ -4,7 +4,7 @@ This is a helper package for Firebase realtime database.
 
 
 
-## How to use
+## Widgets
 
 ### Value and toggle
 
@@ -20,3 +20,15 @@ Value(
 ),
 ```
 
+
+
+## DatabaseLimitedListView
+
+- See the example
+
+
+
+## DatabaseLimitedQueryBuilder
+
+
+- See the example

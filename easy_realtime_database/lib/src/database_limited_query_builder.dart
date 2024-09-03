@@ -41,7 +41,7 @@ class DatabaseLimitedQueryBuilder extends StatelessWidget {
   final Widget Function()? loadingBuilder;
   final Widget Function(String)? errorBuilder;
   final Widget Function()? emptyBuilder;
-  final Widget Function(List<DataSnapshot>) builder;
+  final Widget Function(Map<Object?, Object?>) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class DatabaseLimitedQueryBuilder extends StatelessWidget {
           return emptyBuilder?.call() ?? const SizedBox.shrink();
         }
 
-        final docs = snapshot.data!.snapshot.value as List<DataSnapshot>;
+        final docs = snapshot.data!.snapshot.value as Map<Object?, Object?>;
 
         return builder(docs);
       },
