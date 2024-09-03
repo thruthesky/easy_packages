@@ -74,6 +74,11 @@ For your information on `easychat` history:
 - `openChatOrder`: Ordering open chat. It only exists if it's a open gruop chat. It will also have `groupChatOrder`.
 
 
+### Chat setting
+
+- Each user can have indivisual settings.
+  - Settings can be divided into two groups;
+    - `chat globlal settings`: This setting is applied to the whole chat feature. It may have a count of chat rooms, invitations,
 
 
 ### Invited Users

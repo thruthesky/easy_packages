@@ -36,24 +36,6 @@ class ChatService {
   final db.DatabaseReference joinsRef =
       db.FirebaseDatabase.instance.ref().child('chat/joins');
 
-  /// Firebase chat collection query by new message counter for the current user.
-  fs.Query get myRoomQuery => roomCol.orderBy(
-      '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.newMessageCounter}');
-
-  /// CollectionReference for Chat Room Meta docs
-  fs.CollectionReference roomMetaCol(String roomId) =>
-      fs.FirebaseFirestore.instance
-          .collection('chat-rooms')
-          .doc(roomId)
-          .collection('chat-room-meta');
-
-  /// DocumentReference for chat room private settings.
-  fs.DocumentReference roomPrivateDoc(String roomId) =>
-      roomMetaCol(roomId).doc('private');
-
-  db.DatabaseReference messageRef(String roomId) =>
-      db.FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
-
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;
@@ -98,12 +80,6 @@ class ChatService {
   /// Builder for showing Dialog for blocked user list
   Widget Function(BuildContext context, ChatRoom room)?
       blockedUsersDialogBuilder;
-
-  /// User settings
-  DocumentModel get setting =>
-      DocumentModel(collectionName: 'chat-settings', id: myUid!);
-  DocumentModel otherUserSetting(String uid) =>
-      DocumentModel(collectionName: 'chat-settings', id: uid);
 
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?

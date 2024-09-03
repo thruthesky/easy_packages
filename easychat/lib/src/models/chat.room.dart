@@ -485,73 +485,76 @@ class ChatRoom {
     // ChatService.instance.decreaseInvitationCount();
   }
 
+  /// User leaves from the chat room.
   Future<void> leave() async {
-    await ref.set(
-      {
-        field.users: {
-          myUid!: FieldValue.delete(),
-        },
-      },
-      SetOptions(merge: true),
-    );
+    throw 'Not implemented yet';
+
+    // TODO: check if the user can leave.
+    // if (canLeave() == false) {
+    //   throw 'chat-room-leave-fail';
+    // }
+
+    // trancation on removing the user's uid from muplipe places like chat/join, chat/room
   }
 
   /// This only subtracts about 50 years in time. Using subtraction
   /// will help to preserve order after reading the message.
   /// There is a minimum limit for Timestamp for Firestore, that is why,
   /// we can only do a subtraction of about 50 years.
-  Timestamp _negatedOrder(DateTime order) =>
-      Timestamp.fromDate(order.subtract(const Duration(days: 19000)));
+  // Timestamp _negatedOrder(DateTime order) =>
+  //     Timestamp.fromDate(order.subtract(const Duration(days: 19000)));
 
   /// [updateNewMessagesMeta] is used to update all unread data for all
   /// users inside the chat room.
+  /// TODO: Change the name of the function readable(meaningful).
   Future<void> updateNewMessagesMeta() async {
-    final serverTimestamp = FieldValue.serverTimestamp();
-    final Map<String, Map<String, Object>> updateUserData = users.map(
-      (uid, value) {
-        if (uid == myUid!) {
-          final readOrder = _negatedOrder(DateTime.now());
-          return MapEntry(
-            uid,
-            {
-              if (single) ...{
-                ChatRoomUser.field.singleOrder: readOrder,
-                ChatRoomUser.field.singleTimeOrder: serverTimestamp,
-              },
-              if (group) ...{
-                ChatRoomUser.field.groupOrder: readOrder,
-                ChatRoomUser.field.groupTimeOrder: serverTimestamp,
-              },
-              ChatRoomUser.field.order: readOrder,
-              ChatRoomUser.field.timeOrder: serverTimestamp,
-              ChatRoomUser.field.newMessageCounter: 0,
-            },
-          );
-        }
-        return MapEntry(
-          uid,
-          {
-            if (single) ...{
-              ChatRoomUser.field.singleOrder: serverTimestamp,
-              ChatRoomUser.field.singleTimeOrder: serverTimestamp,
-            },
-            if (group) ...{
-              ChatRoomUser.field.groupOrder: serverTimestamp,
-              ChatRoomUser.field.groupTimeOrder: serverTimestamp,
-            },
-            ChatRoomUser.field.order: serverTimestamp,
-            ChatRoomUser.field.timeOrder: serverTimestamp,
-            ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
-          },
-        );
-      },
-    );
-    await ref.set({
-      field.users: {
-        ...updateUserData,
-      },
-      field.lastMessageAt: serverTimestamp,
-    }, SetOptions(merge: true));
+    throw 'Not implemented yet';
+    // final serverTimestamp = FieldValue.serverTimestamp();
+    // final Map<String, Map<String, Object>> updateUserData = users.map(
+    //   (uid, value) {
+    //     if (uid == myUid!) {
+    //       final readOrder = _negatedOrder(DateTime.now());
+    //       return MapEntry(
+    //         uid,
+    //         {
+    //           if (single) ...{
+    //             ChatRoomUser.field.singleOrder: readOrder,
+    //             ChatRoomUser.field.singleTimeOrder: serverTimestamp,
+    //           },
+    //           if (group) ...{
+    //             ChatRoomUser.field.groupOrder: readOrder,
+    //             ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+    //           },
+    //           ChatRoomUser.field.order: readOrder,
+    //           ChatRoomUser.field.timeOrder: serverTimestamp,
+    //           ChatRoomUser.field.newMessageCounter: 0,
+    //         },
+    //       );
+    //     }
+    //     return MapEntry(
+    //       uid,
+    //       {
+    //         if (single) ...{
+    //           ChatRoomUser.field.singleOrder: serverTimestamp,
+    //           ChatRoomUser.field.singleTimeOrder: serverTimestamp,
+    //         },
+    //         if (group) ...{
+    //           ChatRoomUser.field.groupOrder: serverTimestamp,
+    //           ChatRoomUser.field.groupTimeOrder: serverTimestamp,
+    //         },
+    //         ChatRoomUser.field.order: serverTimestamp,
+    //         ChatRoomUser.field.timeOrder: serverTimestamp,
+    //         ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
+    //       },
+    //     );
+    //   },
+    // );
+    // await ref.set({
+    //   field.users: {
+    //     ...updateUserData,
+    //   },
+    //   field.lastMessageAt: serverTimestamp,
+    // }, SetOptions(merge: true));
   }
 
   /// [updateMyReadMeta] is used to set as read by the current user.
@@ -562,36 +565,38 @@ class ChatRoom {
   /// The Chat Room must be updated or else, it may not proceed
   /// when old room data is 0, since newMessageCounter maybe inaccurate.
   Future<void> updateMyReadMeta() async {
-    if (!userUids.contains(myUid!)) return;
-    if (users[myUid!]!.newMessageCounter == 0) return;
-    final myReadOrder = users[myUid!]!.timeOrder;
-    final updatedOrder = _negatedOrder(myReadOrder!);
-    await ref.set({
-      field.users: {
-        my.uid: {
-          if (single) ChatRoomUser.field.singleOrder: updatedOrder,
-          if (group) ChatRoomUser.field.groupOrder: updatedOrder,
-          ChatRoomUser.field.order: updatedOrder,
-          ChatRoomUser.field.newMessageCounter: 0,
-        }
-      }
-    }, SetOptions(merge: true));
+    throw 'Not implemented yet';
+    // if (!userUids.contains(myUid!)) return;
+    // if (users[myUid!]!.newMessageCounter == 0) return;
+    // final myReadOrder = users[myUid!]!.timeOrder;
+    // final updatedOrder = _negatedOrder(myReadOrder!);
+    // await ref.set({
+    //   field.users: {
+    //     my.uid: {
+    //       if (single) ChatRoomUser.field.singleOrder: updatedOrder,
+    //       if (group) ChatRoomUser.field.groupOrder: updatedOrder,
+    //       ChatRoomUser.field.order: updatedOrder,
+    //       ChatRoomUser.field.newMessageCounter: 0,
+    //     }
+    //   }
+    // }, SetOptions(merge: true));
   }
 
+  /// [block] blocks the user from the chat room.
+  /// It can be done by the master.
   block(String uid) async {
-    await ref.set({
-      field.users: {
-        uid: FieldValue.delete(),
-      },
-      field.blockedUsers: FieldValue.arrayUnion([uid]),
-      field.updatedAt: FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    throw 'Not implemented yet';
+
+    // 1. check if the user is the master
+    // 2. check if the user can be blocked
+    // 3. block the user
   }
 
+  /// [unblock] unblocks the user from the chat room.
+  /// It can be done by the master
   unblock(String uid) async {
-    await ref.set({
-      field.blockedUsers: FieldValue.arrayRemove([uid]),
-      field.updatedAt: FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    // 1. check if the user is the master
+    // 2. check if the user can be unblocked
+    // 3. unblock the user
   }
 }
