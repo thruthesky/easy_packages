@@ -23,6 +23,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Changing the chat room name](#changing-the-chat-room-name)
     - [Saving push notifications](#saving-push-notifications)
   - [Invited, Rejected Users](#invited-rejected-users)
+- [Widgets](#widgets)
+  - [Displaying chat room information](#displaying-chat-room-information)
 - [Known Issues](#known-issues)
 
 # Terms
@@ -177,6 +179,28 @@ Christian's  NOTES:
 - `/chat/rejected-users/<uid> { room-a: _time_base_order_value_, room-b: ..., ... }`: Users who rejected the invitation be added here.
 
 
+
+
+# Widgets
+
+
+## Displaying chat room information
+
+- To display the chat room information, use `ChatRoomDoc` like below.
+  - It rebuilds the widget when data changes in realtime.
+
+```dart
+ChatRoomDoc(
+  ref: ChatService.instance.roomRef(joinDoc.key!),
+  builder: (room) {
+    return ChatRoomListTile(
+      room: room,
+    );
+  },
+)
+```
+
+- If you dig into the ChatRoomDoc, it uses `Value` of the `easy_realtime_database`. It is a simple wraper of the `Value` to help you to write a shorter code.
 
 
 

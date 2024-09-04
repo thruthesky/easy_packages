@@ -1,3 +1,10 @@
+## 0.0.6
+* Fix. remove debug log.
+
+## 0.0.5
+* Fix. better initial data and code refactoring.
+
+
 ## 0.0.4
 * Add. `DatabaseLimitedListView`, `DatabaseLimitedQueryBuilder`.
 

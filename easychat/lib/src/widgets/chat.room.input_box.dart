@@ -10,11 +10,11 @@ import 'package:rxdart/rxdart.dart';
 class ChatRoomInputBox extends StatefulWidget {
   const ChatRoomInputBox({
     super.key,
-    this.room,
+    required this.room,
     this.onSend,
   });
 
-  final ChatRoom? room;
+  final ChatRoom room;
   final Function(String? text, String? photoUrl, ChatMessage? replyTo)? onSend;
 
   @override
@@ -219,18 +219,18 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                               icon: ValueListenableBuilder(
                                 valueListenable: canSubmitNotifier,
                                 builder: (_, v, __) {
-                                  return Icon(Icons.send,
-                                      color: v
-                                          ? Theme.of(context).primaryColor
-                                          : Theme.of(context).disabledColor);
+                                  return Icon(
+                                    Icons.send,
+                                    color: v
+                                        ? Theme.of(context).colorScheme.scrim
+                                        : Theme.of(context).disabledColor,
+                                  );
                                 },
                               ),
                             ),
                           ),
-                          onChanged: (value) {
-                            canSubmitNotifier.value = canSubmit;
-                          },
-                          onSubmitted: (value) => sendMessage(),
+                          onChanged: (v) => canSubmitNotifier.value = canSubmit,
+                          onSubmitted: (v) => sendMessage(),
                         ),
                       ),
                     ),
@@ -258,17 +258,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     final text = textController.text.trim();
     final url = this.url;
     ChatMessage? reply = ChatService.instance.reply.value;
-
-    // If there is a reply message, but the room id is not the same, then return.
-    // TODO: does this error check is necessary? or any other way to handle it simply?
-    if (reply != null && reply.roomId != room?.id) {
-      throw ChatException("wrong-room-reply-message", "Room id mismatch.");
-    }
-
-    // If the room is not ready, then return.
-    if (room == null) {
-      throw ChatException('room-not-ready', "room is not ready. please wait.");
-    }
 
     // clear to make the input box empty.
     textController.clear();

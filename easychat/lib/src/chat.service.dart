@@ -296,7 +296,12 @@ class ChatService {
     );
   }
 
-  /// states for chat message reply
+  /// States for chat message reply
+  ///
+  /// Why:
+  /// - The reply action is coming from the chat bubble menu.
+  /// - And the UI (popup) for the reply appears on top of the chat input box.
+  /// - It needs to keep the state whether the reply is enabled or not.
   ValueNotifier<ChatMessage?> reply = ValueNotifier<ChatMessage?>(null);
   bool get replyEnabled => reply.value != null;
   clearReply() => reply.value = null;

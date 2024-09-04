@@ -197,7 +197,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 SafeArea(
                   top: false,
                   child: ChatRoomInputBox(
-                    room: room,
+                    room: room!,
                     onSend: (text, photoUrl, replyTo) {
                       mayInviteOtherUser();
                     },
