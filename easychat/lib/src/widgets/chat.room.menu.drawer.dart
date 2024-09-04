@@ -366,12 +366,13 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       message: Text('leaving room confirmation'.t),
                     );
                     if (re != true) return;
-                    room!.leave();
+                    // room!.leave();
                     if (!context.mounted) return;
                     // two pops since we are opening both
                     // drawer and room screen.
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
+                    await ChatService.instance.leave(room!);
                   },
                 ),
               ],

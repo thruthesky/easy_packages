@@ -344,6 +344,18 @@ class ChatService {
     await FirebaseDatabase.instance.ref().update(reject);
   }
 
+  /// Leave from Chat Room
+  ///
+  Future<void> leave(ChatRoom room) async {
+    final leave = {
+      // remove uid in room's user
+      roomRef(room.id).child('users').child(myUid!).path: null,
+      // remove roomId in user's chat joins
+      'chat/joins/${myUid!}/${room.id}': null,
+    };
+    await FirebaseDatabase.instance.ref().update(leave);
+  }
+
   /// URL Preview 업데이트
   ///
   /// 채팅 메시지 자체에 업데이트하므로, 한번만 가져온다.

@@ -485,6 +485,7 @@ class ChatRoom {
   }
 
   /// User leaves from the chat room.
+  @Deprecated('Only put DB CRUD in Model')
   Future<void> leave() async {
     throw 'Not implemented yet';
 
