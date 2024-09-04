@@ -44,17 +44,13 @@ class ChatInvitationListViewState extends State<ChatInvitationListView> {
   }
 
   init() async {
-    //
+    // TODO must listen because this is invitation list view
     final DatabaseEvent event =
         await ChatService.instance.invitedUserRef(myUid!).once();
-
     if (event.snapshot.exists) {
       invites = Map<String, int>.from(event.snapshot.value as Map);
-
       setState(() {});
     }
-
-    //
   }
 
   @override
@@ -114,14 +110,9 @@ class ChatInvitationListViewState extends State<ChatInvitationListView> {
           separatorBuilder: widget.separatorBuilder ??
               (context, index) => const SizedBox.shrink(),
           itemBuilder: (listViewContext, index) {
-            return FutureBuilder(
-                future: ChatService.instance.roomRef(roomIds[index]).get(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting &&
-                      snapshot.hasData == false) {
-                    return const SizedBox.shrink();
-                  }
-                  final room = ChatRoom.fromSnapshot(snapshot.data!);
+            return ChatRoomDoc(
+                ref: ChatService.instance.roomRef(roomIds[index]),
+                builder: (room) {
                   return widget.itemBuilder?.call(context, room, index) ??
                       ChatRoomInvitationListTile(
                         room: room,
