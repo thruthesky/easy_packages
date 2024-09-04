@@ -346,6 +346,7 @@ class ChatService {
 
   /// Leave from Chat Room
   ///
+  /// TODO: delete settings also.
   Future<void> leave(ChatRoom room) async {
     final leave = {
       // remove uid in room's user
