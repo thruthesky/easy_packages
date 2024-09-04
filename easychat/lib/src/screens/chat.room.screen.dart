@@ -132,6 +132,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // TODO: CONSIDER: If the user is not joined, don't show the app bar content.
       appBar: AppBar(
         title: Row(
           children: [
@@ -179,8 +180,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           ],
         ),
-        actions: room != null
-            ? [
+        actions: room == null
+            ? null
+            : [
                 if (ChatService.instance.chatRoomActionButton != null)
                   ChatService.instance.chatRoomActionButton!(room!),
                 if (joined)
@@ -191,8 +193,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       );
                     },
                   )
-              ]
-            : null,
+              ],
       ),
       endDrawer: joined
           ? ChatRoomMenuDrawer(
@@ -224,7 +225,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       // This is only for single chat.
                       //
                       // Refer README.md for more information.
-                      ChatService.instance.inviteOtherUserIfSingleChat(room!);
+                      // ChatService.instance.inviteOtherUserIfSingleChat(room!);
                     },
                   ),
                 ),
