@@ -42,7 +42,8 @@ class _ChatRoomInvitationListTileState
   void initState() {
     super.initState();
     room = widget.room;
-    // TODO still ongoing - will continue here..
+    // review
+    if (room != null) return;
     init();
   }
 
