@@ -8,10 +8,12 @@ class ChatRoomDoc extends StatelessWidget {
     super.key,
     required this.ref,
     required this.builder,
+    this.onLoading,
   });
 
   final DatabaseReference ref;
   final Widget Function(ChatRoom room) builder;
+  final Widget? onLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class ChatRoomDoc extends StatelessWidget {
           ),
         );
       },
+      onLoading: onLoading,
     );
   }
 }

@@ -20,7 +20,7 @@ class ChatRoomListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     if (room.group == true) {
       return ListTile(
-        minTileHeight: 70,
+        minTileHeight: 72,
         leading: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -57,6 +57,7 @@ class ChatRoomListTile extends StatelessWidget {
           uid: getOtherUserUidFromRoomId(room.id)!,
           builder: (user) {
             return ListTile(
+              minTileHeight: 72,
               leading: user == null ? null : UserAvatar(user: user),
               title: Text(user != null && user.displayName.trim().isNotEmpty
                   ? user.displayName

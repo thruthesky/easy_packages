@@ -134,6 +134,13 @@ class ChatRoomListView extends StatelessWidget {
 
                   return ChatRoomDoc(
                     ref: ChatService.instance.roomRef(joinDoc.key!),
+                    key: ValueKey("ChatRoomListView_${joinDoc.key}"),
+                    onLoading: const ListTile(
+                      leading: CircularProgressIndicator(),
+                      minTileHeight: 72,
+                      title: Text("Loading..."),
+                      subtitle: LinearProgressIndicator(),
+                    ),
                     builder: (room) {
                       return ChatRoomListTile(
                         room: room,
