@@ -1,3 +1,6 @@
+## 0.0.7
+* Fix. data check in `Value`.
+
 ## 0.0.6
 * Fix. remove debug log.
 
