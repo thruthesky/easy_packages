@@ -82,6 +82,14 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
             ],
           ),
         ),
+        Text('my uid: $myUid'),
+        const Text('@TODO: top 3 invitations'),
+        const Text(
+            '@TODO: Display favorite friends: use easy_user_group pakcage'),
+        const Text('@TODO: Display all 1:1 chats: hide the favorite friends'),
+        ChatInvitationCount(builder: (int no) {
+          return Badge(label: Text("$no"));
+        }),
         Expanded(
           child: AuthStateChanges(builder: (user) {
             if (user == null) {
@@ -91,17 +99,10 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
             }
             return ChatRoomListView(
               headerBuilder: () {
-                return Column(
+                return const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('my uid: $myUid'),
-                    const Text('@TODO: Display no of invitatations'),
-                    const Text('@TODO: top 3 invitations'),
-                    const Text(
-                        '@TODO: Display favorite friends: use easy_user_group pakcage'),
-                    const Text(
-                        '@TODO: Display all 1:1 chats: hide the favorite friends'),
-                    const Divider(),
+                    Divider(),
                   ],
                 );
               },

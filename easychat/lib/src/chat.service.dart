@@ -93,11 +93,11 @@ class ChatService {
 
   /// Builder for showing a screen for chat room invites received by user.
   Widget Function(BuildContext context)?
-      receivedChatRoomInviteListScreenBuilder;
+      chatRoomReceivedInviteListScreenBuilder;
 
   /// Builder for showing a screen for chat room invites rejected by user.
   Widget Function(BuildContext context)?
-      rejectedChatRoomInviteListScreenBuilder;
+      chatRoomRejectedInviteListScreenBuilder;
 
   /// Builder for showing Dialog for chat member list
   Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder;
@@ -121,9 +121,9 @@ class ChatService {
     Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
     Widget Function(BuildContext context)?
-        receivedChatRoomInviteListScreenBuilder,
+        chatRoomReceivedInviteListScreenBuilder,
     Widget Function(BuildContext context)?
-        rejectedChatRoomInviteListScreenBuilder,
+        chatRoomRejectedInviteListScreenBuilder,
     Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
     Widget Function(BuildContext context, ChatRoom room)?
         blockedUsersDialogBuilder,
@@ -143,10 +143,10 @@ class ChatService {
     this.onSendMessage = onSendMessage;
     this.onInvite = onInvite;
     this.loginButtonBuilder = loginButtonBuilder;
-    this.receivedChatRoomInviteListScreenBuilder =
-        receivedChatRoomInviteListScreenBuilder;
-    this.rejectedChatRoomInviteListScreenBuilder =
-        rejectedChatRoomInviteListScreenBuilder;
+    this.chatRoomReceivedInviteListScreenBuilder =
+        chatRoomReceivedInviteListScreenBuilder;
+    this.chatRoomRejectedInviteListScreenBuilder =
+        chatRoomRejectedInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
     this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
   }
@@ -175,8 +175,8 @@ class ChatService {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) =>
-          receivedChatRoomInviteListScreenBuilder?.call(context) ??
-          const ReceivedChatRoomInviteListScreen(),
+          chatRoomReceivedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomReceivedInviteListScreen(),
     );
   }
 
@@ -229,8 +229,8 @@ class ChatService {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) =>
-          rejectedChatRoomInviteListScreenBuilder?.call(context) ??
-          const RejectedChatRoomInviteListScreen(),
+          chatRoomRejectedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomRejectedInviteListScreen(),
     );
   }
 
@@ -297,13 +297,16 @@ class ChatService {
 
   /// Invite a user into the chat room.
   ///
+  /// Purpose:
+  /// - This can be used to invite a user into the chat room.
+  /// - It can be used for single chat and group chat.
+  ///
   /// Where:
   /// - It's used in ChatRoomScreen menu to invite a user.
   /// - It's called from ChatService::inviteOtherUserInSingleChat
   /// - This can be used in any where.
   Future inviteUser(ChatRoom room, String uid) async {
-    invitedUserRef(uid).child(room.id).set(ServerValue.timestamp);
-
+    await invitedUserRef(uid).child(room.id).set(ServerValue.timestamp);
     onInvite?.call(room: room, uid: uid);
   }
 

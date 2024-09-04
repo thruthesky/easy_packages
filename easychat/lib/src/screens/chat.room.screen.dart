@@ -25,7 +25,7 @@ class ChatRoomScreen extends StatefulWidget {
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? room;
 
-  StreamSubscription? newMessageCountSubscription;
+  StreamSubscription? resetMessageCountSubscription;
 
   @override
   void initState() {
@@ -79,17 +79,30 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     //   isJoiningNow = true;
     //   await $room!.join();
     // }
-    newMessageCountSubscription ??=
-        ChatService.instance.roomRef(room!.id).onValue.listen(
+
+    /// Set 0 to the new meessage count
+    ///
+    /// Whenever there is a new chat, reset the unread message count to 0.
+    resetMessageCountSubscription = ChatService.instance
+        .messageRef(room!.id)
+        .limitToLast(1)
+        .onChildAdded
+        .listen(
       (event) {
         room!.resetUnreadMessage();
       },
     );
+
+    //     ChatService.instance.roomRef(room!.id).onValue.listen(
+    //   (event) {
+    //     room!.resetUnreadMessage();
+    //   },
+    // );
   }
 
   @override
   dispose() {
-    newMessageCountSubscription?.cancel();
+    resetMessageCountSubscription?.cancel();
     super.dispose();
   }
 

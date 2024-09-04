@@ -95,8 +95,9 @@ class ChatRoomListView extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ChatRoomInvitationShortList(
+                  ChatInvitationListView(
                     key: const ValueKey("Chat Room Invitation Short List"),
+                    limit: 3,
                     bottomWidget: invitationBottomWidget ?? const Divider(),
                     itemBuilder: invitationItemBuilder,
                     separatorBuilder: invitationSeparatorBuilder,

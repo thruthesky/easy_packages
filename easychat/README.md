@@ -14,6 +14,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Firestore Rules](#firestore-rules)
     - [Firestore Indexes](#firestore-indexes)
 - [Dependencies](#dependencies)
+- [Logics](#logics)
+  - [Counting the invitation](#counting-the-invitation)
 - [Database Strucutre](#database-strucutre)
   - [Chat room](#chat-room)
   - [Chat message](#chat-message)
@@ -25,6 +27,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Invited, Rejected Users](#invited-rejected-users)
 - [Widgets](#widgets)
   - [Displaying chat room information](#displaying-chat-room-information)
+  - [ChatInvitationCounter](#chatinvitationcounter)
+  - [ChatInvitationListView](#ChatInvitationListView)
 - [Known Issues](#known-issues)
 
 # Terms
@@ -100,6 +104,18 @@ For your information on `easychat` history:
 - To invite other users, it needs the search users by name. To achevie this, it uses `easyuser` package.
 
 
+# Logics
+
+
+## Counting the invitation
+
+- It simply gets the all the invitation data and count it because the realtime database is fast and cheap.
+  - Before it keeps track of the number of invitation a field of a document when it was based on firestore.
+
+
+- See the [ChatInvitationCounter] for details.
+
+
 # Database Strucutre
 
 
@@ -143,16 +159,6 @@ For your information on `easychat` history:
 
 - `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }`: We make it flat because this value will be often be read and updated.
 
-
----
-
-Christian's  NOTES:
-- Upon send chat message, update other users `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }`.
-- Upon view set your message count `chat/settings/<uid>/unread-message-count { roomA: 3, roomB: 4, ... }` into zero
-
-
-
----
 
 
 
@@ -204,6 +210,14 @@ ChatRoomDoc(
 
 
 
+## ChatInvitationCounter
+
+
+## ChatInvitationListView
+
+```dart
+ChatInvitationListView(),
+```
 
 
 # Known Issues

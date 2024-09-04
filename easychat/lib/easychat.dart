@@ -7,8 +7,8 @@ export 'src/models/chat.room.user.dart';
 export 'src/screens/chat.room.edit.screen.dart';
 export 'src/screens/chat.room.list.screen.dart';
 export 'src/screens/chat.room.screen.dart';
-export 'src/screens/received.chat.room.invite_list.screen.dart';
-export 'src/screens/rejected.chat.room.invite_list.screen.dart';
+export 'src/screens/chat.room.received.invite_list.screen.dart';
+export 'src/screens/chat.room.rejected.invite_list.screen.dart';
 
 // Widgets ====================================================
 export './src/widgets/chat.bubble.dart';
@@ -19,7 +19,7 @@ export './src/widgets/chat.new_message_counter.dart';
 export './src/widgets/chat.room.doc.dart';
 export './src/widgets/chat.room.input_box.dart';
 export './src/widgets/chat.room.invitation.list_tile.dart';
-export './src/widgets/chat.room.invitation.short.list.dart';
+export 'src/widgets/chat.invitation.list_view.dart';
 export './src/widgets/chat.room.list_tile.dart';
 export './src/widgets/chat.room.list_view.dart';
 export './src/widgets/chat.room.member.list_tile.dart';

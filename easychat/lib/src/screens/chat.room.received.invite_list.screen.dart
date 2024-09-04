@@ -6,8 +6,8 @@ import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ReceivedChatRoomInviteListScreen extends StatelessWidget {
-  const ReceivedChatRoomInviteListScreen({super.key});
+class ChatRoomReceivedInviteListScreen extends StatelessWidget {
+  const ChatRoomReceivedInviteListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,7 @@ class ReceivedChatRoomInviteListScreen extends StatelessWidget {
         body: myUid == null
             ? Center(child: Text('sign-in first'.t))
             // : const Text('TODO: invitation list screen'),
+            // TODO: Use ChatInvitationListView instead.
             : FirebaseDatabaseListView(
                 query: FirebaseDatabase.instance
                     .ref()
