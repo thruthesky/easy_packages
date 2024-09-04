@@ -179,18 +179,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           ],
         ),
-        actions: [
-          if (ChatService.instance.chatRoomActionButton != null)
-            ChatService.instance.chatRoomActionButton!(room!),
-          if (joined)
-            Builder(
-              builder: (context) {
-                return DrawerButton(
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                );
-              },
-            )
-        ],
+        actions: room != null
+            ? [
+                if (ChatService.instance.chatRoomActionButton != null)
+                  ChatService.instance.chatRoomActionButton!(room!),
+                if (joined)
+                  Builder(
+                    builder: (context) {
+                      return DrawerButton(
+                        onPressed: () => Scaffold.of(context).openEndDrawer(),
+                      );
+                    },
+                  )
+              ]
+            : null,
       ),
       endDrawer: joined
           ? ChatRoomMenuDrawer(

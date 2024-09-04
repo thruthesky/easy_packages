@@ -123,16 +123,18 @@ class ChatInvitationListViewState extends State<ChatInvitationListView> {
                   }
                   final room = ChatRoom.fromSnapshot(snapshot.data!);
                   return widget.itemBuilder?.call(context, room, index) ??
-                      ChatRoomInvitationListTile(
-                        room: room,
-                        onAccept: (room, user) async {
-                          await ChatService.instance.showChatRoomScreen(
-                            context,
-                            room: room,
-                            user: user,
-                          );
-                        },
-                      );
+                      // TODO
+                      const Text("@TODO ongoing");
+                  // ChatRoomInvitationListTile(
+                  //   room: room,
+                  //   onAccept: (room, user) async {
+                  //     await ChatService.instance.showChatRoomScreen(
+                  //       context,
+                  //       room: room,
+                  //       user: user,
+                  //     );
+                  //   },
+                  // );
                 });
           },
         ),

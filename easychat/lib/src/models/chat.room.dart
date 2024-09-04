@@ -409,6 +409,7 @@ class ChatRoom {
 
   /// Alias for [join]. Since they have
   /// really simmilar logic.
+  @Deprecated('Only put DB CRUD in Model')
   Future<void> acceptInvitation() async {
     await join();
   }
@@ -416,6 +417,7 @@ class ChatRoom {
   /// Let the current user join in chat room
   ///
   /// If user is invited, invitation count will decrease
+  @Deprecated('Only put DB CRUD in Model')
   Future<void> join() async {
     if (blockedUsers.contains(myUid)) {
       throw ChatException(
@@ -472,6 +474,7 @@ class ChatRoom {
   ///
   /// Chat room model is only for modeling chat room data and managing the
   /// default CRUD action. is this method really part of this model?
+  @Deprecated('Only put DB CRUD in Model')
   Future<void> rejectInvitation() async {
     throw 'Not implemented yet';
     // await ref.update({

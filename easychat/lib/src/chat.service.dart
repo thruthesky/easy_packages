@@ -313,6 +313,7 @@ class ChatService {
     onInvite?.call(room: room, uid: uid);
   }
 
+  /// Accepts the room invitation
   Future<void> accept(ChatRoom room) async {
     // Review: RTDB security should be the one handling if
     //         user can join and accept room.
@@ -328,6 +329,17 @@ class ChatService {
     };
 
     await FirebaseDatabase.instance.ref().update(accept);
+  }
+
+  /// Rejects the room invitation
+  Future<void> reject(ChatRoom room) async {
+    final reject = {
+      // Remove the invitation
+      invitedUserRef(myUid!).child(room.id).path: null,
+      // Add as Rejected Invitaion
+      rejectedUserRef(myUid!).child(room.id).path: ServerValue.timestamp,
+    };
+    await FirebaseDatabase.instance.ref().update(reject);
   }
 
   /// URL Preview 업데이트
