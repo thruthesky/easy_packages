@@ -6,19 +6,49 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-class ChatRoomListTile extends StatelessWidget {
+class ChatRoomListTile extends StatefulWidget {
   const ChatRoomListTile({
     super.key,
-    required this.room,
+    this.room,
+    this.roomId,
     this.onTap,
-  });
+  }) : assert(room != null || roomId != null);
 
-  final ChatRoom room;
+  final ChatRoom? room;
+  final String? roomId;
   final Function(BuildContext context, ChatRoom room, User? user)? onTap;
 
   @override
+  State<ChatRoomListTile> createState() => _ChatRoomListTileState();
+}
+
+class _ChatRoomListTileState extends State<ChatRoomListTile> {
+  ChatRoom? room;
+
+  @override
+  void initState() {
+    super.initState();
+    room = widget.room;
+    // review
+    if (room != null) return;
+    init();
+  }
+
+  init() async {
+    room = await ChatRoom.get(widget.roomId!);
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (room.group == true) {
+    if (room == null) {
+      return const ListTile(
+        minTileHeight: 70,
+        leading: CircularProgressIndicator(),
+      );
+    }
+    if (room!.group == true) {
       return ListTile(
         minTileHeight: 70,
         leading: Container(
@@ -29,9 +59,9 @@ class ChatRoomListTile extends StatelessWidget {
           width: 48,
           height: 48,
           clipBehavior: Clip.hardEdge,
-          child: room.iconUrl != null && room.iconUrl!.isNotEmpty
+          child: room!.iconUrl != null && room!.iconUrl!.isNotEmpty
               ? CachedNetworkImage(
-                  imageUrl: room.iconUrl!,
+                  imageUrl: room!.iconUrl!,
                   fit: BoxFit.cover,
                 )
               : Icon(
@@ -40,21 +70,21 @@ class ChatRoomListTile extends StatelessWidget {
                 ),
         ),
         title: Text(
-          room.name.trim().isNotEmpty ? room.name : "Group Chat",
+          room!.name.trim().isNotEmpty ? room!.name : "Group Chat",
         ),
         subtitle: subtitle(context),
         trailing: trailing,
-        onTap: () => onTapTile(context, room, null),
+        onTap: () => onTapTile(context, room!, null),
       );
     }
     return UserBlocked(
-      otherUid: getOtherUserUidFromRoomId(room.id)!,
+      otherUid: getOtherUserUidFromRoomId(room!.id)!,
       builder: (blocked) {
         if (blocked) {
           return const SizedBox.shrink();
         }
         return UserDoc.sync(
-          uid: getOtherUserUidFromRoomId(room.id)!,
+          uid: getOtherUserUidFromRoomId(room!.id)!,
           builder: (user) {
             return ListTile(
               leading: user == null ? null : UserAvatar(user: user),
@@ -63,7 +93,7 @@ class ChatRoomListTile extends StatelessWidget {
                   : '...'),
               subtitle: subtitle(context),
               trailing: trailing,
-              onTap: () => onTapTile(context, room, user),
+              onTap: () => onTapTile(context, room!, user),
             );
           },
         );
@@ -75,12 +105,12 @@ class ChatRoomListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
-    if (!room.userUids.contains(myUid)) {
-      if (room.description.trim().isEmpty) {
+    if (!room!.userUids.contains(myUid)) {
+      if (room!.description.trim().isEmpty) {
         return null;
       }
       return Text(
-        room.description,
+        room!.description,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
@@ -89,8 +119,8 @@ class ChatRoomListTile extends StatelessWidget {
       );
     }
     return StreamBuilder<DatabaseEvent>(
-      key: ValueKey("LastMessageText_${room.id}"),
-      stream: ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
+      key: ValueKey("LastMessageText_${room!.id}"),
+      stream: ChatService.instance.messageRef(room!.id).limitToLast(1).onValue,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Text("...");
@@ -98,7 +128,7 @@ class ChatRoomListTile extends StatelessWidget {
         // Maybe we can cache here to prevent the sudden "..." when the order is
         // being changed when there is new user.
         if (snapshot.data?.snapshot.value == null) {
-          if (room.single == true) {
+          if (room!.single == true) {
             return Text(
               'single chat no message, no invitations'.t,
               maxLines: 1,
@@ -191,14 +221,14 @@ class ChatRoomListTile extends StatelessWidget {
         //           "${room.users[myUid!]!.newMessageCounter}",
         //         ),
         //       ),
-        Text((room.updatedAt).short),
+        Text((room!.updatedAt).short),
       ],
     );
   }
 
   onTapTile(BuildContext context, ChatRoom room, User? user) {
-    onTap != null
-        ? onTap!.call(context, room, user)
+    widget.onTap != null
+        ? widget.onTap!.call(context, room, user)
         : ChatService.instance.showChatRoomScreen(
             context,
             room: room,

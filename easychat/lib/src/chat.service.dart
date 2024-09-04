@@ -321,6 +321,8 @@ class ChatService {
     final accept = {
       // Remove the invitation
       invitedUserRef(myUid!).child(room.id).path: null,
+      // In case, invitation was mistakenly rejected
+      rejectedUserRef(myUid!).child(room.id).path: null,
       // Add uid in users
       room.ref.child('users').child(myUid!).path: false,
       // Add in chat joins
