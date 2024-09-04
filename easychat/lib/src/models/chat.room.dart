@@ -138,7 +138,6 @@ class ChatRoom {
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
-    dog("Users Typing: ${json['users'].runtimeType}");
     // TODO cleanup
     // final usersMap = Map<String, dynamic>.from((json['users'] ?? {}) as Map);
     // final users = List<String>.from(json['users'] as List<Object?>);

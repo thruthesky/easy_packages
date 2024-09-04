@@ -126,7 +126,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///   sent the first message)
   ///
   bool get joined {
-    return false;
+    return room?.joined == true;
   }
 
   @override
@@ -183,8 +183,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           if (ChatService.instance.chatRoomActionButton != null)
             ChatService.instance.chatRoomActionButton!(room!),
           if (joined)
-            DrawerButton(
-              onPressed: () => Scaffold.of(context).openEndDrawer(),
+            Builder(
+              builder: (context) {
+                return DrawerButton(
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                );
+              },
             )
         ],
       ),
@@ -212,36 +216,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   child: ChatRoomInputBox(
                     room: room!,
                     onSend: (text, photoUrl, replyTo) {
-                      mayInviteOtherUser();
+                      // Invite the other user in 1:1 chat
+                      //
+                      // Invite the other user if the other user is not invited yet.
+                      // This is only for single chat.
+                      //
+                      // Refer README.md for more information.
+                      ChatService.instance.inviteOtherUserIfSingleChat(room!);
                     },
                   ),
                 ),
               ],
             ),
     );
-  }
-
-  /// Ivite the other user in 1:1 chat
-  ///
-  /// Invite the other user if the other user is not invited yet.
-  /// This is only for single chat.
-  ///
-  /// Refer README.md for more information.
-  mayInviteOtherUser() {
-    if (room?.group != true) return;
-    if (room!.userUids.length == 2) return;
-
-    room?.inviteUser(getOtherUserUidFromRoomId(room!.id)!);
-
-    throw UnimplementedError();
-    //
-
-    // // return if the user has already invited or rejected.
-    // final otherUserUid = getOtherUserUidFromRoomId($room!.id)!;
-    // if ($room!.rejectedUsers.contains(otherUserUid)) return;
-    // if ($room!.invitedUsers.contains(otherUserUid)) return;
-
-    // //
-    // $room!.inviteUser(otherUserUid);
   }
 }

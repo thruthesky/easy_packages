@@ -241,6 +241,9 @@ class ChatService {
     String? text,
     ChatMessage? replyTo,
   }) async {
+    dog("Is Joined ${room.joined}");
+    dog("Room users: ${room.users}");
+
     if (room.joined == false) {
       // Rear exception
       throw ChatException('join-required-to-send-message', 'Join required');
@@ -258,7 +261,7 @@ class ChatService {
     await room.updateUnreadMessageCount();
 
     ///
-    await inviteOtherUserInSingleChat(room);
+    await inviteOtherUserIfSingleChat(room);
 
     ///
     updateUrlPreview(newMessage, text);
@@ -276,7 +279,7 @@ class ChatService {
   /// Where:
   /// - ChatRoomScreen -> ChatRoomInputBox -> inviteOtherUserInSingleChat
   /// - This method can be used in anywhere.
-  Future inviteOtherUserInSingleChat(ChatRoom room) async {
+  Future inviteOtherUserIfSingleChat(ChatRoom room) async {
     // Return if it's not single chat
     if (room.single == false) return;
 
@@ -308,6 +311,23 @@ class ChatService {
   Future inviteUser(ChatRoom room, String uid) async {
     await invitedUserRef(uid).child(room.id).set(ServerValue.timestamp);
     onInvite?.call(room: room, uid: uid);
+  }
+
+  Future<void> accept(ChatRoom room) async {
+    // Review: RTDB security should be the one handling if
+    //         user can join and accept room.
+
+    final accept = {
+      // Remove the invitation
+      invitedUserRef(myUid!).child(room.id).path: null,
+      // Add uid in users
+      room.ref.child('users').child(myUid!).path: false,
+      // Add in chat joins
+      'chat/joins/${myUid!}/${room.id}/joinedAt': ServerValue.timestamp,
+      'chat/joins/${myUid!}/${room.id}/singleChatOrder': ServerValue.timestamp,
+    };
+
+    await FirebaseDatabase.instance.ref().update(accept);
   }
 
   /// URL Preview 업데이트

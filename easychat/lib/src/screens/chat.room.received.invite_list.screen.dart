@@ -44,7 +44,15 @@ class ChatRoomReceivedInviteListScreen extends StatelessWidget {
                   //     },
                   //   );
                   // },
-                  return ListTile(title: Text(snapshot.key!));
+                  return ListTile(
+                    title: Text(
+                      snapshot.key!,
+                    ),
+                    onTap: () async {
+                      final room = await ChatRoom.get(snapshot.key!);
+                      ChatService.instance.accept(room!);
+                    },
+                  );
                 },
               )
 
