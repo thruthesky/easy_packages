@@ -98,4 +98,3 @@ String roomTitle(ChatRoom? room, User? user) {
 //   // Else, it should be handled by the Firestore rulings.
 //   return 'unable to chat'.t;
 // }
-

@@ -95,8 +95,9 @@ class ChatRoomListView extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ChatRoomInvitationShortList(
+                  ChatInvitationListView(
                     key: const ValueKey("Chat Room Invitation Short List"),
+                    limit: 3,
                     bottomWidget: invitationBottomWidget ?? const Divider(),
                     itemBuilder: invitationItemBuilder,
                     separatorBuilder: invitationSeparatorBuilder,
@@ -131,14 +132,9 @@ class ChatRoomListView extends StatelessWidget {
 
                   final joinDoc = snapshot.docs[index];
 
-                  return Value(
+                  return ChatRoomDoc(
                     ref: ChatService.instance.roomRef(joinDoc.key!),
-                    builder: (value, ref) {
-                      final room = ChatRoom.fromJson(
-                        Map<String, dynamic>.from(value),
-                        joinDoc.key!,
-                      );
-
+                    builder: (room) {
                       return ChatRoomListTile(
                         room: room,
                       );

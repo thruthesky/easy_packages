@@ -179,7 +179,7 @@ class ChatRoomListTile extends StatelessWidget {
         // TODO show proper unread count
         const Badge(
           label: Text(
-            "131928",
+            "999",
           ),
         ),
 

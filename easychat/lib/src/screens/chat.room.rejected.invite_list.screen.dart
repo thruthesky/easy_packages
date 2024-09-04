@@ -4,8 +4,8 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class RejectedChatRoomInviteListScreen extends StatelessWidget {
-  const RejectedChatRoomInviteListScreen({super.key});
+class ChatRoomRejectedInviteListScreen extends StatelessWidget {
+  const ChatRoomRejectedInviteListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

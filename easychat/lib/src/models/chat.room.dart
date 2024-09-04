@@ -391,6 +391,8 @@ class ChatRoom {
   /// chat room. It is especially useful to count the number of invitations.
   ///
   ///
+  @Deprecated(
+      'A dart model should have the data modeling and default crud including data modeling logic. This logic should not be here.')
   Future<void> inviteUser(String uid) async {
     // await ref.update({
     //   field.invitedUsers: FieldValue.arrayUnion([uid]),
@@ -492,6 +494,19 @@ class ChatRoom {
     // trancation on removing the user's uid from muplipe places like chat/join, chat/room
   }
 
+  Future updateUnreadMessageCount() async {
+    final Map<String, Object?> updates = Map.fromEntries(
+      userUids.where((uid) => uid != myUid).map(
+            (uid) => MapEntry(
+              'chat/settings/$uid/unread-message-count/$id',
+              ServerValue.increment(1),
+            ),
+          ),
+    );
+    // await ref.update(updateNewMessagesMeta);
+    await FirebaseDatabase.instance.ref().update(updates);
+  }
+
   /// This only subtracts about 50 years in time. Using subtraction
   /// will help to preserve order after reading the message.
   /// There is a minimum limit for Timestamp for Firestore, that is why,
@@ -502,6 +517,7 @@ class ChatRoom {
   /// [updateNewMessagesMeta] is used to update all unread data for all
   /// users inside the chat room.
   /// TODO: Change the name of the function readable(meaningful).
+  @Deprecated('DO NOT USE THIS: The function name and the logic is not clear.')
   Future<void> updateNewMessagesMeta() async {
     // final Map<String, dynamic> updateNewMessagesMeta = {
     //   'chat': {

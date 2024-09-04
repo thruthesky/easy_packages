@@ -46,53 +46,56 @@ class Value extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: ref.onValue,
-      builder: (context, AsyncSnapshot<DatabaseEvent> event) {
-        if (event.connectionState == ConnectionState.waiting) {
-          if (initialData != null) {
-            return builder(initialData, ref);
-          }
+    return StreamBuilder<dynamic>(
+      initialData: initialData,
+      stream: ref.onValue.map((event) {
+        return event.snapshot.value;
+      }),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          log('Error; path: ${ref.path}, message: ${snapshot.error}');
+          return Text('Error; path: ${ref.path}, message: ${snapshot.error}');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.hasData == false) {
+          // log('--> Value() -> Waiting; path: ${ref.path} connectionState: ${snapshot.connectionState}, hasData: ${snapshot.hasData}');
           return onLoading ?? const SizedBox.shrink();
         }
-        if (event.hasError) {
-          log('Error; path: ${ref.path}, message: ${event.error}');
-          return Text('Error; path: ${ref.path}, message: ${event.error}');
-        }
+
         // value may be null.
-        return builder(event.data?.snapshot.value, ref);
+        return builder(snapshot.data, ref);
       },
     );
   }
 
-  /// 한번만 가져온다. 단, 위젯이 다시 생성되면 다시 가져온다.
+  /// Fetches data only once. However, if the widget is recreated, it fetches the data again.
   ///
-  /// [initialData] 를 사용하면 화면 깜빡임을 현저하게 줄일 수 있다.
+  /// Using [initialData] can significantly reduce screen flickering.
   ///
-  /// [onLoading] 을 사용하면 데이터를 기다리는 동안 보여줄 위젯을 지정할 수 있다.
+  /// You can use [onLoading] to specify a widget to display while waiting for the data.
   ///
-  /// [path] 와 [ref] 둘 중 하나는 반드시 있어야 한다.
+  /// Either [path] or [ref] must be provided.
   static Widget once({
     required DatabaseReference ref,
     required Widget Function(dynamic value, DatabaseReference ref) builder,
     dynamic initialData,
     Widget? onLoading,
   }) {
-    return FutureBuilder(
-      future: ref.once(),
-      builder: (context, AsyncSnapshot<DatabaseEvent> event) {
-        if (event.connectionState == ConnectionState.waiting) {
-          if (initialData != null) {
-            return builder(initialData, ref);
-          }
+    return FutureBuilder<dynamic>(
+      initialData: initialData,
+      future: ref.once().then((event) => event.snapshot.value),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.hasData == false) {
           return onLoading ?? const SizedBox.shrink();
         }
-        if (event.hasError) {
-          log('---> Value.once() -> Error; path: ${ref.path}, message: ${event.error}');
-          return Text('Error; ${event.error}');
+        if (snapshot.hasError) {
+          log('---> Value.once() -> Error; path: ${ref.path}, message: ${snapshot.error}');
+          return Text('Error; ${snapshot.error}');
         }
 
-        return builder(event.data?.snapshot.value, ref);
+        return builder(snapshot.data, ref);
       },
     );
   }

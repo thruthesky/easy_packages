@@ -9,8 +9,8 @@ import 'package:easy_realtime_database/easy_realtime_database.dart';
 /// Display a few chat room invitations as a list.
 ///
 ///
-class ChatRoomInvitationShortList extends StatefulWidget {
-  const ChatRoomInvitationShortList({
+class ChatInvitationListView extends StatefulWidget {
+  const ChatInvitationListView({
     super.key,
     this.limit = 3,
     this.padding,
@@ -29,15 +29,13 @@ class ChatRoomInvitationShortList extends StatefulWidget {
   final Widget? bottomWidget;
 
   @override
-  State<ChatRoomInvitationShortList> createState() =>
-      ChatRoomInvitationShortListState();
+  State<ChatInvitationListView> createState() => ChatInvitationListViewState();
 }
 
-class ChatRoomInvitationShortListState
-    extends State<ChatRoomInvitationShortList> {
-  ChatRoomInvitationShortListState();
+class ChatInvitationListViewState extends State<ChatInvitationListView> {
+  ChatInvitationListViewState();
 
-  Map<String, bool> invites = {};
+  Map<String, int> invites = {};
 
   @override
   void initState() {
@@ -48,10 +46,10 @@ class ChatRoomInvitationShortListState
   init() async {
     //
     final DatabaseEvent event =
-        await ChatService.instance.inviteRef(myUid!).once();
+        await ChatService.instance.invitedUserRef(myUid!).once();
 
     if (event.snapshot.exists) {
-      invites = event.snapshot.value as Map<String, bool>;
+      invites = Map<String, int>.from(event.snapshot.value as Map);
 
       setState(() {});
     }
@@ -65,8 +63,7 @@ class ChatRoomInvitationShortListState
       return const SizedBox.shrink();
     }
 
-    final List<String> roomIds =
-        invites.keys.take(widget.limit) as List<String>;
+    final List<String> roomIds = invites.keys.take(widget.limit).toList();
 
     // final chatRooms = docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
     return Column(

@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_database/firebase_database.dart' as db;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_url_preview/easy_url_preview.dart';
 
@@ -25,29 +24,34 @@ class ChatService {
 
   /// Database path for chat room and message
   /// Database of chat room and message
-  final db.DatabaseReference roomsRef =
-      db.FirebaseDatabase.instance.ref().child('chat/rooms');
+  final DatabaseReference roomsRef =
+      FirebaseDatabase.instance.ref().child('chat/rooms');
 
-  db.DatabaseReference roomRef(String roomId) => roomsRef.child(roomId);
+  DatabaseReference roomRef(String roomId) => roomsRef.child(roomId);
 
-  final db.DatabaseReference messagesRef =
-      db.FirebaseDatabase.instance.ref().child('chat/messages');
+  final DatabaseReference messagesRef =
+      FirebaseDatabase.instance.ref().child('chat/messages');
 
-  db.DatabaseReference messageRef(String roomId) => messagesRef.child(roomId);
+  DatabaseReference messageRef(String roomId) => messagesRef.child(roomId);
 
-  final db.DatabaseReference joinsRef =
-      db.FirebaseDatabase.instance.ref().child('chat/joins');
+  final DatabaseReference joinsRef =
+      FirebaseDatabase.instance.ref().child('chat/joins');
 
-  db.DatabaseReference joinRef(String roomId) =>
+  DatabaseReference joinRef(String roomId) =>
       joinsRef.child(myUid!).child(roomId);
 
-  final db.DatabaseReference invitesRef =
-      db.FirebaseDatabase.instance.ref().child('chat/invites');
+  final DatabaseReference invitedUsersRef =
+      FirebaseDatabase.instance.ref().child('chat/invited-users');
 
-  db.DatabaseReference inviteRef(String uid) => invitesRef.child(uid);
+  DatabaseReference invitedUserRef(String uid) => invitedUsersRef.child(uid);
 
-  db.DatabaseReference unreadMessageCountRef(String roomId) =>
-      db.FirebaseDatabase.instance
+  final DatabaseReference rejectedUsersRef =
+      FirebaseDatabase.instance.ref().child('chat').child('rejected-users');
+
+  DatabaseReference rejectedUserRef(String uid) => rejectedUsersRef.child(uid);
+
+  DatabaseReference unreadMessageCountRef(String roomId) =>
+      FirebaseDatabase.instance
           .ref()
           .child('chat')
           .child('settings')
@@ -58,8 +62,10 @@ class ChatService {
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;
-  Future<fs.DocumentReference?> Function(BuildContext context,
-      {ChatRoom? room})? $showChatRoomEditScreen;
+
+  /// TODO: Add the return type
+  Future Function(BuildContext context, {ChatRoom? room})?
+      $showChatRoomEditScreen;
 
   /// Add custom widget on chatroom header,.
   /// e.g. push notification toggle button to unsubscribe/subscribe to notification
@@ -87,11 +93,11 @@ class ChatService {
 
   /// Builder for showing a screen for chat room invites received by user.
   Widget Function(BuildContext context)?
-      receivedChatRoomInviteListScreenBuilder;
+      chatRoomReceivedInviteListScreenBuilder;
 
   /// Builder for showing a screen for chat room invites rejected by user.
   Widget Function(BuildContext context)?
-      rejectedChatRoomInviteListScreenBuilder;
+      chatRoomRejectedInviteListScreenBuilder;
 
   /// Builder for showing Dialog for chat member list
   Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder;
@@ -103,8 +109,9 @@ class ChatService {
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
-    Future<fs.DocumentReference?> Function(BuildContext context,
-            {ChatRoom? room})?
+
+    /// TODO: Add the return type
+    Future Function(BuildContext context, {ChatRoom? room})?
         $showChatRoomEditScreen,
     Function({required ChatMessage message, required ChatRoom room})?
         onSendMessage,
@@ -114,9 +121,9 @@ class ChatService {
     Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
     Widget Function(BuildContext context)?
-        receivedChatRoomInviteListScreenBuilder,
+        chatRoomReceivedInviteListScreenBuilder,
     Widget Function(BuildContext context)?
-        rejectedChatRoomInviteListScreenBuilder,
+        chatRoomRejectedInviteListScreenBuilder,
     Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
     Widget Function(BuildContext context, ChatRoom room)?
         blockedUsersDialogBuilder,
@@ -136,10 +143,10 @@ class ChatService {
     this.onSendMessage = onSendMessage;
     this.onInvite = onInvite;
     this.loginButtonBuilder = loginButtonBuilder;
-    this.receivedChatRoomInviteListScreenBuilder =
-        receivedChatRoomInviteListScreenBuilder;
-    this.rejectedChatRoomInviteListScreenBuilder =
-        rejectedChatRoomInviteListScreenBuilder;
+    this.chatRoomReceivedInviteListScreenBuilder =
+        chatRoomReceivedInviteListScreenBuilder;
+    this.chatRoomRejectedInviteListScreenBuilder =
+        chatRoomRejectedInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
     this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
   }
@@ -168,8 +175,8 @@ class ChatService {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) =>
-          receivedChatRoomInviteListScreenBuilder?.call(context) ??
-          const ReceivedChatRoomInviteListScreen(),
+          chatRoomReceivedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomReceivedInviteListScreen(),
     );
   }
 
@@ -188,10 +195,14 @@ class ChatService {
 
   /// Show the chat room edit screen. It's for borth create and update.
   /// Return Dialog/Screen that may return DocReference
-  Future<fs.DocumentReference?> showChatRoomEditScreen(BuildContext context,
+  ///
+  /// TODO: Add the return type
+  Future showChatRoomEditScreen(BuildContext context,
       {ChatRoom? room, bool defaultOpen = false}) {
     return $showChatRoomEditScreen?.call(context, room: room) ??
-        showGeneralDialog<fs.DocumentReference>(
+
+        /// TODO: Add the return type
+        showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomEditScreen(
             room: room,
@@ -218,8 +229,8 @@ class ChatService {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) =>
-          rejectedChatRoomInviteListScreenBuilder?.call(context) ??
-          const RejectedChatRoomInviteListScreen(),
+          chatRoomRejectedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomRejectedInviteListScreen(),
     );
   }
 
@@ -235,16 +246,68 @@ class ChatService {
       throw ChatException('join-required-to-send-message', 'Join required');
     }
 
+    /// Create new message
     final newMessage = await ChatMessage.create(
       roomId: room.id,
       text: text,
       url: photoUrl,
       replyTo: replyTo,
     );
-    await room.updateNewMessagesMeta();
+
+    ///
+    await room.updateUnreadMessageCount();
+
+    ///
+    await inviteOtherUserInSingleChat(room);
+
+    ///
     updateUrlPreview(newMessage, text);
 
+    /// Callback
     onSendMessage?.call(message: newMessage, room: room);
+  }
+
+  /// Invite the other user if not joined in single chat.
+  ///
+  /// This is only for single chat.
+  ///
+  ///
+  ///
+  /// Where:
+  /// - ChatRoomScreen -> ChatRoomInputBox -> inviteOtherUserInSingleChat
+  /// - This method can be used in anywhere.
+  Future inviteOtherUserInSingleChat(ChatRoom room) async {
+    // Return if it's not single chat
+    if (room.single == false) return;
+
+    // Return if both users are already joined
+    if (room.userUids.length == 2) return;
+
+    // Return if the other user rejected. Don't send invitation again once rejected.
+    final otherUserUid = getOtherUserUidFromRoomId(room.id)!;
+    final snapshot =
+        await ChatService.instance.rejectedUserRef(otherUserUid).get();
+    if (snapshot.exists) {
+      return;
+    }
+
+    // Invite the other user
+    await inviteUser(room, otherUserUid);
+  }
+
+  /// Invite a user into the chat room.
+  ///
+  /// Purpose:
+  /// - This can be used to invite a user into the chat room.
+  /// - It can be used for single chat and group chat.
+  ///
+  /// Where:
+  /// - It's used in ChatRoomScreen menu to invite a user.
+  /// - It's called from ChatService::inviteOtherUserInSingleChat
+  /// - This can be used in any where.
+  Future inviteUser(ChatRoom room, String uid) async {
+    await invitedUserRef(uid).child(room.id).set(ServerValue.timestamp);
+    onInvite?.call(room: room, uid: uid);
   }
 
   /// URL Preview 업데이트
@@ -296,7 +359,12 @@ class ChatService {
     );
   }
 
-  /// states for chat message reply
+  /// States for chat message reply
+  ///
+  /// Why:
+  /// - The reply action is coming from the chat bubble menu.
+  /// - And the UI (popup) for the reply appears on top of the chat input box.
+  /// - It needs to keep the state whether the reply is enabled or not.
   ValueNotifier<ChatMessage?> reply = ValueNotifier<ChatMessage?>(null);
   bool get replyEnabled => reply.value != null;
   clearReply() => reply.value = null;
