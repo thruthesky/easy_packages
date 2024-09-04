@@ -12,13 +12,15 @@ import 'package:flutter/material.dart';
 class ChatRoomInvitationListTile extends StatefulWidget {
   const ChatRoomInvitationListTile({
     super.key,
-    required this.roomId,
+    this.roomId,
+    this.room,
     // TODO room
     this.onAccept,
     this.onReject,
-  });
+  }) : assert(roomId != null || room != null);
 
-  final String roomId;
+  final String? roomId;
+  final ChatRoom? room;
   final Function(ChatRoom room, User? user)? onAccept;
   final Function(ChatRoom room, User? user)? onReject;
 
@@ -39,11 +41,13 @@ class _ChatRoomInvitationListTileState
   @override
   void initState() {
     super.initState();
+    room = widget.room;
+    // TODO still ongoing - will continue here..
     init();
   }
 
   init() async {
-    room = await ChatRoom.get(widget.roomId);
+    room = await ChatRoom.get(widget.roomId!);
     if (!mounted) return;
     setState(() {});
   }
