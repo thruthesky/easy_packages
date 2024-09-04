@@ -254,17 +254,18 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     // If there is no text and no photo, then return.
     if (canSubmit == false) return;
 
-    // copy the input
+    // Copy the input (prepare)
     final text = textController.text.trim();
     final url = this.url;
     ChatMessage? reply = ChatService.instance.reply.value;
 
-    // clear to make the input box empty.
+    // Clear to make the input box empty.
     textController.clear();
     this.url = null;
     ChatService.instance.clearReply();
     setState(() {});
 
+    // Send the message
     await ChatService.instance.sendMessage(
       room!,
       text: text,
