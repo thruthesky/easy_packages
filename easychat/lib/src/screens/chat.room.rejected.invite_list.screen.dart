@@ -21,23 +21,26 @@ class ChatRoomRejectedInviteListScreen extends StatelessWidget {
           : FirebaseDatabaseListView(
               query: ChatService.instance.rejectedUserRef(myUid!),
               itemBuilder: (context, snapshot) {
-                return ChatRoomListTile(
-                  // room: ChatRoom.fromSnapshot(snapshot),
-                  roomId: snapshot.key!,
-                  onTap: (context, room, user) async {
-                    final re = await confirm(
-                      context: context,
-                      title: Text('rejected chat'.t),
-                      message: Text(
-                        "you have rejected chat already, accept the chat instead?"
-                            .t,
-                      ),
-                    );
-                    if (re ?? false) {
-                      await ChatService.instance.accept(room);
-                    }
-                  },
-                );
+                return ChatRoomDoc(
+                    ref: ChatService.instance.roomRef(snapshot.key!),
+                    builder: (room) {
+                      return ChatRoomListTile(
+                        room: room,
+                        onTap: (context, room, user) async {
+                          final re = await confirm(
+                            context: context,
+                            title: Text('rejected chat'.t),
+                            message: Text(
+                              "you have rejected chat already, accept the chat instead?"
+                                  .t,
+                            ),
+                          );
+                          if (re ?? false) {
+                            await ChatService.instance.accept(room);
+                          }
+                        },
+                      );
+                    });
               },
             ),
     );

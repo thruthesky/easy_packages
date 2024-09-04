@@ -33,13 +33,18 @@ class ChatRoomReceivedInviteListScreen extends StatelessWidget {
                     .child("chat/invited-users/$myUid"),
                 itemBuilder: (context, snapshot) {
                   //   final room = ChatRoom.fromSnapshot(snapshot);
-                  return ChatRoomInvitationListTile(
-                    roomId: snapshot.key!,
-                    onAccept: (room, user) {
-                      ChatService.instance.showChatRoomScreen(
-                        context,
+                  return ChatRoomDoc(
+                    ref: ChatService.instance.roomRef(snapshot.key!),
+                    builder: (room) {
+                      return ChatRoomInvitationListTile(
                         room: room,
-                        user: user,
+                        onAccept: (room, user) {
+                          ChatService.instance.showChatRoomScreen(
+                            context,
+                            room: room,
+                            user: user,
+                          );
+                        },
                       );
                     },
                   );
