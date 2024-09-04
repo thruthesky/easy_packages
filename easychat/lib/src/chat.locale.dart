@@ -1,5 +1,4 @@
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easychat/easychat.dart';
 
 final localeTexts = <String, Map<String, dynamic>>{
   'chat': {
