@@ -5,6 +5,7 @@ import 'package:easyuser/easyuser.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
 
+/// This screen list chat rooms that the login user have rejectd.
 class ChatRoomRejectedInviteListScreen extends StatelessWidget {
   const ChatRoomRejectedInviteListScreen({super.key});
 
