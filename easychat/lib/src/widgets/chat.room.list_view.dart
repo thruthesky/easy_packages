@@ -1,5 +1,4 @@
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';

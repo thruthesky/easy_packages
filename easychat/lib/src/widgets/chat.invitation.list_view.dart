@@ -1,10 +1,8 @@
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_realtime_database/easy_realtime_database.dart';
 
 /// Display a few chat room invitations as a list.
 ///
@@ -114,7 +112,7 @@ class ChatInvitationListViewState extends State<ChatInvitationListView> {
                 ref: ChatService.instance.roomRef(roomIds[index]),
                 builder: (room) {
                   return widget.itemBuilder?.call(context, room, index) ??
-                      ChatRoomInvitationListTile(
+                      ChatInvitationListTile(
                         room: room,
                         onAccept: (room, user) async {
                           await ChatService.instance.showChatRoomScreen(

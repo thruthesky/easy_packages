@@ -129,6 +129,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return room?.joined == true;
   }
 
+  /// TODO: Listen the whole room info using `ChatRoomDoc`.
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

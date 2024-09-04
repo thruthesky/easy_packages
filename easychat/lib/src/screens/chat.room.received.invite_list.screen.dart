@@ -36,7 +36,7 @@ class ChatRoomReceivedInviteListScreen extends StatelessWidget {
                   return ChatRoomDoc(
                     ref: ChatService.instance.roomRef(snapshot.key!),
                     builder: (room) {
-                      return ChatRoomInvitationListTile(
+                      return ChatInvitationListTile(
                         room: room,
                         onAccept: (room, user) {
                           ChatService.instance.showChatRoomScreen(
