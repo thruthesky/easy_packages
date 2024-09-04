@@ -233,7 +233,11 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           'you cannot invite yourself'.t,
                         );
                       }
-                      await room!.inviteUser(selectedUser.uid);
+                      // await room!.inviteUser(selectedUser.uid);
+                      await ChatService.instance.inviteUser(
+                        room!,
+                        selectedUser.uid,
+                      );
                       if (!context.mounted) return;
                       alert(
                         context: context,

@@ -19,43 +19,43 @@ class ChatRoomListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          // title: Text(
-          //     'chat room list screen title: ${queryOption.name.toLowerCase()}'.t),
-          // actions: [
-          //   IconButton(
-          //     onPressed: () {
-          //       ChatService.instance.showChatRoomEditScreen(
-          //         context,
-          //         defaultOpen: queryOption == ChatRoomQuery.open,
-          //       );
-          //     },
-          //     icon: const Icon(Icons.add),
-          //   ),
-          //   PopupMenuButton(
-          //     icon: const Icon(Icons.settings),
-          //     onSelected: (q) {
-          //       setState(() {
-          //         queryOption = q;
-          //       });
-          //     },
-          //     constraints: const BoxConstraints(
-          //       maxWidth: 180,
-          //     ),
-          //     itemBuilder: (BuildContext context) {
-          //       return ChatRoomQuery.values
-          //           .map(
-          //             (q) => PopupMenuItem(
-          //               value: q,
-          //               child: Text(
-          //                   'chat room list screen option: ${q.name.toLowerCase()}'
-          //                       .t),
-          //             ),
-          //           )
-          //           .toList();
-          //     },
-          //   ),
-          // ],
+        // title: Text(
+        //     'chat room list screen title: ${queryOption.name.toLowerCase()}'.t),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ChatService.instance.showChatRoomEditScreen(
+                context,
+                // defaultOpen: queryOption == ChatRoomQuery.open,
+              );
+            },
+            icon: const Icon(Icons.add),
           ),
+          // PopupMenuButton(
+          //   icon: const Icon(Icons.settings),
+          //   onSelected: (q) {
+          //     setState(() {
+          //       queryOption = q;
+          //     });
+          //   },
+          //   constraints: const BoxConstraints(
+          //     maxWidth: 180,
+          //   ),
+          //   itemBuilder: (BuildContext context) {
+          //     return ChatRoomQuery.values
+          //         .map(
+          //           (q) => PopupMenuItem(
+          //             value: q,
+          //             child: Text(
+          //                 'chat room list screen option: ${q.name.toLowerCase()}'
+          //                     .t),
+          //           ),
+          //         )
+          //         .toList();
+          //   },
+          // ),
+        ],
+      ),
       body: AuthStateChanges(
         builder: (user) {
           if (user == null || user.isAnonymous) {
