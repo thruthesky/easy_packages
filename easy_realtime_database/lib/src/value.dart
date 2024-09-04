@@ -57,7 +57,7 @@ class Value extends StatelessWidget {
           return Text('Error; path: ${ref.path}, message: ${snapshot.error}');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting ||
+        if (snapshot.connectionState == ConnectionState.waiting &&
             snapshot.hasData == false) {
           // log('--> Value() -> Waiting; path: ${ref.path} connectionState: ${snapshot.connectionState}, hasData: ${snapshot.hasData}');
           return onLoading ?? const SizedBox.shrink();
