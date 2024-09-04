@@ -131,14 +131,9 @@ class ChatRoomListView extends StatelessWidget {
 
                   final joinDoc = snapshot.docs[index];
 
-                  return Value(
+                  return ChatRoomDoc(
                     ref: ChatService.instance.roomRef(joinDoc.key!),
-                    builder: (value, ref) {
-                      final room = ChatRoom.fromJson(
-                        Map<String, dynamic>.from(value),
-                        joinDoc.key!,
-                      );
-
+                    builder: (room) {
                       return ChatRoomListTile(
                         room: room,
                       );

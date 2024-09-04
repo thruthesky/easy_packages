@@ -16,6 +16,7 @@ export './src/widgets/chat.bubble.reply.dart';
 export './src/widgets/chat.invitation_count.dart';
 export './src/widgets/chat.messages.list_view.dart';
 export './src/widgets/chat.new_message_counter.dart';
+export './src/widgets/chat.room.doc.dart';
 export './src/widgets/chat.room.input_box.dart';
 export './src/widgets/chat.room.invitation.list_tile.dart';
 export './src/widgets/chat.room.invitation.short.list.dart';

@@ -21,6 +21,28 @@ Value(
 ```
 
 
+More comprehensive example:
+```dart
+Value(
+  ref: FirebaseDatabase.instance.ref('tmp/a'),
+  builder: (v, r) => TextButton(
+    child: Text('Value: $v'),
+    onPressed: () => r.set(
+      'Time : ${DateTime.now()}',
+    ),
+  ),
+),
+Value.once(
+  ref: FirebaseDatabase.instance.ref('tmp/a'),
+  builder: (v, r) => TextButton(
+    child: Text('Value: $v'),
+    onPressed: () => r.set(
+      'Time : ${DateTime.now()}',
+    ),
+  ),
+),
+```
+
 
 ## DatabaseLimitedListView
 

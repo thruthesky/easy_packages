@@ -65,13 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text('version'.t),
                 Text('   isSamllScreen: ${context.isSmallScreen}'),
-                Value(
-                  ref: FirebaseDatabase.instance.ref('/test/value'),
-                  builder: (v, r) => IconButton(
-                    icon: Text('Value Test: $v'),
-                    onPressed: () => toggle(r, 'yo'),
-                  ),
-                ),
               ],
             ),
             AuthStateChanges(
@@ -108,150 +101,177 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
             ),
-            Wrap(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    ChatService.instance.showChatRoomListScreen(context);
-                  },
-                  child: const Text("Chat Room List"),
+            Value(
+              ref: FirebaseDatabase.instance.ref('tmp/a'),
+              builder: (v, r) => TextButton(
+                child: Text('Value: $v'),
+                onPressed: () => r.set(
+                  'Time : ${DateTime.now()}',
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    ChatService.instance.showInviteListScreen(
-                      context,
-                    );
-                  },
-                  child: const Text("Chat Invite List"),
+              ),
+            ),
+            Value.once(
+              ref: FirebaseDatabase.instance.ref('tmp/a'),
+              builder: (v, r) => TextButton(
+                child: Text('Value: $v'),
+                onPressed: () => r.set(
+                  'Time : ${DateTime.now()}',
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    ChatService.instance.showOpenChatRoomListScreen(context);
-                  },
-                  child: const Text("Open Room List"),
+              ),
+            ),
+            Theme(
+              data: Theme.of(context).copyWith(
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0)),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final user = await UserService.instance.showSearchDialog(
-                      context,
-                      exactSearch: true,
-                    );
-                    if (user != null) {
-                      if (context.mounted) {
-                        UserService.instance
-                            .showPublicProfileScreen(context, user: user);
+              ),
+              child: Wrap(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      ChatService.instance.showChatRoomListScreen(context);
+                    },
+                    child: const Text("Chat Room List"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      ChatService.instance.showInviteListScreen(
+                        context,
+                      );
+                    },
+                    child: const Text("Chat Invite List"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      ChatService.instance.showOpenChatRoomListScreen(context);
+                    },
+                    child: const Text("Open Room List"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final user = await UserService.instance.showSearchDialog(
+                        context,
+                        exactSearch: true,
+                      );
+                      if (user != null) {
+                        if (context.mounted) {
+                          UserService.instance
+                              .showPublicProfileScreen(context, user: user);
+                        }
                       }
-                    }
-                  },
-                  child: const Text('User Search Dialog: exact search'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await UserService.instance.showSearchDialog(
-                      context,
-                      exactSearch: false,
-                      itemBuilder: (user, index) => ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(user),
-                        child: Text(user.displayName),
-                      ),
-                    );
-                    // print('user; $user');
-                  },
-                  child:
-                      const Text('User Search Dialog: partial search search'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    ChatService.instance.showChatRoomListScreen(context);
-                  },
-                  child: const Text('Chat Room List Screen'),
-                ),
-                ElevatedButton(
-                  onPressed: () => showGeneralDialog(
-                    context: context,
-                    pageBuilder: (_, __, ___) => const UploadImageScreen(),
+                    },
+                    child: const Text('User Search Dialog: exact search'),
                   ),
-                  child: const Text('Upload Image'),
-                ),
-                ElevatedButton(
-                  onPressed: () => showGeneralDialog(
-                    context: context,
-                    pageBuilder: (_, __, ___) => const LocaleScreen(),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await UserService.instance.showSearchDialog(
+                        context,
+                        exactSearch: false,
+                        itemBuilder: (user, index) => ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(user),
+                          child: Text(user.displayName),
+                        ),
+                      );
+                      // print('user; $user');
+                    },
+                    child:
+                        const Text('User Search Dialog: partial search search'),
                   ),
-                  child: const Text('Easy Locale Screen'),
-                ),
-                ElevatedButton(
-                  onPressed: () => showGeneralDialog(
-                    context: context,
-                    pageBuilder: (_, __, ___) => const ForumScreen(),
+                  ElevatedButton(
+                    onPressed: () {
+                      ChatService.instance.showChatRoomListScreen(context);
+                    },
+                    child: const Text('Chat Room List Screen'),
                   ),
-                  child: const Text('Easy Forum Screen'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await confirm(
+                  ElevatedButton(
+                    onPressed: () => showGeneralDialog(
                       context: context,
-                      title: const Text('title'),
-                      subtitle: const CircleAvatar(
-                        child: Text('yo'),
-                      ),
-                      message: const Text('message'),
-                    );
-                    // print('re; $re');
-                  },
-                  child: const Text(
-                    'Confirm dialog',
+                      pageBuilder: (_, __, ___) => const UploadImageScreen(),
+                    ),
+                    child: const Text('Upload Image'),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () => i.showBlockListScreen(context),
-                  child: const Text(
-                    'Block list',
+                  ElevatedButton(
+                    onPressed: () => showGeneralDialog(
+                      context: context,
+                      pageBuilder: (_, __, ___) => const LocaleScreen(),
+                    ),
+                    child: const Text('Easy Locale Screen'),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () =>
-                      ReportService.instance.showReportListScreen(context),
-                  child: const Text(
-                    'Report list',
+                  ElevatedButton(
+                    onPressed: () => showGeneralDialog(
+                      context: context,
+                      pageBuilder: (_, __, ___) => const ForumScreen(),
+                    ),
+                    child: const Text('Easy Forum Screen'),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () =>
-                      TaskService.instance.showTaskCreateScreen(context),
-                  child: const Text('Task Crate'),
-                ),
-                ElevatedButton(
-                  onPressed: () =>
-                      TaskService.instance.showTaskListScreen(context),
-                  child: const Text('Task List of my creation'),
-                ),
-                ElevatedButton(
+                  ElevatedButton(
+                    onPressed: () async {
+                      await confirm(
+                        context: context,
+                        title: const Text('title'),
+                        subtitle: const CircleAvatar(
+                          child: Text('yo'),
+                        ),
+                        message: const Text('message'),
+                      );
+                      // print('re; $re');
+                    },
+                    child: const Text(
+                      'Confirm dialog',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => i.showBlockListScreen(context),
+                    child: const Text(
+                      'Block list',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () =>
+                        ReportService.instance.showReportListScreen(context),
+                    child: const Text(
+                      'Report list',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () =>
+                        TaskService.instance.showTaskCreateScreen(context),
+                    child: const Text('Task Crate'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () =>
+                        TaskService.instance.showTaskListScreen(context),
+                    child: const Text('Task List of my creation'),
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        showGeneralDialog(
+                            context: context,
+                            pageBuilder: (_, __, ___) {
+                              return const SettingsScreen();
+                            });
+                      },
+                      child: const Text('Setting')),
+                  ElevatedButton(
                     onPressed: () {
                       showGeneralDialog(
                           context: context,
                           pageBuilder: (_, __, ___) {
-                            return const SettingsScreen();
+                            return const MessagingScreen();
                           });
                     },
-                    child: const Text('Setting')),
-                ElevatedButton(
-                  onPressed: () {
-                    showGeneralDialog(
-                        context: context,
-                        pageBuilder: (_, __, ___) {
-                          return const MessagingScreen();
-                        });
-                  },
-                  child: const Text('Messaging'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    UserGroupService.instance.showUserGroupListScreen(context);
-                  },
-                  child: const Text('User Group'),
-                ),
-              ],
+                    child: const Text('Messaging'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      UserGroupService.instance
+                          .showUserGroupListScreen(context);
+                    },
+                    child: const Text('User Group'),
+                  ),
+                ],
+              ),
             ),
             //
             SizedBox(
