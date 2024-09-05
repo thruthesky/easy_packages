@@ -42,6 +42,10 @@ class PostService {
     Function(Post)? onCreate,
     Widget Function(String? category)? postListActionButton,
   }) {
+    if (initialized) {
+      return;
+    }
+
     initialized = true;
     $showPostDetailScreen = showPostDetailScreen;
     $showPostCreateScreen = showPostCreateScreen;

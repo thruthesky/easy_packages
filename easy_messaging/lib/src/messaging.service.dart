@@ -78,6 +78,10 @@ class MessagingService {
     Function? onNotificationPermissionDenied,
     Function? onNotificationPermissionNotDetermined,
   }) async {
+    if (initialized) {
+      dog('MessagingService: already initialized');
+      return;
+    }
     initialized = true;
 
     this.sendMessageToTokensApi = sendMessageToTokensApi;
