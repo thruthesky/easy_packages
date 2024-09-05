@@ -379,62 +379,65 @@ class ChatRoom {
   /// really simmilar logic.
   @Deprecated('Only put DB CRUD in Model')
   Future<void> acceptInvitation() async {
-    await join();
+    // await join();
   }
 
+  // TODO! CLEANUP!
   /// Let the current user join in chat room
   ///
+  ///
+  ///
   /// If user is invited, invitation count will decrease
-  Future<void> join() async {
-    if (blockedUsers.contains(myUid)) {
-      throw ChatException(
-        'blocked-user-cannot-join',
-        'Failed to join because you are blocked'.t,
-      );
-    }
+  // Future<void> join() async {
+  //   if (blockedUsers.contains(myUid)) {
+  //     throw ChatException(
+  //       'blocked-user-cannot-join',
+  //       'Failed to join because you are blocked'.t,
+  //     );
+  //   }
 
-    await ChatService.instance.joinsRef.child(myUid!).child(ref.key!).update({
-      'singleChatOrder': ServerValue.timestamp,
-      'groupChatOrder': ServerValue.timestamp,
-      'openChatOrder': ServerValue.timestamp,
-      'joinedAt': ServerValue.timestamp,
-    });
+  //   await ChatService.instance.joinsRef.child(myUid!).child(ref.key!).update({
+  //     'singleChatOrder': ServerValue.timestamp,
+  //     'groupChatOrder': ServerValue.timestamp,
+  //     'openChatOrder': ServerValue.timestamp,
+  //     'joinedAt': ServerValue.timestamp,
+  //   });
 
-    // final timestampAtLastMessage = lastMessageAt != null
-    //     ? Timestamp.fromDate(lastMessageAt!)
-    //     : FieldValue.serverTimestamp();
+  // final timestampAtLastMessage = lastMessageAt != null
+  //     ? Timestamp.fromDate(lastMessageAt!)
+  //     : FieldValue.serverTimestamp();
 
-    // await ref.set(
-    //   {
-    //     field.invitedUsers: FieldValue.arrayRemove([myUid!]),
-    //     field.users: {
-    //       myUid!: {
-    //         if (single) ...{
-    //           ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-    //           ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
-    //         },
-    //         if (group) ...{
-    //           ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
-    //           ChatRoomUser.field.groupTimeOrder: timestampAtLastMessage,
-    //         },
-    //         ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-    //         ChatRoomUser.field.timeOrder: timestampAtLastMessage,
-    //         // need to add new message so that the order will be correct after reading,
-    //         ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
-    //       },
-    //     },
-    //     // In case, the user rejected the invitation
-    //     // but actually wants to accept it, then we should
-    //     // also remove the uid from rejeceted users.
-    //     field.rejectedUsers: FieldValue.arrayRemove([myUid!]),
-    //     field.updatedAt: FieldValue.serverTimestamp(),
-    //   },
-    //   SetOptions(merge: true),
-    // );
-    // if (invitedUsers.contains(myUid)) {
-    //   await ChatService.instance.decreaseInvitationCount();
-    // }
-  }
+  // await ref.set(
+  //   {
+  //     field.invitedUsers: FieldValue.arrayRemove([myUid!]),
+  //     field.users: {
+  //       myUid!: {
+  //         if (single) ...{
+  //           ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
+  //           ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
+  //         },
+  //         if (group) ...{
+  //           ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
+  //           ChatRoomUser.field.groupTimeOrder: timestampAtLastMessage,
+  //         },
+  //         ChatRoomUser.field.order: FieldValue.serverTimestamp(),
+  //         ChatRoomUser.field.timeOrder: timestampAtLastMessage,
+  //         // need to add new message so that the order will be correct after reading,
+  //         ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
+  //       },
+  //     },
+  //     // In case, the user rejected the invitation
+  //     // but actually wants to accept it, then we should
+  //     // also remove the uid from rejeceted users.
+  //     field.rejectedUsers: FieldValue.arrayRemove([myUid!]),
+  //     field.updatedAt: FieldValue.serverTimestamp(),
+  //   },
+  //   SetOptions(merge: true),
+  // );
+  // if (invitedUsers.contains(myUid)) {
+  //   await ChatService.instance.decreaseInvitationCount();
+  // }
+  // }
 
   /// Reject the invitation
   ///
@@ -582,24 +585,6 @@ class ChatRoom {
   /// when old room data is 0, since newMessageCounter maybe inaccurate.
   Future<void> resetUnreadMessage() async {
     ChatService.instance.unreadMessageCountRef(id).set(0);
-
-    // throw 'Not implemented yet';
-
-    // TODO review. It must update the order
-    // if (!userUids.contains(myUid!)) return;
-    // if (users[myUid!]!.newMessageCounter == 0) return;
-    // final myReadOrder = users[myUid!]!.timeOrder;
-    // final updatedOrder = _negatedOrder(myReadOrder!);
-    // await ref.set({
-    //   field.users: {
-    //     my.uid: {
-    //       if (single) ChatRoomUser.field.singleOrder: updatedOrder,
-    //       if (group) ChatRoomUser.field.groupOrder: updatedOrder,
-    //       ChatRoomUser.field.order: updatedOrder,
-    //       ChatRoomUser.field.newMessageCounter: 0,
-    //     }
-    //   }
-    // }, SetOptions(merge: true));
   }
 
   /// [block] blocks the user from the chat room.
