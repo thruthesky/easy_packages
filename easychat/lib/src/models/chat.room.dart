@@ -471,6 +471,9 @@ class ChatRoom {
   }
 
   // TODO must be in service
+  /// Update the unread message count.
+  ///
+  /// Refere README.md for more details
   Future updateUnreadMessageCount() async {
     // final Map<String, Object?> updates = Map.fromEntries(
     //   userUids.where((uid) => uid != myUid).map(
