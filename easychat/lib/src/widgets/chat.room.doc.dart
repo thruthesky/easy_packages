@@ -2,6 +2,12 @@ import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
 
+/// Chat room data cache
+///
+/// Why:
+/// - To reduce the flickering.
+final chatRoomDataCache = {};
+
 class ChatRoomDoc extends StatelessWidget {
   const ChatRoomDoc({
     super.key,
@@ -18,14 +24,18 @@ class ChatRoomDoc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ref = ChatService.instance.roomRef(roomId);
+
     return Value(
       ref: ref,
+      initialData: chatRoomDataCache[roomId],
       builder: (v, r) {
+        chatRoomDataCache[roomId] = v;
+        final room = ChatRoom.fromJson(
+          Map<String, dynamic>.from(v),
+          ref.key!,
+        );
         return builder(
-          ChatRoom.fromJson(
-            Map<String, dynamic>.from(v),
-            ref.key!,
-          ),
+          room,
         );
       },
       onLoading: onLoading,

@@ -197,10 +197,10 @@ packages:
     dependency: transitive
     description:
       name: easy_realtime_database
-      sha256: "213abd5ef611007af1390f234d32829ffe0755b00ff4a65eb4b8bfced03e0a07"
+      sha256: "775e1bdd2306ad8689d823b8885169b39e7402dd89a8f96d7eabb1be19582315"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.6"
+    version: "0.0.7"
   easy_report:
     dependency: transitive
     description:
