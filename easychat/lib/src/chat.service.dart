@@ -325,9 +325,15 @@ class ChatService {
       rejectedUserRef(myUid!).child(room.id).path: null,
       // Add uid in users
       room.ref.child('users').child(myUid!).path: false,
+      // update updatedAt
+      room.ref.child('updatedAt').child(myUid!).path: false,
       // Add in chat joins
       'chat/joins/${myUid!}/${room.id}/joinedAt': ServerValue.timestamp,
-      'chat/joins/${myUid!}/${room.id}/singleChatOrder': ServerValue.timestamp,
+      if (room.single)
+        'chat/joins/${myUid!}/${room.id}/singleOrder': ServerValue.timestamp,
+      if (room.group)
+        'chat/joins/${myUid!}/${room.id}/groupOrder': ServerValue.timestamp,
+      'chat/joins/${myUid!}/${room.id}/order': ServerValue.timestamp,
     };
 
     await FirebaseDatabase.instance.ref().update(accept);

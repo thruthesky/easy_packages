@@ -20,7 +20,7 @@ export './src/widgets/chat.room.doc.dart';
 export './src/widgets/chat.room.input_box.dart';
 export 'src/widgets/chat.invitation.list_tile.dart';
 export './src/widgets/chat.invitation_list_tile_actions.dart';
-export './src/widgets/chat.invitation.list_view.dart';
+export 'src/widgets/chat.invitation.preview.list_view.dart';
 export './src/widgets/chat.room.list_tile.dart';
 export './src/widgets/chat.room.list_view.dart';
 export './src/widgets/chat.room.member.list_tile.dart';

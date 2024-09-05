@@ -1,22 +1,25 @@
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easychat/easychat.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomDoc extends StatelessWidget {
   const ChatRoomDoc({
     super.key,
-    required this.ref,
+    // Review how can we better handle this
+    this.roomId,
+    this.room,
     required this.builder,
     this.onLoading,
-  });
+  }) : assert(roomId != null || room != null);
 
-  final DatabaseReference ref;
+  final String? roomId;
+  final ChatRoom? room;
   final Widget Function(ChatRoom room) builder;
   final Widget? onLoading;
 
   @override
   Widget build(BuildContext context) {
+    final ref = ChatService.instance.roomRef(roomId!);
     return Value(
       ref: ref,
       builder: (v, r) {
@@ -27,7 +30,7 @@ class ChatRoomDoc extends StatelessWidget {
           ),
         );
       },
-      onLoading: onLoading,
+      onLoading: room == null ? onLoading : builder(room!),
     );
   }
 }

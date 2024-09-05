@@ -1,14 +1,18 @@
+import 'dart:async';
+
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-/// Display a few chat room invitations as a list.
+/// Displays a few chat room invitations as a list.
+/// Shows See more
 ///
+/// This is different from ChatInvitationListView because this has a
+/// `see more` button. Still, it can open the chat invitations screen.
 ///
-class ChatInvitationListView extends StatefulWidget {
-  const ChatInvitationListView({
+class ChatInvitationPreviewListView extends StatefulWidget {
+  const ChatInvitationPreviewListView({
     super.key,
     this.limit = 3,
     this.padding,
@@ -27,39 +31,45 @@ class ChatInvitationListView extends StatefulWidget {
   final Widget? bottomWidget;
 
   @override
-  State<ChatInvitationListView> createState() => ChatInvitationListViewState();
+  State<ChatInvitationPreviewListView> createState() =>
+      _ChatInvitationPreviewListViewState();
 }
 
-class ChatInvitationListViewState extends State<ChatInvitationListView> {
-  ChatInvitationListViewState();
+class _ChatInvitationPreviewListViewState
+    extends State<ChatInvitationPreviewListView> {
+  StreamSubscription? subscription;
+  List<String> roomIds = [];
 
-  Map<String, int> invites = {};
+  late int limit;
 
   @override
   void initState() {
     super.initState();
-    init();
+    limit = widget.limit + 1;
+    subscription = ChatService.instance
+        .invitedUserRef(myUid!)
+        .limitToFirst(limit)
+        .onValue
+        .listen((event) {
+      final invitesTime =
+          Map<String, int>.from((event.snapshot.value ?? {}) as Map);
+      roomIds = invitesTime.keys.toList();
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
-  init() async {
-    // TODO must listen because this is invitation list view
-    final DatabaseEvent event =
-        await ChatService.instance.invitedUserRef(myUid!).once();
-    if (event.snapshot.exists) {
-      invites = Map<String, int>.from(event.snapshot.value as Map);
-      setState(() {});
-    }
+  @override
+  void dispose() {
+    super.dispose();
+    subscription?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (invites.isEmpty) {
+    if (roomIds.isEmpty) {
       return const SizedBox.shrink();
     }
-
-    final List<String> roomIds = invites.keys.take(widget.limit).toList();
-
-    // final chatRooms = docs.map((doc) => ChatRoom.fromSnapshot(doc)).toList();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,25 +114,35 @@ class ChatInvitationListViewState extends State<ChatInvitationListView> {
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: roomIds.length,
+          // Added plus one on the query's limit to know if it has more
+          // If it retrieve more than the limit, we only show until the limit.
+          //
+          // Example:
+          //  limit = 3;
+          //  retrieving 3 + 1.
+          //  if retrieved count is 4, show only 3 (the limit)
+          //  if retrieved count is 3 or less, show all results
+          itemCount:
+              roomIds.length > widget.limit ? widget.limit : roomIds.length,
           separatorBuilder: widget.separatorBuilder ??
-              (context, index) => const SizedBox.shrink(),
+              (listViewContext, index) => const SizedBox.shrink(),
           itemBuilder: (listViewContext, index) {
             return ChatRoomDoc(
-                ref: ChatService.instance.roomRef(roomIds[index]),
-                builder: (room) {
-                  return widget.itemBuilder?.call(context, room, index) ??
-                      ChatInvitationListTile(
-                        room: room,
-                        onAccept: (room, user) async {
-                          await ChatService.instance.showChatRoomScreen(
-                            context,
-                            room: room,
-                            user: user,
-                          );
-                        },
-                      );
-                });
+              roomId: roomIds[index],
+              builder: (room) {
+                return widget.itemBuilder?.call(context, room, index) ??
+                    ChatInvitationListTile(
+                      room: room,
+                      onAccept: (room, user) async {
+                        await ChatService.instance.showChatRoomScreen(
+                          context,
+                          room: room,
+                          user: user,
+                        );
+                      },
+                    );
+              },
+            );
           },
         ),
         if (widget.bottomWidget != null) widget.bottomWidget!,

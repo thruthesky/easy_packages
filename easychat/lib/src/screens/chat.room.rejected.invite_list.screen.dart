@@ -23,7 +23,8 @@ class ChatRoomRejectedInviteListScreen extends StatelessWidget {
               query: ChatService.instance.rejectedUserRef(myUid!),
               itemBuilder: (context, snapshot) {
                 return ChatRoomDoc(
-                    ref: ChatService.instance.roomRef(snapshot.key!),
+                    // ref: ChatService.instance.roomRef(snapshot.key!),
+                    roomId: snapshot.key,
                     builder: (room) {
                       return ChatRoomListTile(
                         room: room,
