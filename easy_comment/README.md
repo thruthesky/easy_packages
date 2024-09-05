@@ -8,6 +8,16 @@ The `comment_package` offers a complete set of UI/UX widgets and logics for mana
 
 - `First level comments` are comments made(created) directly under a post.
 
+
+# TODOs
+
+- Use Realtime Database for Comment Listing.
+  - Mirror the content, uid, first photo, createdAt of the comment of the post into Realtime Database.
+  - This is for reducing the cost.
+  - The Firestore will hold data for keeping original data and filtering purpose.
+
+
+
 # Database Structure of Comment
 
 Initially, we considered using the Realtime Database for comments. However, since comments are needed for various parts of the app, not just posts, we require something more flexible. Therefore, Firestore is a better choice than the Realtime Database.

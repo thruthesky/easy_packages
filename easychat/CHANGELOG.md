@@ -1,3 +1,10 @@
+## 0.1.1
+* Re-writing the chat features with Realtime database (without Firestore)
+
+## 0.0.13
+* Completing the chat feature. Chat room with Firestore and chat message with Realtime Database.
+* Moving to version 0.1.x with realtime database.
+
 ## 0.0.12
 * Update. Document update.
 

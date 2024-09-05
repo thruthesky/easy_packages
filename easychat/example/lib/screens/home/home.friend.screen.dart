@@ -69,8 +69,10 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                         await UserService.instance.showSearchDialog(context);
                     if (user != null) {
                       if (context.mounted) {
-                        ChatService.instance
-                            .showChatRoomScreen(context, user: user);
+                        ChatService.instance.showChatRoomScreen(
+                          context,
+                          user: user,
+                        );
                       }
                     }
                   }
@@ -80,27 +82,35 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
             ],
           ),
         ),
+        Text('my uid: $myUid'),
+        const Text('@TODO: top 3 invitations'),
+        const Text(
+            '@TODO: Display favorite friends: use easy_user_group pakcage'),
+        const Text('@TODO: Display all 1:1 chats: hide the favorite friends'),
+        ChatInvitationCount(builder: (int no) {
+          return Badge(label: Text("$no"));
+        }),
         Expanded(
-          child: ChatRoomListView(
-            headerBuilder: () {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('my uid: $myUid'),
-                  const Text('@TODO: Display no of invitatations'),
-                  const Text('@TODO: top 3 invitations'),
-                  const Text(
-                      '@TODO: Display favorite friends: use easy_user_group pakcage'),
-                  const Text(
-                      '@TODO: Display all 1:1 chats: hide the favorite friends'),
-                  const Divider(),
-                ],
+          child: AuthStateChanges(builder: (user) {
+            if (user == null) {
+              return const Center(
+                child: Text('Sign in to see your friends'),
               );
-            },
-            // onChatRoomTap: (chatRoom) {
-            //   ChatService.instance.showChatRoomScreen(context, chatRoom: chatRoom);
-            // },
-          ),
+            }
+            return ChatRoomListView(
+              headerBuilder: () {
+                return const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Divider(),
+                  ],
+                );
+              },
+              // onChatRoomTap: (chatRoom) {
+              //   ChatService.instance.showChatRoomScreen(context, chatRoom: chatRoom);
+              // },
+            );
+          }),
         ),
       ],
     );

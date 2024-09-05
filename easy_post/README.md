@@ -4,13 +4,15 @@ A post management library for Firebase and Fltuter.
 
 # TODOs
 
-- Use Realtime Database for listing.
+- Use Realtime Database for Post Listing.
   - Mirror the title, uid, first photo, createdAt into Realtime Database for
     - all categories in one path
     - each category in each path
   - Mirro all the post information into a RTDB
   - This is for reducing the cost.
   - The Firestore will hold data for keeping original data and filtering purpose.
+
+
 
 # Database Structure
 

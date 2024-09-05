@@ -19,7 +19,7 @@ class ChatMessagesListView extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final ScrollController? controller;
 
-  DatabaseReference get ref => room.messageRef;
+  DatabaseReference get ref => ChatService.instance.messageRef(room.id);
 
   @override
   Widget build(BuildContext context) {

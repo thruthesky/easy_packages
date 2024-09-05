@@ -1,6 +1,8 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easyuser/easyuser.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:easy_helpers/easy_helpers.dart';
 
 const String chatRoomDivider = '---';
 
@@ -50,3 +52,49 @@ String singleChatRoomId(String otherUserUid) {
   uids.sort();
   return uids.join(chatRoomDivider);
 }
+
+/// Returns the chat room title for single and group chat.
+String roomTitle(ChatRoom? room, User? user) {
+  assert(room != null || user != null);
+
+  if (user != null) {
+    return user.displayName.or('no name'.t);
+  }
+
+  // Single chat or group chat can have name.
+  if ((room?.name ?? "").trim().isNotEmpty) {
+    return room!.name;
+  }
+  return 'chat room'.t;
+}
+
+// bool get iAmInvited => $room?.invitedUsers.contains(myUid!) ?? false;
+// bool get iRejected => $room?.rejectedUsers.contains(myUid!) ?? false;
+
+// String notMemberMessage(ChatRoom? room) {
+//   if (iAmInvited) {
+//     return 'unaccepted yet, accept before reading message'.t;
+//   }
+//   if (iRejected) {
+//     return 'the chat was rejected, unable to show message'.t;
+//   }
+//   if (isJoiningNow) {
+//     return 'please wait'.t;
+//   }
+//   // Else, it should be handled by the Firestore rulings.
+//   return 'the chat room may be private or deleted'.t;
+// }
+
+// String notMemberTitle(ChatRoom? room) {
+//   if (iAmInvited) {
+//     return "chat invitation".t;
+//   }
+//   if (iRejected) {
+//     return 'rejected chat'.t;
+//   }
+//   if (isJoiningNow) {
+//     return 'loading'.t;
+//   }
+//   // Else, it should be handled by the Firestore rulings.
+//   return 'unable to chat'.t;
+// }

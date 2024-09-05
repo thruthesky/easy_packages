@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart' as fs;
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_database/firebase_database.dart' as db;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_url_preview/easy_url_preview.dart';
-import 'package:easy_firestore/easy_firestore.dart';
 
 /// Chat Service
 ///
@@ -24,11 +22,50 @@ class ChatService {
   /// Note that, chat service can be initialized multiple times.
   bool initialized = false;
 
+  /// Database path for chat room and message
+  /// Database of chat room and message
+  final DatabaseReference roomsRef =
+      FirebaseDatabase.instance.ref().child('chat/rooms');
+
+  DatabaseReference roomRef(String roomId) => roomsRef.child(roomId);
+
+  final DatabaseReference messagesRef =
+      FirebaseDatabase.instance.ref().child('chat/messages');
+
+  DatabaseReference messageRef(String roomId) => messagesRef.child(roomId);
+
+  final DatabaseReference joinsRef =
+      FirebaseDatabase.instance.ref().child('chat/joins');
+
+  DatabaseReference joinRef(String roomId) =>
+      joinsRef.child(myUid!).child(roomId);
+
+  final DatabaseReference invitedUsersRef =
+      FirebaseDatabase.instance.ref().child('chat/invited-users');
+
+  DatabaseReference invitedUserRef(String uid) => invitedUsersRef.child(uid);
+
+  final DatabaseReference rejectedUsersRef =
+      FirebaseDatabase.instance.ref().child('chat').child('rejected-users');
+
+  DatabaseReference rejectedUserRef(String uid) => rejectedUsersRef.child(uid);
+
+  DatabaseReference unreadMessageCountRef(String roomId) =>
+      FirebaseDatabase.instance
+          .ref()
+          .child('chat')
+          .child('settings')
+          .child(myUid!)
+          .child('unread-message-count')
+          .child(roomId);
+
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;
-  Future<fs.DocumentReference?> Function(BuildContext context,
-      {ChatRoom? room})? $showChatRoomEditScreen;
+
+  /// TODO: Add the return type
+  Future Function(BuildContext context, {ChatRoom? room})?
+      $showChatRoomEditScreen;
 
   /// Add custom widget on chatroom header,.
   /// e.g. push notification toggle button to unsubscribe/subscribe to notification
@@ -56,11 +93,11 @@ class ChatService {
 
   /// Builder for showing a screen for chat room invites received by user.
   Widget Function(BuildContext context)?
-      receivedChatRoomInviteListScreenBuilder;
+      chatRoomReceivedInviteListScreenBuilder;
 
   /// Builder for showing a screen for chat room invites rejected by user.
   Widget Function(BuildContext context)?
-      rejectedChatRoomInviteListScreenBuilder;
+      chatRoomRejectedInviteListScreenBuilder;
 
   /// Builder for showing Dialog for chat member list
   Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder;
@@ -69,17 +106,12 @@ class ChatService {
   Widget Function(BuildContext context, ChatRoom room)?
       blockedUsersDialogBuilder;
 
-  /// User settings
-  DocumentModel get setting =>
-      DocumentModel(collectionName: 'chat-settings', id: myUid!);
-  DocumentModel otherUserSetting(String uid) =>
-      DocumentModel(collectionName: 'chat-settings', id: uid);
-
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
-    Future<fs.DocumentReference?> Function(BuildContext context,
-            {ChatRoom? room})?
+
+    /// TODO: Add the return type
+    Future Function(BuildContext context, {ChatRoom? room})?
         $showChatRoomEditScreen,
     Function({required ChatMessage message, required ChatRoom room})?
         onSendMessage,
@@ -89,9 +121,9 @@ class ChatService {
     Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
     Widget Function(BuildContext context)?
-        receivedChatRoomInviteListScreenBuilder,
+        chatRoomReceivedInviteListScreenBuilder,
     Widget Function(BuildContext context)?
-        rejectedChatRoomInviteListScreenBuilder,
+        chatRoomRejectedInviteListScreenBuilder,
     Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
     Widget Function(BuildContext context, ChatRoom room)?
         blockedUsersDialogBuilder,
@@ -111,65 +143,28 @@ class ChatService {
     this.onSendMessage = onSendMessage;
     this.onInvite = onInvite;
     this.loginButtonBuilder = loginButtonBuilder;
-    this.receivedChatRoomInviteListScreenBuilder =
-        receivedChatRoomInviteListScreenBuilder;
-    this.rejectedChatRoomInviteListScreenBuilder =
-        rejectedChatRoomInviteListScreenBuilder;
+    this.chatRoomReceivedInviteListScreenBuilder =
+        chatRoomReceivedInviteListScreenBuilder;
+    this.chatRoomRejectedInviteListScreenBuilder =
+        chatRoomRejectedInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
     this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
-
-    resetInvitationCount();
   }
-
-  /// Reset the invitation count.
-  ///
-  /// Since the count may goes wrong, because the security rules is open.
-  void resetInvitationCount() async {
-    if (UserService.instance.notSignedIn) return;
-    final countSnapshot = await ChatService.instance.roomCol
-        .where(ChatRoom.field.invitedUsers, arrayContains: myUid)
-        .count()
-        .get();
-
-    setting.update(
-      {
-        'chatInvitationCount': countSnapshot.count,
-      },
-    );
-  }
-
-  /// Firebase CollectionReference for Chat Room docs
-  fs.CollectionReference get roomCol =>
-      fs.FirebaseFirestore.instance.collection('chat-rooms');
-
-  /// Firebase chat collection query by new message counter for the current user.
-  fs.Query get myRoomQuery => roomCol.orderBy(
-      '${ChatRoom.field.users}.$myUid.${ChatRoomUser.field.newMessageCounter}');
-
-  /// CollectionReference for Chat Room Meta docs
-  fs.CollectionReference roomMetaCol(String roomId) =>
-      fs.FirebaseFirestore.instance
-          .collection('chat-rooms')
-          .doc(roomId)
-          .collection('chat-room-meta');
-
-  /// DocumentReference for chat room private settings.
-  fs.DocumentReference roomPrivateDoc(String roomId) =>
-      roomMetaCol(roomId).doc('private');
-
-  db.DatabaseReference messageRef(String roomId) =>
-      db.FirebaseDatabase.instance.ref().child("chat-messages").child(roomId);
 
   /// Show the chat room list screen.
   Future showChatRoomListScreen(
     BuildContext context, {
-    ChatRoomQuery queryOption = ChatRoomQuery.allMine,
+    bool? single,
+    bool? group,
+    bool? open,
   }) {
     return $showChatRoomListScreen?.call() ??
         showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomListScreen(
-            queryOption: queryOption,
+            single: single,
+            group: group,
+            open: open,
           ),
         );
   }
@@ -180,8 +175,8 @@ class ChatService {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) =>
-          receivedChatRoomInviteListScreenBuilder?.call(context) ??
-          const ReceivedChatRoomInviteListScreen(),
+          chatRoomReceivedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomReceivedInviteListScreen(),
     );
   }
 
@@ -193,17 +188,21 @@ class ChatService {
         showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => const ChatRoomListScreen(
-            queryOption: ChatRoomQuery.open,
+            open: true,
           ),
         );
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
   /// Return Dialog/Screen that may return DocReference
-  Future<fs.DocumentReference?> showChatRoomEditScreen(BuildContext context,
+  ///
+  /// TODO: Add the return type
+  Future showChatRoomEditScreen(BuildContext context,
       {ChatRoom? room, bool defaultOpen = false}) {
     return $showChatRoomEditScreen?.call(context, room: room) ??
-        showGeneralDialog<fs.DocumentReference>(
+
+        /// TODO: Add the return type
+        showGeneralDialog(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomEditScreen(
             room: room,
@@ -230,30 +229,138 @@ class ChatService {
     return showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) =>
-          rejectedChatRoomInviteListScreenBuilder?.call(context) ??
-          const RejectedChatRoomInviteListScreen(),
+          chatRoomRejectedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomRejectedInviteListScreen(),
     );
   }
 
+  /// send message
   Future sendMessage(
     ChatRoom room, {
     String? photoUrl,
     String? text,
     ChatMessage? replyTo,
   }) async {
-    if ((text ?? "").isEmpty && (photoUrl == null || photoUrl.isEmpty)) return;
-    await _shouldBeOrBecomeMember(room);
+    dog("Is Joined ${room.joined}");
+    dog("Room users: ${room.users}");
 
+    if (room.joined == false) {
+      // Rear exception
+      throw ChatException('join-required-to-send-message', 'Join required');
+    }
+
+    /// Create new message
     final newMessage = await ChatMessage.create(
       roomId: room.id,
       text: text,
       url: photoUrl,
       replyTo: replyTo,
     );
-    await room.updateNewMessagesMeta();
+
+    ///
+    await room.updateUnreadMessageCount();
+
+    ///
+    await inviteOtherUserIfSingleChat(room);
+
+    ///
     updateUrlPreview(newMessage, text);
 
+    /// Callback
     onSendMessage?.call(message: newMessage, room: room);
+  }
+
+  /// Invite the other user if not joined in single chat.
+  ///
+  /// This is only for single chat.
+  ///
+  ///
+  ///
+  /// Where:
+  /// - ChatRoomScreen -> ChatRoomInputBox -> inviteOtherUserInSingleChat
+  /// - This method can be used in anywhere.
+  Future inviteOtherUserIfSingleChat(ChatRoom room) async {
+    // Return if it's not single chat
+    if (room.single == false) return;
+
+    // Return if both users are already joined
+    if (room.userUids.length == 2) return;
+
+    // Return if the other user rejected. Don't send invitation again once rejected.
+    final otherUserUid = getOtherUserUidFromRoomId(room.id)!;
+    final snapshot =
+        await ChatService.instance.rejectedUserRef(otherUserUid).get();
+    if (snapshot.exists) {
+      return;
+    }
+
+    // Invite the other user
+    await inviteUser(room, otherUserUid);
+  }
+
+  /// Invite a user into the chat room.
+  ///
+  /// Purpose:
+  /// - This can be used to invite a user into the chat room.
+  /// - It can be used for single chat and group chat.
+  ///
+  /// Where:
+  /// - It's used in ChatRoomScreen menu to invite a user.
+  /// - It's called from ChatService::inviteOtherUserInSingleChat
+  /// - This can be used in any where.
+  Future inviteUser(ChatRoom room, String uid) async {
+    await invitedUserRef(uid).child(room.id).set(ServerValue.timestamp);
+    onInvite?.call(room: room, uid: uid);
+  }
+
+  /// Accepts the room invitation
+  Future<void> accept(ChatRoom room) async {
+    // Review: RTDB security should be the one handling if
+    //         user can join and accept room.
+
+    final accept = {
+      // Remove the invitation
+      invitedUserRef(myUid!).child(room.id).path: null,
+      // In case, invitation was mistakenly rejected
+      rejectedUserRef(myUid!).child(room.id).path: null,
+      // Add uid in users
+      room.ref.child('users').child(myUid!).path: false,
+      // update updatedAt
+      room.ref.child('updatedAt').child(myUid!).path: false,
+      // Add in chat joins
+      'chat/joins/${myUid!}/${room.id}/joinedAt': ServerValue.timestamp,
+      if (room.single)
+        'chat/joins/${myUid!}/${room.id}/singleOrder': ServerValue.timestamp,
+      if (room.group)
+        'chat/joins/${myUid!}/${room.id}/groupOrder': ServerValue.timestamp,
+      'chat/joins/${myUid!}/${room.id}/order': ServerValue.timestamp,
+    };
+
+    await FirebaseDatabase.instance.ref().update(accept);
+  }
+
+  /// Rejects the room invitation
+  Future<void> reject(ChatRoom room) async {
+    final reject = {
+      // Remove the invitation
+      invitedUserRef(myUid!).child(room.id).path: null,
+      // Add as Rejected Invitaion
+      rejectedUserRef(myUid!).child(room.id).path: ServerValue.timestamp,
+    };
+    await FirebaseDatabase.instance.ref().update(reject);
+  }
+
+  /// Leave from Chat Room
+  ///
+  /// TODO: delete settings also.
+  Future<void> leave(ChatRoom room) async {
+    final leave = {
+      // remove uid in room's user
+      roomRef(room.id).child('users').child(myUid!).path: null,
+      // remove roomId in user's chat joins
+      'chat/joins/${myUid!}/${room.id}': null,
+    };
+    await FirebaseDatabase.instance.ref().update(leave);
   }
 
   /// URL Preview 업데이트
@@ -277,14 +384,14 @@ class ChatService {
   _shouldBeOrBecomeMember(
     ChatRoom room,
   ) async {
-    if (room.joined) return;
-    if (room.open) return await room.join();
-    if (room.invitedUsers.contains(myUid!) ||
-        room.rejectedUsers.contains(myUid!)) {
-      // The user may mistakenly reject the chat room
-      // The user may accept it by replying.
-      return await room.acceptInvitation();
-    }
+    // if (room.joined) return;
+    // if (room.open) return await room.join();
+    // if (room.invitedUsers.contains(myUid!) ||
+    //     room.rejectedUsers.contains(myUid!)) {
+    //   // The user may mistakenly reject the chat room
+    //   // The user may accept it by replying.
+    //   return await room.acceptInvitation();
+    // }
     throw ChatException(
       "uninvited-chat",
       'can only send message if member, invited or open chat'.t,
@@ -305,38 +412,22 @@ class ChatService {
     );
   }
 
-  /// states for chat message reply
+  /// States for chat message reply
+  ///
+  /// Why:
+  /// - The reply action is coming from the chat bubble menu.
+  /// - And the UI (popup) for the reply appears on top of the chat input box.
+  /// - It needs to keep the state whether the reply is enabled or not.
   ValueNotifier<ChatMessage?> reply = ValueNotifier<ChatMessage?>(null);
   bool get replyEnabled => reply.value != null;
   clearReply() => reply.value = null;
 
   /// Get chat rooms
   ///
+  /// Returns a list of chat rooms based on the query.
   ///
-  Future<List<ChatRoom>> getChatRooms({
-    required fs.Query query,
-  }) async {
-    final snapshot = await query.get();
-    if (snapshot.size == 0) return [];
-    return snapshot.docs.map((e) => ChatRoom.fromSnapshot(e)).toList();
-  }
-
-  /// Why is it in UserService? Not in user.dart model?
-  /// This is because; this method updates other user docuemnt. Not the login user's document.
-  Future<void> increaseInvitationCount(String otherUid) async {
-    await otherUserSetting(otherUid).update(
-      {
-        'chatInvitationCount': fs.FieldValue.increment(1),
-      },
-    );
-  }
-
-  /// It decreases the invitation count of the currently logged-in user.
-  Future<void> decreaseInvitationCount() async {
-    await setting.update(
-      {
-        'chatInvitationCount': fs.FieldValue.increment(-1),
-      },
-    );
+  ///
+  Future<List<ChatRoom>> getChatRooms() async {
+    throw UnimplementedError();
   }
 }

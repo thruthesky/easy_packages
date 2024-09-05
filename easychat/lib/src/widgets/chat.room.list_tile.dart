@@ -18,9 +18,9 @@ class ChatRoomListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (room.group) {
+    if (room.group == true) {
       return ListTile(
-        minTileHeight: 70,
+        minTileHeight: 72,
         leading: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -57,6 +57,7 @@ class ChatRoomListTile extends StatelessWidget {
           uid: getOtherUserUidFromRoomId(room.id)!,
           builder: (user) {
             return ListTile(
+              minTileHeight: 72,
               leading: user == null ? null : UserAvatar(user: user),
               title: Text(user != null && user.displayName.trim().isNotEmpty
                   ? user.displayName
@@ -71,6 +72,9 @@ class ChatRoomListTile extends StatelessWidget {
     );
   }
 
+  /// Returns a subtitle widget for the chat room list tile in chat room list view.
+  ///
+  /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
     if (!room.userUids.contains(myUid)) {
       if (room.description.trim().isEmpty) {
@@ -95,14 +99,25 @@ class ChatRoomListTile extends StatelessWidget {
         // Maybe we can cache here to prevent the sudden "..." when the order is
         // being changed when there is new user.
         if (snapshot.data?.snapshot.value == null) {
-          return Text(
-            "single chat no message yet".t,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-            ),
-          );
+          if (room.single == true) {
+            return Text(
+              'single chat no message, no invitations'.t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          } else {
+            return Text(
+              'no message yet'.t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+              ),
+            );
+          }
         }
         final firstRecord =
             Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
@@ -162,14 +177,21 @@ class ChatRoomListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
-          ChatService.instance.newMessageBuilder?.call(
-                  (room.users[myUid]!.newMessageCounter ?? 0).toString()) ??
-              Badge(
-                label: Text(
-                  "${room.users[myUid!]!.newMessageCounter}",
-                ),
-              ),
+        // TODO show proper unread count
+        const Badge(
+          label: Text(
+            "999",
+          ),
+        ),
+
+        // if ((room.users[myUid]?.newMessageCounter ?? 0) > 0)
+        //   ChatService.instance.newMessageBuilder?.call(
+        //           (room.users[myUid]!.newMessageCounter ?? 0).toString()) ??
+        //       Badge(
+        //         label: Text(
+        //           "${room.users[myUid!]!.newMessageCounter}",
+        //         ),
+        //       ),
         Text((room.updatedAt).short),
       ],
     );

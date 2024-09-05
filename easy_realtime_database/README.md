@@ -4,7 +4,7 @@ This is a helper package for Firebase realtime database.
 
 
 
-## How to use
+## Widgets
 
 ### Value and toggle
 
@@ -20,3 +20,37 @@ Value(
 ),
 ```
 
+
+More comprehensive example:
+```dart
+Value(
+  ref: FirebaseDatabase.instance.ref('tmp/a'),
+  builder: (v, r) => TextButton(
+    child: Text('Value: $v'),
+    onPressed: () => r.set(
+      'Time : ${DateTime.now()}',
+    ),
+  ),
+),
+Value.once(
+  ref: FirebaseDatabase.instance.ref('tmp/a'),
+  builder: (v, r) => TextButton(
+    child: Text('Value: $v'),
+    onPressed: () => r.set(
+      'Time : ${DateTime.now()}',
+    ),
+  ),
+),
+```
+
+
+## DatabaseLimitedListView
+
+- See the example
+
+
+
+## DatabaseLimitedQueryBuilder
+
+
+- See the example

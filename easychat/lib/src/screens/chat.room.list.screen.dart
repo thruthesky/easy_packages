@@ -3,66 +3,57 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class ChatRoomListScreen extends StatefulWidget {
+class ChatRoomListScreen extends StatelessWidget {
   const ChatRoomListScreen({
     super.key,
-    this.queryOption = ChatRoomQuery.allMine,
+    this.single,
+    this.group,
+    this.open,
   });
 
-  final ChatRoomQuery queryOption;
-
-  @override
-  State<ChatRoomListScreen> createState() => _ChatRoomListScreenState();
-}
-
-class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
-  late ChatRoomQuery queryOption;
-
-  @override
-  void initState() {
-    super.initState();
-    queryOption = widget.queryOption;
-  }
+  final bool? single;
+  final bool? group;
+  final bool? open;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            'chat room list screen title: ${queryOption.name.toLowerCase()}'.t),
+        // title: Text(
+        //     'chat room list screen title: ${queryOption.name.toLowerCase()}'.t),
         actions: [
           IconButton(
             onPressed: () {
               ChatService.instance.showChatRoomEditScreen(
                 context,
-                defaultOpen: queryOption == ChatRoomQuery.open,
+                // defaultOpen: queryOption == ChatRoomQuery.open,
               );
             },
             icon: const Icon(Icons.add),
           ),
-          PopupMenuButton(
-            icon: const Icon(Icons.settings),
-            onSelected: (q) {
-              setState(() {
-                queryOption = q;
-              });
-            },
-            constraints: const BoxConstraints(
-              maxWidth: 180,
-            ),
-            itemBuilder: (BuildContext context) {
-              return ChatRoomQuery.values
-                  .map(
-                    (q) => PopupMenuItem(
-                      value: q,
-                      child: Text(
-                          'chat room list screen option: ${q.name.toLowerCase()}'
-                              .t),
-                    ),
-                  )
-                  .toList();
-            },
-          ),
+          // PopupMenuButton(
+          //   icon: const Icon(Icons.settings),
+          //   onSelected: (q) {
+          //     setState(() {
+          //       queryOption = q;
+          //     });
+          //   },
+          //   constraints: const BoxConstraints(
+          //     maxWidth: 180,
+          //   ),
+          //   itemBuilder: (BuildContext context) {
+          //     return ChatRoomQuery.values
+          //         .map(
+          //           (q) => PopupMenuItem(
+          //             value: q,
+          //             child: Text(
+          //                 'chat room list screen option: ${q.name.toLowerCase()}'
+          //                     .t),
+          //           ),
+          //         )
+          //         .toList();
+          //   },
+          // ),
         ],
       ),
       body: AuthStateChanges(
@@ -80,7 +71,9 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
             );
           }
           return ChatRoomListView(
-            queryOption: queryOption,
+            single: single,
+            group: group,
+            open: open,
             itemBuilder: (context, room, index) {
               return ChatRoomListTile(
                 room: room,

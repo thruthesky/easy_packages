@@ -5,7 +5,6 @@ import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.blocked.users.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_report/easy_report.dart';
 
 class ChatRoomMenuDrawer extends StatelessWidget {
   const ChatRoomMenuDrawer({
@@ -199,20 +198,21 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         exactSearch: true,
                       );
                       if (selectedUser == null) return;
-                      if (room!.invitedUsers.contains(selectedUser.uid)) {
-                        throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
-                        );
-                      }
-                      if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                        // The chat room is already rejected by the other user, we are
-                        // not showing if user rejected the invitation.
-                        throw ChatException(
-                          'already-invited',
-                          'the user is already invited'.t,
-                        );
-                      }
+                      // TODO : invitged users and rejecte users
+                      // if (room!.invitedUsers.contains(selectedUser.uid)) {
+                      //   throw ChatException(
+                      //     'already-invited',
+                      //     'the user is already invited'.t,
+                      //   );
+                      // }
+                      // if (room!.rejectedUsers.contains(selectedUser.uid)) {
+                      //   // The chat room is already rejected by the other user, we are
+                      //   // not showing if user rejected the invitation.
+                      //   throw ChatException(
+                      //     'already-invited',
+                      //     'the user is already invited'.t,
+                      //   );
+                      // }
                       if (room!.userUids.contains(selectedUser.uid)) {
                         throw ChatException(
                           'already-member',
@@ -232,7 +232,11 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           'you cannot invite yourself'.t,
                         );
                       }
-                      await room!.inviteUser(selectedUser.uid);
+                      // await room!.inviteUser(selectedUser.uid);
+                      await ChatService.instance.inviteUser(
+                        room!,
+                        selectedUser.uid,
+                      );
                       if (!context.mounted) return;
                       alert(
                         context: context,
@@ -361,12 +365,13 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       message: Text('leaving room confirmation'.t),
                     );
                     if (re != true) return;
-                    room!.leave();
+                    // room!.leave();
                     if (!context.mounted) return;
                     // two pops since we are opening both
                     // drawer and room screen.
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
+                    await ChatService.instance.leave(room!);
                   },
                 ),
               ],
@@ -382,11 +387,16 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 ListTile(
                   title: Text('report'.t),
                   onTap: () {
-                    ReportService.instance.report(
-                      context: context,
-                      documentReference: room?.ref ?? user!.ref,
-                      otherUid: user?.uid ?? room!.masterUsers.first,
-                    );
+                    throw UnimplementedError(
+                        'Report service must be updated since it only support Firestore document. Make it support the path of the document. So it can support realtime database.');
+
+                    /// TODO: Report service must accept the path of the document as String.
+                    /// TODO: Report service must have the title, content, reason, photo urls, etc. to report with enough information.
+                    // ReportService.instance.report(
+                    //   context: context,
+                    //   documentReference: room?.ref.path ?? user!.ref.path,
+                    //   otherUid: user?.uid ?? room!.masterUsers.first,
+                    // );
                   },
                 )
               ],
