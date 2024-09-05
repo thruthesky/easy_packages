@@ -37,6 +37,7 @@ class _ChatInvitationListTileActionsState
                   if (inProgress) return;
                   setState(() => inProgress = true);
                   await widget.onTapAccept();
+                  if (!mounted) return;
                   setState(() => inProgress = false);
                 },
           style: ElevatedButton.styleFrom(
