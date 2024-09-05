@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -50,8 +49,6 @@ class ChatRoom {
   // Map<String, ChatRoomUser> users;
   Map<String, bool> users;
 
-  // List<String> get userUids => users.keys.toList();
-  // TODO clean up and depricate
   List<String> get userUids => users.keys.toList();
 
   bool get joined => userUids.contains(myUid);
@@ -89,11 +86,6 @@ class ChatRoom {
   String domain;
 
   bool allMembersCanInvite = false;
-
-  /// True if the user has seen the last message. Meaning, there is no more new messages in the chat room.
-  // bool get iSeen => users[myUid!].newMessageCounter == 0;
-  // TODO CLEAN UP
-  bool get iSeen => false;
 
   /// Uids for single chat is combination of both users' uids separated by "---"
   /// Returns list of uids based on the room id.
@@ -138,12 +130,6 @@ class ChatRoom {
   }
 
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
-    // TODO cleanup
-    // final usersMap = Map<String, dynamic>.from((json['users'] ?? {}) as Map);
-    // final users = List<String>.from(json['users'] as List<Object?>);
-    // final users = Map<String, ChatRoomUser>.fromEntries(usersEntries.map(
-    //     (entry) =>
-    //         MapEntry(entry.key, ChatRoomUser.fromJson(json: entry.value))));
     return ChatRoom(
       id: id,
       name: json[field.name] ?? '',
@@ -171,7 +157,9 @@ class ChatRoom {
     );
   }
 
-  @Deprecated('Do not use it if it is only for the toString() method.')
+  /// Converts the model into Map<String, dynamic>
+  ///
+  /// This is used to set initial data in ChatRoomDoc widget
   Map<String, dynamic> toJson() {
     return {
       field.name: name,
@@ -180,10 +168,7 @@ class ChatRoom {
       field.open: open,
       field.single: single,
       field.group: group,
-      // TODO, clean up, will be deprecated anyway
-      // field.users: Map<String, dynamic>.fromEntries(
-      //   users.map((uid, user) => MapEntry(uid, user.toJson())).entries,
-      // ),
+      field.users: users,
       field.masterUsers: masterUsers,
       field.blockedUsers: blockedUsers,
       field.createdAt: createdAt,
@@ -497,15 +482,34 @@ class ChatRoom {
     // trancation on removing the user's uid from muplipe places like chat/join, chat/room
   }
 
+  // TODO must be in service
   Future updateUnreadMessageCount() async {
-    final Map<String, Object?> updates = Map.fromEntries(
-      userUids.where((uid) => uid != myUid).map(
-            (uid) => MapEntry(
-              'chat/settings/$uid/unread-message-count/$id',
-              ServerValue.increment(1),
-            ),
-          ),
-    );
+    // final Map<String, Object?> updates = Map.fromEntries(
+    //   userUids.where((uid) => uid != myUid).map(
+    //         (uid) => MapEntry(
+    //           'chat/settings/$uid/unread-message-count/$id',
+    //           ServerValue.increment(1),
+    //         ),
+    //       ),
+    // );
+
+    final Map<String, Object?> updates = {};
+
+    final order = DateTime.now().millisecondsSinceEpoch * -1 - 10000000000;
+
+    // TODO Revise
+    for (String uid in userUids) {
+      if (uid == myUid) continue;
+      updates['chat/settings/$uid/unread-message-count/$id'] =
+          ServerValue.increment(1);
+      updates['chat/joins/$uid/$id/order'] = order;
+      if (single) {
+        updates['chat/joins/$uid/$id/singleOrder'] = order;
+      }
+      if (group) {
+        updates['chat/joins/$uid/$id/groupOrder'] = order;
+      }
+    }
     // await ref.update(updateNewMessagesMeta);
     await FirebaseDatabase.instance.ref().update(updates);
   }
@@ -538,16 +542,34 @@ class ChatRoom {
     //     }
     //   }
     // };
-    final Map<String, Object?> updateNewMessagesMeta = Map.fromEntries(
-      userUids.where((uid) => uid != myUid).map(
-            (uid) => MapEntry(
-              'chat/settings/$uid/unread-message-count/$id',
-              ServerValue.increment(1),
-            ),
-          ),
-    );
+    // final Map<String, Object?> updateNewMessagesMeta = Map.fromEntries(
+    //   userUids.where((uid) => uid != myUid).map(
+    //         (uid) => MapEntry(
+    //           'chat/settings/$uid/unread-message-count/$id',
+    //           ServerValue.increment(1),
+    //         ),
+    //       ),
+    // );
+
+    // final Map<String, Object?> updateNewMessagesMeta = {};
+
+    // // Revise
+    // for (String uid in userUids) {
+    //   updateNewMessagesMeta['chat/settings/$uid/unread-message-count/$id'] =
+    //       ServerValue.increment(1);
+    //   if (single) {
+    //     updateNewMessagesMeta['chat/joins/$uid/$id/singleChatOrder'] =
+    //         ServerValue.timestamp;
+    //   }
+    //   if (group) {
+    //     updateNewMessagesMeta['chat/joins/$uid/$id/groupChatOrder'] =
+    //         ServerValue.timestamp;
+    //   }
+    // }
+
+    //)
     // await ref.update(updateNewMessagesMeta);
-    await FirebaseDatabase.instance.ref().update(updateNewMessagesMeta);
+    // await FirebaseDatabase.instance.ref().update(updateNewMessagesMeta);
 
     // throw 'Not implemented yet';
 

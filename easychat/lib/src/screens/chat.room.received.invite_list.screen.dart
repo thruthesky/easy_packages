@@ -3,7 +3,6 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomReceivedInviteListScreen extends StatelessWidget {
@@ -25,16 +24,15 @@ class ChatRoomReceivedInviteListScreen extends StatelessWidget {
         ),
         body: myUid == null
             ? Center(child: Text('sign-in first'.t))
-            // : const Text('TODO: invitation list screen'),
-            // TODO: Use ChatInvitationListView instead.
+            // Right now, this is the only place we are using
+            // this ChatInvitationListView. Separate if it is going to be reused.
             : FirebaseDatabaseListView(
                 query: FirebaseDatabase.instance
                     .ref()
                     .child("chat/invited-users/$myUid"),
                 itemBuilder: (context, snapshot) {
-                  //   final room = ChatRoom.fromSnapshot(snapshot);
                   return ChatRoomDoc(
-                    ref: ChatService.instance.roomRef(snapshot.key!),
+                    roomId: snapshot.key,
                     builder: (room) {
                       return ChatInvitationListTile(
                         room: room,

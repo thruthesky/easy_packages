@@ -5,7 +5,6 @@ import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.blocked.users.dialog.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_report/easy_report.dart';
 
 class ChatRoomMenuDrawer extends StatelessWidget {
   const ChatRoomMenuDrawer({

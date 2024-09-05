@@ -198,9 +198,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               ],
       ),
       endDrawer: joined
-          ? ChatRoomMenuDrawer(
-              room: room,
-              user: widget.user,
+          ? ChatRoomDoc(
+              roomId: room!.id,
+              builder: (context) {
+                return ChatRoomMenuDrawer(
+                  room: room,
+                  user: widget.user,
+                );
+              },
             )
           : null,
       body: room == null
@@ -218,16 +223,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
                 SafeArea(
                   top: false,
-                  child: ChatRoomInputBox(
-                    room: room!,
-                    onSend: (text, photoUrl, replyTo) {
-                      // Invite the other user in 1:1 chat
-                      //
-                      // Invite the other user if the other user is not invited yet.
-                      // This is only for single chat.
-                      //
-                      // Refer README.md for more information.
-                      // ChatService.instance.inviteOtherUserIfSingleChat(room!);
+                  child: ChatRoomDoc(
+                    roomId: room!.id,
+                    onLoading: ChatRoomInputBox(
+                      key: ValueKey("ChatRoomInputBox_${room?.id}"),
+                      room: room!,
+                    ),
+                    builder: (room) {
+                      return ChatRoomInputBox(
+                        key: ValueKey("ChatRoomInputBox_${room.id}"),
+                        room: room,
+                      );
                     },
                   ),
                 ),

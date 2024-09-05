@@ -47,7 +47,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
     nameController.text = room!.name;
     descriptionController.text = room!.description;
 
-    open = room!.open ?? false;
+    open = room?.open ?? false;
     allMembersCanInvite = room!.allMembersCanInvite;
   }
 

@@ -128,7 +128,7 @@ class _ChatInvitationPreviewListViewState
               (listViewContext, index) => const SizedBox.shrink(),
           itemBuilder: (listViewContext, index) {
             return ChatRoomDoc(
-              ref: ChatService.instance.roomRef(roomIds[index]),
+              roomId: roomIds[index],
               builder: (room) {
                 return widget.itemBuilder?.call(context, room, index) ??
                     ChatInvitationListTile(
