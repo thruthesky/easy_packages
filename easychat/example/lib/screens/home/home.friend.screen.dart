@@ -106,6 +106,7 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                   ],
                 );
               },
+
               // onChatRoomTap: (chatRoom) {
               //   ChatService.instance.showChatRoomScreen(context, chatRoom: chatRoom);
               // },

@@ -45,7 +45,8 @@ class ChatJoin {
       groupOrder: json[f.groupOrder],
       openOrder: json[f.openOrder],
       order: json[f.order],
-      lastMessageAt: DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt]),
+      lastMessageAt:
+          DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
       name: json['name'] ?? '',
       iconUrl: json['iconUrl'] ?? '',
       displayName: json['displayName'] ?? '',

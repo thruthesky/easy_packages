@@ -7,16 +7,28 @@ import 'package:flutter/material.dart';
 
 /// Chat room screen
 ///
+/// TODO: chat join has some information about the room data.
+/// TODO: if join data is single chat room,
+/// (1) display title with displayName and photo.
+/// (2) diplay the chat message list and chat input if possible
+/// (3) load the chat room and user data.
+///
+/// TODO: if join data is a group chat,
+/// (1) display title with name and iconUrl.
+/// (2) display the chat message list and chat input if possible
+/// (3) load the chat room data.
 ///
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({
     super.key,
     this.room,
     this.user,
+    this.join,
   }) : assert(room != null || user != null);
 
   final ChatRoom? room;
   final User? user;
+  final ChatJoin? join;
 
   @override
   State<ChatRoomScreen> createState() => _ChatRoomScreenState();

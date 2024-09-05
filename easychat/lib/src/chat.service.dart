@@ -211,21 +211,28 @@ class ChatService {
         );
   }
 
+  /// Display the chat room screen.
+  ///
+  /// [join] is the chat join data.
   showChatRoomScreen(
     BuildContext context, {
     User? user,
     ChatRoom? room,
     ChatJoin? join,
-  }) {
-    assert(user != null || room != null);
-    return showGeneralDialog(
-      context: context,
-      barrierLabel: "Chat Room",
-      pageBuilder: (_, __, ___) => ChatRoomScreen(
-        user: user,
-        room: room,
-      ),
-    );
+  }) async {
+    assert(user != null || room != null || join != null);
+
+    if (context.mounted) {
+      return showGeneralDialog(
+        context: context,
+        barrierLabel: "Chat Room",
+        pageBuilder: (_, __, ___) => ChatRoomScreen(
+          user: user,
+          room: room,
+          join: join,
+        ),
+      );
+    }
   }
 
   showRejectListScreen(

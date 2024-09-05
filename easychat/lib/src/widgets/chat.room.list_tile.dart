@@ -5,7 +5,6 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:easyuser/easyuser.dart';
 
 /// Display chat room list tile
 class ChatRoomListTile extends StatelessWidget {
@@ -47,19 +46,28 @@ class ChatRoomListTile extends StatelessWidget {
         }
         return ListTile(
           minTileHeight: 72,
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(20),
-                // border: border,
-              ),
-              child: CachedNetworkImage(imageUrl: join.iconUrl),
-            ),
-          ),
+          leading: join.photoUrl.isEmpty
+              ? CircleAvatar(
+                  child: Text(getOtherUserUidFromRoomId(join.roomId)!
+                      .characters
+                      .first
+                      .toUpperCase()),
+                )
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(20),
+                      // border: border,
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: join.photoUrl,
+                    ),
+                  ),
+                ),
           title: Text(join.name.or('...')),
           subtitle: subtitle(context),
           trailing: trailing,
