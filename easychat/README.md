@@ -173,6 +173,9 @@ For your information on `easychat` history:
 
 ## Chat join
 
+
+- Chat join data will have enough data to display chat room list and chat room app bar. So, it will display data quickly without flickering.
+
 - `/chat/joins/<uid>/<room-id> { ... }`: This is the relation ship bewteen who joined which room.
   - To list 1:1 chat rooms, it can query like `FirebaseDatabase.instance.ref('chat/joins/' + myUid).orderByChild('singleOrder');`
 - `singleOrder`: Ordering single chat. It only exists if it is single chat.
