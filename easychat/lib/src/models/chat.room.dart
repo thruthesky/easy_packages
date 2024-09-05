@@ -110,25 +110,13 @@ class ChatRoom {
     required this.domain,
   });
 
+  /// Return the chat room object from the snapshot.
   factory ChatRoom.fromSnapshot(DataSnapshot data) {
     return ChatRoom.fromJson(
         (Map<String, dynamic>.from(data.value as Map)), data.key!);
   }
 
-  static Map<String, bool> convertMapToStringBool(
-      Map<Object?, Object?>? original) {
-    if (original == null) return {};
-    Map<String, bool> newMap = {};
-
-    original.forEach((key, value) {
-      if (key is String && value is bool) {
-        newMap[key] = value;
-      }
-    });
-
-    return newMap;
-  }
-
+  /// Return the chat room object from the json.
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
     return ChatRoom(
       id: id,
@@ -159,7 +147,7 @@ class ChatRoom {
 
   /// Converts the model into Map<String, dynamic>
   ///
-  /// This is used to set initial data in ChatRoomDoc widget
+  /// * Use it only for debug purpose !!
   Map<String, dynamic> toJson() {
     return {
       field.name: name,
