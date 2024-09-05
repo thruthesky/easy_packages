@@ -25,6 +25,7 @@ class ChatRoomDoc extends StatelessWidget {
   Widget build(BuildContext context) {
     final ref = ChatService.instance.roomRef(roomId);
 
+    /// Without initialData, it will flickering when chat room data is loaded on a list
     return Value(
       ref: ref,
       initialData: chatRoomDataCache[roomId],
