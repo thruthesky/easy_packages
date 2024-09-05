@@ -51,12 +51,13 @@ class ChatRoomListView extends StatelessWidget {
     Query query = ChatService.instance.joinsRef.child(myUid!);
 
     if (single == true) {
-      query = query.orderByChild("singleChatOrder");
+      query = query.orderByChild(singleOrder).startAt(false);
     } else if (group == true) {
-      query = query.orderByChild("groupChatOrder");
+      query = query.orderByChild(groupOrder).startAt(false);
     } else if (open == true) {
+      query = query.orderByChild(openOrder).startAt(false);
     } else {
-      query = query.orderByChild("order").startAt(-12000123456789);
+      query = query.orderByChild("order").startAt(false);
     }
 
     return query;
@@ -136,11 +137,11 @@ class ChatRoomListView extends StatelessWidget {
 
                   final joinDoc = snapshot.docs[index];
 
-                  dog("order: ${(joinDoc.value as Map)['order'].toString()}");
-                  dog("join doc: ${joinDoc.value}");
+                  // dog("order: ${(joinDoc.value as Map)['order'].toString()}");
+                  // dog("join doc: ${joinDoc.value}");
 
                   return ChatRoomDoc(
-                    roomId: joinDoc.key,
+                    roomId: joinDoc.key!,
                     key: ValueKey("ChatRoomListView_${joinDoc.key}"),
                     onLoading: const ListTile(
                       leading: CircularProgressIndicator(),

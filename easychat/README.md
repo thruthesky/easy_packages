@@ -26,10 +26,13 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Changing the chat room name](#changing-the-chat-room-name)
     - [Saving push notifications](#saving-push-notifications)
   - [Invited, Rejected Users](#invited-rejected-users)
+  - [Server timestamp](#server-timestamp)
 - [Widgets](#widgets)
   - [Displaying chat room information](#displaying-chat-room-information)
   - [ChatInvitationCounter](#chatinvitationcounter)
   - [ChatInvitationListView](#chatinvitationlistview)
+- [Coding Guideline](#coding-guideline)
+  - [How to get server timestamp](#how-to-get-server-timestamp)
 - [Known Issues](#known-issues)
 
 # Terms
@@ -112,14 +115,18 @@ For your information on `easychat` history:
 
 - Since the realtime database has no filtering, it needs multiple order fields to display items in order.
   - For instance,
-    - singleChatOrder
-    - groupChatOrder
-    - openChatOrder
+    - singleOrder
+    - groupOrder
+    - openOrder
+    - order
 
-- The order field must have negative timestamp value to display in reverse order.
+- The order field must have negative millisecond timestamp value to display in reverse order.
 
-- To display chat rooms that have unread message, it will have -10000000000 value added to the order.
-  - The order is already negative value and it negates more with "-10000000000" to display on top of other chat rooms.
+- The milliseconds has 13 digits like `1000000000000`
+  - It negates the time like `-1000000000000`. This is the order value. So, the chat rooms are listed in reverse.
+  - If the chat room has new messages, then we add `-1` (by adding `-10000000000000` - 14 digits) infront of the order. Meaning, it becomes like `-11000000000000`. If the order begins with `-11`, then it is a chat room that has new message. if the user have seen(open) the chat room, then remove the front `-1` by dividing 10.
+
+
 
 
 - The logic of updating order #1. This logic is a bit complicated but performs better because it write the data immediately to server with client time which more likely works as expected. Then it corrects the time silently.
@@ -167,10 +174,10 @@ For your information on `easychat` history:
 ## Chat join
 
 - `/chat/joins/<uid>/<room-id> { ... }`: This is the relation ship bewteen who joined which room.
-  - To list 1:1 chat rooms, it can query like `FirebaseDatabase.instance.ref('chat/joins/' + myUid).orderByChild('singleChatOrder');`
-- `singleChatOrder`: Ordering single chat. It only exists if it is single chat.
-- `groupChatOrder`: Ordering group chat. It only exists if it's group chat.
-- `openChatOrder`: Ordering open chat. It only exists if it's a open gruop chat. It will also have `groupChatOrder`.
+  - To list 1:1 chat rooms, it can query like `FirebaseDatabase.instance.ref('chat/joins/' + myUid).orderByChild('singleOrder');`
+- `singleOrder`: Ordering single chat. It only exists if it is single chat.
+- `groupOrder`: Ordering group chat. It only exists if it's group chat.
+- `openOrder`: Ordering open chat. It only exists if it's a open gruop chat. It will also have `groupOrder`.
 
 
 ## Chat setting
@@ -214,6 +221,11 @@ For your information on `easychat` history:
 
 
 
+## Server timestamp
+
+- `/chat/-info/timestap`: This is used by the `getServerTimestamp()` function. See the comment of the function for more details.
+
+
 
 # Widgets
 
@@ -247,6 +259,17 @@ ChatRoomDoc(
 ChatInvitationListView(),
 ```
 
+
+
+# Coding Guideline
+
+
+## How to get server timestamp
+
+```dart
+int ts = await getServerTimestamp();
+print('ts: ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
+```
 
 # Known Issues
 

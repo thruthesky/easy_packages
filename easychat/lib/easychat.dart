@@ -42,3 +42,5 @@ export './src/chat.locale.dart';
 export './src/chat.service.dart';
 
 export './src/chat.query.dart';
+
+export './src/chat.defines.dart';

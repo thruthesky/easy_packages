@@ -282,15 +282,7 @@ class ChatRoom {
       newChatRoomRef = ChatService.instance.roomsRef.child(id);
     }
 
-    final Map<String, Object?> updates = {};
-    updates[newChatRoomRef.path] = newRoom;
-    updates[ChatService.instance.joinRef(newChatRoomRef.key!).path] = {
-      if (single) 'singleChatOrder': ServerValue.timestamp,
-      if (group) 'groupChatOrder': ServerValue.timestamp,
-      if (open) 'openChatOrder': ServerValue.timestamp,
-      'joinedAt': ServerValue.timestamp,
-    };
-    await FirebaseDatabase.instance.ref().update(updates);
+    await newChatRoomRef.update(newRoom);
 
     //
 
@@ -302,7 +294,8 @@ class ChatRoom {
     String otherUid, {
     String domain = '',
   }) async {
-    return await create(
+    ///
+    final ref = await create(
       group: false,
       open: false,
       single: true,
@@ -311,6 +304,8 @@ class ChatRoom {
       masterUsers: [myUid!],
       domain: domain,
     );
+
+    return ref;
   }
 
   /// [get] gets the chat room by id.
@@ -390,13 +385,11 @@ class ChatRoom {
   /// Let the current user join in chat room
   ///
   /// If user is invited, invitation count will decrease
-  @Deprecated('Only put DB CRUD in Model')
   Future<void> join() async {
     if (blockedUsers.contains(myUid)) {
       throw ChatException(
-        'chat-join-fail',
-        'failed joining. something went wrong. the room may be private or deleted.'
-            .t,
+        'blocked-user-cannot-join',
+        'Failed to join because you are blocked'.t,
       );
     }
 
@@ -468,41 +461,6 @@ class ChatRoom {
     // }
 
     // trancation on removing the user's uid from muplipe places like chat/join, chat/room
-  }
-
-  // TODO must be in service
-  /// Update the unread message count.
-  ///
-  /// Refere README.md for more details
-  Future updateUnreadMessageCount() async {
-    // final Map<String, Object?> updates = Map.fromEntries(
-    //   userUids.where((uid) => uid != myUid).map(
-    //         (uid) => MapEntry(
-    //           'chat/settings/$uid/unread-message-count/$id',
-    //           ServerValue.increment(1),
-    //         ),
-    //       ),
-    // );
-
-    final Map<String, Object?> updates = {};
-
-    final order = DateTime.now().millisecondsSinceEpoch * -1 - 10000000000;
-
-    // TODO Revise
-    for (String uid in userUids) {
-      if (uid == myUid) continue;
-      updates['chat/settings/$uid/unread-message-count/$id'] =
-          ServerValue.increment(1);
-      updates['chat/joins/$uid/$id/order'] = order;
-      if (single) {
-        updates['chat/joins/$uid/$id/singleOrder'] = order;
-      }
-      if (group) {
-        updates['chat/joins/$uid/$id/groupOrder'] = order;
-      }
-    }
-    // await ref.update(updateNewMessagesMeta);
-    await FirebaseDatabase.instance.ref().update(updates);
   }
 
   /// This only subtracts about 50 years in time. Using subtraction

@@ -3,6 +3,7 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 const String chatRoomDivider = '---';
 
@@ -98,3 +99,31 @@ String roomTitle(ChatRoom? room, User? user) {
 //   // Else, it should be handled by the Firestore rulings.
 //   return 'unable to chat'.t;
 // }
+
+/// Returns the server timestamp.
+///
+/// There is no way to get server timestamp in client side. So, it writes the
+/// timestamp placeholder to the server, and then reads it back.
+///
+/// It returns unix timestamp in milliseconds.
+///
+/// Why:
+/// - To save the order with the server timestamp. Especially chat rooms.
+///
+/// * Caution:
+/// - Use it with careful since it produces an extra write and read operation
+///   and it may cause preformance issue even though it won't cause too much
+///   performance issue and cost problem.
+/// - Don't use it for saving chat messages which needs ultamite performance
+///   for writing and the chat messages are often created. Use this only for
+///   ordering the chat rooms.
+Future<int> getServerTimestamp() async {
+  final ref = FirebaseDatabase.instance
+      .ref()
+      .child('chat')
+      .child('-info')
+      .child('timestamp');
+  await ref.set(ServerValue.timestamp);
+  final snapshot = await ref.get();
+  return snapshot.value as int;
+}

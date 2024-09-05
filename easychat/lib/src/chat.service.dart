@@ -258,7 +258,7 @@ class ChatService {
     );
 
     ///
-    await room.updateUnreadMessageCount();
+    await updateUnreadMessageCount(room);
 
     ///
     await inviteOtherUserIfSingleChat(room);
@@ -268,6 +268,33 @@ class ChatService {
 
     /// Callback
     onSendMessage?.call(message: newMessage, room: room);
+  }
+
+  /// Update the unread message count.
+  ///
+  /// Refere README.md for more details
+  Future updateUnreadMessageCount(ChatRoom room) async {
+    int timestamp = await getServerTimestamp();
+
+    final Map<String, Object?> updates = {};
+
+    // See README.md for details
+    final order = int.parse("-1$timestamp");
+
+    for (String uid in room.userUids) {
+      if (uid == myUid) continue;
+      updates['chat/settings/$uid/unread-message-count/${room.id}'] =
+          ServerValue.increment(1);
+      updates['chat/joins/$uid/${room.id}/order'] = order;
+      if (room.single) {
+        updates['chat/joins/$uid/${room.id}/$singleOrder'] = order;
+      }
+      if (room.group) {
+        updates['chat/joins/$uid/${room.id}/$groupOrder'] = order;
+      }
+    }
+    // await ref.update(updateNewMessagesMeta);
+    await FirebaseDatabase.instance.ref().update(updates);
   }
 
   /// Invite the other user if not joined in single chat.
@@ -328,11 +355,11 @@ class ChatService {
       // update updatedAt
       room.ref.child('updatedAt').child(myUid!).path: false,
       // Add in chat joins
-      'chat/joins/${myUid!}/${room.id}/joinedAt': ServerValue.timestamp,
+      'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
       if (room.single)
-        'chat/joins/${myUid!}/${room.id}/singleOrder': ServerValue.timestamp,
+        'chat/joins/${myUid!}/${room.id}/$singleOrder': ServerValue.timestamp,
       if (room.group)
-        'chat/joins/${myUid!}/${room.id}/groupOrder': ServerValue.timestamp,
+        'chat/joins/${myUid!}/${room.id}/$groupOrder': ServerValue.timestamp,
       'chat/joins/${myUid!}/${room.id}/order': ServerValue.timestamp,
     };
 
@@ -429,5 +456,23 @@ class ChatService {
   ///
   Future<List<ChatRoom>> getChatRooms() async {
     throw UnimplementedError();
+  }
+
+  /// Set join relation: to list a chat room in my room list
+  ///
+  /// Why:
+  /// - After creating a chat room, the user should be able to see the room in the room list.
+  ///
+  /// Purpose:
+  /// - Call this whenever creating a chat room including single and group chat.
+  ///
+  setJoin(ChatRoom room) {
+    ChatService.instance.joinRef(room.id).set({
+      if (room.single) singleOrder: ServerValue.timestamp,
+      if (room.group) groupOrder: ServerValue.timestamp,
+      if (room.open) openOrder: ServerValue.timestamp,
+      'order': ServerValue.timestamp,
+      joinedAt: ServerValue.timestamp,
+    });
   }
 }
