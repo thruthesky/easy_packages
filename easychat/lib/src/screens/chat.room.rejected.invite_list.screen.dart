@@ -26,22 +26,24 @@ class ChatRoomRejectedInviteListScreen extends StatelessWidget {
                     // ref: ChatService.instance.roomRef(snapshot.key!),
                     roomId: snapshot.key!,
                     builder: (room) {
-                      return ChatRoomListTile(
-                        room: room,
-                        onTap: (context, room, user) async {
-                          final re = await confirm(
-                            context: context,
-                            title: Text('rejected chat'.t),
-                            message: Text(
-                              "you have rejected chat already, accept the chat instead?"
-                                  .t,
-                            ),
-                          );
-                          if (re ?? false) {
-                            await ChatService.instance.accept(room);
-                          }
-                        },
-                      );
+                      /// TODO: Create ChatRoomRejectedListTile
+                      return const Text("Create: ChatRoomRejectedListTile");
+                      // return ChatRoomListTile(
+                      //   room: room,
+                      //   onTap: (context, room, user) async {
+                      //     final re = await confirm(
+                      //       context: context,
+                      //       title: Text('rejected chat'.t),
+                      //       message: Text(
+                      //         "you have rejected chat already, accept the chat instead?"
+                      //             .t,
+                      //       ),
+                      //     );
+                      //     if (re ?? false) {
+                      //       await ChatService.instance.accept(room);
+                      //     }
+                      //   },
+                      // );
                     });
               },
             ),

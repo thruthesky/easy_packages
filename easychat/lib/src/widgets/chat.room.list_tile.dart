@@ -5,16 +5,16 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:easyuser/easyuser.dart';
 
+/// Display chat room list tile
 class ChatRoomListTile extends StatelessWidget {
   const ChatRoomListTile({
     super.key,
-    required this.room,
-    this.onTap,
+    required this.join,
   });
 
-  final ChatRoom room;
-  final Function(BuildContext context, ChatRoom room, User? user)? onTap;
+  final ChatJoin join;
 
   @override
   Widget build(BuildContext context) {
@@ -22,61 +22,72 @@ class ChatRoomListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        ChatNewMessageCounter(roomId: room.id),
-        Text((room.updatedAt).short),
+        ChatNewMessageCounter(roomId: join.roomId),
+        Text((join.lastMessageAt).short),
       ],
     );
-    if (room.group == true) {
+    if (join.group) {
       return ListTile(
         minTileHeight: 72,
-        leading: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Theme.of(context).colorScheme.tertiaryContainer,
-          ),
-          width: 48,
-          height: 48,
-          clipBehavior: Clip.hardEdge,
-          child: room.iconUrl != null && room.iconUrl!.isNotEmpty
-              ? CachedNetworkImage(
-                  imageUrl: room.iconUrl!,
-                  fit: BoxFit.cover,
-                )
-              : Icon(
-                  Icons.people,
-                  color: Theme.of(context).colorScheme.onTertiaryContainer,
-                ),
-        ),
+        leading: leading(context: context),
         title: Text(
-          room.name.trim().isNotEmpty ? room.name : "Group Chat",
+          join.name.trim().isNotEmpty ? join.name : "Group Chat",
         ),
         subtitle: subtitle(context),
         trailing: trailing,
-        onTap: () => onTapTile(context, room, null),
+        onTap: () =>
+            ChatService.instance.showChatRoomScreen(context, join: join),
       );
     }
     return UserBlocked(
-      otherUid: getOtherUserUidFromRoomId(room.id)!,
+      otherUid: getOtherUserUidFromRoomId(join.roomId)!,
       builder: (blocked) {
         if (blocked) {
           return const SizedBox.shrink();
         }
-        return UserDoc.sync(
-          uid: getOtherUserUidFromRoomId(room.id)!,
-          builder: (user) {
-            return ListTile(
-              minTileHeight: 72,
-              leading: user == null ? null : UserAvatar(user: user),
-              title: Text(user != null && user.displayName.trim().isNotEmpty
-                  ? user.displayName
-                  : '...'),
-              subtitle: subtitle(context),
-              trailing: trailing,
-              onTap: () => onTapTile(context, room, user),
-            );
-          },
+        return ListTile(
+          minTileHeight: 72,
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(20),
+                // border: border,
+              ),
+              child: CachedNetworkImage(imageUrl: join.iconUrl),
+            ),
+          ),
+          title: Text(join.name.or('...')),
+          subtitle: subtitle(context),
+          trailing: trailing,
+          onTap: () =>
+              ChatService.instance.showChatRoomScreen(context, join: join),
         );
       },
+    );
+  }
+
+  leading({required BuildContext context}) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Theme.of(context).colorScheme.tertiaryContainer,
+      ),
+      width: 48,
+      height: 48,
+      clipBehavior: Clip.hardEdge,
+      child: join.iconUrl.isNotEmpty
+          ? CachedNetworkImage(
+              imageUrl: join.iconUrl,
+              fit: BoxFit.cover,
+            )
+          : Icon(
+              Icons.people,
+              color: Theme.of(context).colorScheme.onTertiaryContainer,
+            ),
     );
   }
 
@@ -84,22 +95,23 @@ class ChatRoomListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
-    if (!room.userUids.contains(myUid)) {
-      if (room.description.trim().isEmpty) {
-        return null;
-      }
-      return Text(
-        room.description,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
-        ),
-      );
-    }
+    // TODO: if the user is not in the chat room, (may be in invited list), does it need to show the description?
+    // if (!room.userUids.contains(myUid)) {
+    //   if (room.description.trim().isEmpty) {
+    //     return null;
+    //   }
+    //   return Text(
+    //     room.description,
+    //     maxLines: 1,
+    //     overflow: TextOverflow.ellipsis,
+    //     style: TextStyle(
+    //       color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+    //     ),
+    //   );
+    // }
     return StreamBuilder<DatabaseEvent>(
-      key: ValueKey("LastMessageText_${room.id}"),
-      stream: ChatService.instance.messageRef(room.id).limitToLast(1).onValue,
+      stream:
+          ChatService.instance.messageRef(join.roomId).limitToLast(1).onValue,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Text("...");
@@ -107,7 +119,7 @@ class ChatRoomListTile extends StatelessWidget {
         // Maybe we can cache here to prevent the sudden "..." when the order is
         // being changed when there is new user.
         if (snapshot.data?.snapshot.value == null) {
-          if (room.single == true) {
+          if (join.single == true) {
             return Text(
               'single chat no message, no invitations'.t,
               maxLines: 1,
@@ -178,15 +190,5 @@ class ChatRoomListTile extends StatelessWidget {
         );
       },
     );
-  }
-
-  onTapTile(BuildContext context, ChatRoom room, User? user) {
-    onTap != null
-        ? onTap!.call(context, room, user)
-        : ChatService.instance.showChatRoomScreen(
-            context,
-            room: room,
-            user: user,
-          );
   }
 }

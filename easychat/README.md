@@ -160,9 +160,9 @@ For your information on `easychat` history:
 
 - `users`: Required. This is a Map of users who joined the room. The key of this map is the uid of the user. The value is boolean. If it's true, the user subscribed the chat room. If it's false, the user has unsubscribed the chat room.
 
-- `single`:
-- `group`:
-- `open`: 
+- `single`: Required.
+- `group`: Required.
+- `open`: Required.
 
 
 ## Chat message
@@ -178,6 +178,22 @@ For your information on `easychat` history:
 - `singleOrder`: Ordering single chat. It only exists if it is single chat.
 - `groupOrder`: Ordering group chat. It only exists if it's group chat.
 - `openOrder`: Ordering open chat. It only exists if it's a open gruop chat. It will also have `groupOrder`.
+
+
+- `name`, `iconUrl` fields are copied from the chat room, and
+  - `displayName`, `photoUrl` fields are copied from the user data.
+  - Note, that copying chat room data and user data looks like that;
+    - It copies the data over again, so it takes more database space.
+      - But we consider this is a minor duplication.
+    - The copied data does not sync when the master updated the chat room and the user change his name and photo.
+      - The copied data will be synced on the next chat message sending.
+
+
+- `displayName`, `photoUrl` is set when the chat is 1:1 chat.
+  - For the login user, the value of `displayName`, `photoUrl` will be the other user's data.
+  - For the other user, the vlaue of `displayName`, `photoUrl` will be the login user's data.
+
+
 
 
 ## Chat setting

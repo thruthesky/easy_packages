@@ -211,7 +211,12 @@ class ChatService {
         );
   }
 
-  showChatRoomScreen(BuildContext context, {User? user, ChatRoom? room}) {
+  showChatRoomScreen(
+    BuildContext context, {
+    User? user,
+    ChatRoom? room,
+    ChatJoin? join,
+  }) {
     assert(user != null || room != null);
     return showGeneralDialog(
       context: context,
@@ -258,7 +263,7 @@ class ChatService {
     );
 
     ///
-    await updateUnreadMessageCount(room);
+    await updateUnreadMessageCountAndJoin(room);
 
     ///
     await inviteOtherUserIfSingleChat(room);
@@ -273,7 +278,7 @@ class ChatService {
   /// Update the unread message count.
   ///
   /// Refere README.md for more details
-  Future updateUnreadMessageCount(ChatRoom room) async {
+  Future updateUnreadMessageCountAndJoin(ChatRoom room) async {
     int timestamp = await getServerTimestamp();
 
     final Map<String, Object?> updates = {};
@@ -282,9 +287,11 @@ class ChatService {
     final order = int.parse("-1$timestamp");
 
     for (String uid in room.userUids) {
-      if (uid == myUid) continue;
-      updates['chat/settings/$uid/unread-message-count/${room.id}'] =
-          ServerValue.increment(1);
+      if (uid != myUid) {
+        updates['chat/settings/$uid/unread-message-count/${room.id}'] =
+            ServerValue.increment(1);
+      }
+      updates['chat/joins/$uid/${room.id}/$lastMessageAt'] = timestamp;
       updates['chat/joins/$uid/${room.id}/order'] = order;
       if (room.single) {
         updates['chat/joins/$uid/${room.id}/$singleOrder'] = order;
@@ -292,9 +299,31 @@ class ChatService {
       if (room.group) {
         updates['chat/joins/$uid/${room.id}/$groupOrder'] = order;
       }
+
+      /// Display the chat room list information without referring to the chat room.
+      updates['chat/joins/$uid/${room.id}/name'] = room.name;
+      updates['chat/joins/$uid/${room.id}/iconUrl'] = room.iconUrl;
+
+      if (room.single && uid != myUid) {
+        updates['chat/joins/$uid/${room.id}/displayName'] = my.displayName;
+        updates['chat/joins/$uid/${room.id}/photoUrl'] = my.photoUrl;
+      }
     }
     // await ref.update(updateNewMessagesMeta);
     await FirebaseDatabase.instance.ref().update(updates);
+
+    // Write the data first for the speed of performance and then update the
+    // other user data.
+    // See README.md for details
+    if (room.single) {
+      User? user = await User.get(getOtherUserUidFromRoomId(room.id)!);
+      if (user != null) {
+        await FirebaseDatabase.instance.ref().update({
+          'chat/joins/${myUid!}/${room.id}/displayName': user.displayName,
+          'chat/joins/${myUid!}/${room.id}/photoUrl': user.photoUrl,
+        });
+      }
+    }
   }
 
   /// Invite the other user if not joined in single chat.

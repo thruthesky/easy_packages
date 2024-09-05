@@ -16,6 +16,11 @@ isSingleChatRoom(String roomId) {
 // /// 채팅방 ID 에서 그룹 채팅방 ID 인지 확인한다.
 // isGroupChat(String roomId) => roomId.split('-').length == 1;
 
+/// Returns the other user's uid from the 1:1 chat room ID.
+///
+/// If it is a group chat room ID, it returns null.
+/// If the user didn't login, it returns null.
+///
 /// 1:1 채팅방 ID 에서 다른 사용자의 uid 를 리턴한다.
 ///
 /// 그룹 채팅방 ID 이면, null 을 리턴한다.
@@ -127,3 +132,7 @@ Future<int> getServerTimestamp() async {
   final snapshot = await ref.get();
   return snapshot.value as int;
 }
+
+/// Returns the chat room reference. Shotcut for the ChatService.instance.roomRef(roomId).
+DatabaseReference roomRef(String roomId) =>
+    ChatService.instance.roomsRef.child(roomId);

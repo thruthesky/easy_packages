@@ -31,7 +31,7 @@ class ChatRoomListView extends StatelessWidget {
   final bool? group;
   final bool? open;
 
-  final Widget Function(BuildContext context, ChatRoom room, int index)?
+  final Widget Function(BuildContext context, ChatJoin join, int index)?
       itemBuilder;
   final Widget Function(BuildContext context)? emptyBuilder;
 
@@ -135,28 +135,30 @@ class ChatRoomListView extends StatelessWidget {
                     snapshot.fetchMore();
                   }
 
-                  final joinDoc = snapshot.docs[index];
+                  ChatJoin join = ChatJoin.fromSnapshot(snapshot.docs[index]);
 
-                  final value = Map<String, dynamic>.from(joinDoc.value as Map);
-
-                  /// ChatRoomListTileFromJoinDoc  을 만들고 이 안에서 필요한 노드만 가져와서 표시해야 한다. 예를 들어 제목이 필요하면, 제목만 가져와서 표시한다.
-                  return ChatRoomDoc(
-                    key: ValueKey(value['order']),
-                    roomId: joinDoc.key!,
-                    onLoading: const ListTile(
-                      leading: CircularProgressIndicator(),
-                      minTileHeight: 72,
-                      title: Text("Loading..."),
-                      subtitle: LinearProgressIndicator(),
-                    ),
-                    builder: (room) {
-                      print(
-                          '---> rebuilding ChatRoomListView: order ${value['order']}');
-                      return ChatRoomListTile(
-                        room: room,
+                  return itemBuilder?.call(context, join, index) ??
+                      ChatRoomListTile(
+                        join: join,
                       );
-                    },
-                  );
+
+                  //  return ChatRoomDoc(
+                  //   key: ValueKey(value['order']),
+                  //   roomId: joinDoc.key!,
+                  //   onLoading: const ListTile(
+                  //     leading: CircularProgressIndicator(),
+                  //     minTileHeight: 72,
+                  //     title: Text("Loading..."),
+                  //     subtitle: LinearProgressIndicator(),
+                  //   ),
+                  //   builder: (room) {
+                  //     print(
+                  //         '---> rebuilding ChatRoomListView: order ${value['order']}');
+                  //     return ChatRoomListTile(
+                  //       room: room,
+                  //     );
+                  //   },
+                  // );
                 },
               ),
           ],

@@ -1,4 +1,5 @@
 // Models =====================================================
+export 'src/models/chat.join.dart';
 export 'src/models/chat.message.dart';
 export 'src/models/chat.room.dart';
 export 'src/models/chat.room.user.dart';

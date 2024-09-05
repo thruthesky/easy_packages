@@ -610,6 +610,21 @@ UserBlocked(
 ```
 
 
+## UserCircleAvatar
+
+
+```dart 
+UserCircleAvatar(
+  size: size,
+  radius: radius,
+  border: border,
+  child: CachedNetworkImage(
+    imageUrl: photoUrl,
+    fit: BoxFit.cover,
+  ),
+);
+```
+
 
 
 
