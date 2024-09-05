@@ -15,6 +15,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Firestore Indexes](#firestore-indexes)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
+  - [Ordering](#ordering)
   - [Counting the invitation](#counting-the-invitation)
 - [Database Strucutre](#database-strucutre)
   - [Chat room](#chat-room)
@@ -28,7 +29,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
 - [Widgets](#widgets)
   - [Displaying chat room information](#displaying-chat-room-information)
   - [ChatInvitationCounter](#chatinvitationcounter)
-  - [ChatInvitationListView](#ChatInvitationListView)
+  - [ChatInvitationListView](#chatinvitationlistview)
 - [Known Issues](#known-issues)
 
 # Terms
@@ -105,6 +106,33 @@ For your information on `easychat` history:
 
 
 # Logics
+
+
+## Ordering
+
+- Since the realtime database has no filtering, it needs multiple order fields to display items in order.
+  - For instance,
+    - singleChatOrder
+    - groupChatOrder
+    - openChatOrder
+
+- The order field must have negative timestamp value to display in reverse order.
+
+- To display chat rooms that have unread message, it will have -10000000000 value added to the order.
+  - The order is already negative value and it negates more with "-10000000000" to display on top of other chat rooms.
+
+
+- The logic of updating order #1. This logic is a bit complicated but performs better because it write the data immediately to server with client time which more likely works as expected. Then it corrects the time silently.
+  - 1. Save the negative timestamp value from client time to the order field.
+  - 2. Read the time of `updatedAt` from the chat room data (or chat join data).
+  - 3. Correct the order with server time.
+  - 4. Update the order of chat joins.
+
+- The logic of updating order #2. Simple. And believe the performance is not noticible.
+  - 1. Write a sample time data to the realtime database.
+  - 2. Get the time
+  - 3. Use it.
+
 
 
 ## Counting the invitation
