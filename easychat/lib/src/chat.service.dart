@@ -50,14 +50,14 @@ class ChatService {
 
   DatabaseReference rejectedUserRef(String uid) => rejectedUsersRef.child(uid);
 
+  DatabaseReference get mySettingRef => FirebaseDatabase.instance
+      .ref()
+      .child('chat')
+      .child('settings')
+      .child(myUid!);
+
   DatabaseReference unreadMessageCountRef(String roomId) =>
-      FirebaseDatabase.instance
-          .ref()
-          .child('chat')
-          .child('settings')
-          .child(myUid!)
-          .child('unread-message-count')
-          .child(roomId);
+      mySettingRef.child('unread-message-count').child(roomId);
 
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?

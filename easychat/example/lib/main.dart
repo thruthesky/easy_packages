@@ -33,9 +33,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   test() async {
-    int ts = await getServerTimestamp();
-    print(
-        'ts: \n$ts\n${ts * -1 + -10000000000000}\n${int.parse("-1$ts")}, ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
+    // int ts = await getServerTimestamp();
+    // print(
+    //     'ts: \n$ts\n${ts * -1 + -10000000000000}\n${int.parse("-1$ts")}, ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
   }
 
   @override

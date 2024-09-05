@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -19,6 +18,14 @@ class ChatRoomListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final trailing = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        ChatNewMessageCounter(roomId: room.id),
+        Text((room.updatedAt).short),
+      ],
+    );
     if (room.group == true) {
       return ListTile(
         minTileHeight: 72,
@@ -170,35 +177,6 @@ class ChatRoomListTile extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-  Widget get trailing {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Value(
-          ref: FirebaseDatabase.instance
-              .ref()
-              // TODO! DO NOT TYPE
-              .child("chat/settings/${myUid!}/unread-message-count/${room.id}"),
-          builder: (value, ref) {
-            final int count = value ?? 0;
-            if (count == 0) {
-              return const SizedBox.shrink();
-            }
-            return ChatService.instance.newMessageBuilder
-                    ?.call((value).toString()) ??
-                Badge(
-                  label: Text(
-                    "$count",
-                  ),
-                );
-          },
-        ),
-        Text((room.updatedAt).short),
-      ],
     );
   }
 
