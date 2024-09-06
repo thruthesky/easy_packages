@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      ChatService.instance.showChatJoinListScreen(context);
+                      ChatService.instance.showChatRoomListScreen(context);
                     },
                     child: const Text("My Chat Join List"),
                   ),
@@ -180,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      ChatService.instance.showChatJoinListScreen(context);
+                      ChatService.instance.showChatRoomListScreen(context);
                     },
                     child: const Text('Chat Room List Screen'),
                   ),

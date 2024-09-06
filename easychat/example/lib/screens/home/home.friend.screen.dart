@@ -97,7 +97,7 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                 child: Text('Sign in to see your friends'),
               );
             }
-            return ChatJoinListView(
+            return ChatRoomListView(
               headerBuilder: () {
                 return const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

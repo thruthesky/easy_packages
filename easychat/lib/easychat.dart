@@ -6,7 +6,7 @@ export 'src/models/chat.room.user.dart';
 
 // Screens =====================================================
 export 'src/screens/chat.room.edit.screen.dart';
-export 'src/screens/chat.join.list.screen.dart';
+export 'src/screens/chat.room.list.screen.dart';
 export 'src/screens/chat.room.screen.dart';
 export 'src/screens/chat.room.received.invite_list.screen.dart';
 export 'src/screens/chat.room.rejected.invite_list.screen.dart';
@@ -23,7 +23,7 @@ export 'src/widgets/chat.invitation.list_tile.dart';
 export 'src/widgets/chat.invitation.list_tile.actions.dart';
 export 'src/widgets/chat.invitation.preview.list_view.dart';
 export 'src/widgets/chat.join.list_tile.dart';
-export 'src/widgets/chat.join.list_view.dart';
+export 'src/widgets/chat.room.list_view.dart';
 export './src/widgets/chat.room.member.list_tile.dart';
 export './src/widgets/chat.room.member.list.dialog.dart';
 export './src/widgets/chat.room.menu.drawer.dart';

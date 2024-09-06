@@ -51,7 +51,7 @@ class ChatOpenRoomListTile extends StatelessWidget {
       trailing: Text((room.updatedAt).short),
       onTap: () async {
         if (room.joined == false) {
-          await ChatService.instance.setJoin(room);
+          await ChatService.instance.joinAfterCreateRoom(room);
         }
         if (!context.mounted) return;
         await ChatService.instance.showChatRoomScreen(context, room: room);

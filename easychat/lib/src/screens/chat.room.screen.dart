@@ -93,7 +93,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (room == null) {
       final newRoomRef = await ChatRoom.createSingle(user!.uid);
       room = await ChatRoom.get(newRoomRef.key!);
-      ChatService.instance.setJoin(room!);
+      ChatService.instance.joinAfterCreateRoom(room!);
     }
   }
 

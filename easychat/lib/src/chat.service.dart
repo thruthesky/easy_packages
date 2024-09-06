@@ -61,7 +61,7 @@ class ChatService {
 
   /// Callback function
   Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
-      $showChatJoinListScreen;
+      $showChatRoomListScreen;
 
   /// TODO: Add the return type
   Future Function(BuildContext context, {ChatRoom? room})?
@@ -108,7 +108,7 @@ class ChatService {
 
   init({
     Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
-        $showChatJoinListScreen,
+        $showChatRoomListScreen,
 
     /// TODO: Add the return type
     Future Function(BuildContext context, {ChatRoom? room})?
@@ -135,8 +135,8 @@ class ChatService {
     initialized = true;
 
     this.newMessageBuilder = newMessageBuilder;
-    this.$showChatJoinListScreen =
-        $showChatJoinListScreen ?? this.$showChatJoinListScreen;
+    this.$showChatRoomListScreen =
+        $showChatRoomListScreen ?? this.$showChatRoomListScreen;
     this.$showChatRoomEditScreen =
         $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
     this.chatRoomActionButton = chatRoomActionButton;
@@ -152,16 +152,16 @@ class ChatService {
   }
 
   /// Show the chat room list screen.
-  Future showChatJoinListScreen(
+  Future showChatRoomListScreen(
     BuildContext context, {
     bool? single,
     bool? group,
     bool? open,
   }) {
-    return $showChatJoinListScreen?.call() ??
+    return $showChatRoomListScreen?.call() ??
         showGeneralDialog(
           context: context,
-          pageBuilder: (_, __, ___) => ChatJoinListScreen(
+          pageBuilder: (_, __, ___) => ChatRoomListScreen(
             single: single,
             group: group,
             open: open,
@@ -181,13 +181,13 @@ class ChatService {
   }
 
   Future showOpenChatJoinListScreen(BuildContext context) {
-    return $showChatJoinListScreen?.call(
+    return $showChatRoomListScreen?.call(
           context: context,
           openGroupChatsOnly: true,
         ) ??
         showGeneralDialog(
           context: context,
-          pageBuilder: (_, __, ___) => const ChatJoinListScreen(
+          pageBuilder: (_, __, ___) => const ChatRoomListScreen(
             open: true,
           ),
         );
@@ -437,7 +437,7 @@ class ChatService {
   /// Logic is very similar to setJoin.
   ///
   /// Alias for `setJoin()`
-  Future<void> accept(ChatRoom room) async => await setJoin(room);
+  Future<void> accept(ChatRoom room) async => await joinAfterCreateRoom(room);
 
   /// Rejects the room invitation
   Future<void> reject(ChatRoom room) async {
@@ -458,7 +458,7 @@ class ChatService {
   /// Purpose:
   /// - Call this whenever creating a chat room including single and group chat.
   ///
-  Future<void> setJoin(ChatRoom room) async {
+  Future<void> joinAfterCreateRoom(ChatRoom room) async {
     int timestamp = await getServerTimestamp();
     final order = int.parse("-1$timestamp");
     final joinVal = {

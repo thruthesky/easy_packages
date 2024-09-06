@@ -11,8 +11,8 @@ import 'package:easy_locale/easy_locale.dart';
 /// It users sliver list to show chat rooms.
 ///
 /// Refer README.md for details.
-class ChatJoinListView extends StatelessWidget {
-  const ChatJoinListView({
+class ChatRoomListView extends StatelessWidget {
+  const ChatRoomListView({
     super.key,
     this.single,
     this.group,
