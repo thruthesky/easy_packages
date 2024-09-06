@@ -255,7 +255,9 @@ class ChatService {
     );
   }
 
-  /// send message
+  /// Send message
+  ///
+  /// Note that, it should only do the task that is related to sending message.
   Future<void> sendMessage(
     ChatRoom room, {
     String? photoUrl,
@@ -276,50 +278,78 @@ class ChatService {
     // onSendMessage should be called after sending message
     // other extra process comes after it.
     onSendMessage?.call(message: newMessage, room: room);
-    await updateUnreadMessageCountAndJoin(
+    await updateCountAndJoinAfterMessageSent(
       room: room,
       text: text,
       photoUrl: photoUrl,
     );
-    await inviteOtherUserIfSingleChat(room);
     await updateUrlPreview(newMessage, text);
   }
 
-  /// Update the unread message count.
+  Future<void> sendProtocolMessage(
+    ChatRoom room, {
+    required String protocol,
+  }) async {
+    await sendMessage(room, text: protocol);
+  }
+
+  /// Update the unread message count and chat join relations.
+  ///
+  /// Purpose:
+  /// - To update the chat joins of the chat room user with the last message information.
+  /// - To update the unread message count of the chat room user.
   ///
   /// Refere README.md for more details
-  Future updateUnreadMessageCountAndJoin(
+  Future updateCountAndJoinAfterMessageSent(
       {required ChatRoom room, String? text, String? photoUrl}) async {
     int timestamp = await getServerTimestamp();
     final Map<String, Object?> updates = {};
     // See README.md for details
     final order = int.parse("-1$timestamp");
     for (String uid in room.userUids) {
-      if (uid != myUid) {
+      if (uid == myUid) {
+        // If it's my join data, the order must not have -11 infront since I
+        // have already read that chat room. (I am in the chat room)
+        updates['chat/joins/$uid/${room.id}/order'] = timestamp;
+        if (room.single) {
+          updates['chat/joins/$uid/${room.id}/$singleOrder'] = timestamp;
+        }
+        if (room.group) {
+          updates['chat/joins/$uid/${room.id}/$groupOrder'] = timestamp;
+        }
+      } else {
+        updates['chat/joins/$uid/${room.id}/order'] = order;
+        if (room.single) {
+          updates['chat/joins/$uid/${room.id}/$singleOrder'] = order;
+        }
+        if (room.group) {
+          updates['chat/joins/$uid/${room.id}/$groupOrder'] = order;
+        }
         updates['chat/settings/$uid/unread-message-count/${room.id}'] =
             ServerValue.increment(1);
       }
+
       updates['chat/joins/$uid/${room.id}/$lastMessageAt'] = timestamp;
-      updates['chat/joins/$uid/${room.id}/order'] = order;
-      if (room.single) {
-        updates['chat/joins/$uid/${room.id}/$singleOrder'] = order;
-      }
-      if (room.group) {
-        updates['chat/joins/$uid/${room.id}/$groupOrder'] = order;
-      }
-      // To display the chat room list information without referring to the chat room.
-      updates['chat/joins/$uid/${room.id}/name'] = room.name;
-      updates['chat/joins/$uid/${room.id}/iconUrl'] = room.iconUrl;
-      updates['chat/joins/$uid/${room.id}/lastText'] = text;
-      updates['chat/joins/$uid/${room.id}/lastPhotoUrl'] = photoUrl;
+
+      // Add more about chat room info, to display the chat room list
+      // information without referring to the chat room.
+      updates['chat/joins/$uid/${room.id}/$lastMessageBy'] = myUid;
+      updates['chat/joins/$uid/${room.id}/$lastText'] = text;
+      updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = photoUrl;
+
+      // TODO: double check on how to implement when the last chat was deleted.
       updates['chat/joins/$uid/${room.id}/lastMessageDeleted'] = null;
-      updates['chat/joins/$uid/${room.id}/joinedAt'] = timestamp;
+
       if (room.single && uid != myUid) {
         updates['chat/joins/$uid/${room.id}/displayName'] = my.displayName;
         updates['chat/joins/$uid/${room.id}/photoUrl'] = my.photoUrl;
+      } else if (room.group) {
+        updates['chat/joins/$uid/${room.id}/name'] = room.name;
+        updates['chat/joins/$uid/${room.id}/iconUrl'] = room.iconUrl;
       }
     }
     await FirebaseDatabase.instance.ref().update(updates);
+
     // Write the data first for the speed of performance and then update the
     // other user data.
     // See README.md for details
@@ -334,7 +364,66 @@ class ChatService {
     }
   }
 
-  /// Invite the other user if not joined in single chat.
+  /// Let the login user join the room after he creates a chat room.
+  ///
+  /// Why:
+  /// - After creating a chat room, the user should be able to see the room in the room list.
+  ///
+  /// Purpose:
+  /// - Call this only after creating a chat room including single and group chat.
+  ///
+  ///
+  Future<void> joinAfterCreateRoom(ChatRoom room, {String? protocol}) async {
+    await join(room, protocol: protocol);
+  }
+
+  /// Join a chat room
+  ///
+  /// This method is used to join a chat room.
+  ///
+  /// TODO: this method is similar to joinAfterCreateRoom
+  Future<void> join(ChatRoom room, {String? protocol}) async {
+    // int timestamp = await getServerTimestamp();
+    // final order = timestamp * -1; // int.parse("-1$timestamp");
+    final joinVal = {
+      // Incase there is an invitation, remove the invitation
+      invitedUserRef(myUid!).child(room.id).path: null,
+      // In case, invitation was mistakenly rejected
+      rejectedUserRef(myUid!).child(room.id).path: null,
+      // Add uid in users
+      room.ref.child('users').child(myUid!).path: false,
+
+      // Add in chat joins
+      'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
+
+      //
+      // if (room.single) 'chat/joins/${myUid!}/${room.id}/$singleOrder': order,
+      // if (room.group) 'chat/joins/${myUid!}/${room.id}/$groupOrder': order,
+      // if (room.open) 'chat/joins/${myUid!}/${room.id}/$openOrder': order,
+      // 'chat/joins/${myUid!}/${room.id}/order': order,
+      // 'chat/joins/${myUid!}/${room.id}/$lastText':
+      //     protocol ?? ChatProtocol.join,
+      // 'chat/joins/${myUid!}/${room.id}/$lastMessageBy': myUid!,
+    };
+    await FirebaseDatabase.instance.ref().update(joinVal);
+
+    // if (room.single) {
+    //   User? user = await User.get(getOtherUserUidFromRoomId(room.id)!);
+    //   if (user != null) {
+    //     await FirebaseDatabase.instance.ref().update({
+    //       'chat/joins/${myUid!}/${room.id}/displayName': user.displayName,
+    //       'chat/joins/${myUid!}/${room.id}/photoUrl': user.photoUrl,
+    //     });
+    //   }
+    // }
+
+    /// Add your uid into the user list of the chat room instead of reading from database.
+    room.users[myUid!] = false;
+
+    await sendProtocolMessage(room, protocol: protocol ?? ChatProtocol.join);
+  }
+
+  /// Invite the other user on the first message if the other user is not joined in single chat.
   ///
   /// This is only for single chat.
   ///
@@ -437,7 +526,7 @@ class ChatService {
   /// Logic is very similar to setJoin.
   ///
   /// Alias for `setJoin()`
-  Future<void> accept(ChatRoom room) async => await joinAfterCreateRoom(room);
+  Future<void> accept(ChatRoom room) async => await join(room);
 
   /// Rejects the room invitation
   Future<void> reject(ChatRoom room) async {
@@ -448,35 +537,5 @@ class ChatService {
       rejectedUserRef(myUid!).child(room.id).path: ServerValue.timestamp,
     };
     await FirebaseDatabase.instance.ref().update(reject);
-  }
-
-  /// Set join relation: to list a chat room in my room list
-  ///
-  /// Why:
-  /// - After creating a chat room, the user should be able to see the room in the room list.
-  ///
-  /// Purpose:
-  /// - Call this whenever creating a chat room including single and group chat.
-  ///
-  Future<void> joinAfterCreateRoom(ChatRoom room) async {
-    int timestamp = await getServerTimestamp();
-    final order = int.parse("-1$timestamp");
-    final joinVal = {
-      // Incase there is an invitation, remove the invitation
-      invitedUserRef(myUid!).child(room.id).path: null,
-      // In case, invitation was mistakenly rejected
-      rejectedUserRef(myUid!).child(room.id).path: null,
-      // Add uid in users
-      room.ref.child('users').child(myUid!).path: false,
-      // update updatedAt
-      room.ref.child('updatedAt').child(myUid!).path: false,
-      // Add in chat joins
-      'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
-      if (room.single) 'chat/joins/${myUid!}/${room.id}/$singleOrder': order,
-      if (room.group) 'chat/joins/${myUid!}/${room.id}/$groupOrder': order,
-      if (room.open) 'chat/joins/${myUid!}/${room.id}/$openOrder': order,
-      'chat/joins/${myUid!}/${room.id}/order': order,
-    };
-    await FirebaseDatabase.instance.ref().update(joinVal);
   }
 }

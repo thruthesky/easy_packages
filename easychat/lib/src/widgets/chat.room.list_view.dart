@@ -136,7 +136,7 @@ class ChatRoomListView extends StatelessWidget {
                   }
                   ChatJoin join = ChatJoin.fromSnapshot(snapshot.docs[index]);
                   return itemBuilder?.call(context, join, index) ??
-                      ChatJoinListTile(
+                      ChatRoomListTile(
                         join: join,
                       );
                 },

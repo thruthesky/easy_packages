@@ -22,7 +22,7 @@ export './src/widgets/chat.room.input_box.dart';
 export 'src/widgets/chat.invitation.list_tile.dart';
 export 'src/widgets/chat.invitation.list_tile.actions.dart';
 export 'src/widgets/chat.invitation.preview.list_view.dart';
-export 'src/widgets/chat.join.list_tile.dart';
+export 'src/widgets/chat.room.list_tile.dart';
 export 'src/widgets/chat.room.list_view.dart';
 export './src/widgets/chat.room.member.list_tile.dart';
 export './src/widgets/chat.room.member.list.dialog.dart';
@@ -45,3 +45,5 @@ export './src/chat.service.dart';
 export './src/chat.query.dart';
 
 export './src/chat.defines.dart';
+
+export './src/chat.protocol.dart';

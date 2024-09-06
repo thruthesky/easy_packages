@@ -38,6 +38,9 @@ class ChatMessagesListView extends StatelessWidget {
             child: Text('no chat message in room yet'.t),
           );
         }
+
+        /// TODO: if there are two or more mesages by check 'snapshot.docs.legnth', then,
+        /// TODO: ignore the invitationNotSent protocol message.
         return ListView.builder(
           reverse: true,
           itemCount: snapshot.docs.length,

@@ -75,7 +75,7 @@ class ChatRoomListScreen extends StatelessWidget {
             group: group,
             open: open,
             itemBuilder: (context, join, index) {
-              return ChatJoinListTile(
+              return ChatRoomListTile(
                 join: join,
               );
             },

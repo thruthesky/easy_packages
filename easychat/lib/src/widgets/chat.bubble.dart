@@ -360,7 +360,11 @@ class ChatBubble extends StatelessWidget {
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.all(12),
-                                                child: Text(message.text!),
+                                                child: Text(
+                                                  ChatProtocol.maybeTranslate(
+                                                    message.text!,
+                                                  ),
+                                                ),
                                               ),
                                             ],
                                           ],

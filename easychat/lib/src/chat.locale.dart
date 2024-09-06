@@ -314,7 +314,7 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': 'The last message was deleted',
     'ko': '마지막 메시지가 삭제되었습니다',
   },
-  'single chat no message, no invitations': {
+  'protocol.invitationNotSent': {
     'en': 'Invitation has NOT been sent.',
     'ko': '친구 초대가 전송되지 않았습니다.',
   },

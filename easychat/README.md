@@ -15,6 +15,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Firestore Indexes](#firestore-indexes)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
+  - [Protocol](#protocol)
+  - [Chat message sending](#chat-message-sending)
   - [Ordering](#ordering)
   - [Counting the invitation](#counting-the-invitation)
 - [Database Strucutre](#database-strucutre)
@@ -111,6 +113,35 @@ For your information on `easychat` history:
 # Logics
 
 
+## Protocol
+
+- What is protocol?
+  - Mostly, chat messages are delivering texts and photos. But it can deliver a special message by the system(chat package). It's called a protocol message.
+  - When the other app(user) receives the protocol message, the app can react based on the protocol.
+  - For instance, when a user leaves the chat room, the chat package delivers a chat protocol of leaving. then the other app that receives the protocol message can display "Xxx left" on the screen.
+
+- Why
+  - To display who comes in the chat room
+  - To display who leaves from the chat room
+  - To display the invitation was not sent to the chat room creator of the 1:1 chat.
+
+- How
+  - You can create your own protocol if you want.
+
+- Example
+  - See the example of chat 
+
+
+
+## Chat message sending
+
+
+- When a chat message (including chat protocol message) is sent by any one among the chat room users, all the chat join data of the chat room users will be updated along with the chat message information.
+
+
+
+
+
 ## Ordering
 
 - Since the realtime database has no filtering, it needs multiple order fields to display items in order.
@@ -163,6 +194,10 @@ For your information on `easychat` history:
 - `single`: Required.
 - `group`: Required.
 - `open`: Required.
+
+
+- `updatedAt`: Required. This value is updated only when the master updated the chat room. If the master didn't updated the chat room, this value will not be updated.
+  - For instance, When a user enters(joins) the chat room, some of field including users would change. But the values chagned are not from the master. So, the `updatedAt` is not changed.
 
 
 ## Chat message
@@ -258,7 +293,7 @@ For your information on `easychat` history:
 ChatRoomDoc(
   ref: ChatService.instance.roomRef(joinDoc.key!),
   builder: (room) {
-    return ChatJoinListTile(
+    return ChatRoomListTile(
       room: room,
     );
   },

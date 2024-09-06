@@ -64,6 +64,17 @@
             ]
         },
         {
+            "name": "EasyChat - iPad Mini - Example",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPad mini",
+            "cwd": "easychat/example",
+            "program": "lib/main.dart",
+            "args": [
+                
+            ]
+        },
+        {
             "name": "EasyChat - iPhone 15 Pro - Example",
             "request": "launch",
             "type": "dart",
