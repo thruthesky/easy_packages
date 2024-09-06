@@ -10,6 +10,9 @@ class ChatJoin {
   final int? openOrder;
   final int order;
   final DateTime lastMessageAt;
+  final String? lastText;
+  final String? lastPhotoUrl;
+
   final String name;
   final String iconUrl;
   final String displayName;
@@ -27,6 +30,8 @@ class ChatJoin {
     required this.openOrder,
     required this.order,
     required this.lastMessageAt,
+    required this.lastText,
+    required this.lastPhotoUrl,
     this.name = '',
     this.iconUrl = '',
     this.displayName = '',
@@ -47,10 +52,12 @@ class ChatJoin {
       order: json[f.order],
       lastMessageAt:
           DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
-      name: json['name'] ?? '',
-      iconUrl: json['iconUrl'] ?? '',
-      displayName: json['displayName'] ?? '',
-      photoUrl: json['photoUrl'] ?? '',
+      lastPhotoUrl: json[f.lastPhotoUrl],
+      lastText: json[f.lastText],
+      name: json[f.name] ?? '',
+      iconUrl: json[f.iconUrl] ?? '',
+      displayName: json[f.displayName] ?? '',
+      photoUrl: json[f.photoUrl] ?? '',
     );
   }
 

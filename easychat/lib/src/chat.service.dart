@@ -1,5 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -318,6 +319,7 @@ class ChatService {
 
       updates['chat/joins/$uid/${room.id}/lastText'] = text;
       updates['chat/joins/$uid/${room.id}/lastPhotoUrl'] = photoUrl;
+      updates['chat/joins/$uid/${room.id}/lastMessageDeleted'] = null;
 
       if (room.single && uid != myUid) {
         updates['chat/joins/$uid/${room.id}/displayName'] = my.displayName;

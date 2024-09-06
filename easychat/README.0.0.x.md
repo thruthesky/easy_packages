@@ -754,10 +754,10 @@ flowchart TD
 ### Listing chat roooms
 
 
-- Use `ChatRoomListView` to display the chat rooms.
-- The `ChatRoomListView` uses `CustomScrollView` inside which is a sliver list. It is recommended to set the `ChatRoomListView` widget directly to the body property of a scaffold. 
+- Use `ChatJoinListView` to display the chat rooms.
+- The `ChatJoinListView` uses `CustomScrollView` inside which is a sliver list. It is recommended to set the `ChatJoinListView` widget directly to the body property of a scaffold. 
   - You can customize the look, of course. But you need to understand how the sliver list view works.
-    - One way you can easily customize is to wrap the `ChatRoomListView` with `Expanded` in Cl]olumn.
+    - One way you can easily customize is to wrap the `ChatJoinListView` with `Expanded` in Cl]olumn.
 
 
 

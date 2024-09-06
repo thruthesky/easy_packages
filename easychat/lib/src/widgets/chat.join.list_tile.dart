@@ -3,12 +3,11 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-/// Display chat room list tile
-class ChatRoomListTile extends StatelessWidget {
-  const ChatRoomListTile({
+/// Display chat joins in list tile
+class ChatJoinListTile extends StatelessWidget {
+  const ChatJoinListTile({
     super.key,
     required this.join,
   });
@@ -65,10 +64,11 @@ class ChatRoomListTile extends StatelessWidget {
                     ),
                     child: CachedNetworkImage(
                       imageUrl: join.photoUrl,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-          title: Text(join.name.or('...')),
+          title: Text(roomTitle(null, null, join)),
           subtitle: subtitle(context),
           trailing: trailing,
           onTap: () =>
@@ -103,7 +103,10 @@ class ChatRoomListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
-    // TODO: if the user is not in the chat room, (may be in invited list), does it need to show the description?
+    // Question: If the user is not in the chat room, (may be in invited list), does it need to show the description?
+    // Answer: Chat Room List Tile was also used to show OPEN chat room as well. Since we changed the logic, we may need to
+    //         provide a different widget to show the open room.
+    // TODO: Move it somewhere else
     // if (!room.userUids.contains(myUid)) {
     //   if (room.description.trim().isEmpty) {
     //     return null;
@@ -117,86 +120,17 @@ class ChatRoomListTile extends StatelessWidget {
     //     ),
     //   );
     // }
-    return StreamBuilder<DatabaseEvent>(
-      stream:
-          ChatService.instance.messageRef(join.roomId).limitToLast(1).onValue,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Text("...");
-        }
-        // Maybe we can cache here to prevent the sudden "..." when the order is
-        // being changed when there is new user.
-        if (snapshot.data?.snapshot.value == null) {
-          if (join.single == true) {
-            return Text(
-              'single chat no message, no invitations'.t,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-              ),
-            );
-          } else {
-            return Text(
-              'no message yet'.t,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-              ),
-            );
-          }
-        }
-        final firstRecord =
-            Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map)
-                .entries
-                .first;
-        final messageJson = Map<String, dynamic>.from(firstRecord.value as Map);
-        final lastMessage = ChatMessage.fromJson(messageJson, firstRecord.key);
+    if (join.lastText == null) {
+      return Text(
+        'no message yet'.t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
+        ),
+      );
+    }
 
-        if (lastMessage.deleted) {
-          return Text(
-            'last message was deleted'.t,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-            ),
-          );
-        }
-        if (UserService.instance.blockChanges.value
-            .containsKey(lastMessage.uid)) {
-          return const Text("...");
-        }
-        return Row(
-          children: [
-            if (!lastMessage.url.isNullOrEmpty) ...[
-              const Icon(Icons.photo, size: 16),
-              const SizedBox(width: 4),
-            ],
-            if (!lastMessage.text.isNullOrEmpty)
-              Flexible(
-                child: Text(
-                  lastMessage.text!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              )
-            else if (!lastMessage.url.isNullOrEmpty)
-              Flexible(
-                child: Text(
-                  "[${'photo'.t}]",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(110),
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
-    );
+    return Text(join.lastText!);
   }
 }

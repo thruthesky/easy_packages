@@ -28,7 +28,7 @@ class ChatRoomRejectedInviteListScreen extends StatelessWidget {
                     builder: (room) {
                       /// TODO: Create ChatRoomRejectedListTile
                       return const Text("Create: ChatRoomRejectedListTile");
-                      // return ChatRoomListTile(
+                      // return ChatJoinListTile(
                       //   room: room,
                       //   onTap: (context, room, user) async {
                       //     final re = await confirm(

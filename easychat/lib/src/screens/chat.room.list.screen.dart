@@ -70,12 +70,12 @@ class ChatRoomListScreen extends StatelessWidget {
               ),
             );
           }
-          return ChatRoomListView(
+          return ChatJoinListView(
             single: single,
             group: group,
             open: open,
             itemBuilder: (context, join, index) {
-              return ChatRoomListTile(
+              return ChatJoinListTile(
                 join: join,
               );
             },
