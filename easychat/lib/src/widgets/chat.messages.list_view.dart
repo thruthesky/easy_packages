@@ -39,8 +39,6 @@ class ChatMessagesListView extends StatelessWidget {
           );
         }
 
-        /// TODO: if there are two or more mesages by check 'snapshot.docs.legnth', then,
-        /// TODO: ignore the invitationNotSent protocol message.
         return ListView.builder(
           reverse: true,
           itemCount: snapshot.docs.length,
@@ -58,7 +56,7 @@ class ChatMessagesListView extends StatelessWidget {
             final message = ChatMessage.fromSnapshot(doc);
             return itemBuilder?.call(context, message) ??
                 ChatBubble(
-                  key: ValueKey("chatBubble_${message.id}"),
+                  // key: ValueKey("chatBubble_${message.id}"),
                   message: message,
                 );
           },

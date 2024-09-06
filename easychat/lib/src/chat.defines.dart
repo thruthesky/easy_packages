@@ -7,6 +7,7 @@ const String lastMessageBy = 'lastMessageBy';
 const String lastMessageAt = 'lastMessageAt';
 const String lastText = 'lastText';
 const String lastPhotoUrl = 'lastPhotoUrl';
+const String lastProtocol = 'lastProtocol';
 const String name = 'name';
 const String iconUrl = 'iconUrl';
 const String displayName = 'displayName';

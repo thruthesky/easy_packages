@@ -21,6 +21,7 @@ class ChatMessage {
     previewTitle: 'previewTitle',
     previewDescription: 'previewDescription',
     previewImageUrl: 'previewImageUrl',
+    protocol: 'protocol',
   );
 
   String id;
@@ -31,6 +32,7 @@ class ChatMessage {
   int? order;
   String? text;
   String? url;
+  String? protocol;
   final bool deleted;
 
   String? previewUrl;
@@ -50,6 +52,7 @@ class ChatMessage {
     required this.roomId,
     this.text,
     this.url,
+    this.protocol,
     this.uid,
     required this.createdAt,
     required this.order,
@@ -76,6 +79,7 @@ class ChatMessage {
       roomId: json[field.roomId],
       text: json[field.text],
       url: json[field.url],
+      protocol: json[field.protocol],
       uid: json[field.uid],
       createdAt: json[field.createdAt],
       order: json[field.order],
@@ -97,6 +101,7 @@ class ChatMessage {
     required String roomId,
     String? text,
     String? url,
+    String? protocol,
     ChatMessage? replyTo,
   }) async {
     final replyToData = replyTo == null
@@ -119,6 +124,7 @@ class ChatMessage {
       field.roomId: roomId,
       if (text != null) field.text: text,
       if (url != null) field.url: url,
+      if (protocol != null) field.protocol: protocol,
       field.uid: FirebaseAuth.instance.currentUser!.uid,
       field.createdAt: ServerValue.timestamp,
       field.order: DateTime.now().millisecondsSinceEpoch * -1,
@@ -131,6 +137,7 @@ class ChatMessage {
       roomId: roomId,
       text: text,
       url: url,
+      protocol: protocol,
       uid: FirebaseAuth.instance.currentUser!.uid,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       order: DateTime.now().millisecondsSinceEpoch * -1,

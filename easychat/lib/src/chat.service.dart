@@ -260,8 +260,9 @@ class ChatService {
   /// Note that, it should only do the task that is related to sending message.
   Future<void> sendMessage(
     ChatRoom room, {
-    String? photoUrl,
     String? text,
+    String? photoUrl,
+    String? protocol,
     ChatMessage? replyTo,
   }) async {
     if (room.joined == false) {
@@ -273,6 +274,7 @@ class ChatService {
       roomId: room.id,
       text: text,
       url: photoUrl,
+      protocol: protocol,
       replyTo: replyTo,
     );
     // onSendMessage should be called after sending message
@@ -282,6 +284,7 @@ class ChatService {
       room: room,
       text: text,
       photoUrl: photoUrl,
+      protocol: protocol,
     );
     await updateUrlPreview(newMessage, text);
   }
@@ -290,7 +293,7 @@ class ChatService {
     ChatRoom room, {
     required String protocol,
   }) async {
-    await sendMessage(room, text: protocol);
+    await sendMessage(room, protocol: protocol);
   }
 
   /// Update the unread message count and chat join relations.
@@ -300,8 +303,12 @@ class ChatService {
   /// - To update the unread message count of the chat room user.
   ///
   /// Refere README.md for more details
-  Future updateCountAndJoinAfterMessageSent(
-      {required ChatRoom room, String? text, String? photoUrl}) async {
+  Future updateCountAndJoinAfterMessageSent({
+    required ChatRoom room,
+    String? text,
+    String? photoUrl,
+    String? protocol,
+  }) async {
     int timestamp = await getServerTimestamp();
     final Map<String, Object?> updates = {};
     // See README.md for details
@@ -336,6 +343,7 @@ class ChatService {
       updates['chat/joins/$uid/${room.id}/$lastMessageBy'] = myUid;
       updates['chat/joins/$uid/${room.id}/$lastText'] = text;
       updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = photoUrl;
+      updates['chat/joins/$uid/${room.id}/$lastProtocol'] = protocol;
 
       // TODO: double check on how to implement when the last chat was deleted.
       updates['chat/joins/$uid/${room.id}/lastMessageDeleted'] = null;
@@ -423,11 +431,17 @@ class ChatService {
     await sendProtocolMessage(room, protocol: protocol ?? ChatProtocol.join);
   }
 
-  /// Invite the other user on the first message if the other user is not joined in single chat.
+  /// Invite the other user on a 1:1 chat.
+  ///
+  ///
   ///
   /// This is only for single chat.
   ///
-  ///
+  /// Purpose:
+  /// - To send the invitation to the other user if the other user is
+  ///   - not joined
+  ///   - not rejected
+  ///   - not invited
   ///
   /// Where:
   /// - ChatRoomScreen -> ChatRoomInputBox -> inviteOtherUserInSingleChat
@@ -441,14 +455,36 @@ class ChatService {
 
     // Return if the other user rejected. Don't send invitation again once rejected.
     final otherUserUid = getOtherUserUidFromRoomId(room.id)!;
-    final snapshot =
+
+    // Check if the other user is rejected
+    final rejectedSnapshot =
         await ChatService.instance.rejectedUserRef(otherUserUid).get();
-    if (snapshot.exists) {
+    if (rejectedSnapshot.exists) {
+      return;
+    }
+
+    // Check if the other user is already invited
+    final invitedSnapshot = await ChatService.instance
+        .invitedUserRef(otherUserUid)
+        .child(room.id)
+        .get();
+    if (invitedSnapshot.exists) {
       return;
     }
 
     // Invite the other user
     await inviteUser(room, otherUserUid);
+
+    // If invitation is sent, delete the first if it's invitation protocol.
+    final DataSnapshot messageSanpshot = await messageRef(room.id)
+        .orderByChild(lastProtocol)
+        .equalTo(ChatProtocol.invitationNotSent)
+        .limitToFirst(1)
+        .get();
+
+    if (messageSanpshot.exists) {
+      await messageSanpshot.ref.remove();
+    }
   }
 
   /// Invite a user into the chat room.

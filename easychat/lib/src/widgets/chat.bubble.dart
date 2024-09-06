@@ -355,18 +355,22 @@ class ChatBubble extends StatelessWidget {
                                                 ),
                                               ),
                                             ],
-                                            if (message.text != null &&
-                                                message.text!.isNotEmpty) ...[
+                                            if (message.text.notEmpty)
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.all(12),
                                                 child: Text(
-                                                  ChatProtocol.maybeTranslate(
-                                                    message.text!,
-                                                  ),
+                                                  message.text!,
                                                 ),
                                               ),
-                                            ],
+                                            if (message.protocol.notEmpty)
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(12),
+                                                child: Text(
+                                                  message.protocol!.t,
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       ),

@@ -107,7 +107,7 @@ class ChatRoomListTile extends StatelessWidget {
       return Row(
         children: [
           Text(
-            ChatProtocol.maybeTranslate(join.lastText!),
+            join.lastText!,
           ),
           const SizedBox(width: 8),
           CachedNetworkImage(imageUrl: join.lastPhotoUrl!),
@@ -115,7 +115,7 @@ class ChatRoomListTile extends StatelessWidget {
       );
     } else if (join.lastText != null) {
       return Text(
-        ChatProtocol.maybeTranslate(join.lastText!),
+        join.lastText!,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
