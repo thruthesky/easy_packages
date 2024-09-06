@@ -24,7 +24,7 @@ class ChatRoomScreen extends StatefulWidget {
     this.room,
     this.user,
     this.join,
-  }) : assert(room != null || user != null);
+  }) : assert(room != null || user != null || join != null);
 
   final ChatRoom? room;
   final User? user;
@@ -36,6 +36,7 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ChatRoom? room;
+  User? user;
 
   StreamSubscription? resetMessageCountSubscription;
 
@@ -47,14 +48,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   init() async {
-    // Single chat.
-    //
-    // If room is null, user should not be null.
-    // We have to get room from other user.
-    if (widget.user != null) {
+    if (widget.join != null) {
+      if (widget.join!.group) {
+        room = await ChatRoom.get(widget.join!.roomId);
+      } else {
+        room = await ChatRoom.get(widget.join!.roomId);
+        user = await User.get(getOtherUserUidFromRoomId(widget.join!.roomId)!);
+      }
+      setState(() {});
+    } else if (widget.user != null) {
+      // Single chat. load room (or create)
+      user = widget.user;
       // Create chat room if user is set.
       await loadOrCreateSingleChatRoom();
-
       setState(() {});
     }
 
@@ -120,10 +126,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   Future<void> loadOrCreateSingleChatRoom() async {
     dog('chat.room.screen.dart: init() -> loadOrCreateSingleChatRoom()');
-    room = await ChatRoom.get(singleChatRoomId(widget.user!.uid));
+    room = await ChatRoom.get(singleChatRoomId(user!.uid));
 
     if (room == null) {
-      final newRoomRef = await ChatRoom.createSingle(widget.user!.uid);
+      final newRoomRef = await ChatRoom.createSingle(user!.uid);
       room = await ChatRoom.get(newRoomRef.key!);
       ChatService.instance.setJoin(room!);
     }
@@ -146,52 +152,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // * Note, scaffold will be displayed before room is ready.
     return Scaffold(
-      // TODO: CONSIDER: If the user is not joined, don't show the app bar content.
       appBar: AppBar(
         title: Row(
           children: [
-            if (widget.user != null) ...[
-              GestureDetector(
-                child: UserAvatar(
-                  user: widget.user!,
-                  size: 36,
-                  radius: 15,
-                ),
-                onTap: () => UserService.instance.showPublicProfileScreen(
-                  context,
-                  user: widget.user!,
-                ),
-              ),
-              const SizedBox(width: 12),
-            ] else ...[
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                ),
-                width: 36,
-                height: 36,
-                clipBehavior: Clip.hardEdge,
-                child: room?.iconUrl != null && room!.iconUrl!.isNotEmpty
-                    ? CachedNetworkImage(
-                        imageUrl: room!.iconUrl!,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) {
-                          dog("Error in Image Chat Room Screen: $error");
-                          return const Icon(Icons.error);
-                        },
-                      )
-                    : Icon(
-                        Icons.people,
-                        color:
-                            Theme.of(context).colorScheme.onTertiaryContainer,
-                      ),
-              ),
-              const SizedBox(width: 12),
-            ],
+            appBarIcon(),
             Expanded(
-              child: Text(roomTitle(room, widget.user)),
+              child: Text(roomTitle(room, user, widget.join)),
             ),
           ],
         ),
@@ -252,6 +220,71 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
               ],
             ),
+    );
+  }
+
+  Widget appBarIcon() {
+    Widget child;
+    if (widget.join != null) {
+      if (widget.join!.single) {
+        child = chatIcon(widget.join?.photoUrl, false);
+      } else {
+        child = chatIcon(widget.join?.iconUrl, true);
+      }
+    } else if (user != null) {
+      child = GestureDetector(
+        child: UserAvatar(
+          user: user!,
+          size: 36,
+          radius: 15,
+        ),
+        onTap: () => UserService.instance.showPublicProfileScreen(
+          context,
+          user: user!,
+        ),
+      );
+    } else {
+      child = chatIcon(widget.room?.iconUrl, true);
+    }
+    return Row(
+      children: [
+        child,
+        const SizedBox(width: 8),
+      ],
+    );
+  }
+
+  Widget chatIcon(String? iconUrl, bool isGroup) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Theme.of(context).colorScheme.tertiaryContainer,
+      ),
+      width: 36,
+      height: 36,
+      clipBehavior: Clip.hardEdge,
+      child: iconUrl != null && iconUrl.isNotEmpty
+          ? CachedNetworkImage(
+              imageUrl: iconUrl,
+              fit: BoxFit.cover,
+              errorWidget: (context, url, error) {
+                dog("Error in Image Chat Room Screen: $error");
+                return const Icon(Icons.error);
+              },
+            )
+          : (isGroup
+              ? Icon(
+                  Icons.people,
+                  color: Theme.of(context).colorScheme.onTertiaryContainer,
+                )
+              : CircleAvatar(
+                  child: Text(
+                    getOtherUserUidFromRoomId(widget.join!.roomId)!
+                        .characters
+                        .first
+                        .toUpperCase(),
+                  ),
+                )),
     );
   }
 }

@@ -60,8 +60,8 @@ String singleChatRoomId(String otherUserUid) {
 }
 
 /// Returns the chat room title for single and group chat.
-String roomTitle(ChatRoom? room, User? user) {
-  assert(room != null || user != null);
+String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
+  assert(room != null || user != null || join != null);
 
   if (user != null) {
     return user.displayName.or('no name'.t);
@@ -70,6 +70,13 @@ String roomTitle(ChatRoom? room, User? user) {
   // Single chat or group chat can have name.
   if ((room?.name ?? "").trim().isNotEmpty) {
     return room!.name;
+  }
+
+  if (join != null) {
+    if (join.group) {
+      return join.name;
+    }
+    return join.displayName;
   }
   return 'chat room'.t;
 }
