@@ -270,7 +270,11 @@ class ChatService {
     );
 
     ///
-    await updateUnreadMessageCountAndJoin(room);
+    await updateUnreadMessageCountAndJoin(
+      room: room,
+      text: text,
+      photoUrl: photoUrl,
+    );
 
     ///
     await inviteOtherUserIfSingleChat(room);
@@ -285,7 +289,8 @@ class ChatService {
   /// Update the unread message count.
   ///
   /// Refere README.md for more details
-  Future updateUnreadMessageCountAndJoin(ChatRoom room) async {
+  Future updateUnreadMessageCountAndJoin(
+      {required ChatRoom room, String? text, String? photoUrl}) async {
     int timestamp = await getServerTimestamp();
 
     final Map<String, Object?> updates = {};
@@ -310,6 +315,9 @@ class ChatService {
       /// Display the chat room list information without referring to the chat room.
       updates['chat/joins/$uid/${room.id}/name'] = room.name;
       updates['chat/joins/$uid/${room.id}/iconUrl'] = room.iconUrl;
+
+      updates['chat/joins/$uid/${room.id}/lastText'] = text;
+      updates['chat/joins/$uid/${room.id}/lastPhotoUrl'] = photoUrl;
 
       if (room.single && uid != myUid) {
         updates['chat/joins/$uid/${room.id}/displayName'] = my.displayName;
