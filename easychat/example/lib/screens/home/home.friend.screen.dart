@@ -91,17 +91,11 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
           return Badge(label: Text("$no"));
         }),
         ElevatedButton(
-            onPressed: () async {
-              // SE10
-              final se10 = await User.get('jp38SPAWRDUfbHoVbIZhY1fJTDM2');
-              final newRoomRef = await ChatRoom.createSingle(se10!.uid);
-              final room = await ChatRoom.get(newRoomRef.key!);
-              await ChatService.instance.joinAfterCreateRoom(
-                room!,
-                protocol: ChatProtocol.invitationNotSent,
-              );
-            },
-            child: const Text('Invite SE10')),
+          onPressed: () => ChatTestService.instance.invitationNotSent(
+            'jp38SPAWRDUfbHoVbIZhY1fJTDM2',
+          ),
+          child: const Text('TEST: invitationNotSent protocol deletion'),
+        ),
         Expanded(
           child: AuthStateChanges(builder: (user) {
             if (user == null) {

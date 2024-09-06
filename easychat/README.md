@@ -35,11 +35,14 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [ChatInvitationListView](#chatinvitationlistview)
 - [Coding Guideline](#coding-guideline)
   - [How to get server timestamp](#how-to-get-server-timestamp)
+- [Tests](#tests)
+  - [Invitation not sent protocol test](#invitation-not-sent-protocol-test)
 - [Known Issues](#known-issues)
 
 # Terms
 
-- `Required`: If it is used with field description, it means the field must exists in the data always.
+- `Required`: If it is used with a field description, it means the field must exists in the data always.
+- `Optional`: If it is used with a field description, it means the field may exists or may not be exists depending on the situatoin.
 - `Rear exception`: An exception that should not occure during normal app usage. For instance, the user always need to be a chat room member to send a message. There is no change for any user can send message if they are not a member. If they are not a member of the chat room, they should be able to open, or once they open the chat room they need to become the member, or there must be an error on the chat room screen. So, they never have a change to send a message if they are not a member. In this case, we may still throw an excpetion with comment of `rear exception`. And this kind of exception should not be handled to display to a user. But may be used for a debug or error reporting system like `Firebase Crashlytics`.
 
 
@@ -142,6 +145,7 @@ For your information on `easychat` history:
 
 
 
+
 ## Ordering
 
 - Since the realtime database has no filtering, it needs multiple order fields to display items in order.
@@ -204,6 +208,11 @@ For your information on `easychat` history:
 
 
 - `/chat/messages/<room-id>`: This is the message list of each chat room.
+
+
+- `displayName`: Required. The sender's display name is saved in each message for the performance improvement. And the user's display name is updated in realtime after the name from message has been displayed.
+
+- `photoUrl`: Optional. The sender's photo url is saved in each message for the performance improvement. If the user has no photo url, it can be null. The user's photo url is updated in realtime after it is displayed once from the message.
 
 
 ## Chat join
@@ -324,6 +333,25 @@ ChatInvitationListView(),
 int ts = await getServerTimestamp();
 print('ts: ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
 ```
+
+
+# Tests
+
+
+## Invitation not sent protocol test
+
+- See the `ChatTestService.instance.invitationNotSent`.
+
+Example:
+```dart
+ElevatedButton(
+  onPressed: () => ChatTestService.instance.invitationNotSent(
+    'jp38SPAWRDUfbHoVbIZhY1fJTDM2',
+  ),
+  child: const Text('TEST: invitationNotSent protocol deletion'),
+),
+```
+
 
 # Known Issues
 

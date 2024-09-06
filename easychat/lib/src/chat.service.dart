@@ -289,12 +289,12 @@ class ChatService {
     await updateUrlPreview(newMessage, text);
   }
 
-  Future<void> sendProtocolMessage(
-    ChatRoom room, {
-    required String protocol,
-  }) async {
-    await sendMessage(room, protocol: protocol);
-  }
+  // Future<void> sendProtocolMessage(
+  //   ChatRoom room, {
+  //   required String protocol,
+  // }) async {
+  //   await sendMessage(room, protocol: protocol);
+  // }
 
   /// Update the unread message count and chat join relations.
   ///
@@ -380,7 +380,7 @@ class ChatService {
   /// Purpose:
   /// - Call this only after creating a chat room including single and group chat.
   ///
-  ///
+  @Deprecated('User join method instead')
   Future<void> joinAfterCreateRoom(ChatRoom room, {String? protocol}) async {
     await join(room, protocol: protocol);
   }
@@ -393,7 +393,7 @@ class ChatService {
   Future<void> join(ChatRoom room, {String? protocol}) async {
     // int timestamp = await getServerTimestamp();
     // final order = timestamp * -1; // int.parse("-1$timestamp");
-    final joinVal = {
+    final joinValues = {
       // Incase there is an invitation, remove the invitation
       invitedUserRef(myUid!).child(room.id).path: null,
       // In case, invitation was mistakenly rejected
@@ -403,32 +403,13 @@ class ChatService {
 
       // Add in chat joins
       'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
-
-      //
-      // if (room.single) 'chat/joins/${myUid!}/${room.id}/$singleOrder': order,
-      // if (room.group) 'chat/joins/${myUid!}/${room.id}/$groupOrder': order,
-      // if (room.open) 'chat/joins/${myUid!}/${room.id}/$openOrder': order,
-      // 'chat/joins/${myUid!}/${room.id}/order': order,
-      // 'chat/joins/${myUid!}/${room.id}/$lastText':
-      //     protocol ?? ChatProtocol.join,
-      // 'chat/joins/${myUid!}/${room.id}/$lastMessageBy': myUid!,
     };
-    await FirebaseDatabase.instance.ref().update(joinVal);
-
-    // if (room.single) {
-    //   User? user = await User.get(getOtherUserUidFromRoomId(room.id)!);
-    //   if (user != null) {
-    //     await FirebaseDatabase.instance.ref().update({
-    //       'chat/joins/${myUid!}/${room.id}/displayName': user.displayName,
-    //       'chat/joins/${myUid!}/${room.id}/photoUrl': user.photoUrl,
-    //     });
-    //   }
-    // }
+    await FirebaseDatabase.instance.ref().update(joinValues);
 
     /// Add your uid into the user list of the chat room instead of reading from database.
     room.users[myUid!] = false;
 
-    await sendProtocolMessage(room, protocol: protocol ?? ChatProtocol.join);
+    await sendMessage(room, protocol: protocol ?? ChatProtocol.join);
   }
 
   /// Invite the other user on a 1:1 chat.
@@ -476,15 +457,23 @@ class ChatService {
     await inviteUser(room, otherUserUid);
 
     // If invitation is sent, delete the first if it's invitation protocol.
-    final DataSnapshot messageSanpshot = await messageRef(room.id)
-        .orderByChild(lastProtocol)
+    final DataSnapshot? message = await getInvitationNotSetMessage(room);
+    if (message != null) {
+      await message.ref.remove();
+    }
+  }
+
+  /// Get the invitation not set message
+  Future<DataSnapshot?> getInvitationNotSetMessage(ChatRoom room) async {
+    final messagesSnapshot = await messageRef(room.id)
+        .orderByChild(ChatMessage.field.protocol)
         .equalTo(ChatProtocol.invitationNotSent)
         .limitToFirst(1)
         .get();
-
-    if (messageSanpshot.exists) {
-      await messageSanpshot.ref.remove();
+    if (messagesSnapshot.exists == false || messagesSnapshot.children.isEmpty) {
+      return null;
     }
+    return messagesSnapshot.children.first;
   }
 
   /// Invite a user into the chat room.

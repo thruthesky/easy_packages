@@ -57,6 +57,9 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (message.isProtocol) {
+      return ChatProtocolBubble(message: message);
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
@@ -179,6 +182,8 @@ class ChatBubble extends StatelessWidget {
                   if (message.uid != myUid) ...[
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
+
+                      /// TODO: don't listen to the whole user data. Only listen user display name and photo url.
                       child: UserDoc.sync(
                         uid: message.uid!,
                         builder: (user) {
@@ -221,6 +226,7 @@ class ChatBubble extends StatelessWidget {
                           : CrossAxisAlignment.end,
                       children: [
                         if (message.uid != myUid) ...[
+                          /// TODO: don't listen to the whole user data. Only listen user display name and photo url.
                           UserDoc.sync(
                             uid: message.uid!,
                             builder: (user) {
@@ -363,14 +369,6 @@ class ChatBubble extends StatelessWidget {
                                                   message.text!,
                                                 ),
                                               ),
-                                            if (message.protocol.notEmpty)
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(12),
-                                                child: Text(
-                                                  message.protocol!.t,
-                                                ),
-                                              ),
                                           ],
                                         ),
                                       ),
@@ -437,5 +435,49 @@ class ChatBubble extends StatelessWidget {
       );
     }
     return const SizedBox.shrink();
+  }
+}
+
+class ChatProtocolBubble extends StatelessWidget {
+  const ChatProtocolBubble({
+    super.key,
+    required this.message,
+  });
+
+  final ChatMessage message;
+
+  @override
+  Widget build(BuildContext context) {
+    final protocol = message.protocol!;
+    String text = protocol.t;
+    if (protocol == ChatProtocol.join) {
+      text = protocol.tr(
+        args: {
+          'displayName': message.displayName,
+        },
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Divider(
+              thickness: 1,
+              endIndent: 16,
+            ),
+          ),
+          Text(
+            text,
+          ),
+          const Expanded(
+            child: Divider(
+              thickness: 1,
+              indent: 12,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -12,6 +12,8 @@ class ChatMessage {
     text: 'text',
     url: 'url',
     uid: 'uid',
+    displayName: 'displayName',
+    photoUrl: 'photoUrl',
     createdAt: 'createdAt',
     order: 'order',
     replyTo: 'replyTo',
@@ -26,7 +28,9 @@ class ChatMessage {
 
   String id;
   String? roomId;
-  String? uid;
+  String uid;
+  String displayName;
+  String? photoUrl;
   int createdAt;
   int? updatedAt;
   int? order;
@@ -43,6 +47,7 @@ class ChatMessage {
   ChatMessage? replyTo;
 
   bool get isUpdated => updatedAt != null;
+  bool get isProtocol => protocol != null && protocol!.isNotEmpty;
 
   DatabaseReference get ref =>
       ChatService.instance.messagesRef.child(roomId!).child(id);
@@ -53,7 +58,9 @@ class ChatMessage {
     this.text,
     this.url,
     this.protocol,
-    this.uid,
+    required this.uid,
+    required this.displayName,
+    required this.photoUrl,
     required this.createdAt,
     required this.order,
     this.replyTo,
@@ -81,6 +88,8 @@ class ChatMessage {
       url: json[field.url],
       protocol: json[field.protocol],
       uid: json[field.uid],
+      displayName: json[field.displayName],
+      photoUrl: json[field.photoUrl],
       createdAt: json[field.createdAt],
       order: json[field.order],
       replyTo: replyTo == null
@@ -117,6 +126,8 @@ class ChatMessage {
                   : replyTo.text,
             if (replyTo.url != null) field.url: replyTo.url,
             field.uid: replyTo.uid,
+            field.displayName: replyTo.displayName,
+            field.photoUrl: replyTo.photoUrl,
             field.createdAt: replyTo.createdAt,
             field.deleted: replyTo.deleted,
           };
@@ -126,6 +137,8 @@ class ChatMessage {
       if (url != null) field.url: url,
       if (protocol != null) field.protocol: protocol,
       field.uid: FirebaseAuth.instance.currentUser!.uid,
+      field.displayName: my.displayName,
+      field.photoUrl: my.photoUrl,
       field.createdAt: ServerValue.timestamp,
       field.order: DateTime.now().millisecondsSinceEpoch * -1,
       if (replyTo != null) field.replyTo: replyToData,
@@ -139,6 +152,8 @@ class ChatMessage {
       url: url,
       protocol: protocol,
       uid: FirebaseAuth.instance.currentUser!.uid,
+      displayName: my.displayName,
+      photoUrl: my.photoUrl,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       order: DateTime.now().millisecondsSinceEpoch * -1,
       replyTo: replyTo == null

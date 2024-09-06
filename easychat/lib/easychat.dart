@@ -41,9 +41,9 @@ export './src/chat.locale.dart';
 
 // Service ====================================================
 export './src/chat.service.dart';
+export './src/chat.test.service.dart';
 
+// Etc ========================================================
 export './src/chat.query.dart';
-
 export './src/chat.defines.dart';
-
 export './src/chat.protocol.dart';
