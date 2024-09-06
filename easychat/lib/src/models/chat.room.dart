@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easy_locale/easy_locale.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:flutter/material.dart';
 
 class ChatRoom {
   /// Field names used for the Firestore document
@@ -203,7 +200,6 @@ class ChatRoom {
 
   /// [create] creates a new chat room.
   ///
-  ///
   /// Returns the database reference of the chat room.
   ///
   /// If [id] is null, this will make new room id (preferred for group chat)
@@ -230,27 +226,6 @@ class ChatRoom {
       throw 'chat-room-create/single-or-group Single or group chat room must be selected';
     }
 
-    // Map<String, dynamic> usersMap = {};
-    // if (users != null && users.isNotEmpty) {
-    //   usersMap = Map.fromEntries(
-    //     users.map(
-    //       (uid) => MapEntry(uid, {
-    //         if (single) ...{
-    //           ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-    //           ChatRoomUser.field.singleTimeOrder: FieldValue.serverTimestamp(),
-    //         },
-    //         if (group) ...{
-    //           ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
-    //           ChatRoomUser.field.groupTimeOrder: FieldValue.serverTimestamp(),
-    //         },
-    //         ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-    //         ChatRoomUser.field.timeOrder: FieldValue.serverTimestamp(),
-    //         ChatRoomUser.field.newMessageCounter: 1,
-    //       }),
-    //     ),
-    //   );
-    // }
-
     final newRoom = {
       if (name != null) field.name: name,
       if (description != null) field.description: description,
@@ -274,11 +249,7 @@ class ChatRoom {
     } else {
       newChatRoomRef = ChatService.instance.roomsRef.child(id);
     }
-
     await newChatRoomRef.update(newRoom);
-
-    //
-
     return newChatRoomRef;
   }
 
@@ -354,15 +325,7 @@ class ChatRoom {
   @Deprecated(
       'A dart model should have the data modeling and default crud including data modeling logic. This logic should not be here.')
   Future<void> inviteUser(String uid) async {
-    // await ref.update({
-    //   field.invitedUsers: FieldValue.arrayUnion([uid]),
-    //   field.updatedAt: FieldValue.serverTimestamp(),
-    // });
-    // ChatService.instance.increaseInvitationCount(uid);
-    // ChatService.instance.onInvite?.call(room: this, uid: uid);
-
     final Map<String, Object?> invitation = {};
-    // TODO prevent typing
     invitation['chat/invited-users/$uid/$id'] = ServerValue.timestamp;
 
     FirebaseDatabase.instance.ref().update(invitation);
@@ -374,63 +337,6 @@ class ChatRoom {
   Future<void> acceptInvitation() async {
     // await join();
   }
-
-  // TODO! CLEANUP!
-  /// Let the current user join in chat room
-  ///
-  ///
-  ///
-  /// If user is invited, invitation count will decrease
-  // Future<void> join() async {
-  //   if (blockedUsers.contains(myUid)) {
-  //     throw ChatException(
-  //       'blocked-user-cannot-join',
-  //       'Failed to join because you are blocked'.t,
-  //     );
-  //   }
-
-  //   await ChatService.instance.joinsRef.child(myUid!).child(ref.key!).update({
-  //     'singleChatOrder': ServerValue.timestamp,
-  //     'groupChatOrder': ServerValue.timestamp,
-  //     'openChatOrder': ServerValue.timestamp,
-  //     'joinedAt': ServerValue.timestamp,
-  //   });
-
-  // final timestampAtLastMessage = lastMessageAt != null
-  //     ? Timestamp.fromDate(lastMessageAt!)
-  //     : FieldValue.serverTimestamp();
-
-  // await ref.set(
-  //   {
-  //     field.invitedUsers: FieldValue.arrayRemove([myUid!]),
-  //     field.users: {
-  //       myUid!: {
-  //         if (single) ...{
-  //           ChatRoomUser.field.singleOrder: FieldValue.serverTimestamp(),
-  //           ChatRoomUser.field.singleTimeOrder: timestampAtLastMessage,
-  //         },
-  //         if (group) ...{
-  //           ChatRoomUser.field.groupOrder: FieldValue.serverTimestamp(),
-  //           ChatRoomUser.field.groupTimeOrder: timestampAtLastMessage,
-  //         },
-  //         ChatRoomUser.field.order: FieldValue.serverTimestamp(),
-  //         ChatRoomUser.field.timeOrder: timestampAtLastMessage,
-  //         // need to add new message so that the order will be correct after reading,
-  //         ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
-  //       },
-  //     },
-  //     // In case, the user rejected the invitation
-  //     // but actually wants to accept it, then we should
-  //     // also remove the uid from rejeceted users.
-  //     field.rejectedUsers: FieldValue.arrayRemove([myUid!]),
-  //     field.updatedAt: FieldValue.serverTimestamp(),
-  //   },
-  //   SetOptions(merge: true),
-  // );
-  // if (invitedUsers.contains(myUid)) {
-  //   await ChatService.instance.decreaseInvitationCount();
-  // }
-  // }
 
   /// Reject the invitation
   ///
@@ -470,104 +376,7 @@ class ChatRoom {
   /// users inside the chat room.
   /// TODO: Change the name of the function readable(meaningful).
   @Deprecated('DO NOT USE THIS: The function name and the logic is not clear.')
-  Future<void> updateNewMessagesMeta() async {
-    // final Map<String, dynamic> updateNewMessagesMeta = {
-    //   'chat': {
-    //     'settings': {
-    //       ...users.map(
-    //         (uid) => MapEntry(
-    //           uid,
-    //           {
-    //             'unread-message-count': {
-    //               id: ServerValue.increment(1) // Firebase increment operation
-    //             }
-    //           },
-    //         ),
-    //       )
-    //     }
-    //   }
-    // };
-    // final Map<String, Object?> updateNewMessagesMeta = Map.fromEntries(
-    //   userUids.where((uid) => uid != myUid).map(
-    //         (uid) => MapEntry(
-    //           'chat/settings/$uid/unread-message-count/$id',
-    //           ServerValue.increment(1),
-    //         ),
-    //       ),
-    // );
-
-    // final Map<String, Object?> updateNewMessagesMeta = {};
-
-    // // Revise
-    // for (String uid in userUids) {
-    //   updateNewMessagesMeta['chat/settings/$uid/unread-message-count/$id'] =
-    //       ServerValue.increment(1);
-    //   if (single) {
-    //     updateNewMessagesMeta['chat/joins/$uid/$id/singleChatOrder'] =
-    //         ServerValue.timestamp;
-    //   }
-    //   if (group) {
-    //     updateNewMessagesMeta['chat/joins/$uid/$id/groupChatOrder'] =
-    //         ServerValue.timestamp;
-    //   }
-    // }
-
-    //)
-    // await ref.update(updateNewMessagesMeta);
-    // await FirebaseDatabase.instance.ref().update(updateNewMessagesMeta);
-
-    // throw 'Not implemented yet';
-
-    // TODO
-    //
-
-    // final serverTimestamp = FieldValue.serverTimestamp();
-    // final Map<String, Map<String, Object>> updateUserData = users.map(
-    //   (uid, value) {
-    //     if (uid == myUid!) {
-    //       final readOrder = _negatedOrder(DateTime.now());
-    //       return MapEntry(
-    //         uid,
-    //         {
-    //           if (single) ...{
-    //             ChatRoomUser.field.singleOrder: readOrder,
-    //             ChatRoomUser.field.singleTimeOrder: serverTimestamp,
-    //           },
-    //           if (group) ...{
-    //             ChatRoomUser.field.groupOrder: readOrder,
-    //             ChatRoomUser.field.groupTimeOrder: serverTimestamp,
-    //           },
-    //           ChatRoomUser.field.order: readOrder,
-    //           ChatRoomUser.field.timeOrder: serverTimestamp,
-    //           ChatRoomUser.field.newMessageCounter: 0,
-    //         },
-    //       );
-    //     }
-    //     return MapEntry(
-    //       uid,
-    //       {
-    //         if (single) ...{
-    //           ChatRoomUser.field.singleOrder: serverTimestamp,
-    //           ChatRoomUser.field.singleTimeOrder: serverTimestamp,
-    //         },
-    //         if (group) ...{
-    //           ChatRoomUser.field.groupOrder: serverTimestamp,
-    //           ChatRoomUser.field.groupTimeOrder: serverTimestamp,
-    //         },
-    //         ChatRoomUser.field.order: serverTimestamp,
-    //         ChatRoomUser.field.timeOrder: serverTimestamp,
-    //         ChatRoomUser.field.newMessageCounter: FieldValue.increment(1),
-    //       },
-    //     );
-    //   },
-    // );
-    // await ref.set({
-    //   field.users: {
-    //     ...updateUserData,
-    //   },
-    //   field.lastMessageAt: serverTimestamp,
-    // }, SetOptions(merge: true));
-  }
+  Future<void> updateNewMessagesMeta() async {}
 
   /// [resetUnreadMessage] is used to set as read by the current user.
   /// It means, turning newMessageCounter into zero
@@ -584,7 +393,6 @@ class ChatRoom {
   /// It can be done by the master.
   block(String uid) async {
     throw 'Not implemented yet';
-
     // 1. check if the user is the master
     // 2. check if the user can be blocked
     // 3. block the user

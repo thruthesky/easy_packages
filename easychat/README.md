@@ -258,7 +258,7 @@ For your information on `easychat` history:
 ChatRoomDoc(
   ref: ChatService.instance.roomRef(joinDoc.key!),
   builder: (room) {
-    return ChatRoomListTile(
+    return ChatJoinListTile(
       room: room,
     );
   },

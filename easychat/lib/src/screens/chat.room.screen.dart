@@ -7,17 +7,6 @@ import 'package:flutter/material.dart';
 
 /// Chat room screen
 ///
-/// TODO: chat join has some information about the room data.
-/// TODO: if join data is single chat room,
-/// (1) display title with displayName and photo.
-/// (2) diplay the chat message list and chat input if possible
-/// (3) load the chat room and user data.
-///
-/// TODO: if join data is a group chat,
-/// (1) display title with name and iconUrl.
-/// (2) display the chat message list and chat input if possible
-/// (3) load the chat room data.
-///
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({
     super.key,
@@ -67,36 +56,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     await onRoomReady();
   }
 
-  // bool get shouldJoinOpenGroupChat =>
-  //     !$room!.userUids.contains(myUid) && $room!.open && $room!.group;
-
-  // bool get shouldJoinSingleChat =>
-  //     !$room!.userUids.contains(myUid) &&
-  //     $room!.single &&
-  //     $room!.uidsFromRoomId.contains(myUid) &&
-  //     !$room!.invitedUsers.contains(myUid) &&
-  //     !$room!.rejectedUsers.contains(myUid);
-
   /// Do something when the room is ready
   ///
   /// The "room ready" means that the room is existing or created, and loaded.
   onRoomReady() async {
     // TODO: check if the user is blocked
-
     // TODO: check if the user is a membmer
-
     // TODO: check if the user is in invitation list
-
     // TODO: check if the user is in rejected list
-
     // TODO: check if the user can join the chat room
-
-    // if (room!.blockedUsers.contains(myUid)) return;
-    // // Auto Join Groups when it is open chat
-    // if (shouldJoinOpenGroupChat || shouldJoinSingleChat) {
-    //   isJoiningNow = true;
-    //   await $room!.join();
-    // }
 
     /// Set 0 to the new meessage count
     ///
@@ -110,12 +78,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         room!.resetUnreadMessage();
       },
     );
-
-    //     ChatService.instance.roomRef(room!.id).onValue.listen(
-    //   (event) {
-    //     room!.resetUnreadMessage();
-    //   },
-    // );
   }
 
   @override
@@ -272,7 +234,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 return const Icon(Icons.error);
               },
             )
-          : (isGroup
+          : isGroup
               ? Icon(
                   Icons.people,
                   color: Theme.of(context).colorScheme.onTertiaryContainer,
@@ -284,7 +246,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         .first
                         .toUpperCase(),
                   ),
-                )),
+                ),
     );
   }
 }

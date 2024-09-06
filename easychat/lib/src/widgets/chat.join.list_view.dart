@@ -11,8 +11,8 @@ import 'package:easy_locale/easy_locale.dart';
 /// It users sliver list to show chat rooms.
 ///
 /// Refer README.md for details.
-class ChatRoomListView extends StatelessWidget {
-  const ChatRoomListView({
+class ChatJoinListView extends StatelessWidget {
+  const ChatJoinListView({
     super.key,
     this.single,
     this.group,
@@ -134,31 +134,11 @@ class ChatRoomListView extends StatelessWidget {
                   if (index + 1 == snapshot.docs.length && snapshot.hasMore) {
                     snapshot.fetchMore();
                   }
-
                   ChatJoin join = ChatJoin.fromSnapshot(snapshot.docs[index]);
-
                   return itemBuilder?.call(context, join, index) ??
-                      ChatRoomListTile(
+                      ChatJoinListTile(
                         join: join,
                       );
-
-                  //  return ChatRoomDoc(
-                  //   key: ValueKey(value['order']),
-                  //   roomId: joinDoc.key!,
-                  //   onLoading: const ListTile(
-                  //     leading: CircularProgressIndicator(),
-                  //     minTileHeight: 72,
-                  //     title: Text("Loading..."),
-                  //     subtitle: LinearProgressIndicator(),
-                  //   ),
-                  //   builder: (room) {
-                  //     print(
-                  //         '---> rebuilding ChatRoomListView: order ${value['order']}');
-                  //     return ChatRoomListTile(
-                  //       room: room,
-                  //     );
-                  //   },
-                  // );
                 },
               ),
           ],

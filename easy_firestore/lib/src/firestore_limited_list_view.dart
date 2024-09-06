@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 ///   query: ChatRoomQuery.unread(),
 ///   limit: 3,
 ///   separatorBuilder: (p0, p1) => const SizedBox(height: 6),
-///   itemBuilder: (context, doc) => ChatRoomListTile(
+///   itemBuilder: (context, doc) => ChatJoinListTile(
 ///     room: ChatRoom.fromSnapshot(doc),
 ///   ),
 ///   padding: const EdgeInsets.symmetric(

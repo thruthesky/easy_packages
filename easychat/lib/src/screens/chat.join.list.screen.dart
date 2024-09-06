@@ -3,8 +3,8 @@ import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
-class ChatRoomListScreen extends StatelessWidget {
-  const ChatRoomListScreen({
+class ChatJoinListScreen extends StatelessWidget {
+  const ChatJoinListScreen({
     super.key,
     this.single,
     this.group,
@@ -70,12 +70,12 @@ class ChatRoomListScreen extends StatelessWidget {
               ),
             );
           }
-          return ChatRoomListView(
+          return ChatJoinListView(
             single: single,
             group: group,
             open: open,
             itemBuilder: (context, join, index) {
-              return ChatRoomListTile(
+              return ChatJoinListTile(
                 join: join,
               );
             },

@@ -1,4 +1,3 @@
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -28,7 +27,7 @@ class ChatRoomRejectedInviteListScreen extends StatelessWidget {
                     builder: (room) {
                       /// TODO: Create ChatRoomRejectedListTile
                       return const Text("Create: ChatRoomRejectedListTile");
-                      // return ChatRoomListTile(
+                      // return ChatJoinListTile(
                       //   room: room,
                       //   onTap: (context, room, user) async {
                       //     final re = await confirm(
