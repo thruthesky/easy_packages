@@ -6,7 +6,7 @@ export 'src/models/chat.room.user.dart';
 
 // Screens =====================================================
 export 'src/screens/chat.room.edit.screen.dart';
-export 'src/screens/chat.room.list.screen.dart';
+export 'src/screens/chat.join.list.screen.dart';
 export 'src/screens/chat.room.screen.dart';
 export 'src/screens/chat.room.received.invite_list.screen.dart';
 export 'src/screens/chat.room.rejected.invite_list.screen.dart';
@@ -14,13 +14,13 @@ export 'src/screens/chat.room.rejected.invite_list.screen.dart';
 // Widgets ====================================================
 export './src/widgets/chat.bubble.dart';
 export './src/widgets/chat.bubble.reply.dart';
-export './src/widgets/chat.invitation_count.dart';
+export 'src/widgets/chat.invitation.count.dart';
 export './src/widgets/chat.messages.list_view.dart';
 export './src/widgets/chat.new_message_counter.dart';
 export './src/widgets/chat.room.doc.dart';
 export './src/widgets/chat.room.input_box.dart';
 export 'src/widgets/chat.invitation.list_tile.dart';
-export './src/widgets/chat.invitation_list_tile_actions.dart';
+export 'src/widgets/chat.invitation.list_tile.actions.dart';
 export 'src/widgets/chat.invitation.preview.list_view.dart';
 export 'src/widgets/chat.join.list_tile.dart';
 export 'src/widgets/chat.join.list_view.dart';
