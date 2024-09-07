@@ -75,6 +75,20 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
+                          UserField(
+                            uid: user.uid,
+                            field: 'birthDay',
+                            initialData: 4,
+                            builder: (v, r) {
+                              return ElevatedButton(
+                                onPressed: () async {
+                                  print('UserField(birthDay): ${r.path}');
+                                  await r.set((v ?? 0) + 1);
+                                },
+                                child: Text('UserField(birthDay): $v'),
+                              );
+                            },
+                          ),
                         ],
                       );
               },

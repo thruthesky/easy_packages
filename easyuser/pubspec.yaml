@@ -1,6 +1,6 @@
 name: easyuser
 description: "An easy to use user management package with Firebase as backend."
-version: 0.0.25
+version: 0.0.26
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:

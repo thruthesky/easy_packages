@@ -1,5 +1,6 @@
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// Listens the change of the field of user data in Realtime Database and
@@ -18,7 +19,7 @@ class UserField extends StatelessWidget {
   final String uid;
   final dynamic initialData;
   final String field;
-  final Widget Function(dynamic) builder;
+  final Widget Function(dynamic, DatabaseReference) builder;
   final bool sync;
 
   @override
@@ -28,7 +29,7 @@ class UserField extends StatelessWidget {
         ref: UserService.instance.mirrorUsersRef.child(uid).child(field),
         initialData: initialData,
         builder: (value, ref) {
-          return builder(value);
+          return builder(value, ref);
         },
       );
     } else {
@@ -36,7 +37,7 @@ class UserField extends StatelessWidget {
         ref: UserService.instance.mirrorUsersRef.child(uid).child(field),
         initialData: initialData,
         builder: (value, ref) {
-          return builder(value);
+          return builder(value, ref);
         },
       );
     }
