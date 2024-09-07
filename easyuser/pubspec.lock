@@ -189,10 +189,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_report
-      sha256: c9cbc13195621c11162c2007d8c45b22f39e7a89cb2c81383efde926102de3f5
+      sha256: edbd85515ff33660f7b0944250fa3a032dd662eff13404a2b3ba71b762f19bf4
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   easy_storage:
     dependency: "direct main"
     description:

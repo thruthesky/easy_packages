@@ -23,9 +23,6 @@ dependencies:
 dependency_overrides:
   easy_locale:
     path: ../../easy_locale
-  easy_report:
-    path: ../../easy_report
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
