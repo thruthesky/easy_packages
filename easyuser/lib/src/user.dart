@@ -9,6 +9,15 @@ import 'package:memory_cache/memory_cache.dart';
 ///
 /// [private] is the private field that will be used to store the user's data.
 class User {
+  /// Field names used for the Firestore document
+  static const field = (
+    name: 'name',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    gender: 'gender',
+    statePhotoUrl: 'statePhotoUrl',
+  );
+
   Map<String, dynamic>? data;
 
   /// [uid] is the user's uid.
