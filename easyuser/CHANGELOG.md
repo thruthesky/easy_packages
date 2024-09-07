@@ -1,6 +1,9 @@
+## 0.0.27
+* Update. Add more fields on `User.field`
+
 ## 0.0.26
 * Update. `icon` widget property in `AnonymousAvatar`.
-* * Update. `icon` widget property in `AnonymousAvatar`.
+* Update. `icon` widget property in `AnonymousAvatar`.
 
 ## 0.0.25
 * Add. `UserChange` widget.

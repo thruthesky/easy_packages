@@ -103,7 +103,16 @@ class ChatRoomListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
-    if (join.lastText != null && join.lastPhotoUrl != null) {
+    if (join.lastProtocol.notEmpty) {
+      return Text(
+        join.lastProtocol!.t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+            ),
+      );
+    } else if (join.lastText != null && join.lastPhotoUrl != null) {
       return Row(
         children: [
           Text(

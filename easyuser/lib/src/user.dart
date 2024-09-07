@@ -11,11 +11,20 @@ import 'package:memory_cache/memory_cache.dart';
 class User {
   /// Field names used for the Firestore document
   static const field = (
-    name: 'name',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    gender: 'gender',
+    name: 'name',
+    displayName: 'displayName',
+    caseIncensitiveName: 'caseIncensitiveName',
+    caseIncensitiveDisplayName: 'caseIncensitiveDisplayName',
+    birthYear: 'birthYear',
+    birthMonth: 'birthMonth',
+    birthDay: 'birthDay',
+    lastLoginAt: 'lastLoginAt',
+    photoUrl: 'photoUrl',
+    stateMessage: 'stateMessage',
     statePhotoUrl: 'statePhotoUrl',
+    gender: 'gender',
   );
 
   Map<String, dynamic>? data;

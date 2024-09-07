@@ -12,11 +12,13 @@ export 'src/screens/chat.room.received.invite_list.screen.dart';
 export 'src/screens/chat.room.rejected.invite_list.screen.dart';
 
 // Widgets ====================================================
+export './src/widgets/chat.avatar.loader.dart';
 export './src/widgets/chat.bubble.dart';
 export './src/widgets/chat.bubble.reply.dart';
 export 'src/widgets/chat.invitation.count.dart';
 export './src/widgets/chat.messages.list_view.dart';
 export './src/widgets/chat.new_message_counter.dart';
+export './src/widgets/chat.protocol.bubble.dart';
 export './src/widgets/chat.room.doc.dart';
 export './src/widgets/chat.room.input_box.dart';
 export 'src/widgets/chat.invitation.list_tile.dart';

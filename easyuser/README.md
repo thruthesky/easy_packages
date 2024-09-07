@@ -447,6 +447,27 @@ UserField(
 ),
 ```
 
+- This is especially useful when you need to listen only a field. Not the whole data.
+
+
+## UserAvatar
+
+- To display user avatar, you can use below.
+
+```dart
+UserAvatar(user: user),
+```
+
+## UserAvatar.fromUid
+
+- To display user user avatar in realtime when the user changes his profile photo, use `UserAvatar.fromUid` with `sync` option.
+
+
+```dart
+UserAvatar.fromUid(uid: message.uid, sync: true)
+```
+
+
 ## FirestoreUserDoc
 
 - It works just the same as `UserDoc` but gets data from Firestore.
