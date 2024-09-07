@@ -68,7 +68,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
     if (room!.joined == false) {
       ChatService.instance.join(room!);
-
       setState(() {});
     }
 
@@ -99,7 +98,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (room == null) {
       final newRoomRef = await ChatRoom.createSingle(user!.uid);
       room = await ChatRoom.get(newRoomRef.key!);
-      ChatService.instance.joinAfterCreateRoom(
+      ChatService.instance.join(
         room!,
         protocol: ChatProtocol.invitationNotSent,
       );
@@ -168,7 +167,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ChatMessagesListView(
-                      key: const ValueKey("Chat Message List View"),
                       room: room!,
                     ),
                   ),

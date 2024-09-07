@@ -16,6 +16,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
 - [Dependencies](#dependencies)
 - [Logics](#logics)
   - [Protocol](#protocol)
+  - [Chat invitation and delete invitation](#chat-invitation-and-delete-invitation)
   - [Chat message sending](#chat-message-sending)
   - [Ordering](#ordering)
   - [Counting the invitation](#counting-the-invitation)
@@ -132,9 +133,44 @@ For your information on `easychat` history:
   - You can create your own protocol if you want.
 
 - Example
-  - See the example of chat 
+  - See the example of `invitation-not-sent` protocol message.
 
 
+## Chat invitation and delete invitation
+
+
+- For single chat, when the chat room creator creates the chat room, it will not send the invitation automatically.
+  - Instead, it will send a `invitation-not-sent` message automatically.
+- When the creator sends a message to the other user,
+  - The invitation will be sent and the `invitation-not-sent` message will be deleted.
+
+```mermaid
+flowchart TB
+ChatRoomScreen(["ChatRoomScreen"])
+  ChatRoomScreen ==> node_1
+  node_1 =="Yes"==> node_2
+  node_2 =="NO"==> node_3
+  node_3 ==> node_4
+  node_4 ==> node_5
+  node_6 ==> node_7
+  node_7 ==> node_8
+  node_8 ==> node_9
+  node_1{"Is single chat?"}
+  node_2{"Is chat room created?"}
+  node_3[["Create single chat room"]]
+  node_4[["Join single chat room"]]
+  node_5[["Send #39;invitation-not-sent#39; message"]]
+  node_6(["ChatRoomScreen"])
+  node_7{{"ChatMessageListView"}}
+  node_8{"Is #39;invitation-not-sent#39; message?"}
+  node_9[["Delete #39;invitation-no-sent#39;"]]
+```
+
+
+- The invitation-not-sent protocol message is created when the chat room creator creates the 1:1 chat room. And it needs to be deleted after the first message is sent.
+- If the invitation-not-sent protocol message appears even after the invitation has sent, it's confusing. That's why it needs to be deleted.
+- But why the code is like in `ChatService.instance.deleteInvitationNotSentMessage`?
+  - If another query made on the same node of the chat masssage list view, it will change(affect) the query of the chat message list view. That's why it does not query, but checks the index and the message protocol. And if it's the 'invitation-not-sent' protocol, it deletes the message.
 
 ## Chat message sending
 

@@ -264,7 +264,7 @@ class ChatRoom {
       open: false,
       single: true,
       id: singleChatRoomId(otherUid),
-      users: {myUid!: false},
+      users: {myUid!: true},
       masterUsers: [myUid!],
       domain: domain,
     );

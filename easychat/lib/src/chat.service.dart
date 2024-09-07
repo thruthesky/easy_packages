@@ -3,6 +3,7 @@ import 'package:easychat/easychat.dart';
 import 'package:easychat/src/screens/chat.open.room.list.screen.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_url_preview/easy_url_preview.dart';
 
@@ -289,13 +290,6 @@ class ChatService {
     await updateUrlPreview(newMessage, text);
   }
 
-  // Future<void> sendProtocolMessage(
-  //   ChatRoom room, {
-  //   required String protocol,
-  // }) async {
-  //   await sendMessage(room, protocol: protocol);
-  // }
-
   /// Update the unread message count and chat join relations.
   ///
   /// Purpose:
@@ -372,24 +366,18 @@ class ChatService {
     }
   }
 
-  /// Let the login user join the room after he creates a chat room.
-  ///
-  /// Why:
-  /// - After creating a chat room, the user should be able to see the room in the room list.
-  ///
-  /// Purpose:
-  /// - Call this only after creating a chat room including single and group chat.
-  ///
-  @Deprecated('User join method instead')
-  Future<void> joinAfterCreateRoom(ChatRoom room, {String? protocol}) async {
-    await join(room, protocol: protocol);
-  }
-
   /// Join a chat room
   ///
   /// This method is used to join a chat room.
   ///
-  /// TODO: this method is similar to joinAfterCreateRoom
+  /// Where:
+  /// - It is called after the chat room created.
+  /// - It is called after the user accepted the invitation.
+  ///
+  /// Logic:
+  /// - It update the room.users with current user's uid. It's called as
+  /// call-by-reference. So, the parent can use the updated room.users which
+  /// includes the current user's uid.
   Future<void> join(ChatRoom room, {String? protocol}) async {
     // int timestamp = await getServerTimestamp();
     // final order = timestamp * -1; // int.parse("-1$timestamp");
@@ -399,20 +387,22 @@ class ChatService {
       // In case, invitation was mistakenly rejected
       rejectedUserRef(myUid!).child(room.id).path: null,
       // Add uid in users
-      room.ref.child('users').child(myUid!).path: false,
+      room.ref.child('users').child(myUid!).path: true,
 
       // Add in chat joins
       'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
     };
-    await FirebaseDatabase.instance.ref().update(joinValues);
 
     /// Add your uid into the user list of the chat room instead of reading from database.
-    room.users[myUid!] = false;
+    /// * This must be here before await. So it can return fast.
+    room.users[myUid!] = true;
+
+    await FirebaseDatabase.instance.ref().update(joinValues);
 
     await sendMessage(room, protocol: protocol ?? ChatProtocol.join);
   }
 
-  /// Invite the other user on a 1:1 chat.
+  /// Invite the other user on a 1:1 chat and delete invitation not sent message.
   ///
   ///
   ///
@@ -455,25 +445,41 @@ class ChatService {
 
     // Invite the other user
     await inviteUser(room, otherUserUid);
-
-    // If invitation is sent, delete the first if it's invitation protocol.
-    final DataSnapshot? message = await getInvitationNotSetMessage(room);
-    if (message != null) {
-      await message.ref.remove();
-    }
   }
 
-  /// Get the invitation not set message
-  Future<DataSnapshot?> getInvitationNotSetMessage(ChatRoom room) async {
-    final messagesSnapshot = await messageRef(room.id)
-        .orderByChild(ChatMessage.field.protocol)
-        .equalTo(ChatProtocol.invitationNotSent)
-        .limitToFirst(1)
-        .get();
-    if (messagesSnapshot.exists == false || messagesSnapshot.children.isEmpty) {
-      return null;
+  /// Delete the invitation-not-sent message.
+  ///
+  /// Why:
+  /// - The invitation-not-sent protocol message is created when the chat room
+  /// creator creates the 1:1 chat room. And it needs to be deleted after the
+  /// first message is sent to the other user since the invitation will be
+  /// sent to the other user automatically on the first message. And if the
+  /// protocol message of invitation-not-sent still appears on the screen, it's
+  /// confusing. That's why it needs to be deleted.
+  ///
+  /// - But why the code is like this?
+  /// If another query made on the same node of the chat masssage list view,
+  /// it will change(affect) the query of the chat message list view. That's
+  /// why it does not query, but checks the index and the message protocol.
+  /// And if it's the 'invitation-not-sent' protocol, it deletes the message.
+  ///
+  /// Refer README.md for more details.
+  deleteInvitationNotSentMessage({
+    required int index,
+    required ChatMessage message,
+    required int length,
+  }) async {
+    /// Why: length is bigger than 2 and less than 7?
+    /// - It's because the first message is expected to be the invitation-not-sent message
+    /// So, if there is only one message, it means, the invitation-not-sent message is not sent.
+    /// And if there are more than 7 messages, it means, the invitation-not-sent message is
+    /// probably deleted.
+    if (length >= 2 &&
+        length <= 7 &&
+        message.protocol == ChatProtocol.invitationNotSent &&
+        message.uid == myUid) {
+      await message.ref.remove();
     }
-    return messagesSnapshot.children.first;
   }
 
   /// Invite a user into the chat room.

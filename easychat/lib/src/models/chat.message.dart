@@ -27,6 +27,8 @@ class ChatMessage {
   );
 
   String id;
+
+  /// [roomId] is not saved in database. It can be found in the path.
   String? roomId;
   String uid;
   String displayName;
@@ -74,16 +76,24 @@ class ChatMessage {
 
   factory ChatMessage.fromSnapshot(DataSnapshot snapshot) {
     final data = Map<String, dynamic>.from(snapshot.value as Map);
-    return ChatMessage.fromJson(data, snapshot.key!);
+    return ChatMessage.fromJson(
+      data,
+      snapshot.key!,
+      snapshot.ref.parent!.key,
+    );
   }
 
-  static ChatMessage fromJson(Map<String, dynamic> json, String id) {
+  static ChatMessage fromJson(
+    Map<String, dynamic> json,
+    String id, [
+    String? roomId,
+  ]) {
     final replyTo = json[field.replyTo] == null
         ? null
         : Map<String, dynamic>.from(json[field.replyTo] as Map);
     return ChatMessage(
       id: id,
-      roomId: json[field.roomId],
+      roomId: roomId,
       text: json[field.text],
       url: json[field.url],
       protocol: json[field.protocol],
@@ -131,8 +141,8 @@ class ChatMessage {
             field.createdAt: replyTo.createdAt,
             field.deleted: replyTo.deleted,
           };
+    // Don't save room id. It can be found in the path.
     final newMessageData = {
-      field.roomId: roomId,
       if (text != null) field.text: text,
       if (url != null) field.url: url,
       if (protocol != null) field.protocol: protocol,
