@@ -147,23 +147,23 @@ For your information on `easychat` history:
 ```mermaid
 flowchart TB
 ChatRoomScreen(["ChatRoomScreen"])
-  ChatRoomScreen ==> node_1
-  node_1 =="Yes"==> node_2
-  node_2 =="NO"==> node_3
-  node_3 ==> node_4
-  node_4 ==> node_5
-  node_6 ==> node_7
-  node_7 ==> node_8
-  node_8 ==> node_9
-  node_1{"Is single chat?"}
-  node_2{"Is chat room created?"}
-  node_3[["Create single chat room"]]
-  node_4[["Join single chat room"]]
-  node_5[["Send #39;invitation-not-sent#39; message"]]
-  node_6(["ChatRoomScreen"])
-  node_7{{"ChatMessageListView"}}
-  node_8{"Is #39;invitation-not-sent#39; message?"}
-  node_9[["Delete #39;invitation-no-sent#39;"]]
+  ChatRoomScreen ==> isSingleChat
+  isSingleChat =="Yes"==> chatRoomCreated
+  chatRoomCreated =="NO"==> createChatRoom
+  createChatRoom ==> joinChatRoom
+  joinChatRoom ==> sendInvatationNotSentMessage
+  ChatRoomScreen2 ==> MessageListView
+  MessageListView ==> isInvitatioNotSetMessage
+  isInvitatioNotSetMessage ==> deleteInvitationNotSent
+  isSingleChat{"Is single chat?"}
+  chatRoomCreated{"Is chat room created?"}
+  createChatRoom[["Create single chat room"]]
+  joinChatRoom[["Join single chat room"]]
+  sendInvatationNotSentMessage[["Send #39;invitation-not-sent#39; message"]]
+  ChatRoomScreen2(["ChatRoomScreen"])
+  MessageListView{{"ChatMessageListView"}}
+  isInvitatioNotSetMessage{"Is #39;invitation-not-sent#39; message?"}
+  deleteInvitationNotSent[["Delete #39;invitation-no-sent#39;"]]
 ```
 
 
