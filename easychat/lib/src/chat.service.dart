@@ -380,6 +380,31 @@ class ChatService {
     }
   }
 
+  Future<void> resetUnreadMessage(ChatRoom room) async {
+    // return unreadMessageCountRef(room.id).set(0);
+    final Map<String, Object?> resetUnread = {
+      unreadMessageCountRef(room.id).path: 0,
+    };
+    final lastMessageAt = room.lastMessageAt;
+    if (lastMessageAt != null) {
+      final updatedOrder = lastMessageAt * -1;
+      resetUnread['chat/joins/${myUid!}/${room.id}/order'] = updatedOrder;
+      if (room.single) {
+        resetUnread['chat/joins/${myUid!}/${room.id}/$singleOrder'] =
+            updatedOrder;
+      }
+      if (room.group) {
+        resetUnread['chat/joins/${myUid!}/${room.id}/$groupOrder'] =
+            updatedOrder;
+      }
+      if (room.open) {
+        resetUnread['chat/joins/${myUid!}/${room.id}/$openOrder'] =
+            updatedOrder;
+      }
+    }
+    await FirebaseDatabase.instance.ref().update(resetUnread);
+  }
+
   /// Join a chat room
   ///
   /// This method is used to join a chat room.

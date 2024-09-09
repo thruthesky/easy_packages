@@ -30,6 +30,8 @@ class ChatRoomListTile extends StatelessWidget {
         leading: leading(context: context),
         title: Text(
           join.name.notEmpty ? join.name! : "Group Chat",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         subtitle: subtitle(context),
         trailing: trailing,

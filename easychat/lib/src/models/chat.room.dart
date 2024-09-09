@@ -386,8 +386,11 @@ class ChatRoom {
   /// The update will proceed only if newMessageCounter is not 0.
   /// The Chat Room must be updated or else, it may not proceed
   /// when old room data is 0, since newMessageCounter maybe inaccurate.
+  @Deprecated("Only put DB CRUD in Model")
   Future<void> resetUnreadMessage() async {
     ChatService.instance.unreadMessageCountRef(id).set(0);
+
+    // Update the
   }
 
   /// [block] blocks the user from the chat room.
