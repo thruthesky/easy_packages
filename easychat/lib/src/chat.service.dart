@@ -306,31 +306,32 @@ class ChatService {
     dog("Updating");
     final Map<String, Object?> updates = {};
     // See README.md for details
-    final order = int.parse("-1$timestamp");
+    final moreImportant = int.parse("-1$timestamp");
+    final lessImportant = -1 * timestamp;
     for (String uid in room.userUids) {
       if (uid == myUid) {
         // If it's my join data, the order must not have -11 infront since I
         // have already read that chat room. (I am in the chat room)
-        updates['chat/joins/$uid/${room.id}/order'] = timestamp;
+        updates['chat/joins/$uid/${room.id}/order'] = lessImportant;
         if (room.single) {
-          updates['chat/joins/$uid/${room.id}/$singleOrder'] = timestamp;
+          updates['chat/joins/$uid/${room.id}/$singleOrder'] = lessImportant;
         }
         if (room.group) {
-          updates['chat/joins/$uid/${room.id}/$groupOrder'] = timestamp;
+          updates['chat/joins/$uid/${room.id}/$groupOrder'] = lessImportant;
         }
         if (room.open) {
-          updates['chat/joins/$uid/${room.id}/$openOrder'] = timestamp;
+          updates['chat/joins/$uid/${room.id}/$openOrder'] = lessImportant;
         }
       } else {
-        updates['chat/joins/$uid/${room.id}/order'] = order;
+        updates['chat/joins/$uid/${room.id}/order'] = moreImportant;
         if (room.single) {
-          updates['chat/joins/$uid/${room.id}/$singleOrder'] = order;
+          updates['chat/joins/$uid/${room.id}/$singleOrder'] = moreImportant;
         }
         if (room.group) {
-          updates['chat/joins/$uid/${room.id}/$groupOrder'] = order;
+          updates['chat/joins/$uid/${room.id}/$groupOrder'] = moreImportant;
         }
         if (room.open) {
-          updates['chat/joins/$uid/${room.id}/$openOrder'] = order;
+          updates['chat/joins/$uid/${room.id}/$openOrder'] = moreImportant;
         }
         updates['chat/settings/$uid/unread-message-count/${room.id}'] =
             ServerValue.increment(1);
