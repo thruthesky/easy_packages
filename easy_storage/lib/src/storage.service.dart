@@ -15,7 +15,13 @@ class StorageService {
   static StorageService? _instance;
   static StorageService get instance => _instance ??= StorageService._();
 
-  String? get myUid => FirebaseAuth.instance.currentUser?.uid;
+  /// TODO: test if it properly throws an exception when the user is not signed in.
+  String get myUid {
+    if (FirebaseAuth.instance.currentUser == null) {
+      throw Exception('StorageService::myUid -> User is not signed in');
+    }
+    return FirebaseAuth.instance.currentUser!.uid;
+  }
 
   EdgeInsetsGeometry? uploadBottomSheetPadding;
   double? uploadBottomSheetSpacing;
@@ -97,8 +103,8 @@ class StorageService {
     }
 
     final storageRef = FirebaseStorage.instance.ref();
-    final fileRef = storageRef
-        .child(saveAs ?? "users/${myUid!}/${file.path.split('/').last}");
+    final fileRef =
+        storageRef.child(saveAs ?? "users/$myUid/${file.path.split('/').last}");
     // Review: Here only Image can be compressed. File and Video cannot be compressed.
     // It may cause error if you try to compress file or video.
     // So, we should check the file type before compressing.
