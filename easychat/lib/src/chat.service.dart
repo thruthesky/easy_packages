@@ -303,6 +303,7 @@ class ChatService {
     String? protocol,
   }) async {
     int timestamp = await getServerTimestamp();
+    dog("Updating");
     final Map<String, Object?> updates = {};
     // See README.md for details
     final order = int.parse("-1$timestamp");
@@ -335,6 +336,7 @@ class ChatService {
       // information without referring to the chat room.
       updates['chat/joins/$uid/${room.id}/$lastMessageUid'] = myUid;
       updates['chat/joins/$uid/${room.id}/$lastText'] = text;
+
       updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = photoUrl;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] = protocol;
 
@@ -351,8 +353,8 @@ class ChatService {
 
       // If it's group chat, add the sender's information
       if (room.group) {
-        updates['chat/joins/$uid/${room.id}/$displayName'] = my.displayName;
-        updates['chat/joins/$uid/${room.id}/$photoUrl'] = my.photoUrl;
+        updates['chat/joins/$uid/${room.id}/displayName'] = my.displayName;
+        updates['chat/joins/$uid/${room.id}/photoUrl'] = my.photoUrl;
       }
     }
     await FirebaseDatabase.instance.ref().update(updates);

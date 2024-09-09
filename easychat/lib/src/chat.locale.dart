@@ -486,6 +486,10 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': '{displayName} left the chat room',
     'ko': '{displayName}님이 퇴장하였습니다',
   },
+  'protocol.create': {
+    'en': '{displayName} created the chat room',
+    'ko': '{displayName}님이 채팅방을 생성하였습니다',
+  }
 };
 
 applyChatLocales() async {

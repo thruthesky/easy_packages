@@ -1,6 +1,7 @@
 // import 'package:easy_locale/easy_locale.dart';
 
 class ChatProtocol {
+  static const String create = 'protocol.create';
   static const String join = 'protocol.join';
   static const String invitationNotSent = 'protocol.invitationNotSent';
   static const String left = 'protocol.left';
