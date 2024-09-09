@@ -175,7 +175,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                                         await StorageService.instance.delete(
                                           my.statePhotoUrl!,
                                           ref: my.ref,
-                                          field: UserField.statePhotoUrl,
+                                          field: User.field.statePhotoUrl,
                                         );
                                       },
                                       color: Colors.red,

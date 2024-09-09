@@ -13,7 +13,7 @@ dependencies:
   easy_helpers: ^0.0.11
   easy_locale: ^0.0.11
   easy_storage: ^0.0.14
-  easyuser: ^0.0.24
+  easyuser: ^0.0.26
   firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter

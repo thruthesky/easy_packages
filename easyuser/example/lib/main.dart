@@ -1,5 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
-// import 'package:example/firebase_options.dart';
+import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easyuser/easyuser.dart';
@@ -8,8 +8,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   lo.init();
   await Firebase.initializeApp(
-      // options: DefaultFirebaseOptions.currentPlatform,
-      );
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -74,6 +74,20 @@ class _MyHomePageState extends State<MyHomePage> {
                           ElevatedButton(
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
+                          ),
+                          UserField(
+                            uid: user.uid,
+                            field: 'birthDay',
+                            initialData: 4,
+                            builder: (v, r) {
+                              return ElevatedButton(
+                                onPressed: () async {
+                                  print('UserField(birthDay): ${r.path}');
+                                  await r.set((v ?? 0) + 1);
+                                },
+                                child: Text('UserField(birthDay): $v'),
+                              );
+                            },
                           ),
                         ],
                       );

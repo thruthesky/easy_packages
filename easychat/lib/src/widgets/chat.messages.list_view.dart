@@ -33,11 +33,13 @@ class ChatMessagesListView extends StatelessWidget {
         if (snapshot.isFetching && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator.adaptive());
         }
+
         if (snapshot.docs.isEmpty) {
           return Center(
             child: Text('no chat message in room yet'.t),
           );
         }
+
         return ListView.builder(
           reverse: true,
           itemCount: snapshot.docs.length,
@@ -51,11 +53,18 @@ class ChatMessagesListView extends StatelessWidget {
               // It is safe to call this function from within the build method.
               snapshot.fetchMore();
             }
+
             final doc = snapshot.docs[index];
             final message = ChatMessage.fromSnapshot(doc);
+
+            ChatService.instance.deleteInvitationNotSentMessage(
+              index: index,
+              message: message,
+              length: snapshot.docs.length,
+            );
+
             return itemBuilder?.call(context, message) ??
                 ChatBubble(
-                  key: ValueKey("chatBubble_${message.id}"),
                   message: message,
                 );
           },

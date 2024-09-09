@@ -1,3 +1,6 @@
+## 0.0.4
+* Update. Bump the easy_user package dependency.
+
 ## 0.0.3
 * Update. Document update.
 

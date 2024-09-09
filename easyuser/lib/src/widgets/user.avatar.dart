@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 /// photoUrl is not available.
 ///
 /// [UserAvatar.fromUid] is a constructor that takes a user's uid and
-/// fetches the user's data from the firestore and it will fetch only once. And
-/// it will display the user's avatar.
+/// fetches the user's data from the firestore and with sync option, it can
+/// rebuild the avatar realtime when the user's data changes.
 ///
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -39,6 +39,9 @@ class UserAvatar extends StatelessWidget {
   }
 
   /// Display user's avatar from the user's uid.
+  ///
+  /// [sync] is supported to support realtime update when the user's data is
+  /// updated.
   static Widget fromUid({
     Key? key,
     required String uid,

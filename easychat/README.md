@@ -15,6 +15,9 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Firestore Indexes](#firestore-indexes)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
+  - [Protocol](#protocol)
+  - [Chat invitation and delete invitation](#chat-invitation-and-delete-invitation)
+  - [Chat message sending](#chat-message-sending)
   - [Ordering](#ordering)
   - [Counting the invitation](#counting-the-invitation)
 - [Database Strucutre](#database-strucutre)
@@ -33,11 +36,14 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [ChatInvitationListView](#chatinvitationlistview)
 - [Coding Guideline](#coding-guideline)
   - [How to get server timestamp](#how-to-get-server-timestamp)
+- [Tests](#tests)
+  - [Invitation not sent protocol test](#invitation-not-sent-protocol-test)
 - [Known Issues](#known-issues)
 
 # Terms
 
-- `Required`: If it is used with field description, it means the field must exists in the data always.
+- `Required`: If it is used with a field description, it means the field must exists in the data always.
+- `Optional`: If it is used with a field description, it means the field may exists or may not be exists depending on the situatoin.
 - `Rear exception`: An exception that should not occure during normal app usage. For instance, the user always need to be a chat room member to send a message. There is no change for any user can send message if they are not a member. If they are not a member of the chat room, they should be able to open, or once they open the chat room they need to become the member, or there must be an error on the chat room screen. So, they never have a change to send a message if they are not a member. In this case, we may still throw an excpetion with comment of `rear exception`. And this kind of exception should not be handled to display to a user. But may be used for a debug or error reporting system like `Firebase Crashlytics`.
 
 
@@ -111,6 +117,71 @@ For your information on `easychat` history:
 # Logics
 
 
+## Protocol
+
+- What is protocol?
+  - Mostly, chat messages are delivering texts and photos. But it can deliver a special message by the system(chat package). It's called a protocol message.
+  - When the other app(user) receives the protocol message, the app can react based on the protocol.
+  - For instance, when a user leaves the chat room, the chat package delivers a chat protocol of leaving. then the other app that receives the protocol message can display "Xxx left" on the screen.
+
+- Why
+  - To display who comes in the chat room
+  - To display who leaves from the chat room
+  - To display the invitation was not sent to the chat room creator of the 1:1 chat.
+
+- How
+  - You can create your own protocol if you want.
+
+- Example
+  - See the example of `invitation-not-sent` protocol message.
+
+
+## Chat invitation and delete invitation
+
+
+- For single chat, when the chat room creator creates the chat room, it will not send the invitation automatically.
+  - Instead, it will send a `invitation-not-sent` message automatically.
+- When the creator sends a message to the other user,
+  - The invitation will be sent and the `invitation-not-sent` message will be deleted.
+
+```mermaid
+flowchart TB
+ChatRoomScreen(["ChatRoomScreen"])
+  ChatRoomScreen ==> isSingleChat
+  isSingleChat =="Yes"==> chatRoomCreated
+  chatRoomCreated =="NO"==> createChatRoom
+  createChatRoom ==> joinChatRoom
+  joinChatRoom ==> sendInvatationNotSentMessage
+  ChatRoomScreen2 ==> MessageListView
+  MessageListView ==> isInvitatioNotSetMessage
+  isInvitatioNotSetMessage ==> deleteInvitationNotSent
+  isSingleChat{"Is single chat?"}
+  chatRoomCreated{"Is chat room created?"}
+  createChatRoom[["Create single chat room"]]
+  joinChatRoom[["Join single chat room"]]
+  sendInvatationNotSentMessage[["Send #39;invitation-not-sent#39; message"]]
+  ChatRoomScreen2(["ChatRoomScreen"])
+  MessageListView{{"ChatMessageListView"}}
+  isInvitatioNotSetMessage{"Is #39;invitation-not-sent#39; message?"}
+  deleteInvitationNotSent[["Delete #39;invitation-no-sent#39;"]]
+```
+
+
+- The invitation-not-sent protocol message is created when the chat room creator creates the 1:1 chat room. And it needs to be deleted after the first message is sent.
+- If the invitation-not-sent protocol message appears even after the invitation has sent, it's confusing. That's why it needs to be deleted.
+- But why the code is like in `ChatService.instance.deleteInvitationNotSentMessage`?
+  - If another query made on the same node of the chat masssage list view, it will change(affect) the query of the chat message list view. That's why it does not query, but checks the index and the message protocol. And if it's the 'invitation-not-sent' protocol, it deletes the message.
+
+## Chat message sending
+
+
+- When a chat message (including chat protocol message) is sent by any one among the chat room users, all the chat join data of the chat room users will be updated along with the chat message information.
+
+
+
+
+
+
 ## Ordering
 
 - Since the realtime database has no filtering, it needs multiple order fields to display items in order.
@@ -165,10 +236,19 @@ For your information on `easychat` history:
 - `open`: Required.
 
 
+- `updatedAt`: Required. This value is updated only when the master updated the chat room. If the master didn't updated the chat room, this value will not be updated.
+  - For instance, When a user enters(joins) the chat room, some of field including users would change. But the values chagned are not from the master. So, the `updatedAt` is not changed.
+
+
 ## Chat message
 
 
 - `/chat/messages/<room-id>`: This is the message list of each chat room.
+
+
+- `displayName`: Required. The sender's display name is saved in each message for the performance improvement. And the user's display name is updated in realtime after the name from message has been displayed.
+
+- `photoUrl`: Optional. The sender's photo url is saved in each message for the performance improvement. If the user has no photo url, it can be null. The user's photo url is updated in realtime after it is displayed once from the message.
 
 
 ## Chat join
@@ -258,7 +338,7 @@ For your information on `easychat` history:
 ChatRoomDoc(
   ref: ChatService.instance.roomRef(joinDoc.key!),
   builder: (room) {
-    return ChatJoinListTile(
+    return ChatRoomListTile(
       room: room,
     );
   },
@@ -289,6 +369,25 @@ ChatInvitationListView(),
 int ts = await getServerTimestamp();
 print('ts: ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
 ```
+
+
+# Tests
+
+
+## Invitation not sent protocol test
+
+- See the `ChatTestService.instance.invitationNotSent`.
+
+Example:
+```dart
+ElevatedButton(
+  onPressed: () => ChatTestService.instance.invitationNotSent(
+    'jp38SPAWRDUfbHoVbIZhY1fJTDM2',
+  ),
+  child: const Text('TEST: invitationNotSent protocol deletion'),
+),
+```
+
 
 # Known Issues
 

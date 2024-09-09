@@ -57,6 +57,9 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (message.isProtocol) {
+      return ChatProtocolBubble(message: message);
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
@@ -101,7 +104,7 @@ class ChatBubble extends StatelessWidget {
         // margin: const EdgeInsets.symmetric(vertical: 4),
         margin: const EdgeInsets.symmetric(vertical: 8),
         child: UserBlocked(
-            otherUid: message.uid!,
+            otherUid: message.uid,
             builder: (blocked) {
               if (blocked) {
                 return Row(
@@ -180,32 +183,16 @@ class ChatBubble extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: UserDoc.sync(
-                        uid: message.uid!,
-                        builder: (user) {
-                          if (user == null) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryContainer,
+                        uid: message.uid,
+                        builder: (user) => user == null
+                            ? const ChatAvatarLoader()
+                            : GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () => UserService.instance
+                                    .showPublicProfileScreen(context,
+                                        user: user),
+                                child: UserAvatar(user: user),
                               ),
-                              width: 48,
-                              height: 48,
-                              child: const CircularProgressIndicator(),
-                            );
-                          }
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              UserService.instance.showPublicProfileScreen(
-                                context,
-                                user: user,
-                              );
-                            },
-                            child: UserAvatar(user: user),
-                          );
-                        },
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -221,14 +208,12 @@ class ChatBubble extends StatelessWidget {
                           : CrossAxisAlignment.end,
                       children: [
                         if (message.uid != myUid) ...[
-                          UserDoc.sync(
-                            uid: message.uid!,
-                            builder: (user) {
-                              if (user == null ||
-                                  user.displayName.trim().isEmpty) {
-                                return const Text("...");
-                              }
-                              return Text(user.displayName);
+                          UserField(
+                            uid: message.uid,
+                            initialData: message.displayName,
+                            field: 'displayName',
+                            builder: (v, r) {
+                              return Text(v ?? '...');
                             },
                           ),
                           const SizedBox(width: 8),
@@ -355,14 +340,14 @@ class ChatBubble extends StatelessWidget {
                                                 ),
                                               ),
                                             ],
-                                            if (message.text != null &&
-                                                message.text!.isNotEmpty) ...[
+                                            if (message.text.notEmpty)
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.all(12),
-                                                child: Text(message.text!),
+                                                child: Text(
+                                                  message.text!,
+                                                ),
                                               ),
-                                            ],
                                           ],
                                         ),
                                       ),

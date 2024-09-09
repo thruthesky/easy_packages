@@ -66,6 +66,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // TODO: check if the user is in rejected list
     // TODO: check if the user can join the chat room
 
+    if (room!.joined == false) {
+      ChatService.instance.join(room!);
+      setState(() {});
+    }
+
     /// Set 0 to the new meessage count
     ///
     /// Whenever there is a new chat, reset the unread message count to 0.
@@ -93,7 +98,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (room == null) {
       final newRoomRef = await ChatRoom.createSingle(user!.uid);
       room = await ChatRoom.get(newRoomRef.key!);
-      ChatService.instance.setJoin(room!);
+      ChatService.instance.join(
+        room!,
+        protocol: ChatProtocol.invitationNotSent,
+      );
     }
   }
 
@@ -159,25 +167,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ChatMessagesListView(
-                      key: const ValueKey("Chat Message List View"),
                       room: room!,
                     ),
                   ),
                 ),
                 SafeArea(
                   top: false,
-                  child: ChatRoomDoc(
-                    roomId: room!.id,
-                    onLoading: ChatRoomInputBox(
-                      key: ValueKey("ChatRoomInputBox_${room?.id}"),
-                      room: room!,
-                    ),
-                    builder: (room) {
-                      return ChatRoomInputBox(
-                        key: ValueKey("ChatRoomInputBox_${room.id}"),
-                        room: room,
-                      );
-                    },
+                  child: ChatRoomInputBox(
+                    room: room!,
                   ),
                 ),
               ],

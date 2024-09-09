@@ -314,10 +314,6 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': 'The last message was deleted',
     'ko': '마지막 메시지가 삭제되었습니다',
   },
-  'single chat no message, no invitations': {
-    'en': 'Invitation has NOT been sent.',
-    'ko': '친구 초대가 전송되지 않았습니다.',
-  },
   'no message yet': {
     'en': 'No message yet.',
     'ko': '메시지가 없습니다.',
@@ -474,6 +470,16 @@ final localeTexts = <String, Map<String, dynamic>>{
       'one': '새로운 채팅 친구 초대가 있습니다.',
       'many': '새로운 채팅 친구 초대가 {count}개 있습니다.',
     },
+  },
+  // protocols ----------------
+
+  'protocol.invitationNotSent': {
+    'en': 'Invitation has NOT been sent.',
+    'ko': '친구 초대가 전송되지 않았습니다.',
+  },
+  'protocol.join': {
+    'en': '{displayName} joined the chat room',
+    'ko': '{displayName}님이 입장하였습니다',
   },
 };
 

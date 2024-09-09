@@ -6,6 +6,26 @@ This package provides easy to upload photos and files into the Firebase Storage.
 
 - Uploaded files are stored in the Storage at the `/users/<uid>` path.
 
+- [Easy Stroage](#easy-stroage)
+- [Installation](#installation)
+  - [Security rules](#security-rules)
+  - [iOS](#ios)
+- [TODO](#todo)
+- [Upload](#upload)
+  - [UploadAt](#uploadat)
+  - [Upload mutiple images](#upload-mutiple-images)
+  - [Upload in a button](#upload-in-a-button)
+- [Delete](#delete)
+- [Error handling](#error-handling)
+- [Widgets](#widgets)
+  - [ImageUploadCard](#imageuploadcard)
+  - [UploadForm](#uploadform)
+- [Thumbnails](#thumbnails)
+  - [Custom UI/UX](#custom-uiux)
+    - [Customizing the upload bottom sheet UI](#customizing-the-upload-bottom-sheet-ui)
+
+
+
 # Installation
 
 - The app must config and initialize with Firebase before using this package.
@@ -345,3 +365,50 @@ UploadIconButton.image(
   },
 )
 ```
+
+
+
+
+# Developer's Tip
+
+
+## How to select files without uploading to Storage
+
+- `easy_storage` is primarily designed to upload files into the Firebase Storage.
+  - But you can use it for selecting files without uploading to Storage. Or you can select and display on the screen and ask confirmation from the user and uploading it.
+
+Example: the code below picks files and save the path to imagePath variable. You can then use FileImage provider or something similar to display the picked object on the screen.
+
+```dart
+final source = await StorageService.instance.chooseUploadSource(
+  context: context,
+  photoCamera: true,
+  photoGallery: true,
+  spacing: 8,
+  padding: const EdgeInsets.all(8),
+);
+
+if (mounted) {
+  imagePath = await StorageService.instance.getFilePathFromPicker(
+    context: context,
+    source: source,
+    maxHeight: 1024,
+    maxWidth: 1024,
+  );
+
+  if (imagePath != null) {
+    setState(() {});
+  }
+}
+```
+
+
+## How to upload files without selecting
+
+- If you have a file(or photo, video, what so ever), you can upload it to the Firebase Storage.
+- `uploadFile` will handle the upload.
+
+
+
+
+

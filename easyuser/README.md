@@ -5,7 +5,6 @@
 - It mirrors user data into the Realtime Database for listing user data and performing simple searches.
   - The Realtime Database is more cost-efficient and loads data faster.
 
-
 - [Easy User](#easy-user)
 - [TODO](#todo)
 - [Installation](#installation)
@@ -43,8 +42,11 @@
   - [MyDoc](#mydoc-2)
   - [UserDoc](#userdoc-1)
   - [User block](#user-block)
+  - [UserCircleAvatar](#usercircleavatar)
 - [Geo query](#geo-query)
-- [Known Issues](#known-issues)
+- [Known Issues and Common Problems](#known-issues-and-common-problems)
+  - [Realtime Database setup setup related error](#realtime-database-setup-setup-related-error)
+- [TODO xxxxxxxxxxxxxxxxxxxxx 아래 부터 문서 작업을 다시 할 것 xxxxxxxxxxxxxxxxxxxxxxxxxx](#todo-xxxxxxxxxxxxxxxxxxxxx-아래-부터-문서-작업을-다시-할-것-xxxxxxxxxxxxxxxxxxxxxxxxxx)
   - [관리자](#관리자)
     - [UserDoc](#userdoc-2)
   - [데이터베이스 구조](#데이터베이스-구조)
@@ -85,6 +87,8 @@
   - [로그인에 따른 위젯 보여주기](#로그인에-따른-위젯-보여주기)
   - [로그인을 하지 않은 경우,](#로그인을-하지-않은-경우)
   - [UserModel 에 존재하지 않는 필드 값 읽기/쓰기 - extra](#usermodel-에-존재하지-않는-필드-값-읽기쓰기---extra)
+
+
 
 # TODO
 
@@ -422,6 +426,48 @@ UserDoc(
 ),
 ```
 
+## UserField
+
+- To listen a field of of a user data in rtdb, use the following;
+
+```dart
+UserField(
+  uid: user.uid,
+  field: 'birthDay',
+  initialData: 4,
+  builder: (v, r) {
+    return ElevatedButton(
+      onPressed: () async {
+        print('UserField(birthDay): ${r.path}');
+        await r.set((v ?? 0) + 1);
+      },
+      child: Text('UserField(birthDay): $v'),
+    );
+  },
+),
+```
+
+- This is especially useful when you need to listen only a field. Not the whole data.
+
+
+## UserAvatar
+
+- To display user avatar, you can use below.
+
+```dart
+UserAvatar(user: user),
+```
+
+## UserAvatar.fromUid
+
+- To display user user avatar in realtime when the user changes his profile photo, use `UserAvatar.fromUid` with `sync` option.
+
+
+```dart
+UserAvatar.fromUid(uid: message.uid, sync: true)
+```
+
+
 ## FirestoreUserDoc
 
 - It works just the same as `UserDoc` but gets data from Firestore.
@@ -651,6 +697,9 @@ UserCircleAvatar(
   - When the other user re-run the app, the other user's data may be mirrored from that time and error disappers.
 - This error is one kind that works as expected. You will need to understand how firebase and the code works.
 
+
+
+# TODO xxxxxxxxxxxxxxxxxxxxx 아래 부터 문서 작업을 다시 할 것 xxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 @TODO ///// `---------------  아래 부터 문서 작업을 할 것: 아래는 과거 버전의 문서이다. 작업해서 위로 올린다. ----------------`

@@ -6,8 +6,8 @@ import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 /// Display chat joins in list tile
-class ChatJoinListTile extends StatelessWidget {
-  const ChatJoinListTile({
+class ChatRoomListTile extends StatelessWidget {
+  const ChatRoomListTile({
     super.key,
     required this.join,
   });
@@ -103,34 +103,39 @@ class ChatJoinListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
-    // Question: If the user is not in the chat room, (may be in invited list), does it need to show the description?
-    // Answer: Chat Room List Tile was also used to show OPEN chat room as well. Since we changed the logic, we may need to
-    //         provide a different widget to show the open room.
-    // TODO: Move it somewhere else
-    // if (!room.userUids.contains(myUid)) {
-    //   if (room.description.trim().isEmpty) {
-    //     return null;
-    //   }
-    //   return Text(
-    //     room.description,
-    //     maxLines: 1,
-    //     overflow: TextOverflow.ellipsis,
-    //     style: TextStyle(
-    //       color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
-    //     ),
-    //   );
-    // }
-    if (join.lastText == null) {
+    if (join.lastProtocol.notEmpty) {
       return Text(
-        'no message yet'.t,
+        join.lastProtocol!.t,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface.withAlpha(110),
-        ),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+            ),
       );
+    } else if (join.lastText != null && join.lastPhotoUrl != null) {
+      return Row(
+        children: [
+          Text(
+            join.lastText!,
+          ),
+          const SizedBox(width: 8),
+          CachedNetworkImage(imageUrl: join.lastPhotoUrl!),
+        ],
+      );
+    } else if (join.lastText != null) {
+      return Text(
+        join.lastText!,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+            ),
+      );
+    } else if (join.lastPhotoUrl != null) {
+      return CachedNetworkImage(imageUrl: join.lastPhotoUrl!);
+    } else {
+      // This is mostly an error
+      return null;
     }
-
-    return Text(join.lastText!);
   }
 }

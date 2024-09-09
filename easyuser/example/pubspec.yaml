@@ -16,14 +16,14 @@ dependencies:
   firebase_core: ^3.2.0
   firebase_auth: ^5.1.1
   easyuser:
-    path: ..
   easy_locale:
     path: ../../easy_locale
 
 dependency_overrides:
   easy_locale:
     path: ../../easy_locale
-
+  easyuser:
+    path: ..
 dev_dependencies:
   flutter_test:
     sdk: flutter

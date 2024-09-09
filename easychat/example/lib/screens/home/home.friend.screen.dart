@@ -90,6 +90,12 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
         ChatInvitationCount(builder: (int no) {
           return Badge(label: Text("$no"));
         }),
+        ElevatedButton(
+          onPressed: () => ChatTestService.instance.invitationNotSent(
+            'jp38SPAWRDUfbHoVbIZhY1fJTDM2',
+          ),
+          child: const Text('TEST: invitationNotSent protocol deletion'),
+        ),
         Expanded(
           child: AuthStateChanges(builder: (user) {
             if (user == null) {
@@ -97,7 +103,7 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                 child: Text('Sign in to see your friends'),
               );
             }
-            return ChatJoinListView(
+            return ChatRoomListView(
               headerBuilder: () {
                 return const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

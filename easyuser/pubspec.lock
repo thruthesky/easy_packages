@@ -177,14 +177,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.11"
+  easy_realtime_database:
+    dependency: "direct main"
+    description:
+      name: easy_realtime_database
+      sha256: "775e1bdd2306ad8689d823b8885169b39e7402dd89a8f96d7eabb1be19582315"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
   easy_report:
     dependency: "direct main"
     description:
       name: easy_report
-      sha256: c9cbc13195621c11162c2007d8c45b22f39e7a89cb2c81383efde926102de3f5
+      sha256: edbd85515ff33660f7b0944250fa3a032dd662eff13404a2b3ba71b762f19bf4
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   easy_storage:
     dependency: "direct main"
     description:
@@ -835,5 +843,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.4 <4.0.0"
+  dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.22.0"
