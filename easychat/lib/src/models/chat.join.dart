@@ -9,8 +9,8 @@ class ChatJoin {
   final int? groupOrder;
   final int? openOrder;
   final int order;
-  final String lastMessageBy;
-  final DateTime lastMessageAt;
+  final String? lastMessageBy;
+  final DateTime? lastMessageAt;
   final String? lastText;
   final String? lastPhotoUrl;
   final String? lastProtocol;

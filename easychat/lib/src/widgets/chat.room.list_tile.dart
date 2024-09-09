@@ -21,7 +21,7 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         ChatNewMessageCounter(roomId: join.roomId),
-        Text((join.lastMessageAt).short),
+        if (join.lastMessageAt != null) Text((join.lastMessageAt)!.short),
       ],
     );
     if (join.group) {
