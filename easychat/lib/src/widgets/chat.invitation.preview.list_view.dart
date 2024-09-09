@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -46,15 +48,20 @@ class _ChatInvitationPreviewListViewState
   void initState() {
     super.initState();
     limit = widget.limit + 1;
+
+    // TODO fix the ordering
     subscription = ChatService.instance
         .invitedUserRef(myUid!)
         .orderByValue()
         .limitToFirst(limit)
         .onValue
         .listen((event) {
+      // The Value returned is not necessarily ordered. Need to order it first.
       final invitesTime =
           Map<String, int>.from((event.snapshot.value ?? {}) as Map);
-      roomIds = invitesTime.keys.toList();
+      final orderedTime = invitesTime.entries.toList()
+        ..sort((a, b) => a.value.compareTo(b.value));
+      roomIds = orderedTime.map((e) => e.key).toList();
       if (!mounted) return;
       setState(() {});
     });

@@ -366,6 +366,11 @@ ChatInvitationCount(builder: (int no) {
 - `/chat/rejected-users/<uid> { room-a: _time_base_order_value_, room-b: ..., ... }`: Users who rejected the invitation be added here.
 
 
+## Chat Blocking
+
+Group chat can block the user from the room and it should prevent the user from joining.
+
+When the user is blocked, the user is also removed from the room. The blocker (who is a master) should also remove the chat join of the user.
 
 ## Server timestamp
 

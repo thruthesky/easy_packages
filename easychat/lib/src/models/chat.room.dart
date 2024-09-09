@@ -53,7 +53,10 @@ class ChatRoom {
 
   bool get joined => userUids.contains(myUid);
 
-  List<String> blockedUsers;
+  /// Map of `blocked-user-uid: true`.
+  Map<String, bool> blockedUsers;
+  List<String> get blockedUids => blockedUsers.keys.toList();
+
   List<String> masterUsers;
 
   DateTime createdAt;
@@ -98,7 +101,7 @@ class ChatRoom {
     required this.group,
     required this.users,
     required this.masterUsers,
-    this.blockedUsers = const [],
+    this.blockedUsers = const {},
     required this.createdAt,
     required this.updatedAt,
     this.lastMessageAt,
@@ -127,7 +130,7 @@ class ChatRoom {
           ? Map<String, bool>.from(json[field.users])
           : {},
       masterUsers: List<String>.from(json[field.masterUsers]),
-      blockedUsers: List<String>.from(json[field.blockedUsers] ?? []),
+      blockedUsers: Map<String, bool>.from(json[field.blockedUsers] ?? {}),
       createdAt: json[field.createdAt] is num
           ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt])
           : DateTime.now(),
@@ -395,18 +398,15 @@ class ChatRoom {
 
   /// [block] blocks the user from the chat room.
   /// It can be done by the master.
+  @Deprecated("Only put DB CRUD in Model")
   block(String uid) async {
-    throw 'Not implemented yet';
-    // 1. check if the user is the master
-    // 2. check if the user can be blocked
-    // 3. block the user
+    await ChatService.instance.block(this, uid);
   }
 
   /// [unblock] unblocks the user from the chat room.
   /// It can be done by the master
+  @Deprecated("Only put DB CRUD in Model")
   unblock(String uid) async {
-    // 1. check if the user is the master
-    // 2. check if the user can be unblocked
-    // 3. unblock the user
+    await ChatService.instance.unblock(this, uid);
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
@@ -59,6 +60,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void listenToUsersUpdate() {
     usersSubscription = room!.ref.child("users").onValue.listen((e) {
       room!.users = Map<String, bool>.from(e.snapshot.value as Map);
+      if (room!.userUids.contains(myUid!) == false && mounted) {
+        Navigator.of(context).pop();
+        dog("The user is no longer a member. Check if the user is just blocked or kicked out.");
+        throw ChatException(
+          "unexpected-error-upon-viewing-room",
+          "an error occured while viewing the room".t,
+        );
+      }
     });
   }
 
@@ -71,18 +80,48 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     );
   }
 
+  Future<void> join() async {
+    await ChatService.instance.join(room!);
+    if (!mounted) return;
+    setState(() {});
+  }
+
   /// Do something when the room is ready
   /// The "room ready" means that the room is existing or created, and loaded.
   onRoomReady() async {
-    // TODO: check if the user is blocked
-    // TODO: check if the user is a membmer
-    // TODO: check if the user is in invitation list
-    // TODO: check if the user is in rejected list
-    // TODO: check if the user can join the chat room
+    if (room!.blockedUids.contains(myUid!)) {
+      Navigator.of(context).pop();
+      dog("The user cannot join the chat room because the user is blocked.");
+      throw ChatException("fail-join-attempt",
+          "for some reason, the account failed to join in the chat room".t);
+    }
 
+    // Current user automatically joins upon viewing open rooms.
+    if (room!.joined == false && room!.open) {
+      await join();
+    }
+
+    // If current user is one of the user in the single chat room, can join
+    if (room!.joined == false &&
+        room!.single &&
+        room!.id.split(chatRoomDivider).contains(myUid!)) {
+      await join();
+    }
+
+    // If user is still not joined until this point,
+    // must check if invited, or else user cannot see the room.
     if (room!.joined == false) {
-      ChatService.instance.join(room!);
-      setState(() {});
+      final invitation = await ChatService.instance.getInvitation(room!.id);
+      final rejection = await ChatService.instance.getRejection(room!.id);
+      if (invitation != null || rejection != null) {
+        await join();
+      } else {
+        if (!mounted) return;
+        Navigator.of(context).pop();
+        dog("The user cannot join the chat room because the user is not invited.");
+        throw ChatException("fail-join-attempt",
+            "for some reason, the account failed to join in the chat room".t);
+      }
     }
 
     // Should listen to the actual value.
@@ -170,7 +209,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 room: room,
                 user: user,
               ),
-              builder: (context) {
+              builder: (room) {
+                dog("Unblock call");
                 return ChatRoomMenuDrawer(
                   room: room,
                   user: user,

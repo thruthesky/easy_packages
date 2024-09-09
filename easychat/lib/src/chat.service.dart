@@ -489,6 +489,27 @@ class ChatService {
     await inviteUser(room, otherUserUid);
   }
 
+  /// Get the invitation value (which is saved as an int) and return as DateTime
+  Future<DateTime?> getInvitation(String roomId) async {
+    final invitation = (await invitedUserRef(myUid!).child(roomId).get());
+    if (invitation.exists) {
+      // The invitation is saved as negative for ordering.
+      final timestamp = (invitation.value as int).abs();
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    }
+    return null;
+  }
+
+  /// Get the rejection value (which is saved as an int) and return as DateTime
+  Future<DateTime?> getRejection(String roomId) async {
+    final rejection = (await rejectedUserRef(myUid!).child(roomId).get());
+    if (rejection.exists) {
+      final timestamp = (rejection.value as int).abs();
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    }
+    return null;
+  }
+
   /// Delete the invitation-not-sent message.
   ///
   /// Why:
@@ -614,5 +635,53 @@ class ChatService {
       rejectedUserRef(myUid!).child(room.id).path: ServerValue.timestamp,
     };
     await FirebaseDatabase.instance.ref().update(reject);
+  }
+
+  /// Removes and blocks the user from the group
+  block(ChatRoom room, String uid) async {
+    // throw 'Not implemented yet';
+    // 1. check if the user is the master
+    if (!room.masterUsers.contains(myUid!)) {
+      // TODO trs
+      throw ChatException(
+        "not-master",
+        "You are not the master to block someone in this room",
+      );
+    }
+    // 2. check if the user can be blocked
+    if (room.blockedUids.contains(uid)) {
+      throw ChatException(
+        "already-blocked",
+        "User is already blocked",
+      );
+    }
+    // 3. block the user
+    final blockUpdates = {
+      room.ref.child('blockedUsers').child(uid).path: true,
+      room.ref.child('users').child(uid).path: null,
+      'chat/joins/$uid/${room.id}': null,
+    };
+    await FirebaseDatabase.instance.ref().update(blockUpdates);
+  }
+
+  /// Removes user from the blocklist of the group
+  unblock(ChatRoom room, String uid) async {
+    // 1. check if the user is the master
+    if (!room.masterUsers.contains(myUid!)) {
+      // TODO trs
+      throw ChatException(
+        "not-master",
+        "You are not the master to block someone in this room",
+      );
+    }
+    // 2. check if the user can be unblocked
+    if (!room.blockedUids.contains(uid)) {
+      throw ChatException(
+        "not-blocked",
+        "User is not blocked already",
+      );
+    }
+    // 3. unblock the user
+    await room.ref.child('blockedUsers').child(uid).set(null);
   }
 }
