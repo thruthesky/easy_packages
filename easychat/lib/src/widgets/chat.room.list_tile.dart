@@ -29,7 +29,7 @@ class ChatRoomListTile extends StatelessWidget {
         minTileHeight: 72,
         leading: leading(context: context),
         title: Text(
-          join.name.trim().isNotEmpty ? join.name : "Group Chat",
+          join.name.notEmpty ? join.name! : "Group Chat",
         ),
         subtitle: subtitle(context),
         trailing: trailing,
@@ -63,7 +63,7 @@ class ChatRoomListTile extends StatelessWidget {
                       // border: border,
                     ),
                     child: CachedNetworkImage(
-                      imageUrl: join.photoUrl,
+                      imageUrl: join.photoUrl!,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -87,9 +87,9 @@ class ChatRoomListTile extends StatelessWidget {
       width: 48,
       height: 48,
       clipBehavior: Clip.hardEdge,
-      child: join.iconUrl.isNotEmpty
+      child: join.iconUrl.notEmpty
           ? CachedNetworkImage(
-              imageUrl: join.iconUrl,
+              imageUrl: join.iconUrl!,
               fit: BoxFit.cover,
             )
           : Icon(
@@ -103,9 +103,14 @@ class ChatRoomListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
+    // Is a protocol message?
     if (join.lastProtocol.notEmpty) {
+      String text = join.lastProtocol!.t;
+      if (join.lastProtocol == ChatProtocol.join) {
+        text = 'protocol.join'.tr(args: {'displayName': join.displayName});
+      }
       return Text(
-        join.lastProtocol!.t,
+        text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(

@@ -1,5 +1,8 @@
 import 'package:easychat/easychat.dart';
+import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class ChatTestService {
   static ChatTestService? _instance;
@@ -45,5 +48,35 @@ class ChatTestService {
     // final message2 =
     //     await ChatService.instance.getInvitationNotSentMessage(room);
     // assert(message2 == null);
+  }
+
+  Future<DatabaseReference> createGroupChat() async {
+    return await ChatRoom.create(
+      name: 'Group Chat: ${DateTime.now().jm}',
+      users: {myUid!: true},
+    );
+  }
+
+  Future<void> joinGroupChat() async {
+    final ref = await ChatRoom.create(
+      name: 'Group Chat: ${DateTime.now().jm}',
+      users: {myUid!: true},
+    );
+
+    final room = await ChatRoom.get(ref.key!);
+
+    await ChatService.instance.join(room!);
+  }
+
+  Future<void> joinOpenChat() async {
+    final ref = await ChatRoom.create(
+      name: 'Open Chat: ${DateTime.now().jm}',
+      users: {myUid!: true},
+      open: true,
+    );
+
+    final room = await ChatRoom.get(ref.key!);
+
+    await ChatService.instance.join(room!);
   }
 }

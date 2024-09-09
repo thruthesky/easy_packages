@@ -116,6 +116,9 @@ class ChatMessage {
     );
   }
 
+  /// Send messages to the chat room.
+  ///
+  /// - It will upload all the chat join relations.
   static Future<ChatMessage> create({
     required String roomId,
     String? text,

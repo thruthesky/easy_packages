@@ -74,9 +74,13 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
 
   if (join != null) {
     if (join.group) {
-      return join.name;
+      return join.name ??
+          ''; // TODO: group has no name? put some default value from configuration.
     }
-    return join.displayName;
+    if (join.single) {
+      return join.displayName ??
+          ''; // TODO: if the user has no name then, display some default value from the configuration.
+    }
   }
   return 'chat room'.t;
 }

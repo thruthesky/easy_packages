@@ -15,6 +15,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Firestore Indexes](#firestore-indexes)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
+  - [Group chat room creation](#group-chat-room-creation)
   - [Protocol](#protocol)
   - [Chat invitation and delete invitation](#chat-invitation-and-delete-invitation)
   - [Chat message sending](#chat-message-sending)
@@ -50,6 +51,30 @@ This `easychat` package offers everything you need to build a chat app. With thi
 
 
 # TODO
+
+
+        const Text('@TODO: top 3 invitations'),
+        const Text(
+            '@TODO: Display favorite friends: use easy_user_group pakcage'),
+        const Text('@TODO: Display all 1:1 chats: hide the favorite friends'),
+- Group chat crud workflow
+  - invite
+  - list
+- Open chat crud
+  - invite
+  - list
+- Listing my chat rooms by single, group, open
+- Listing open chat room list
+- Upload
+- url preview
+- Leaving
+- Blocking
+- push notification (subscription, and receiving messages)
+
+
+
+
+
 
 - Support: `verifiedUserOnly`, `urlForVerifiedUserOnly`, `uploadForVerifiedUserOnly`.
 - Support: password.
@@ -115,6 +140,14 @@ For your information on `easychat` history:
 
 
 # Logics
+
+## Group chat room creation
+
+- When the login user creates chat room
+  - The user uid is saved in users field. It does not mean that the user is automatically joined.
+  - The package will call the `join` function for the user to join the room when the user enters chat room for the first time. And it creates the `/chat/joins` relation.
+
+
 
 
 ## Protocol
@@ -221,6 +254,12 @@ ChatRoomScreen(["ChatRoomScreen"])
 
 - See the [ChatInvitationCounter] for details.
 
+Example:
+```dart
+ChatInvitationCount(builder: (int no) {
+  return Badge(label: Text("$no"));
+}),
+```
 
 # Database Strucutre
 
@@ -272,9 +311,15 @@ ChatRoomScreen(["ChatRoomScreen"])
       - The copied data will be synced on the next chat message sending.
 
 
-- `displayName`, `photoUrl` is set when the chat is 1:1 chat.
-  - For the login user, the value of `displayName`, `photoUrl` will be the other user's data.
-  - For the other user, the vlaue of `displayName`, `photoUrl` will be the login user's data.
+- `displayName`, `photoUrl` is set when the chat is
+  - 1:1 chat,
+    - For the login user, the value of `displayName`, `photoUrl` will be the other user's data.
+    - For the other user, the vlaue of `displayName`, `photoUrl` will be the login user's data.
+  - group chat,
+    - The last message sender's display name and photo url.
+
+
+
 
 
 
