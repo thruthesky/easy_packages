@@ -29,7 +29,8 @@ class ChatRoomReceivedInviteListScreen extends StatelessWidget {
             : FirebaseDatabaseListView(
                 query: FirebaseDatabase.instance
                     .ref()
-                    .child("chat/invited-users/$myUid"),
+                    .child("chat/invited-users/$myUid")
+                    .orderByValue(),
                 itemBuilder: (context, snapshot) {
                   return ChatRoomDoc(
                     roomId: snapshot.key!,

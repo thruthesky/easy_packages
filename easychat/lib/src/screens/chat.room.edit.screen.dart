@@ -167,6 +167,10 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             users: {myUid!: false},
                           );
                           chatRoom = await ChatRoom.get(newRoomRef.key!);
+                          await ChatService.instance.join(
+                            chatRoom!,
+                            protocol: ChatProtocol.create,
+                          );
                         } catch (e) {
                           dog("Error ${e.toString()}");
                           setState(() {
@@ -174,7 +178,6 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                           });
                           rethrow;
                         }
-                        if (chatRoom == null) return;
                         iconUrlOnCreate = null;
                         if (!context.mounted) return;
                         Navigator.of(context).pop(chatRoom.ref);

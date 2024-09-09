@@ -25,10 +25,18 @@ class ChatRoomListView extends StatelessWidget {
     this.invitationBottomWidget,
     this.invitationTextPadding,
     this.headerBuilder,
-  });
+  }) : assert(
+            (single == true) ^ (group == true) ^ (open == true) ||
+                (single != true && group != true && open != true),
+            'Only one of single, group, or open can be true.');
 
+  /// If true, will list only single chats
   final bool? single;
+
+  /// If true, will list only group chats
   final bool? group;
+
+  /// If true, will list only open chats
   final bool? open;
 
   final Widget Function(BuildContext context, ChatJoin join, int index)?

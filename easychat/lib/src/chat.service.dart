@@ -3,7 +3,6 @@ import 'package:easychat/easychat.dart';
 import 'package:easychat/src/screens/chat.open.room.list.screen.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_url_preview/easy_url_preview.dart';
 
@@ -304,27 +303,35 @@ class ChatService {
     String? protocol,
   }) async {
     int timestamp = await getServerTimestamp();
+    dog("Updating");
     final Map<String, Object?> updates = {};
     // See README.md for details
-    final order = int.parse("-1$timestamp");
+    final moreImportant = int.parse("-1$timestamp");
+    final lessImportant = -1 * timestamp;
     for (String uid in room.userUids) {
       if (uid == myUid) {
         // If it's my join data, the order must not have -11 infront since I
         // have already read that chat room. (I am in the chat room)
-        updates['chat/joins/$uid/${room.id}/order'] = timestamp;
+        updates['chat/joins/$uid/${room.id}/order'] = lessImportant;
         if (room.single) {
-          updates['chat/joins/$uid/${room.id}/$singleOrder'] = timestamp;
+          updates['chat/joins/$uid/${room.id}/$singleOrder'] = lessImportant;
         }
         if (room.group) {
-          updates['chat/joins/$uid/${room.id}/$groupOrder'] = timestamp;
+          updates['chat/joins/$uid/${room.id}/$groupOrder'] = lessImportant;
+        }
+        if (room.open) {
+          updates['chat/joins/$uid/${room.id}/$openOrder'] = lessImportant;
         }
       } else {
-        updates['chat/joins/$uid/${room.id}/order'] = order;
+        updates['chat/joins/$uid/${room.id}/order'] = moreImportant;
         if (room.single) {
-          updates['chat/joins/$uid/${room.id}/$singleOrder'] = order;
+          updates['chat/joins/$uid/${room.id}/$singleOrder'] = moreImportant;
         }
         if (room.group) {
-          updates['chat/joins/$uid/${room.id}/$groupOrder'] = order;
+          updates['chat/joins/$uid/${room.id}/$groupOrder'] = moreImportant;
+        }
+        if (room.open) {
+          updates['chat/joins/$uid/${room.id}/$openOrder'] = moreImportant;
         }
         updates['chat/settings/$uid/unread-message-count/${room.id}'] =
             ServerValue.increment(1);
@@ -336,6 +343,7 @@ class ChatService {
       // information without referring to the chat room.
       updates['chat/joins/$uid/${room.id}/$lastMessageUid'] = myUid;
       updates['chat/joins/$uid/${room.id}/$lastText'] = text;
+
       updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = photoUrl;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] = protocol;
 
@@ -352,10 +360,13 @@ class ChatService {
 
       // If it's group chat, add the sender's information
       if (room.group) {
-        updates['chat/joins/$uid/${room.id}/$displayName'] = my.displayName;
-        updates['chat/joins/$uid/${room.id}/$photoUrl'] = my.photoUrl;
+        updates['chat/joins/$uid/${room.id}/displayName'] = my.displayName;
+        updates['chat/joins/$uid/${room.id}/photoUrl'] = my.photoUrl;
       }
     }
+
+    // Must save the last message at in room to properly reorder it upon seening the message.
+    updates['chat/rooms/${room.id}/$lastMessageAt'] = timestamp;
     await FirebaseDatabase.instance.ref().update(updates);
 
     // Write the data first for the speed of performance and then update the
@@ -370,6 +381,31 @@ class ChatService {
         });
       }
     }
+  }
+
+  Future<void> resetUnreadMessage(ChatRoom room) async {
+    // return unreadMessageCountRef(room.id).set(0);
+    final Map<String, Object?> resetUnread = {
+      unreadMessageCountRef(room.id).path: 0,
+    };
+    final lastMessageAt = room.lastMessageAt;
+    if (lastMessageAt != null) {
+      final updatedOrder = lastMessageAt * -1;
+      resetUnread['chat/joins/${myUid!}/${room.id}/order'] = updatedOrder;
+      if (room.single) {
+        resetUnread['chat/joins/${myUid!}/${room.id}/$singleOrder'] =
+            updatedOrder;
+      }
+      if (room.group) {
+        resetUnread['chat/joins/${myUid!}/${room.id}/$groupOrder'] =
+            updatedOrder;
+      }
+      if (room.open) {
+        resetUnread['chat/joins/${myUid!}/${room.id}/$openOrder'] =
+            updatedOrder;
+      }
+    }
+    await FirebaseDatabase.instance.ref().update(resetUnread);
   }
 
   /// Join a chat room
@@ -453,6 +489,27 @@ class ChatService {
     await inviteUser(room, otherUserUid);
   }
 
+  /// Get the invitation value (which is saved as an int) and return as DateTime
+  Future<DateTime?> getInvitation(String roomId) async {
+    final invitation = (await invitedUserRef(myUid!).child(roomId).get());
+    if (invitation.exists) {
+      // The invitation is saved as negative for ordering.
+      final timestamp = (invitation.value as int).abs();
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    }
+    return null;
+  }
+
+  /// Get the rejection value (which is saved as an int) and return as DateTime
+  Future<DateTime?> getRejection(String roomId) async {
+    final rejection = (await rejectedUserRef(myUid!).child(roomId).get());
+    if (rejection.exists) {
+      final timestamp = (rejection.value as int).abs();
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    }
+    return null;
+  }
+
   /// Delete the invitation-not-sent message.
   ///
   /// Why:
@@ -499,7 +556,10 @@ class ChatService {
   /// - It's called from ChatService::inviteOtherUserInSingleChat
   /// - This can be used in any where.
   Future inviteUser(ChatRoom room, String uid) async {
-    await invitedUserRef(uid).child(room.id).set(ServerValue.timestamp);
+    // To prevent the invitation from getting overlooked or from
+    // getting buried by earlier ignored invitations.
+    final reverseOrder = (await getServerTimestamp()) * -1;
+    await invitedUserRef(uid).child(room.id).set(reverseOrder);
     onInvite?.call(room: room, uid: uid);
   }
 
@@ -513,6 +573,7 @@ class ChatService {
       // remove roomId in user's chat joins
       'chat/joins/${myUid!}/${room.id}': null,
     };
+    await sendMessage(room, protocol: ChatProtocol.left);
     await FirebaseDatabase.instance.ref().update(leave);
   }
 
@@ -574,5 +635,54 @@ class ChatService {
       rejectedUserRef(myUid!).child(room.id).path: ServerValue.timestamp,
     };
     await FirebaseDatabase.instance.ref().update(reject);
+  }
+
+  /// Removes and blocks the user from the group
+  block(ChatRoom room, String uid) async {
+    // throw 'Not implemented yet';
+    // 1. check if the user is the master
+    if (!room.masterUsers.contains(myUid!)) {
+      // TODO trs
+      throw ChatException(
+        "not-master",
+        "You are not the master to block someone in this room",
+      );
+    }
+    // 2. check if the user can be blocked
+    if (room.blockedUids.contains(uid)) {
+      throw ChatException(
+        "already-blocked",
+        "User is already blocked",
+      );
+    }
+    // 3. block the user
+    final blockUpdates = {
+      room.ref.child('blockedUsers').child(uid).path: true,
+      room.ref.child('users').child(uid).path: null,
+      'chat/joins/$uid/${room.id}': null,
+    };
+    await FirebaseDatabase.instance.ref().update(blockUpdates);
+    // TODO protocol on removing from the group
+  }
+
+  /// Removes user from the blocklist of the group
+  unblock(ChatRoom room, String uid) async {
+    // 1. check if the user is the master
+    if (!room.masterUsers.contains(myUid!)) {
+      // TODO trs
+      throw ChatException(
+        "not-master",
+        "You are not the master to block someone in this room",
+      );
+    }
+    // 2. check if the user can be unblocked
+    if (!room.blockedUids.contains(uid)) {
+      throw ChatException(
+        "not-blocked",
+        "User is not blocked already",
+      );
+    }
+    // 3. unblock the user
+    await room.ref.child('blockedUsers').child(uid).set(null);
   }
 }

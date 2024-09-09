@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
@@ -28,81 +29,136 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   User? user;
 
   StreamSubscription? resetMessageCountSubscription;
+  StreamSubscription? usersSubscription;
+  StreamSubscription? lastMessageAtSubscription;
 
   @override
   void initState() {
     super.initState();
     room = widget.room;
+    user = widget.user;
     init();
   }
 
   init() async {
-    if (widget.join != null) {
-      if (widget.join!.group) {
-        room = await ChatRoom.get(widget.join!.roomId);
-      } else {
-        room = await ChatRoom.get(widget.join!.roomId);
-        user = await User.get(getOtherUserUidFromRoomId(widget.join!.roomId)!);
-      }
-      setState(() {});
-    } else if (widget.user != null) {
-      // Single chat. load room (or create)
-      user = widget.user;
+    if (room == null) {
       // Create chat room if user is set.
       await loadOrCreateSingleChatRoom();
       setState(() {});
     }
-
+    // Listen to users here
+    listenToUsersUpdate();
+    if (isSingleChatRoom(widget.join?.roomId ?? room!.id)) {
+      user ??= await User.get(
+          getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
+    }
     await onRoomReady();
   }
 
-  /// Do something when the room is ready
-  ///
-  /// The "room ready" means that the room is existing or created, and loaded.
-  onRoomReady() async {
-    // TODO: check if the user is blocked
-    // TODO: check if the user is a membmer
-    // TODO: check if the user is in invitation list
-    // TODO: check if the user is in rejected list
-    // TODO: check if the user can join the chat room
+  /// To have real time updates for users
+  /// This is related to sending message, auto invitation logics
+  void listenToUsersUpdate() {
+    usersSubscription = room!.ref.child("users").onValue.listen((e) {
+      room!.users = Map<String, bool>.from(e.snapshot.value as Map);
+      if (room!.userUids.contains(myUid!) == false && mounted) {
+        Navigator.of(context).pop();
+        dog("The user is no longer a member. Check if the user is just blocked or kicked out.");
+        throw ChatException(
+          "unexpected-error-upon-viewing-room",
+          "an error occured while viewing the room".t,
+        );
+      }
+    });
+  }
 
-    if (room!.joined == false) {
-      ChatService.instance.join(room!);
-      setState(() {});
-    }
-
-    /// Set 0 to the new meessage count
-    ///
-    /// Whenever there is a new chat, reset the unread message count to 0.
-    resetMessageCountSubscription = ChatService.instance
-        .messageRef(room!.id)
-        .limitToLast(1)
-        .onChildAdded
-        .listen(
-      (event) {
-        room!.resetUnreadMessage();
+  /// Will be helpful for more accurate reordering.
+  void listenToLastMessageAtUpdate() {
+    lastMessageAtSubscription = room!.ref.child("lastMessageAt").onValue.listen(
+      (e) {
+        room!.lastMessageAt = e.snapshot.value as int;
       },
     );
+  }
+
+  Future<void> join() async {
+    await ChatService.instance.join(room!);
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  /// Do something when the room is ready
+  /// The "room ready" means that the room is existing or created, and loaded.
+  onRoomReady() async {
+    if (room!.blockedUids.contains(myUid!)) {
+      Navigator.of(context).pop();
+      dog("The user cannot join the chat room because the user is blocked.");
+      throw ChatException("fail-join-attempt",
+          "for some reason, the account failed to join in the chat room".t);
+    }
+
+    // Current user automatically joins upon viewing open rooms.
+    if (room!.joined == false && room!.open) {
+      await join();
+    }
+
+    // If current user is one of the user in the single chat room, can join
+    if (room!.joined == false &&
+        room!.single &&
+        room!.id.split(chatRoomDivider).contains(myUid!)) {
+      await join();
+    }
+
+    // If user is still not joined until this point,
+    // must check if invited, or else user cannot see the room.
+    if (room!.joined == false) {
+      final invitation = await ChatService.instance.getInvitation(room!.id);
+      final rejection = await ChatService.instance.getRejection(room!.id);
+      if (invitation != null || rejection != null) {
+        await join();
+      } else {
+        if (!mounted) return;
+        Navigator.of(context).pop();
+        dog("The user cannot join the chat room because the user is not invited.");
+        throw ChatException("fail-join-attempt",
+            "for some reason, the account failed to join in the chat room".t);
+      }
+    }
+
+    // Should listen to the actual value.
+    // Listening to every update of last message is not effective because
+    // we write the new message and the count separately.
+    resetMessageCountSubscription = ChatService.instance
+        .unreadMessageCountRef(room!.id)
+        .onValue
+        .listen((e) async {
+      final newMessageCount = (e.snapshot.value ?? 0) as int;
+      if (newMessageCount == 0) return;
+      // room!.resetUnreadMessage();
+      await ChatService.instance.resetUnreadMessage(room!);
+    });
   }
 
   @override
   dispose() {
     resetMessageCountSubscription?.cancel();
+    usersSubscription?.cancel();
+    lastMessageAtSubscription?.cancel();
+
     super.dispose();
   }
 
+  /// To load Room using the Id
+  /// User must be provided
   Future<void> loadOrCreateSingleChatRoom() async {
-    dog('chat.room.screen.dart: init() -> loadOrCreateSingleChatRoom()');
-    room = await ChatRoom.get(singleChatRoomId(user!.uid));
-
-    if (room == null) {
-      final newRoomRef = await ChatRoom.createSingle(user!.uid);
-      room = await ChatRoom.get(newRoomRef.key!);
-      ChatService.instance.join(
-        room!,
-        protocol: ChatProtocol.invitationNotSent,
-      );
-    }
+    room =
+        await ChatRoom.get(widget.join?.roomId ?? singleChatRoomId(user!.uid));
+    if (room != null) return;
+    final newRoomRef = await ChatRoom.createSingle(user!.uid);
+    room = await ChatRoom.get(newRoomRef.key!);
+    ChatService.instance.join(
+      room!,
+      protocol: ChatProtocol.invitationNotSent,
+    );
   }
 
   /// Returns true if the login user can view the chat messages.
@@ -117,8 +173,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   bool get joined {
     return room?.joined == true;
   }
-
-  /// TODO: Listen the whole room info using `ChatRoomDoc`.
 
   @override
   Widget build(BuildContext context) {
@@ -151,10 +205,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: joined
           ? ChatRoomDoc(
               roomId: room!.id,
-              builder: (context) {
+              onLoading: ChatRoomMenuDrawer(
+                room: room,
+                user: user,
+              ),
+              builder: (room) {
+                dog("Unblock call");
                 return ChatRoomMenuDrawer(
                   room: room,
-                  user: widget.user,
+                  user: user,
                 );
               },
             )

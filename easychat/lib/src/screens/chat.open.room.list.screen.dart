@@ -26,6 +26,17 @@ class ChatOpenRoomListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('open chat'.t),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ChatService.instance.showChatRoomEditScreen(
+                context,
+                defaultOpen: true,
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       body: FirebaseDatabaseQueryBuilder(
         query: FirebaseDatabase.instance

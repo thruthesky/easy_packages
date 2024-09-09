@@ -54,7 +54,7 @@ class ChatRoomReplyingTo extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     UserDoc(
-                      uid: replyTo.uid!,
+                      uid: replyTo.uid,
                       builder: (user) {
                         if (user == null) return const SizedBox.shrink();
                         return Row(
@@ -76,7 +76,7 @@ class ChatRoomReplyingTo extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 UserDoc(
-                  uid: replyTo.uid!,
+                  uid: replyTo.uid,
                   builder: (user) {
                     if (user == null) return const SizedBox.shrink();
                     return Row(

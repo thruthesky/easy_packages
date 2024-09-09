@@ -37,7 +37,7 @@ class ChatRoomBlockedUsersDialog extends StatelessWidget {
           itemCount: room.blockedUsers.length,
           itemBuilder: (context, index) {
             return UserDoc(
-              uid: room.blockedUsers[index],
+              uid: room.blockedUids[index],
               builder: (user) {
                 if (user == null) {
                   return const SizedBox.shrink();

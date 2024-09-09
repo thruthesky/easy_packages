@@ -45,11 +45,18 @@ class ChatRoom {
   // Map<String, ChatRoomUser> users;
   Map<String, bool> users;
 
+  /// Returns list of uids of members
   List<String> get userUids => users.keys.toList();
+
+  /// [noOfUsers] is the number of users in the chat room.
+  int get noOfUsers => users.length;
 
   bool get joined => userUids.contains(myUid);
 
-  List<String> blockedUsers;
+  /// Map of `blocked-user-uid: true`.
+  Map<String, bool> blockedUsers;
+  List<String> get blockedUids => blockedUsers.keys.toList();
+
   List<String> masterUsers;
 
   DateTime createdAt;
@@ -74,9 +81,6 @@ class ChatRoom {
   /// Note that, [gender] is not supported at this time.
   String gender;
 
-  /// [noOfUsers] is the number of users in the chat room.
-  int get noOfUsers => users.length;
-
   /// [domain] is the domain of the chat room. It can be the name of the app.
   ///
   String domain;
@@ -97,7 +101,7 @@ class ChatRoom {
     required this.group,
     required this.users,
     required this.masterUsers,
-    this.blockedUsers = const [],
+    this.blockedUsers = const {},
     required this.createdAt,
     required this.updatedAt,
     this.lastMessageAt,
@@ -126,7 +130,7 @@ class ChatRoom {
           ? Map<String, bool>.from(json[field.users])
           : {},
       masterUsers: List<String>.from(json[field.masterUsers]),
-      blockedUsers: List<String>.from(json[field.blockedUsers] ?? []),
+      blockedUsers: Map<String, bool>.from(json[field.blockedUsers] ?? {}),
       createdAt: json[field.createdAt] is num
           ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt])
           : DateTime.now(),
@@ -385,24 +389,24 @@ class ChatRoom {
   /// The update will proceed only if newMessageCounter is not 0.
   /// The Chat Room must be updated or else, it may not proceed
   /// when old room data is 0, since newMessageCounter maybe inaccurate.
+  @Deprecated("Only put DB CRUD in Model")
   Future<void> resetUnreadMessage() async {
     ChatService.instance.unreadMessageCountRef(id).set(0);
+
+    // Update the
   }
 
   /// [block] blocks the user from the chat room.
   /// It can be done by the master.
+  @Deprecated("Only put DB CRUD in Model")
   block(String uid) async {
-    throw 'Not implemented yet';
-    // 1. check if the user is the master
-    // 2. check if the user can be blocked
-    // 3. block the user
+    await ChatService.instance.block(this, uid);
   }
 
   /// [unblock] unblocks the user from the chat room.
   /// It can be done by the master
+  @Deprecated("Only put DB CRUD in Model")
   unblock(String uid) async {
-    // 1. check if the user is the master
-    // 2. check if the user can be unblocked
-    // 3. unblock the user
+    await ChatService.instance.unblock(this, uid);
   }
 }

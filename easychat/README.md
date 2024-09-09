@@ -205,6 +205,8 @@ ChatRoomScreen(["ChatRoomScreen"])
 - But why the code is like in `ChatService.instance.deleteInvitationNotSentMessage`?
   - If another query made on the same node of the chat masssage list view, it will change(affect) the query of the chat message list view. That's why it does not query, but checks the index and the message protocol. And if it's the 'invitation-not-sent' protocol, it deletes the message.
 
+For invitation ordering, it is using negative of Server timestamp to give more importance to later invitations. This is to prevent the new invitation be overlooked and to prevent it on being buried by other earlier invitations.
+
 ## Chat message sending
 
 
@@ -364,6 +366,11 @@ ChatInvitationCount(builder: (int no) {
 - `/chat/rejected-users/<uid> { room-a: _time_base_order_value_, room-b: ..., ... }`: Users who rejected the invitation be added here.
 
 
+## Chat Blocking
+
+Group chat can block the user from the room and it should prevent the user from joining.
+
+When the user is blocked, the user is also removed from the room. The blocker (who is a master) should also remove the chat join of the user.
 
 ## Server timestamp
 

@@ -14,29 +14,31 @@ class ChatProtocolBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final protocol = message.protocol!;
     String text = protocol.t;
-    if (protocol == ChatProtocol.join) {
-      text = protocol.tr(
-        args: {
-          'displayName': message.displayName,
-        },
-      );
-    }
+    // Review if we need the if
+    // if (protocol == ChatProtocol.join) {
+    text = protocol.tr(
+      args: {
+        'displayName': message.displayName,
+      },
+    );
+    // }
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
           const Expanded(
             child: Divider(
-              thickness: 1,
-              endIndent: 16,
+              endIndent: 12,
             ),
           ),
           Text(
             text,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(160),
+                ),
           ),
           const Expanded(
             child: Divider(
-              thickness: 1,
               indent: 12,
             ),
           ),

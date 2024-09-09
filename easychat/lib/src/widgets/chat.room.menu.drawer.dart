@@ -185,7 +185,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     title: Text('invite more users'.t),
                     onTap: () async {
                       final selectedUser =
-                          await UserService.instance.showUserSearchDialog(
+                          await UserService.instance.showSearchDialog(
                         context,
                         itemBuilder: (user, index) {
                           return UserListTile(
@@ -219,7 +219,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           'the user is already a member'.t,
                         );
                       }
-                      if (room!.blockedUsers.contains(selectedUser.uid)) {
+                      if (room!.blockedUids.contains(selectedUser.uid)) {
                         throw ChatException(
                           'chat-blocked',
                           'the user is blocked from the chat room and cannot invite'
@@ -279,7 +279,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     itemExtent: 72,
                     itemBuilder: (context, index) {
                       return UserDoc(
-                        uid: room!.blockedUsers[index],
+                        uid: room!.blockedUids[index],
                         builder: (user) => user == null
                             ? const SizedBox.shrink()
                             : ChatRoomMemberListTile(
