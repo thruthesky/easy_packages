@@ -662,6 +662,7 @@ class ChatService {
       'chat/joins/$uid/${room.id}': null,
     };
     await FirebaseDatabase.instance.ref().update(blockUpdates);
+    // TODO protocol on removing from the group
   }
 
   /// Removes user from the blocklist of the group
