@@ -318,6 +318,9 @@ class ChatService {
         if (room.group) {
           updates['chat/joins/$uid/${room.id}/$groupOrder'] = timestamp;
         }
+        if (room.open) {
+          updates['chat/joins/$uid/${room.id}/$openOrder'] = timestamp;
+        }
       } else {
         updates['chat/joins/$uid/${room.id}/order'] = order;
         if (room.single) {
@@ -325,6 +328,9 @@ class ChatService {
         }
         if (room.group) {
           updates['chat/joins/$uid/${room.id}/$groupOrder'] = order;
+        }
+        if (room.open) {
+          updates['chat/joins/$uid/${room.id}/$openOrder'] = order;
         }
         updates['chat/settings/$uid/unread-message-count/${room.id}'] =
             ServerValue.increment(1);

@@ -153,6 +153,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: joined
           ? ChatRoomDoc(
               roomId: room!.id,
+              onLoading: ChatRoomMenuDrawer(
+                room: room,
+                user: user,
+              ),
               builder: (context) {
                 return ChatRoomMenuDrawer(
                   room: room,

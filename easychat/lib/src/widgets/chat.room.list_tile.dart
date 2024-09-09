@@ -117,27 +117,44 @@ class ChatRoomListTile extends StatelessWidget {
               color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
             ),
       );
-    } else if (join.lastText != null && join.lastPhotoUrl != null) {
+    } else if (!join.lastText.isNullOrEmpty &&
+        !join.lastPhotoUrl.isNullOrEmpty) {
       return Row(
         children: [
           Text(
             join.lastText!,
           ),
-          const SizedBox(width: 8),
-          CachedNetworkImage(imageUrl: join.lastPhotoUrl!),
+          const SizedBox(width: 4),
+          Icon(
+            Icons.photo,
+            color: Theme.of(context).colorScheme.onSurface.withAlpha(180),
+            size: 20,
+          )
         ],
       );
-    } else if (join.lastText != null) {
+    } else if (!join.lastText.isNullOrEmpty) {
       return Text(
         join.lastText!,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
-            ),
       );
-    } else if (join.lastPhotoUrl != null) {
-      return CachedNetworkImage(imageUrl: join.lastPhotoUrl!);
+    } else if (!join.lastPhotoUrl.isNullOrEmpty) {
+      return Row(
+        children: [
+          Text(
+            "[${'photo'.t}]",
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+                ),
+          ),
+          const SizedBox(width: 4),
+          Icon(
+            Icons.photo,
+            color: Theme.of(context).colorScheme.onSurface.withAlpha(180),
+            size: 20,
+          )
+        ],
+      );
     } else {
       // This is mostly an error
       return null;

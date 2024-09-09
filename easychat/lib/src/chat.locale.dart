@@ -80,69 +80,38 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': 'Chat Room List',
     'ko': '채팅방 목록',
   },
-  // 'chat room list screen title: ${ChatRoomQuery.allMine.name.toLowerCase()}': {
-  //   'en': 'My Chats',
-  //   'ko': '내 채팅',
-  // },
-  // 'chat room list screen title: ${ChatRoomQuery.allMineByTime.name.toLowerCase()}':
-  //     {
-  //   'en': 'My Chats Ordered by Time',
-  //   'ko': '내 채팅 시간 순',
-  // },
-  // 'chat room list screen title: ${ChatRoomQuery.single.name.toLowerCase()}': {
-  //   'en': '1:1 Chats',
-  //   'ko': '1:1 채팅',
-  // },
-  // 'chat room list screen title: ${ChatRoomQuery.singleByTime.name.toLowerCase()}':
-  //     {
-  //   'en': '1:1 Chats Ordered by Time',
-  //   'ko': '1:1 채팅 시간 순',
-  // },
-  // 'chat room list screen title: ${ChatRoomQuery.group.name.toLowerCase()}': {
-  //   'en': 'Group Chats',
-  //   'ko': '그룹 채팅',
-  // },
-  // 'chat room list screen title: ${ChatRoomQuery.groupByTime.name.toLowerCase()}':
-  //     {
-  //   'en': 'Group Chats Ordered by Time',
-  //   'ko': '그룹 채팅 시간 순',
-  // },
-  // 'chat room list screen title: ${ChatRoomQuery.open.name.toLowerCase()}': {
-  //   'en': 'Open Chats',
-  //   'ko': '공개 채팅',
-  // },
-
-  // 'chat room list screen option: ${ChatRoomQuery.allMine.name.toLowerCase()}': {
-  //   'en': 'My Chats',
-  //   'ko': '내 채팅',
-  // },
-  // 'chat room list screen option: ${ChatRoomQuery.allMineByTime.name.toLowerCase()}':
-  //     {
-  //   'en': 'My Chats Ordered by Time',
-  //   'ko': '내 채팅 시간 순',
-  // },
-  // 'chat room list screen option: ${ChatRoomQuery.single.name.toLowerCase()}': {
-  //   'en': '1:1 Chats',
-  //   'ko': '1:1 채팅',
-  // },
-  // 'chat room list screen option: ${ChatRoomQuery.singleByTime.name.toLowerCase()}':
-  //     {
-  //   'en': '1:1 Chats Ordered by Time',
-  //   'ko': '1:1 채팅 시간 순',
-  // },
-  // 'chat room list screen option: ${ChatRoomQuery.group.name.toLowerCase()}': {
-  //   'en': 'Group Chats',
-  //   'ko': '그룹 채팅',
-  // },
-  // 'chat room list screen option: ${ChatRoomQuery.groupByTime.name.toLowerCase()}':
-  //     {
-  //   'en': 'Group Chats Ordered by Time',
-  //   'ko': '그룹 채팅 시간 순',
-  // },
-  // 'chat room list screen option: ${ChatRoomQuery.open.name.toLowerCase()}': {
-  //   'en': 'Open Chats',
-  //   'ko': '공개 채팅',
-  // },
+  'chat room list screen title: allMyChats': {
+    'en': 'All My Chats',
+    'ko': '나의 채팅방 목록',
+  },
+  'chat room list screen title: singleChats': {
+    'en': '1:1 Chats',
+    'ko': '1:1 채팅방 목록',
+  },
+  'chat room list screen title: groupChats': {
+    'en': 'Group Chats',
+    'ko': '그룹 채팅 목록',
+  },
+  'chat room list screen title: openChats': {
+    'en': 'Open Group Chats',
+    'ko': '공개 그룹 채팅 목록',
+  },
+  'chat room list screen option: allMyChats': {
+    'en': 'All My Chats',
+    'ko': '나의 채팅방 목록',
+  },
+  'chat room list screen option: singleChats': {
+    'en': '1:1 Chats',
+    'ko': '1:1 채팅방 목록',
+  },
+  'chat room list screen option: groupChats': {
+    'en': 'Group Chats',
+    'ko': '그룹 채팅 목록',
+  },
+  'chat room list screen option: openChats': {
+    'en': 'Open Group Chats',
+    'ko': '공개 그룹 채팅 목록',
+  },
   "login to chat": {
     'en': 'Please, login to chat.',
     'ko': "채팅하려면 로그인해야 합니다.",
