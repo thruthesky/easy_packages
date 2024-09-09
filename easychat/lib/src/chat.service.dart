@@ -457,7 +457,6 @@ class ChatService {
   ///
   /// Purpose:
   /// - Call this whenever creating a chat room including single and group chat.
-  ///
   Future<void> setJoin(ChatRoom room) async {
     int timestamp = await getServerTimestamp();
     final order = int.parse("-1$timestamp");
