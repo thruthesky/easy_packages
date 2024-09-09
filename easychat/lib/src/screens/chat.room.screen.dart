@@ -38,12 +38,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   init() async {
     if (widget.join != null) {
-      if (widget.join!.group) {
-        room = await ChatRoom.get(widget.join!.roomId);
-      } else {
-        room = await ChatRoom.get(widget.join!.roomId);
+      if (widget.join!.single) {
         user = await User.get(getOtherUserUidFromRoomId(widget.join!.roomId)!);
       }
+      room = await ChatRoom.get(widget.join!.roomId);
       setState(() {});
     } else if (widget.user != null) {
       // Single chat. load room (or create)
@@ -154,7 +152,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               builder: (context) {
                 return ChatRoomMenuDrawer(
                   room: room,
-                  user: widget.user,
+                  user: user,
                 );
               },
             )
