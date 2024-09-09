@@ -83,18 +83,34 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
           ),
         ),
         Text('my uid: $myUid'),
-        const Text('@TODO: top 3 invitations'),
-        const Text(
-            '@TODO: Display favorite friends: use easy_user_group pakcage'),
-        const Text('@TODO: Display all 1:1 chats: hide the favorite friends'),
-        ChatInvitationCount(builder: (int no) {
-          return Badge(label: Text("$no"));
-        }),
-        ElevatedButton(
-          onPressed: () => ChatTestService.instance.invitationNotSent(
-            'jp38SPAWRDUfbHoVbIZhY1fJTDM2',
-          ),
-          child: const Text('TEST: invitationNotSent protocol deletion'),
+        const Divider(),
+        Wrap(
+          children: [
+            TextButton(
+              onPressed: () => ChatTestService.instance.invitationNotSent(
+                'jp38SPAWRDUfbHoVbIZhY1fJTDM2',
+              ),
+              child: const Text('TEST invitationNotSent'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await ChatTestService.instance.createGroupChat();
+              },
+              child: const Text('createGroupChat'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await ChatTestService.instance.joinGroupChat();
+              },
+              child: const Text('joinGroupChat'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await ChatTestService.instance.joinOpenChat();
+              },
+              child: const Text('joinOpenChat'),
+            )
+          ],
         ),
         Expanded(
           child: AuthStateChanges(builder: (user) {
@@ -112,10 +128,6 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                   ],
                 );
               },
-
-              // onChatRoomTap: (chatRoom) {
-              //   ChatService.instance.showChatRoomScreen(context, chatRoom: chatRoom);
-              // },
             );
           }),
         ),

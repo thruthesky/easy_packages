@@ -213,7 +213,7 @@ class ChatRoom {
     bool group = true,
     bool single = false,
     // String? password, (NOT IMPLEMENTED YET)
-    Map<String, bool>? users,
+    required Map<String, bool>? users,
     List<String>? masterUsers,
     bool allMembersCanInvite = false,
     String gender = '',

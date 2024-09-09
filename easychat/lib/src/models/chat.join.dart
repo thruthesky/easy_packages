@@ -9,16 +9,16 @@ class ChatJoin {
   final int? groupOrder;
   final int? openOrder;
   final int order;
-  final String? lastMessageBy;
-  final DateTime? lastMessageAt;
+  final String lastMessageUid;
+  final DateTime lastMessageAt;
   final String? lastText;
   final String? lastPhotoUrl;
   final String? lastProtocol;
 
-  final String name;
-  final String iconUrl;
-  final String displayName;
-  final String photoUrl;
+  final String? name;
+  final String? iconUrl;
+  final String? displayName;
+  final String? photoUrl;
 
   bool get group => groupOrder != null;
   bool get single => singleOrder != null;
@@ -31,15 +31,15 @@ class ChatJoin {
     required this.groupOrder,
     required this.openOrder,
     required this.order,
-    required this.lastMessageBy,
+    required this.lastMessageUid,
     required this.lastMessageAt,
     required this.lastText,
     required this.lastPhotoUrl,
     required this.lastProtocol,
-    this.name = '',
-    this.iconUrl = '',
-    this.displayName = '',
-    this.photoUrl = '',
+    this.name,
+    this.iconUrl,
+    this.displayName,
+    this.photoUrl,
   });
 
   factory ChatJoin.fromSnapshot(DataSnapshot snapshot) {
@@ -54,16 +54,16 @@ class ChatJoin {
       groupOrder: json[f.groupOrder],
       openOrder: json[f.openOrder],
       order: json[f.order],
-      lastMessageBy: json[f.lastMessageBy],
+      lastMessageUid: json[f.lastMessageUid],
       lastMessageAt:
           DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
       lastPhotoUrl: json[f.lastPhotoUrl],
       lastText: json[f.lastText],
       lastProtocol: json[f.lastProtocol],
-      name: json[f.name] ?? '',
-      iconUrl: json[f.iconUrl] ?? '',
-      displayName: json[f.displayName] ?? '',
-      photoUrl: json[f.photoUrl] ?? '',
+      name: json[f.name],
+      iconUrl: json[f.iconUrl],
+      displayName: json[f.displayName],
+      photoUrl: json[f.photoUrl],
     );
   }
 
@@ -75,7 +75,7 @@ class ChatJoin {
       f.groupOrder: groupOrder,
       f.openOrder: openOrder,
       f.order: order,
-      f.lastMessageBy: lastMessageBy,
+      f.lastMessageUid: lastMessageUid,
       f.lastMessageAt: lastMessageAt,
       f.lastText: lastText,
       f.lastPhotoUrl: lastPhotoUrl,

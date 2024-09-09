@@ -33,23 +33,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void initState() {
     super.initState();
     room = widget.room;
+    user = widget.user;
     init();
   }
 
   init() async {
-    if (widget.join != null) {
-      if (widget.join!.single) {
-        user = await User.get(getOtherUserUidFromRoomId(widget.join!.roomId)!);
-      }
-      room = await ChatRoom.get(widget.join!.roomId);
-      setState(() {});
-    } else if (widget.user != null) {
-      // Single chat. load room (or create)
-      user = widget.user;
+    if (room == null) {
       // Create chat room if user is set.
       await loadOrCreateSingleChatRoom();
       setState(() {});
     }
+
+    user ??= await User.get(
+        getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
 
     await onRoomReady();
   }
@@ -89,9 +85,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.dispose();
   }
 
+  /// To load Room using the Id
+  /// User must be provided
   Future<void> loadOrCreateSingleChatRoom() async {
-    dog('chat.room.screen.dart: init() -> loadOrCreateSingleChatRoom()');
-    room = await ChatRoom.get(singleChatRoomId(user!.uid));
+    if (widget.join != null) {
+      room = await ChatRoom.get(widget.join!.roomId);
+    } else {
+      room = await ChatRoom.get(singleChatRoomId(user!.uid));
+    }
 
     if (room == null) {
       final newRoomRef = await ChatRoom.createSingle(user!.uid);
