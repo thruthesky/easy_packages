@@ -364,6 +364,9 @@ class ChatService {
         updates['chat/joins/$uid/${room.id}/photoUrl'] = my.photoUrl;
       }
     }
+
+    // Must save the last message at in room to properly reorder it upon seening the message.
+    updates['chat/rooms/${room.id}/$lastMessageAt'] = timestamp;
     await FirebaseDatabase.instance.ref().update(updates);
 
     // Write the data first for the speed of performance and then update the
@@ -532,7 +535,10 @@ class ChatService {
   /// - It's called from ChatService::inviteOtherUserInSingleChat
   /// - This can be used in any where.
   Future inviteUser(ChatRoom room, String uid) async {
-    await invitedUserRef(uid).child(room.id).set(ServerValue.timestamp);
+    // To prevent the invitation from getting overlooked or from
+    // getting buried by earlier ignored invitations.
+    final reverseOrder = (await getServerTimestamp()) * -1;
+    await invitedUserRef(uid).child(room.id).set(reverseOrder);
     onInvite?.call(room: room, uid: uid);
   }
 

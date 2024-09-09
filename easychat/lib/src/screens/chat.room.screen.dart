@@ -29,6 +29,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   StreamSubscription? resetMessageCountSubscription;
   StreamSubscription? usersSubscription;
+  StreamSubscription? lastMessageAtSubscription;
 
   @override
   void initState() {
@@ -61,6 +62,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     });
   }
 
+  /// Will be helpful for more accurate reordering.
+  void listenToLastMessageAtUpdate() {
+    lastMessageAtSubscription = room!.ref.child("lastMessageAt").onValue.listen(
+      (e) {
+        room!.lastMessageAt = e.snapshot.value as int;
+      },
+    );
+  }
+
   /// Do something when the room is ready
   /// The "room ready" means that the room is existing or created, and loaded.
   onRoomReady() async {
@@ -81,10 +91,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     resetMessageCountSubscription = ChatService.instance
         .unreadMessageCountRef(room!.id)
         .onValue
-        .listen((e) {
+        .listen((e) async {
       final newMessageCount = (e.snapshot.value ?? 0) as int;
       if (newMessageCount == 0) return;
-      room!.resetUnreadMessage();
+      // room!.resetUnreadMessage();
+      await ChatService.instance.resetUnreadMessage(room!);
     });
   }
 
@@ -92,6 +103,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   dispose() {
     resetMessageCountSubscription?.cancel();
     usersSubscription?.cancel();
+    lastMessageAtSubscription?.cancel();
+
     super.dispose();
   }
 

@@ -48,6 +48,7 @@ class _ChatInvitationPreviewListViewState
     limit = widget.limit + 1;
     subscription = ChatService.instance
         .invitedUserRef(myUid!)
+        .orderByValue()
         .limitToFirst(limit)
         .onValue
         .listen((event) {

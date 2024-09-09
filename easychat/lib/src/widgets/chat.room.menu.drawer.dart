@@ -185,7 +185,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     title: Text('invite more users'.t),
                     onTap: () async {
                       final selectedUser =
-                          await UserService.instance.showUserSearchDialog(
+                          await UserService.instance.showSearchDialog(
                         context,
                         itemBuilder: (user, index) {
                           return UserListTile(

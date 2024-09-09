@@ -43,6 +43,7 @@ class ChatRoomListTile extends StatelessWidget {
       otherUid: getOtherUserUidFromRoomId(join.roomId)!,
       builder: (blocked) {
         if (blocked) {
+          // TODO need to review because this wont do since we use separator
           return const SizedBox.shrink();
         }
         return ListTile(
@@ -109,6 +110,11 @@ class ChatRoomListTile extends StatelessWidget {
     if (join.lastProtocol.notEmpty) {
       String text = join.lastProtocol!.t;
       if (join.lastProtocol != null) {
+        // TODO this is conflicting with displayName of the doer.
+        // Should we not display the protocol when it is single chat?
+        // Scenario with issue:
+        //      I just joined the room. There is a chance that it will display
+        //      that the other user joined the room.
         text = join.lastProtocol!.tr(args: {'displayName': join.displayName});
       }
       return Text(

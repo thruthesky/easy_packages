@@ -37,6 +37,8 @@ class ChatOpenRoomListTile extends StatelessWidget {
       ),
       title: Text(
         room.name.trim().isNotEmpty ? room.name : "group chat".t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
       subtitle: room.description.trim().isEmpty
           ? null
