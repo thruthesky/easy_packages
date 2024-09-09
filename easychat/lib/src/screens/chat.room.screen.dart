@@ -3,6 +3,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// Chat room screen
@@ -28,6 +29,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   User? user;
 
   StreamSubscription? resetMessageCountSubscription;
+  StreamSubscription? usersSubscription;
 
   @override
   void initState() {
@@ -44,10 +46,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       setState(() {});
     }
 
+    // Listen to users here
+    listenToUsersUpdate();
+
     user ??= await User.get(
         getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
 
     await onRoomReady();
+  }
+
+  /// To have real time updates for users
+  ///
+  /// This is related to sending message, auto invitation logics
+  void listenToUsersUpdate() {
+    usersSubscription = room!.ref.child("users").onValue.listen((e) {
+      // Review: No need to setState?
+      room!.users = Map<String, bool>.from(e.snapshot.value as Map);
+    });
   }
 
   /// Do something when the room is ready
@@ -82,6 +97,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   dispose() {
     resetMessageCountSubscription?.cancel();
+    usersSubscription?.cancel();
     super.dispose();
   }
 

@@ -45,7 +45,11 @@ class ChatRoom {
   // Map<String, ChatRoomUser> users;
   Map<String, bool> users;
 
+  /// Returns list of uids of members
   List<String> get userUids => users.keys.toList();
+
+  /// [noOfUsers] is the number of users in the chat room.
+  int get noOfUsers => users.length;
 
   bool get joined => userUids.contains(myUid);
 
@@ -73,9 +77,6 @@ class ChatRoom {
   ///
   /// Note that, [gender] is not supported at this time.
   String gender;
-
-  /// [noOfUsers] is the number of users in the chat room.
-  int get noOfUsers => users.length;
 
   /// [domain] is the domain of the chat room. It can be the name of the app.
   ///
