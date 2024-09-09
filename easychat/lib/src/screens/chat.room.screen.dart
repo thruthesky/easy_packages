@@ -3,7 +3,6 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// Chat room screen
@@ -61,6 +60,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void listenToUsersUpdate() {
     usersSubscription = room!.ref.child("users").onValue.listen((e) {
       // Review: No need to setState?
+      // Review: Do we need to listed to the whole chat room?
+      //    If We need to listen to while chat room, must use ChatRoomDoc.
       room!.users = Map<String, bool>.from(e.snapshot.value as Map);
     });
   }
@@ -132,8 +133,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   bool get joined {
     return room?.joined == true;
   }
-
-  /// TODO: Listen the whole room info using `ChatRoomDoc`.
 
   @override
   Widget build(BuildContext context) {
