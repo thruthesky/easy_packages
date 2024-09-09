@@ -1,6 +1,5 @@
 import 'package:easychat/easychat.dart';
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easychat/src/chat.service.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 

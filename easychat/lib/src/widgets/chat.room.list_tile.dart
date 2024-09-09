@@ -21,7 +21,7 @@ class ChatRoomListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         ChatNewMessageCounter(roomId: join.roomId),
-        if (join.lastMessageAt != null) Text((join.lastMessageAt)!.short),
+        Text((join.lastMessageAt).short),
       ],
     );
     if (join.group) {
@@ -106,8 +106,8 @@ class ChatRoomListTile extends StatelessWidget {
     // Is a protocol message?
     if (join.lastProtocol.notEmpty) {
       String text = join.lastProtocol!.t;
-      if (join.lastProtocol == ChatProtocol.join) {
-        text = 'protocol.join'.tr(args: {'displayName': join.displayName});
+      if (join.lastProtocol != null) {
+        text = join.lastProtocol!.tr(args: {'displayName': join.displayName});
       }
       return Text(
         text,

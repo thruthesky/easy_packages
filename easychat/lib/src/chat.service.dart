@@ -3,7 +3,6 @@ import 'package:easychat/easychat.dart';
 import 'package:easychat/src/screens/chat.open.room.list.screen.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_url_preview/easy_url_preview.dart';
 
@@ -513,6 +512,7 @@ class ChatService {
       // remove roomId in user's chat joins
       'chat/joins/${myUid!}/${room.id}': null,
     };
+    await sendMessage(room, protocol: ChatProtocol.left);
     await FirebaseDatabase.instance.ref().update(leave);
   }
 

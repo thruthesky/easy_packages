@@ -111,7 +111,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                     : CrossAxisAlignment.end,
                 children: [
                   UserDoc(
-                    uid: message.replyTo!.uid!,
+                    uid: message.replyTo!.uid,
                     builder: (user) {
                       if (user == null) {
                         return const SizedBox.shrink();

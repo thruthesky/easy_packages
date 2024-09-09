@@ -471,6 +471,7 @@ final localeTexts = <String, Map<String, dynamic>>{
       'many': '새로운 채팅 친구 초대가 {count}개 있습니다.',
     },
   },
+
   // protocols ----------------
 
   'protocol.invitationNotSent': {
@@ -480,6 +481,10 @@ final localeTexts = <String, Map<String, dynamic>>{
   'protocol.join': {
     'en': '{displayName} joined the chat room',
     'ko': '{displayName}님이 입장하였습니다',
+  },
+  'protocol.left': {
+    'en': '{displayName} left the chat room',
+    'ko': '{displayName}님이 퇴장하였습니다',
   },
 };
 

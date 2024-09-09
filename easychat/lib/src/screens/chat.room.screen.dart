@@ -44,30 +44,24 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       await loadOrCreateSingleChatRoom();
       setState(() {});
     }
-
     // Listen to users here
     listenToUsersUpdate();
-
-    user ??= await User.get(
-        getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
-
+    if (isSingleChatRoom(widget.join?.roomId ?? room!.id)) {
+      user ??= await User.get(
+          getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
+    }
     await onRoomReady();
   }
 
   /// To have real time updates for users
-  ///
   /// This is related to sending message, auto invitation logics
   void listenToUsersUpdate() {
     usersSubscription = room!.ref.child("users").onValue.listen((e) {
-      // Review: No need to setState?
-      // Review: Do we need to listed to the whole chat room?
-      //    If We need to listen to while chat room, must use ChatRoomDoc.
       room!.users = Map<String, bool>.from(e.snapshot.value as Map);
     });
   }
 
   /// Do something when the room is ready
-  ///
   /// The "room ready" means that the room is existing or created, and loaded.
   onRoomReady() async {
     // TODO: check if the user is blocked
@@ -81,18 +75,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       setState(() {});
     }
 
-    /// Set 0 to the new meessage count
-    ///
-    /// Whenever there is a new chat, reset the unread message count to 0.
+    // Should listen to the actual value.
+    // Listening to every update of last message is not effective because
+    // we write the new message and the count separately.
     resetMessageCountSubscription = ChatService.instance
-        .messageRef(room!.id)
-        .limitToLast(1)
-        .onChildAdded
-        .listen(
-      (event) {
-        room!.resetUnreadMessage();
-      },
-    );
+        .unreadMessageCountRef(room!.id)
+        .onValue
+        .listen((e) {
+      final newMessageCount = (e.snapshot.value ?? 0) as int;
+      if (newMessageCount == 0) return;
+      room!.resetUnreadMessage();
+    });
   }
 
   @override
@@ -105,20 +98,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   /// To load Room using the Id
   /// User must be provided
   Future<void> loadOrCreateSingleChatRoom() async {
-    if (widget.join != null) {
-      room = await ChatRoom.get(widget.join!.roomId);
-    } else {
-      room = await ChatRoom.get(singleChatRoomId(user!.uid));
-    }
-
-    if (room == null) {
-      final newRoomRef = await ChatRoom.createSingle(user!.uid);
-      room = await ChatRoom.get(newRoomRef.key!);
-      ChatService.instance.join(
-        room!,
-        protocol: ChatProtocol.invitationNotSent,
-      );
-    }
+    room =
+        await ChatRoom.get(widget.join?.roomId ?? singleChatRoomId(user!.uid));
+    if (room != null) return;
+    final newRoomRef = await ChatRoom.createSingle(user!.uid);
+    room = await ChatRoom.get(newRoomRef.key!);
+    ChatService.instance.join(
+      room!,
+      protocol: ChatProtocol.invitationNotSent,
+    );
   }
 
   /// Returns true if the login user can view the chat messages.

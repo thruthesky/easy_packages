@@ -3,6 +3,7 @@
 class ChatProtocol {
   static const String join = 'protocol.join';
   static const String invitationNotSent = 'protocol.invitationNotSent';
+  static const String left = 'protocol.left';
 
   // ///
   // static String maybeTranslate(String protocol) {
