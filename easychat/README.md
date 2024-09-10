@@ -283,7 +283,6 @@ ChatInvitationCount(builder: (int no) {
 - `group`: Required.
 - `open`: Required.
 
-
 - `updatedAt`: Required. This value is updated only when the master updated the chat room. If the master didn't updated the chat room, this value will not be updated.
   - For instance, When a user enters(joins) the chat room, some of field including users would change. But the values chagned are not from the master. So, the `updatedAt` is not changed.
 
@@ -355,7 +354,10 @@ ChatInvitationCount(builder: (int no) {
 
 - Push notification settings for on/off is saved with chat room settings; See chat room settings.
 
+## Chat Room Leaving
 
+- Currently, anyone can leave the chat room inlcuding the master.
+- Once the master leaves, he/she wont have the control anymore.
 
 
 

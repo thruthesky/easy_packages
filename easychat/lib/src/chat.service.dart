@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/screens/chat.open.room.list.screen.dart';
@@ -60,11 +62,10 @@ class ChatService {
       mySettingRef.child('unread-message-count').child(roomId);
 
   /// Callback function
-  Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
+  Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})?
       $showChatRoomListScreen;
 
-  /// TODO: Add the return type
-  Future Function(BuildContext context, {ChatRoom? room})?
+  Future<T?> Function<T>(BuildContext context, {ChatRoom? room})?
       $showChatRoomEditScreen;
 
   /// Add custom widget on chatroom header,.
@@ -107,11 +108,9 @@ class ChatService {
       blockedUsersDialogBuilder;
 
   init({
-    Future<void> Function({BuildContext context, bool openGroupChatsOnly})?
+    Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
-
-    /// TODO: Add the return type
-    Future Function(BuildContext context, {ChatRoom? room})?
+    Future<T?> Function<T>(BuildContext context, {ChatRoom? room})?
         $showChatRoomEditScreen,
     Function({required ChatMessage message, required ChatRoom room})?
         onSendMessage,
@@ -152,14 +151,14 @@ class ChatService {
   }
 
   /// Show the chat room list screen.
-  Future showChatRoomListScreen(
+  Future<T?> showChatRoomListScreen<T>(
     BuildContext context, {
     bool? single,
     bool? group,
     bool? open,
   }) {
-    return $showChatRoomListScreen?.call() ??
-        showGeneralDialog(
+    return $showChatRoomListScreen?.call<T>() ??
+        showGeneralDialog<T>(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomListScreen(
             single: single,
@@ -205,13 +204,10 @@ class ChatService {
   /// Show the chat room edit screen. It's for borth create and update.
   /// Return Dialog/Screen that may return DocReference
   ///
-  /// TODO: Add the return type
-  Future showChatRoomEditScreen(BuildContext context,
+  Future<T?> showChatRoomEditScreen<T>(BuildContext context,
       {ChatRoom? room, bool defaultOpen = false}) {
-    return $showChatRoomEditScreen?.call(context, room: room) ??
-
-        /// TODO: Add the return type
-        showGeneralDialog(
+    return $showChatRoomEditScreen?.call<T>(context, room: room) ??
+        showGeneralDialog<T>(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomEditScreen(
             room: room,
@@ -289,6 +285,39 @@ class ChatService {
     await updateUrlPreview(newMessage, text);
   }
 
+  Future<void> deleteLastMessageInJoins(ChatRoom room) async {
+    final Map<String, Object?> updates = {};
+    for (String uid in room.userUids) {
+      updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] = true;
+      updates['chat/joins/$uid/${room.id}/$lastText'] = null;
+      updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = null;
+      updates['chat/joins/$uid/${room.id}/$lastProtocol'] = null;
+    }
+    await FirebaseDatabase.instance.ref().update(updates);
+  }
+
+  Future<void> updateLastMessageInJoins(
+    ChatRoom room,
+    ChatMessage updatedMessage,
+  ) async {
+    final Map<String, Object?> updates = {};
+    for (String uid in room.userUids) {
+      updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] =
+          updatedMessage.deleted;
+      updates['chat/joins/$uid/${room.id}/$lastMessageUid'] =
+          updatedMessage.uid;
+      updates['chat/joins/$uid/${room.id}/$lastText'] =
+          updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
+      updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] =
+          updatedMessage.photoUrl.isNullOrEmpty
+              ? null
+              : updatedMessage.photoUrl;
+      updates['chat/joins/$uid/${room.id}/$lastProtocol'] =
+          updatedMessage.protocol;
+    }
+    await FirebaseDatabase.instance.ref().update(updates);
+  }
+
   /// Update the unread message count and chat join relations.
   ///
   /// Purpose:
@@ -343,11 +372,8 @@ class ChatService {
       // information without referring to the chat room.
       updates['chat/joins/$uid/${room.id}/$lastMessageUid'] = myUid;
       updates['chat/joins/$uid/${room.id}/$lastText'] = text;
-
       updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = photoUrl;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] = protocol;
-
-      // TODO: double check on how to implement when the last chat was deleted.
       updates['chat/joins/$uid/${room.id}/lastMessageDeleted'] = null;
 
       if (room.single && uid != myUid) {
@@ -598,12 +624,14 @@ class ChatService {
   Future<void> showEditMessageDialog(
     BuildContext context, {
     required ChatMessage message,
+    FutureOr<void> Function()? onSave,
   }) async {
     await showDialog(
       context: context,
       builder: (context) {
         return EditChatMessageDialog(
           message: message,
+          onSave: onSave,
         );
       },
     );

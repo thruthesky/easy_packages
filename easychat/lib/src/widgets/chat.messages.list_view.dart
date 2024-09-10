@@ -15,7 +15,11 @@ class ChatMessagesListView extends StatelessWidget {
   });
 
   final ChatRoom room;
-  final Widget Function(BuildContext context, ChatMessage message)? itemBuilder;
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    int index,
+  )? itemBuilder;
   final EdgeInsetsGeometry padding;
   final ScrollController? controller;
 
@@ -62,10 +66,27 @@ class ChatMessagesListView extends StatelessWidget {
               message: message,
               length: snapshot.docs.length,
             );
-
-            return itemBuilder?.call(context, message) ??
+            return itemBuilder?.call(context, message, index) ??
                 ChatBubble(
                   message: message,
+                  onDelete: () async {
+                    await message.delete();
+                    if (index != 0) return;
+                    dog("Last message is deleted");
+                    await ChatService.instance.deleteLastMessageInJoins(room);
+                  },
+                  onEdit: () async {
+                    if (index != 0) return;
+                    dog("Last message is edited");
+                    // Must update the message in Joins
+                    dog("Last message updated text: ${message.text} ");
+                    // TODO still ongoing here
+
+                    // await ChatService.instance.updateLastMessageInJoins(
+                    //   room,
+                    //   message,
+                    // );
+                  },
                 );
           },
         );

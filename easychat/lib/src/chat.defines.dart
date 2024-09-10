@@ -5,6 +5,7 @@ const String joinedAt = 'joinedAt';
 const String order = 'order';
 const String lastMessageUid = 'lastMessageUid';
 const String lastMessageAt = 'lastMessageAt';
+const String lastMessageDeleted = 'lastMessageDeleted';
 const String lastText = 'lastText';
 const String lastPhotoUrl = 'lastPhotoUrl';
 const String lastProtocol = 'lastProtocol';

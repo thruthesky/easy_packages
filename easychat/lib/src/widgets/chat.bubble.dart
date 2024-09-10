@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
@@ -10,9 +12,13 @@ class ChatBubble extends StatelessWidget {
   const ChatBubble({
     super.key,
     required this.message,
+    this.onDelete,
+    this.onEdit,
   });
 
   final ChatMessage message;
+  final FutureOr<void> Function()? onDelete;
+  final FutureOr<void> Function()? onEdit;
 
   double maxWidth(BuildContext context) =>
       // 48 is the size of the user avatar
@@ -89,9 +95,16 @@ class ChatBubble extends StatelessWidget {
                   await ChatService.instance.showEditMessageDialog(
                     context,
                     message: message,
+                    onSave: () async {
+                      await onEdit?.call();
+                    },
                   );
                 } else if (value == items.delete) {
-                  await message.delete();
+                  if (onDelete != null) {
+                    await onDelete?.call();
+                  } else {
+                    await message.delete();
+                  }
                 }
               }
             }
@@ -183,6 +196,9 @@ class ChatBubble extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: UserDoc.sync(
+                        // Adding ValueKey is required to prevent the
+                        // State reordering effect upon sending new message
+                        key: ValueKey("ChatBubble_Avatar_${message.id}"),
                         uid: message.uid,
                         builder: (user) => user == null
                             ? const ChatAvatarLoader()
@@ -209,6 +225,11 @@ class ChatBubble extends StatelessWidget {
                       children: [
                         if (message.uid != myUid) ...[
                           UserField(
+                            // Adding ValueKey is required to prevent the
+                            // State reordering effect upon sending new message
+                            key: ValueKey(
+                              "ChatBubble_DisplayName_${message.id}",
+                            ),
                             uid: message.uid,
                             initialData: message.displayName,
                             field: 'displayName',

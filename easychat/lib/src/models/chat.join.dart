@@ -11,6 +11,7 @@ class ChatJoin {
   final int order;
   final String lastMessageUid;
   final DateTime lastMessageAt;
+  final bool? lastMessageDeleted;
   final String? lastText;
   final String? lastPhotoUrl;
   final String? lastProtocol;
@@ -33,6 +34,7 @@ class ChatJoin {
     required this.order,
     required this.lastMessageUid,
     required this.lastMessageAt,
+    required this.lastMessageDeleted,
     required this.lastText,
     required this.lastPhotoUrl,
     required this.lastProtocol,
@@ -57,6 +59,7 @@ class ChatJoin {
       lastMessageUid: json[f.lastMessageUid],
       lastMessageAt:
           DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
+      lastMessageDeleted: json[f.lastMessageDeleted],
       lastPhotoUrl: json[f.lastPhotoUrl],
       lastText: json[f.lastText],
       lastProtocol: json[f.lastProtocol],
@@ -77,6 +80,7 @@ class ChatJoin {
       f.order: order,
       f.lastMessageUid: lastMessageUid,
       f.lastMessageAt: lastMessageAt,
+      f.lastMessageDeleted: lastMessageDeleted,
       f.lastText: lastText,
       f.lastPhotoUrl: lastPhotoUrl,
       f.lastProtocol: lastProtocol,

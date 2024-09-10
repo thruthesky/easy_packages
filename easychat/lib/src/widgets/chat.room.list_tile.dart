@@ -178,9 +178,18 @@ class ChatRoomListTile extends StatelessWidget {
         text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
-            ),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+        ),
+      );
+    } else if (join.lastMessageDeleted == true) {
+      return Text(
+        "last message was deleted".t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+        ),
       );
     } else if (!join.lastText.isNullOrEmpty &&
         !join.lastPhotoUrl.isNullOrEmpty) {
@@ -218,13 +227,14 @@ class ChatRoomListTile extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             "[${'photo'.t}]",
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
-                ),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+            ),
           ),
         ],
       );
     } else {
+      dog("Something is wrong because the code should never go here. Check chat.room.list_tile.dart");
       // This is mostly an error
       return null;
     }
