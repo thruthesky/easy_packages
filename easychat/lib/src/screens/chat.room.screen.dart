@@ -41,43 +41,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   init() async {
+    // 1. Prepare room
     if (room == null) {
       // Create chat room if user is set.
-      await loadOrCreateSingleChatRoom();
+      // This will load room either from widget.join or from widget.user.uid
+      await loadRoomOrCreateSingleChatRoom();
       setState(() {});
     }
-    // Listen to users here
-    listenToUsersUpdate();
+    // 2. Prepare other user
     if (isSingleChatRoom(widget.join?.roomId ?? room!.id)) {
       user ??= await User.get(
           getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
     }
     await onRoomReady();
-  }
-
-  /// To have real time updates for users
-  /// This is related to sending message, auto invitation logics
-  void listenToUsersUpdate() {
-    usersSubscription = room!.ref.child("users").onValue.listen((e) {
-      room!.users = Map<String, bool>.from(e.snapshot.value as Map);
-      if (room!.userUids.contains(myUid!) == false && mounted) {
-        Navigator.of(context).pop();
-        dog("The user is no longer a member. Check if the user is just blocked or kicked out.");
-        throw ChatException(
-          "unexpected-error-upon-viewing-room",
-          "an error occured while viewing the room".t,
-        );
-      }
-    });
-  }
-
-  /// Will be helpful for more accurate reordering.
-  void listenToLastMessageAtUpdate() {
-    lastMessageAtSubscription = room!.ref.child("lastMessageAt").onValue.listen(
-      (e) {
-        room!.lastMessageAt = e.snapshot.value as int;
-      },
-    );
   }
 
   Future<void> join() async {
@@ -92,8 +68,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (room!.blockedUids.contains(myUid!)) {
       Navigator.of(context).pop();
       dog("The user cannot join the chat room because the user is blocked.");
-      throw ChatException("fail-join-attempt",
-          "for some reason, the account failed to join in the chat room".t);
+      throw ChatException(
+        "fail-join-attempt",
+        "for some reason, the account failed to join in the chat room".t,
+      );
     }
 
     // Current user automatically joins upon viewing open rooms.
@@ -119,11 +97,36 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         if (!mounted) return;
         Navigator.of(context).pop();
         dog("The user cannot join the chat room because the user is not invited.");
-        throw ChatException("fail-join-attempt",
-            "for some reason, the account failed to join in the chat room".t);
+        throw ChatException(
+          "fail-join-attempt",
+          "for some reason, the account failed to join in the chat room".t,
+        );
       }
     }
 
+    // Listeners
+    listenToUsersUpdate();
+    listenToUnreadMessageCountUpdate();
+    listenToLastMessageAtUpdate();
+  }
+
+  /// To have real time updates for users
+  /// This is related to sending message, auto invitation logics
+  void listenToUsersUpdate() {
+    usersSubscription = room!.ref.child("users").onValue.listen((e) {
+      room!.users = Map<String, bool>.from(e.snapshot.value as Map);
+      if (room!.userUids.contains(myUid!) == false && mounted) {
+        Navigator.of(context).pop();
+        dog("The user is no longer a member. Check if the user is just blocked or kicked out.");
+        throw ChatException(
+          "unexpected-error-upon-viewing-room",
+          "an error occured while viewing the room".t,
+        );
+      }
+    });
+  }
+
+  void listenToUnreadMessageCountUpdate() {
     // Should listen to the actual value.
     // Listening to every update of last message is not effective because
     // we write the new message and the count separately.
@@ -138,18 +141,30 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     });
   }
 
+  /// Will be helpful for more accurate reordering.
+  void listenToLastMessageAtUpdate() {
+    lastMessageAtSubscription = room!.ref.child("lastMessageAt").onValue.listen(
+      (e) {
+        room!.lastMessageAt = e.snapshot.value as int;
+      },
+    );
+  }
+
   @override
   dispose() {
     resetMessageCountSubscription?.cancel();
     usersSubscription?.cancel();
     lastMessageAtSubscription?.cancel();
-
     super.dispose();
   }
 
   /// To load Room using the Id
-  /// User must be provided
-  Future<void> loadOrCreateSingleChatRoom() async {
+  ///
+  /// Load room using the room id from ChatJoin or using other user uid
+  ///
+  /// Join or User must be provided or else it will throw a null error
+  /// It is already handled by assert on constructor
+  Future<void> loadRoomOrCreateSingleChatRoom() async {
     room =
         await ChatRoom.get(widget.join?.roomId ?? singleChatRoomId(user!.uid));
     if (room != null) return;
@@ -170,9 +185,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///   user is not null (which means the room will be created when
   ///   sent the first message)
   ///
-  bool get joined {
-    return room?.joined == true;
-  }
+  bool get joined => room?.joined == true;
 
   @override
   Widget build(BuildContext context) {
@@ -205,12 +218,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: joined
           ? ChatRoomDoc(
               roomId: room!.id,
+              // This will make the Drawer display faster
               onLoading: ChatRoomMenuDrawer(
                 room: room,
                 user: user,
               ),
               builder: (room) {
-                dog("Unblock call");
                 return ChatRoomMenuDrawer(
                   room: room,
                   user: user,

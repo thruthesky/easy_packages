@@ -179,24 +179,26 @@ For your information on `easychat` history:
 
 ```mermaid
 flowchart TB
-ChatRoomScreen(["ChatRoomScreen"])
+ChatRoomScreen(["ChatRoomScreen\n(Open Chat Room Screen)"])
   ChatRoomScreen ==> isSingleChat
-  isSingleChat =="Yes"==> chatRoomCreated
+  isSingleChat =="false"==> chatRoomCreated
   chatRoomCreated =="NO"==> createChatRoom
   createChatRoom ==> joinChatRoom
   joinChatRoom ==> sendInvatationNotSentMessage
   ChatRoomScreen2 ==> MessageListView
   MessageListView ==> isInvitatioNotSetMessage
   isInvitatioNotSetMessage ==> deleteInvitationNotSent
-  isSingleChat{"Is single chat?"}
+  isSingleChat --"true"--> node_1
+  isSingleChat{"Is room null?"}
   chatRoomCreated{"Is chat room created?"}
   createChatRoom[["Create single chat room"]]
   joinChatRoom[["Join single chat room"]]
   sendInvatationNotSentMessage[["Send #39;invitation-not-sent#39; message"]]
-  ChatRoomScreen2(["ChatRoomScreen"])
-  MessageListView{{"ChatMessageListView"}}
+  ChatRoomScreen2(["loadOrCreateSingleChatRoom"])
+  MessageListView["Get Chat Room"]
   isInvitatioNotSetMessage{"Is #39;invitation-not-sent#39; message?"}
   deleteInvitationNotSent[["Delete #39;invitation-no-sent#39;"]]
+  node_1[["loadOrCreateSingleChatRoom()"]]
 ```
 
 
