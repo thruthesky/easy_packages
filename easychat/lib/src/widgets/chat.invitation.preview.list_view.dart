@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:math';
-
-import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -48,8 +45,6 @@ class _ChatInvitationPreviewListViewState
   void initState() {
     super.initState();
     limit = widget.limit + 1;
-
-    // TODO fix the ordering
     subscription = ChatService.instance
         .invitedUserRef(myUid!)
         .orderByValue()
@@ -62,7 +57,6 @@ class _ChatInvitationPreviewListViewState
       final orderedTime = invitesTime.entries.toList()
         ..sort((a, b) => a.value.compareTo(b.value));
       roomIds = orderedTime.map((e) => e.key).toList();
-
       // Filter the blocked uids
       final blockedUids = UserService.instance.blocks.keys.toList();
       roomIds.removeWhere((roomId) {
@@ -85,8 +79,8 @@ class _ChatInvitationPreviewListViewState
   @override
   Widget build(BuildContext context) {
     return ChatInvitationCount(
-      builder: (int no) {
-        if (no == 0) {
+      builder: (int invitationCount) {
+        if (invitationCount == 0) {
           return const SizedBox.shrink();
         }
         return Column(
@@ -102,11 +96,9 @@ class _ChatInvitationPreviewListViewState
                 child: Row(
                   children: [
                     const SizedBox(width: 4),
-                    ChatInvitationCount(
-                      builder: (int no) =>
-                          ChatService.instance.newMessageBuilder?.call("$no") ??
-                          Badge(label: Text("$no")),
-                    ),
+                    ChatService.instance.newMessageBuilder
+                            ?.call("$invitationCount") ??
+                        Badge(label: Text("$invitationCount")),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(

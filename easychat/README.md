@@ -126,8 +126,13 @@ For your information on `easychat` history:
 
 ### Firestore Indexes
 
+## Initialization
 
+To use easy chat, system must initialize the ChatService:
 
+```dart
+ChatService.instance.init();
+```
 
 # Dependencies
 
@@ -176,24 +181,37 @@ For your information on `easychat` history:
 flowchart TB
 ChatRoomScreen(["ChatRoomScreen\n(Open Chat Room Screen)"])
   ChatRoomScreen ==> isSingleChat
-  isSingleChat =="false"==> chatRoomCreated
   chatRoomCreated =="NO"==> createChatRoom
   createChatRoom ==> joinChatRoom
   joinChatRoom ==> sendInvatationNotSentMessage
-  ChatRoomScreen2 ==> MessageListView
   MessageListView ==> isInvitatioNotSetMessage
-  isInvitatioNotSetMessage ==> deleteInvitationNotSent
-  isSingleChat --"true"--> node_1
+  isInvitatioNotSetMessage =="YES"==> deleteInvitationNotSent
+  isSingleChat --"NO"--> node_1
+  node_2 --> chatRoomCreated
+  isSingleChat --"YES"--> node_2
+  chatRoomCreated --"YES"--> node_3
+  node_3 --> node_4
+  sendInvatationNotSentMessage --> node_4
+  node_1 --> node_4
+  node_5 --> MessageListView
+  ChatRoomScreen2 --> node_5
+  deleteInvitationNotSent --> node_6
+  isInvitatioNotSetMessage --"NO"--> node_6
   isSingleChat{"Is room null?"}
-  chatRoomCreated{"Is chat room created?"}
+  chatRoomCreated{"Does chat room exist?"}
   createChatRoom[["Create single chat room"]]
   joinChatRoom[["Join single chat room"]]
   sendInvatationNotSentMessage[["Send #39;invitation-not-sent#39; message"]]
-  ChatRoomScreen2(["loadOrCreateSingleChatRoom"])
-  MessageListView["Get Chat Room"]
-  isInvitatioNotSetMessage{"Is #39;invitation-not-sent#39; message?"}
+  ChatRoomScreen2(["ChatRoomScreen\n(Sending the first message)"])
+  MessageListView[/"User sends the first message"/]
+  isInvitatioNotSetMessage{"Does #39;invitation-not-sent#39;\nmessage exist?"}
   deleteInvitationNotSent[["Delete #39;invitation-no-sent#39;"]]
-  node_1[["loadOrCreateSingleChatRoom()"]]
+  node_1["No message will be sent"]
+  node_2[["Attempt to load Chat Room"]]
+  node_3["No message will be sent"]
+  node_4(["End"])
+  node_5[["Open the ChatRoom\n(Get Chat Room)"]]
+  node_6(["End"])
 ```
 
 
@@ -206,12 +224,7 @@ For invitation ordering, it is using negative of Server timestamp to give more i
 
 ## Chat message sending
 
-
 - When a chat message (including chat protocol message) is sent by any one among the chat room users, all the chat join data of the chat room users will be updated along with the chat message information.
-
-
-
-
 
 
 ## Ordering
@@ -228,9 +241,6 @@ For invitation ordering, it is using negative of Server timestamp to give more i
 - The milliseconds has 13 digits like `1000000000000`
   - It negates the time like `-1000000000000`. This is the order value. So, the chat rooms are listed in reverse.
   - If the chat room has new messages, then we add `-1` (by adding `-10000000000000` - 14 digits) infront of the order. Meaning, it becomes like `-11000000000000`. If the order begins with `-11`, then it is a chat room that has new message. if the user have seen(open) the chat room, then remove the front `-1` by dividing 10.
-
-
-
 
 - The logic of updating order #1. This logic is a bit complicated but performs better because it write the data immediately to server with client time which more likely works as expected. Then it corrects the time silently.
   - 1. Save the negative timestamp value from client time to the order field.
@@ -316,11 +326,6 @@ ChatInvitationCount(builder: (int no) {
     - For the other user, the vlaue of `displayName`, `photoUrl` will be the login user's data.
   - group chat,
     - The last message sender's display name and photo url.
-
-
-
-
-
 
 
 ## Chat setting

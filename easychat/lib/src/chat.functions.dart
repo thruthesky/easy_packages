@@ -13,9 +13,6 @@ bool isSingleChatRoom(String roomId) {
   return splits.length == 2 && splits[0].isNotEmpty && splits[1].isNotEmpty;
 }
 
-// /// 채팅방 ID 에서 그룹 채팅방 ID 인지 확인한다.
-// isGroupChat(String roomId) => roomId.split('-').length == 1;
-
 /// Returns the other user's uid from the 1:1 chat room ID.
 ///
 /// If it is a group chat room ID, it returns null.
@@ -84,37 +81,6 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
   }
   return 'chat room'.t;
 }
-
-// bool get iAmInvited => $room?.invitedUsers.contains(myUid!) ?? false;
-// bool get iRejected => $room?.rejectedUsers.contains(myUid!) ?? false;
-
-// String notMemberMessage(ChatRoom? room) {
-//   if (iAmInvited) {
-//     return 'unaccepted yet, accept before reading message'.t;
-//   }
-//   if (iRejected) {
-//     return 'the chat was rejected, unable to show message'.t;
-//   }
-//   if (isJoiningNow) {
-//     return 'please wait'.t;
-//   }
-//   // Else, it should be handled by the Firestore rulings.
-//   return 'the chat room may be private or deleted'.t;
-// }
-
-// String notMemberTitle(ChatRoom? room) {
-//   if (iAmInvited) {
-//     return "chat invitation".t;
-//   }
-//   if (iRejected) {
-//     return 'rejected chat'.t;
-//   }
-//   if (isJoiningNow) {
-//     return 'loading'.t;
-//   }
-//   // Else, it should be handled by the Firestore rulings.
-//   return 'unable to chat'.t;
-// }
 
 /// Returns the server timestamp.
 ///

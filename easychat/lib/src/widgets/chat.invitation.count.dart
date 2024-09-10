@@ -1,4 +1,4 @@
-import 'package:easy_helpers/easy_helpers.dart';
+
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -22,10 +22,7 @@ class ChatInvitationCount extends StatelessWidget {
           : Value(
               ref: ChatService.instance.invitedUserRef(myUid!),
               builder: (v, r) {
-                if (v == null) {
-                  return builder(0);
-                }
-
+                if (v == null)  return builder(0);
                 final blockedUids = UserService.instance.blocks.keys.toList();
                 // Filter out the single chat rooms where other user is blocked.
                 (v as Map).removeWhere(
