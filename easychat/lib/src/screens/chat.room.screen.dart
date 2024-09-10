@@ -145,7 +145,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void listenToLastMessageAtUpdate() {
     lastMessageAtSubscription = room!.ref.child("lastMessageAt").onValue.listen(
       (e) {
-        room!.lastMessageAt = e.snapshot.value as int;
+        room!.lastMessageAt = e.snapshot.value as int?;
       },
     );
   }
