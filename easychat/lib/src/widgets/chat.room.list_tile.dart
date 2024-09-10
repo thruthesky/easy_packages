@@ -43,8 +43,54 @@ class ChatRoomListTile extends StatelessWidget {
       otherUid: getOtherUserUidFromRoomId(join.roomId)!,
       builder: (blocked) {
         if (blocked) {
-          // TODO need to review because this wont do since we use separator
-          return const SizedBox.shrink();
+          dog("Blocked: ${join.roomId}");
+          // Showing shrink is no good because
+          // we are using separator
+          // return const SizedBox.shrink();
+          return ListTile(
+            minTileHeight: 72,
+            leading: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: context.onSurface.withAlpha(50),
+              ),
+              width: 48,
+              height: 48,
+              child: Icon(
+                Icons.block,
+                color: context.onSurface.withAlpha(50),
+              ),
+            ),
+            title: Text(
+              "blocked user".t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+              ),
+            ),
+            subtitle: Text(
+              "this message is comming from a blocked user".t,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+              ),
+            ),
+            onTap: () async {
+              final confirmLeave = await confirm(
+                context: context,
+                title: const Text("Leave Chat Confirmation"),
+                message: const Text(
+                  "This is comming from a blocked user. Do you want to leave the chat room?",
+                ),
+              );
+              if (confirmLeave != true) return;
+              final room = await ChatRoom.get(join.roomId);
+              if (room == null) return;
+              await ChatService.instance.leave(room);
+            },
+          );
         }
         return ListTile(
           minTileHeight: 72,

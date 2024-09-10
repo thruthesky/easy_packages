@@ -378,10 +378,30 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               if (user != null && !user!.admin) ...[
                 if (room?.single == true || user != null)
                   ListTile(
-                    title: Text("block".t),
+                    title: Text(
+                      UserService.instance.blockChanges.value
+                              .containsKey(user!.uid)
+                          ? "unblock".t
+                          : "block".t,
+                    ),
                     onTap: () async {
-                      UserService.instance
-                          .block(context: context, otherUid: user!.uid);
+                      final re = await UserService.instance.block(
+                        context: context,
+                        otherUid: user!.uid,
+                      );
+                      if (re == true) {
+                        // re is true means blocked
+                        if (!context.mounted) return;
+                        // Pop the menu first
+                        Navigator.pop(context);
+                        // Pop the chat room next
+                        Navigator.pop(context);
+                      } else if (re == false) {
+                        // re == false means user is unblocked
+                        if (!context.mounted) return;
+
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ListTile(

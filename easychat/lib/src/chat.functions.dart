@@ -8,7 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 const String chatRoomDivider = '---';
 
 // /// 채팅방 ID 에서, 1:1 채팅방인지 확인한다.
-isSingleChatRoom(String roomId) {
+bool isSingleChatRoom(String roomId) {
   final splits = roomId.split(chatRoomDivider);
   return splits.length == 2 && splits[0].isNotEmpty && splits[1].isNotEmpty;
 }

@@ -52,11 +52,6 @@ This `easychat` package offers everything you need to build a chat app. With thi
 
 # TODO
 
-
-        const Text('@TODO: top 3 invitations'),
-        const Text(
-            '@TODO: Display favorite friends: use easy_user_group pakcage'),
-        const Text('@TODO: Display all 1:1 chats: hide the favorite friends'),
 - Group chat crud workflow
   - invite
   - list

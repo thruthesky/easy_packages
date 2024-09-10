@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
@@ -24,7 +25,17 @@ class ChatInvitationCount extends StatelessWidget {
                 if (v == null) {
                   return builder(0);
                 }
-                return builder((v as Map).length);
+
+                final blockedUids = UserService.instance.blocks.keys.toList();
+                // Filter out the single chat rooms where other user is blocked.
+                (v as Map).removeWhere(
+                  (roomId, time) {
+                    if (!isSingleChatRoom(roomId)) return false;
+                    final otherUid = getOtherUserUidFromRoomId(roomId)!;
+                    return blockedUids.contains(otherUid);
+                  },
+                );
+                return builder((v).length);
               },
             ),
     );
