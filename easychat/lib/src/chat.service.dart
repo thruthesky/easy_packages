@@ -308,7 +308,6 @@ class ChatService {
           updatedMessage.uid;
       updates['chat/joins/$uid/${room.id}/$lastText'] =
           updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
-      dog("photoUrl: ${updatedMessage.photoUrl}");
       updates['chat/joins/$uid/${room.id}/$lastUrl'] =
           (updatedMessage.url?.trim()).isNullOrEmpty
               ? null

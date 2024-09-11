@@ -68,19 +68,23 @@ class ChatMessagesListView extends StatelessWidget {
             );
             return itemBuilder?.call(context, message, index) ??
                 ChatBubble(
+                  // This will help prevent the reorder state effect
+                  // when list is updated.
+                  key: ValueKey("ChatBubble_${message.id}"),
                   message: message,
                   onDelete: () async {
                     await message.delete();
                     if (index != 0) return;
-                    dog("Last message is deleted");
+                    dog("Last message is deleted in room ${message.roomId}");
                     await ChatService.instance.deleteLastMessageInJoins(room);
                   },
                   onEdit: () async {
-                    if (index != 0) return;
                     await ChatService.instance.showEditMessageDialog(
                       context,
                       message: message,
                       onSave: () async {
+                        if (index != 0) return;
+                        dog("Last message is updated in room ${message.roomId}");
                         await ChatService.instance.updateLastMessageInJoins(
                           room,
                           message,

@@ -17,7 +17,18 @@ class ChatBubble extends StatelessWidget {
   });
 
   final ChatMessage message;
+
+  /// Callback when user tapped delete from dropdown
+  ///
+  /// If onDelete is null, it will do `message.delete()`
+  /// when user tapped delete.
   final FutureOr<void> Function()? onDelete;
+
+  /// Callback when user tapped edit from dropdown
+  ///
+  /// If onEdit is null, it will call
+  /// `ChatService.instance.showEditMessageDialog`,
+  /// when user tapped edit.
   final FutureOr<void> Function()? onEdit;
 
   double maxWidth(BuildContext context) =>
@@ -190,9 +201,6 @@ class ChatBubble extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: UserDoc.sync(
-                        // Adding ValueKey is required to prevent the
-                        // State reordering effect upon sending new message
-                        key: ValueKey("ChatBubble_Avatar_${message.id}"),
                         uid: message.uid,
                         builder: (user) => user == null
                             ? const ChatAvatarLoader()
@@ -219,11 +227,6 @@ class ChatBubble extends StatelessWidget {
                       children: [
                         if (message.uid != myUid) ...[
                           UserField(
-                            // Adding ValueKey is required to prevent the
-                            // State reordering effect upon sending new message
-                            key: ValueKey(
-                              "ChatBubble_DisplayName_${message.id}",
-                            ),
                             uid: message.uid,
                             initialData: message.displayName,
                             field: 'displayName',
@@ -270,7 +273,6 @@ class ChatBubble extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: message.uid == myUid
-                                      // ? Theme.of(context).colorScheme.primaryContainer
                                       ? Colors.amber.shade200
                                       : Theme.of(context)
                                           .colorScheme
