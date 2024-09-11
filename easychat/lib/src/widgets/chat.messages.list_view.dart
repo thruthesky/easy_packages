@@ -15,7 +15,11 @@ class ChatMessagesListView extends StatelessWidget {
   });
 
   final ChatRoom room;
-  final Widget Function(BuildContext context, ChatMessage message)? itemBuilder;
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    int index,
+  )? itemBuilder;
   final EdgeInsetsGeometry padding;
   final ScrollController? controller;
 
@@ -62,10 +66,32 @@ class ChatMessagesListView extends StatelessWidget {
               message: message,
               length: snapshot.docs.length,
             );
-
-            return itemBuilder?.call(context, message) ??
+            return itemBuilder?.call(context, message, index) ??
                 ChatBubble(
+                  // This will help prevent the reorder state effect
+                  // when list is updated.
+                  key: ValueKey("ChatBubble_${message.id}"),
                   message: message,
+                  onDelete: () async {
+                    await message.delete();
+                    if (index != 0) return;
+                    dog("Last message is deleted in room ${message.roomId}");
+                    await ChatService.instance.deleteLastMessageInJoins(room);
+                  },
+                  onEdit: () async {
+                    await ChatService.instance.showEditMessageDialog(
+                      context,
+                      message: message,
+                      onSave: () async {
+                        if (index != 0) return;
+                        dog("Last message is updated in room ${message.roomId}");
+                        await ChatService.instance.updateLastMessageInJoins(
+                          room,
+                          message,
+                        );
+                      },
+                    );
+                  },
                 );
           },
         );

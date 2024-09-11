@@ -116,6 +116,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
+                if (!room!.description.isNullOrEmpty) const SizedBox(height: 4),
                 InkWell(
                   child: Column(
                     children: [
@@ -198,21 +199,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         exactSearch: true,
                       );
                       if (selectedUser == null) return;
-                      // TODO : invitged users and rejecte users
-                      // if (room!.invitedUsers.contains(selectedUser.uid)) {
-                      //   throw ChatException(
-                      //     'already-invited',
-                      //     'the user is already invited'.t,
-                      //   );
-                      // }
-                      // if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                      //   // The chat room is already rejected by the other user, we are
-                      //   // not showing if user rejected the invitation.
-                      //   throw ChatException(
-                      //     'already-invited',
-                      //     'the user is already invited'.t,
-                      //   );
-                      // }
+
                       if (room!.userUids.contains(selectedUser.uid)) {
                         throw ChatException(
                           'already-member',
@@ -232,6 +219,33 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           'you cannot invite yourself'.t,
                         );
                       }
+
+                      // Get if user is already invited
+                      final invitation = await ChatService.instance
+                          .invitedUserRef(selectedUser.uid)
+                          .child(room!.id)
+                          .get();
+                      if (invitation.exists) {
+                        dog("The user is already invited: ${invitation.value}");
+                        throw ChatException(
+                          'already-invited',
+                          'the user is already invited'.t,
+                        );
+                      }
+
+                      // Get if user is already invited and rejected the invitation
+                      final rejection = await ChatService.instance
+                          .rejectedUserRef(selectedUser.uid)
+                          .child(room!.id)
+                          .get();
+                      if (rejection.exists) {
+                        dog("The user is already rejected: ${rejection.value}");
+                        throw ChatException(
+                          'already-invited',
+                          'the user is already invited'.t,
+                        );
+                      }
+
                       // await room!.inviteUser(selectedUser.uid);
                       await ChatService.instance.inviteUser(
                         room!,
@@ -378,10 +392,30 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               if (user != null && !user!.admin) ...[
                 if (room?.single == true || user != null)
                   ListTile(
-                    title: Text("block".t),
+                    title: Text(
+                      UserService.instance.blockChanges.value
+                              .containsKey(user!.uid)
+                          ? "unblock".t
+                          : "block".t,
+                    ),
                     onTap: () async {
-                      UserService.instance
-                          .block(context: context, otherUid: user!.uid);
+                      final re = await UserService.instance.block(
+                        context: context,
+                        otherUid: user!.uid,
+                      );
+                      if (re == true) {
+                        // re is true means blocked
+                        if (!context.mounted) return;
+                        // Pop the menu first
+                        Navigator.pop(context);
+                        // Pop the chat room next
+                        Navigator.pop(context);
+                      } else if (re == false) {
+                        // re == false means user is unblocked
+                        if (!context.mounted) return;
+
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ListTile(

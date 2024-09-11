@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
@@ -10,9 +12,24 @@ class ChatBubble extends StatelessWidget {
   const ChatBubble({
     super.key,
     required this.message,
+    this.onDelete,
+    this.onEdit,
   });
 
   final ChatMessage message;
+
+  /// Callback when user tapped delete from dropdown
+  ///
+  /// If onDelete is null, it will do `message.delete()`
+  /// when user tapped delete.
+  final FutureOr<void> Function()? onDelete;
+
+  /// Callback when user tapped edit from dropdown
+  ///
+  /// If onEdit is null, it will call
+  /// `ChatService.instance.showEditMessageDialog`,
+  /// when user tapped edit.
+  final FutureOr<void> Function()? onEdit;
 
   double maxWidth(BuildContext context) =>
       // 48 is the size of the user avatar
@@ -78,21 +95,22 @@ class ChatBubble extends StatelessWidget {
                 ),
                 items: menuItems,
               );
-
-              if (value != null) {
-                if (value == items.reply) {
-                  if (context.mounted) {
-                    ChatService.instance.reply.value = message;
-                  }
-                } else if (value == items.edit) {
-                  if (!context.mounted) return;
-                  await ChatService.instance.showEditMessageDialog(
-                    context,
-                    message: message,
-                  );
-                } else if (value == items.delete) {
-                  await message.delete();
-                }
+              if (value == null) return;
+              if (!context.mounted) return;
+              if (value == items.reply) {
+                ChatService.instance.reply.value = message;
+                return;
+              }
+              if (value == items.edit) {
+                if (onEdit != null) return await onEdit?.call();
+                return await ChatService.instance.showEditMessageDialog(
+                  context,
+                  message: message,
+                );
+              }
+              if (value == items.delete) {
+                if (onDelete != null) return await onDelete?.call();
+                return await message.delete();
               }
             }
           : null,
@@ -157,7 +175,7 @@ class ChatBubble extends StatelessWidget {
                             style: TextStyle(
                               fontSize: Theme.of(context)
                                       .textTheme
-                                      .labelLarge
+                                      .bodySmall
                                       ?.fontSize ??
                                   8,
                               color: Theme.of(context)
@@ -220,7 +238,7 @@ class ChatBubble extends StatelessWidget {
                         ],
                         if (message.deleted) ...[
                           Opacity(
-                            opacity: 0.6,
+                            opacity: 0.38,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.surface,
@@ -255,7 +273,6 @@ class ChatBubble extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: message.uid == myUid
-                                      // ? Theme.of(context).colorScheme.primaryContainer
                                       ? Colors.amber.shade200
                                       : Theme.of(context)
                                           .colorScheme
@@ -391,7 +408,6 @@ class ChatBubble extends StatelessWidget {
           children: [
             if (message.isUpdated)
               Text(
-                // "${'edited'.t} • ${DateTime.fromMillisecondsSinceEpoch(message.editedAt!).shortDateTime}",
                 'edited'.t,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: Theme.of(context)

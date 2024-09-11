@@ -35,7 +35,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  String? iconUrlOnCreate;
+  String? iconUrl;
 
   @override
   void initState() {
@@ -55,8 +55,9 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
-    if (isCreate && iconUrlOnCreate != null) {
-      StorageService.instance.delete(iconUrlOnCreate);
+    if (iconUrl != null && iconUrl != room?.iconUrl) {
+      // delete if something was uploaded but not saved
+      StorageService.instance.delete(iconUrl);
     }
     super.dispose();
   }
@@ -98,17 +99,16 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             //       changed. Using ImageUploadCard won't update it.
             ImageUploadCard(
               initialData: room?.iconUrl,
-
-              /// TODO: Support path string for the ref to support both firestore and realtime database.
-              // ref: room?.ref,
-              field: room?.ref != null ? "iconUrl" : null,
-              onUpload: isCreate
-                  ? (url) {
-                      setState(() {
-                        iconUrlOnCreate = url;
-                      });
-                    }
-                  : null,
+              onUpload: (url) {
+                if (iconUrl != null && room?.iconUrl != iconUrl) {
+                  // This means the photo before saving is being
+                  // replaced. Must delete the previous one.
+                  StorageService.instance.delete(iconUrl);
+                }
+                setState(() {
+                  iconUrl = url;
+                });
+              },
             ),
 
             //
@@ -160,7 +160,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                           final newRoomRef = await ChatRoom.create(
                             name: nameController.text,
                             description: descriptionController.text,
-                            iconUrl: iconUrlOnCreate,
+                            iconUrl: iconUrl,
                             open: open,
                             group: true,
                             single: false,
@@ -178,7 +178,8 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                           });
                           rethrow;
                         }
-                        iconUrlOnCreate = null;
+                        // This will prevent the newly Uploaded photo to be deleted
+                        iconUrl = null;
                         if (!context.mounted) return;
                         Navigator.of(context).pop(chatRoom.ref);
                         ChatService.instance
@@ -196,8 +197,17 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             name: nameController.text,
                             description: descriptionController.text,
                             open: open,
+                            iconUrl: iconUrl,
                             allMembersCanInvite: allMembersCanInvite,
                           );
+                          if (iconUrl != room!.iconUrl) {
+                            // delete the old icon url
+                            StorageService.instance.delete(room!.iconUrl);
+                          }
+                          // This will prevent the newly Uploaded photo to be deleted
+                          iconUrl = null;
+                          if (!context.mounted) return;
+                          Navigator.of(context).pop(room!.ref);
                         } catch (e) {
                           dog("Error ${e.toString()}");
                           setState(() {
@@ -205,8 +215,6 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                           });
                           rethrow;
                         }
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop(room!.ref);
                       },
                       child: Text('update'.t.toUpperCase()),
                     ),

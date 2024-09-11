@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
@@ -10,9 +12,11 @@ class EditChatMessageDialog extends StatefulWidget {
   const EditChatMessageDialog({
     super.key,
     required this.message,
+    this.onSave,
   });
 
   final ChatMessage message;
+  final FutureOr<void> Function()? onSave;
 
   @override
   State<EditChatMessageDialog> createState() => _EditChatMessageDialogState();
@@ -223,6 +227,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                 Navigator.of(context).pop();
                 // If error occured here check the futures.
                 await Future.wait(futures);
+                await widget.onSave?.call();
               },
               child: Text("save".t),
             ),

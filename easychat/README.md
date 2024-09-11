@@ -52,11 +52,6 @@ This `easychat` package offers everything you need to build a chat app. With thi
 
 # TODO
 
-
-        const Text('@TODO: top 3 invitations'),
-        const Text(
-            '@TODO: Display favorite friends: use easy_user_group pakcage'),
-        const Text('@TODO: Display all 1:1 chats: hide the favorite friends'),
 - Group chat crud workflow
   - invite
   - list
@@ -71,7 +66,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
 - Blocking
 - push notification (subscription, and receiving messages)
 
-
+- TODO:
+  - How should we order Open Chat? Should we add a field called openAt?
 
 
 
@@ -131,8 +127,13 @@ For your information on `easychat` history:
 
 ### Firestore Indexes
 
+## Initialization
 
+To use easy chat, system must initialize the ChatService:
 
+```dart
+ChatService.instance.init();
+```
 
 # Dependencies
 
@@ -179,24 +180,39 @@ For your information on `easychat` history:
 
 ```mermaid
 flowchart TB
-ChatRoomScreen(["ChatRoomScreen"])
+ChatRoomScreen(["ChatRoomScreen\n(Open Chat Room Screen)"])
   ChatRoomScreen ==> isSingleChat
-  isSingleChat =="Yes"==> chatRoomCreated
   chatRoomCreated =="NO"==> createChatRoom
   createChatRoom ==> joinChatRoom
   joinChatRoom ==> sendInvatationNotSentMessage
-  ChatRoomScreen2 ==> MessageListView
   MessageListView ==> isInvitatioNotSetMessage
-  isInvitatioNotSetMessage ==> deleteInvitationNotSent
-  isSingleChat{"Is single chat?"}
-  chatRoomCreated{"Is chat room created?"}
+  isInvitatioNotSetMessage =="YES"==> deleteInvitationNotSent
+  isSingleChat --"NO"--> node_1
+  node_2 --> chatRoomCreated
+  isSingleChat --"YES"--> node_2
+  chatRoomCreated --"YES"--> node_3
+  node_3 --> node_4
+  sendInvatationNotSentMessage --> node_4
+  node_1 --> node_4
+  node_5 --> MessageListView
+  ChatRoomScreen2 --> node_5
+  deleteInvitationNotSent --> node_6
+  isInvitatioNotSetMessage --"NO"--> node_6
+  isSingleChat{"Is room null?"}
+  chatRoomCreated{"Does chat room exist?"}
   createChatRoom[["Create single chat room"]]
   joinChatRoom[["Join single chat room"]]
   sendInvatationNotSentMessage[["Send #39;invitation-not-sent#39; message"]]
-  ChatRoomScreen2(["ChatRoomScreen"])
-  MessageListView{{"ChatMessageListView"}}
-  isInvitatioNotSetMessage{"Is #39;invitation-not-sent#39; message?"}
+  ChatRoomScreen2(["ChatRoomScreen\n(Sending the first message)"])
+  MessageListView[/"User sends the first message"/]
+  isInvitatioNotSetMessage{"Does #39;invitation-not-sent#39;\nmessage exist?"}
   deleteInvitationNotSent[["Delete #39;invitation-no-sent#39;"]]
+  node_1["No message will be sent"]
+  node_2[["Attempt to load Chat Room"]]
+  node_3["No message will be sent"]
+  node_4(["End"])
+  node_5[["Open the ChatRoom\n(Get Chat Room)"]]
+  node_6(["End"])
 ```
 
 
@@ -209,12 +225,7 @@ For invitation ordering, it is using negative of Server timestamp to give more i
 
 ## Chat message sending
 
-
 - When a chat message (including chat protocol message) is sent by any one among the chat room users, all the chat join data of the chat room users will be updated along with the chat message information.
-
-
-
-
 
 
 ## Ordering
@@ -231,9 +242,6 @@ For invitation ordering, it is using negative of Server timestamp to give more i
 - The milliseconds has 13 digits like `1000000000000`
   - It negates the time like `-1000000000000`. This is the order value. So, the chat rooms are listed in reverse.
   - If the chat room has new messages, then we add `-1` (by adding `-10000000000000` - 14 digits) infront of the order. Meaning, it becomes like `-11000000000000`. If the order begins with `-11`, then it is a chat room that has new message. if the user have seen(open) the chat room, then remove the front `-1` by dividing 10.
-
-
-
 
 - The logic of updating order #1. This logic is a bit complicated but performs better because it write the data immediately to server with client time which more likely works as expected. Then it corrects the time silently.
   - 1. Save the negative timestamp value from client time to the order field.
@@ -275,7 +283,6 @@ ChatInvitationCount(builder: (int no) {
 - `single`: Required.
 - `group`: Required.
 - `open`: Required.
-
 
 - `updatedAt`: Required. This value is updated only when the master updated the chat room. If the master didn't updated the chat room, this value will not be updated.
   - For instance, When a user enters(joins) the chat room, some of field including users would change. But the values chagned are not from the master. So, the `updatedAt` is not changed.
@@ -321,11 +328,6 @@ ChatInvitationCount(builder: (int no) {
     - The last message sender's display name and photo url.
 
 
-
-
-
-
-
 ## Chat setting
 
 
@@ -353,7 +355,10 @@ ChatInvitationCount(builder: (int no) {
 
 - Push notification settings for on/off is saved with chat room settings; See chat room settings.
 
+## Chat Room Leaving
 
+- Currently, anyone can leave the chat room inlcuding the master.
+- Once the master leaves, he/she wont have the control anymore.
 
 
 
