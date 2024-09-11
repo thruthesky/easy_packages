@@ -410,7 +410,6 @@ class ChatService {
   }
 
   Future<void> resetUnreadMessage(ChatRoom room) async {
-    // return unreadMessageCountRef(room.id).set(0);
     final Map<String, Object?> resetUnread = {
       unreadMessageCountRef(room.id).path: 0,
     };

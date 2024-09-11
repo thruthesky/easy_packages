@@ -163,6 +163,18 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': "No message yet.\nYou can send a message.",
     'ko': "메시지가 없습니다.\n메시지를 보낼 수 있습니다.",
   },
+  "failed to join in the chat room, because the user is blocked": {
+    'en': 'Failed to join in the chat room, because the user is blocked.',
+    'ko': "사용자가 차단되어 채팅방에 참여하지 못했습니다.",
+  },
+  "failed to join in the chat room, because the user is not invited": {
+    'en': 'Failed to join in the chat room, because the user is not invited.',
+    'ko': "사용자가 초대되지 않았습니다 채팅방에 참여하지 못했습니다.",
+  },
+  "removed from the chat": {
+    'en': 'Removed from the chat',
+    'ko': '채팅방에서 나갔습니다',
+  },
 
   // received.chat.room.invite_list.screen.dart
   'accept/reject chat requests': {

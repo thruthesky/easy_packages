@@ -69,8 +69,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       Navigator.of(context).pop();
       dog("The user cannot join the chat room because the user is blocked.");
       throw ChatException(
-        "fail-join-attempt",
-        "for some reason, the account failed to join in the chat room".t,
+        "fail-join-blocked",
+        "failed to join in the chat room, because the user is blocked".t,
       );
     }
 
@@ -98,8 +98,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         Navigator.of(context).pop();
         dog("The user cannot join the chat room because the user is not invited.");
         throw ChatException(
-          "fail-join-attempt",
-          "for some reason, the account failed to join in the chat room".t,
+          "fail-join-no-invitation",
+          "failed to join in the chat room, because the user is not invited".t,
         );
       }
     }
@@ -119,8 +119,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         Navigator.of(context).pop();
         dog("The user is no longer a member. Check if the user is just blocked or kicked out.");
         throw ChatException(
-          "unexpected-error-upon-viewing-room",
-          "an error occured while viewing the room".t,
+          "removed-from-chat",
+          "removed from the chat".t,
         );
       }
     });
@@ -136,7 +136,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         .listen((e) async {
       final newMessageCount = (e.snapshot.value ?? 0) as int;
       if (newMessageCount == 0) return;
-      // room!.resetUnreadMessage();
       await ChatService.instance.resetUnreadMessage(room!);
     });
   }
