@@ -14,9 +14,12 @@ class LikeService {
   /// If the user has unliked it (from the state of liked), then it is false.
   Function({required Like like, required bool isLiked})? onLiked;
 
+    FirebaseApp? app,
   init({
+    FirebaseApp? app,
     Function({required Like like, required bool isLiked})? onLiked,
   }) {
+    this.app = app;
     this.onLiked = onLiked;
   }
 }
