@@ -118,8 +118,6 @@ class ChatRoom {
 
   /// Return the chat room object from the json.
   factory ChatRoom.fromJson(Map<String, dynamic> json, String id) {
-    // This will help to load Chat Room faster using Chat Room Doc
-    chatRoomDataCache[id] = Map<String, dynamic>.from(json);
     return ChatRoom(
       id: id,
       name: json[field.name] ?? '',
