@@ -77,15 +77,16 @@ class ChatMessagesListView extends StatelessWidget {
                   },
                   onEdit: () async {
                     if (index != 0) return;
-                    dog("Last message is edited");
-                    // Must update the message in Joins
-                    dog("Last message updated text: ${message.text} ");
-                    // TODO still ongoing here
-
-                    // await ChatService.instance.updateLastMessageInJoins(
-                    //   room,
-                    //   message,
-                    // );
+                    await ChatService.instance.showEditMessageDialog(
+                      context,
+                      message: message,
+                      onSave: () async {
+                        await ChatService.instance.updateLastMessageInJoins(
+                          room,
+                          message,
+                        );
+                      },
+                    );
                   },
                 );
           },

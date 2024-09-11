@@ -191,8 +191,7 @@ class ChatRoomListTile extends StatelessWidget {
           color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
         ),
       );
-    } else if (!join.lastText.isNullOrEmpty &&
-        !join.lastPhotoUrl.isNullOrEmpty) {
+    } else if (!join.lastText.isNullOrEmpty && !join.lastUrl.isNullOrEmpty) {
       return Row(
         children: [
           Icon(
@@ -216,7 +215,7 @@ class ChatRoomListTile extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
-    } else if (!join.lastPhotoUrl.isNullOrEmpty) {
+    } else if (!join.lastUrl.isNullOrEmpty) {
       return Row(
         children: [
           Icon(

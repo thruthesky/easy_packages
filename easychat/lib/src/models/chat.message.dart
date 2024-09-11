@@ -32,11 +32,16 @@ class ChatMessage {
   String? roomId;
   String uid;
   String displayName;
+
+  /// [photoUrl] is pertaining to the sender's profile photo url,
+  /// not the attached photo in message itself.
   String? photoUrl;
   int createdAt;
   int? updatedAt;
   int? order;
   String? text;
+
+  /// [url] is used for the attached url in the message
   String? url;
   String? protocol;
   final bool deleted;

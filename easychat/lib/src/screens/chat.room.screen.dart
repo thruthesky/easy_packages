@@ -298,7 +298,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               imageUrl: iconUrl,
               fit: BoxFit.cover,
               errorWidget: (context, url, error) {
-                dog("Error in Image Chat Room Screen: $error");
+                dog("Error with an Image in Chat Room Screen(chat.room.screen.dart): $error");
                 return const Icon(Icons.error);
               },
             )

@@ -44,6 +44,38 @@
             "cwd": "example",
             "program": "lib/main.dart",
         },
+        {
+            "name": "Example - SM A750GN",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "320066b04746b53d",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Example - Emulator",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Example - iPhone 15 Plus",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Plus",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Example - iPhone11ProMax",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone11ProMax",
+            "cwd": "example",
+            "program": "lib/main.dart"
+        },
 
         {
             "name": "EasyChat - iPhone 15 Pro Max - Example",
@@ -104,78 +136,6 @@
             "request": "launch",
             "type": "dart",
             "deviceId": "iPhone 15 Pro Max",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - iPhone 15 Pro Max",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "iPhone 15 Pro Max",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - iPhone11ProMax",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "iPhone11ProMax",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - SM A045F",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "R9ATA00LMJM",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - iPhone 15 Plus",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "iPhone 15 Plus",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - iPad Air 11-inch (M2)",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "iPad Air 11-inch (M2)",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - iPhone 15 Pro",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "iPhone 15 Pro",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - iPhone SE",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "iPhone SE",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - SM A750GN",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "320066b04746b53d",
-            "cwd": "example",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Example - Emulator",
-            "request": "launch",
-            "type": "dart",
-            "deviceId": "emulator-5554",
-            "cwd": "example",
             "program": "lib/main.dart"
         },
         {

@@ -84,28 +84,22 @@ class ChatBubble extends StatelessWidget {
                 ),
                 items: menuItems,
               );
-
-              if (value != null) {
-                if (value == items.reply) {
-                  if (context.mounted) {
-                    ChatService.instance.reply.value = message;
-                  }
-                } else if (value == items.edit) {
-                  if (!context.mounted) return;
-                  await ChatService.instance.showEditMessageDialog(
-                    context,
-                    message: message,
-                    onSave: () async {
-                      await onEdit?.call();
-                    },
-                  );
-                } else if (value == items.delete) {
-                  if (onDelete != null) {
-                    await onDelete?.call();
-                  } else {
-                    await message.delete();
-                  }
-                }
+              if (value == null) return;
+              if (!context.mounted) return;
+              if (value == items.reply) {
+                ChatService.instance.reply.value = message;
+                return;
+              }
+              if (value == items.edit) {
+                if (onEdit != null) return await onEdit?.call();
+                return await ChatService.instance.showEditMessageDialog(
+                  context,
+                  message: message,
+                );
+              }
+              if (value == items.delete) {
+                if (onDelete != null) return await onDelete?.call();
+                return await message.delete();
               }
             }
           : null,

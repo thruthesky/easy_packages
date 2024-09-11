@@ -290,7 +290,7 @@ class ChatService {
     for (String uid in room.userUids) {
       updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] = true;
       updates['chat/joins/$uid/${room.id}/$lastText'] = null;
-      updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = null;
+      updates['chat/joins/$uid/${room.id}/$lastUrl'] = null;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] = null;
     }
     await FirebaseDatabase.instance.ref().update(updates);
@@ -308,10 +308,11 @@ class ChatService {
           updatedMessage.uid;
       updates['chat/joins/$uid/${room.id}/$lastText'] =
           updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
-      updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] =
-          updatedMessage.photoUrl.isNullOrEmpty
+      dog("photoUrl: ${updatedMessage.photoUrl}");
+      updates['chat/joins/$uid/${room.id}/$lastUrl'] =
+          (updatedMessage.url?.trim()).isNullOrEmpty
               ? null
-              : updatedMessage.photoUrl;
+              : updatedMessage.url;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] =
           updatedMessage.protocol;
     }
@@ -372,7 +373,7 @@ class ChatService {
       // information without referring to the chat room.
       updates['chat/joins/$uid/${room.id}/$lastMessageUid'] = myUid;
       updates['chat/joins/$uid/${room.id}/$lastText'] = text;
-      updates['chat/joins/$uid/${room.id}/$lastPhotoUrl'] = photoUrl;
+      updates['chat/joins/$uid/${room.id}/$lastUrl'] = photoUrl;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] = protocol;
       updates['chat/joins/$uid/${room.id}/lastMessageDeleted'] = null;
 
