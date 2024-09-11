@@ -175,7 +175,7 @@ class ChatBubble extends StatelessWidget {
                             style: TextStyle(
                               fontSize: Theme.of(context)
                                       .textTheme
-                                      .labelLarge
+                                      .bodySmall
                                       ?.fontSize ??
                                   8,
                               color: Theme.of(context)
@@ -238,7 +238,7 @@ class ChatBubble extends StatelessWidget {
                         ],
                         if (message.deleted) ...[
                           Opacity(
-                            opacity: 0.6,
+                            opacity: 0.38,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.surface,

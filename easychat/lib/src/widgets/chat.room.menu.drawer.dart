@@ -116,6 +116,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
+                if (!room!.description.isNullOrEmpty) const SizedBox(height: 4),
                 InkWell(
                   child: Column(
                     children: [

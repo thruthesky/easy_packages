@@ -213,6 +213,7 @@ class ChatMessage {
                 : replyTo.text,
           if (replyTo.url != null) field.url: replyTo.url,
           field.uid: replyTo.uid,
+          field.displayName: replyTo.displayName,
           field.createdAt: replyTo.createdAt,
           field.deleted: replyTo.deleted,
         },
