@@ -198,21 +198,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                         exactSearch: true,
                       );
                       if (selectedUser == null) return;
-                      // TODO : invitged users and rejecte users
-                      // if (room!.invitedUsers.contains(selectedUser.uid)) {
-                      //   throw ChatException(
-                      //     'already-invited',
-                      //     'the user is already invited'.t,
-                      //   );
-                      // }
-                      // if (room!.rejectedUsers.contains(selectedUser.uid)) {
-                      //   // The chat room is already rejected by the other user, we are
-                      //   // not showing if user rejected the invitation.
-                      //   throw ChatException(
-                      //     'already-invited',
-                      //     'the user is already invited'.t,
-                      //   );
-                      // }
+
                       if (room!.userUids.contains(selectedUser.uid)) {
                         throw ChatException(
                           'already-member',
@@ -232,6 +218,33 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           'you cannot invite yourself'.t,
                         );
                       }
+
+                      // Get if user is already invited
+                      final invitation = await ChatService.instance
+                          .invitedUserRef(selectedUser.uid)
+                          .child(room!.id)
+                          .get();
+                      if (invitation.exists) {
+                        dog("The user is already invited: ${invitation.value}");
+                        throw ChatException(
+                          'already-invited',
+                          'the user is already invited'.t,
+                        );
+                      }
+
+                      // Get if user is already invited and rejected the invitation
+                      final rejection = await ChatService.instance
+                          .rejectedUserRef(selectedUser.uid)
+                          .child(room!.id)
+                          .get();
+                      if (rejection.exists) {
+                        dog("The user is already rejected: ${rejection.value}");
+                        throw ChatException(
+                          'already-invited',
+                          'the user is already invited'.t,
+                        );
+                      }
+
                       // await room!.inviteUser(selectedUser.uid);
                       await ChatService.instance.inviteUser(
                         room!,

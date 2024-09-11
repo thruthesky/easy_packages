@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/screens/chat.open.room.list.screen.dart';
@@ -68,6 +69,9 @@ class ChatService {
   Future<T?> Function<T>(BuildContext context, {ChatRoom? room})?
       $showChatRoomEditScreen;
 
+  /// Openn chat room screen
+  Future<T?> Function<T>(BuildContext context)? $showOpenChatRoomListScreen;
+
   /// Add custom widget on chatroom header,.
   /// e.g. push notification toggle button to unsubscribe/subscribe to notification
   Widget Function(ChatRoom)? chatRoomActionButton;
@@ -75,14 +79,15 @@ class ChatService {
   /// Callback on chatMessage send, use this if you want to do task after message is created.,
   /// Usage: e.g. send push notification after message is created
   /// Callback will have the new [message] ChatMessage information and [room] ChatRoom information
-  Function({required ChatMessage message, required ChatRoom room})?
-      onSendMessage;
+  FutureOr<void> Function(
+      {required ChatMessage message, required ChatRoom room})? onSendMessage;
 
   /// Callback on after userInvite. Can be use if you want to do task after invite.
   /// Usage: e.g. send push notification after user was invited
   /// [room] current ChatRoom
   /// [uid] uid of the user that is being invited
-  Function({required ChatRoom room, required String uid})? onInvite;
+  FutureOr<void> Function({required ChatRoom room, required String uid})?
+      onInvite;
 
   /// It gets String parameter because the [no] can be something like "3+"
   Widget Function(String no)? newMessageBuilder;
@@ -168,10 +173,10 @@ class ChatService {
         );
   }
 
-  Future showInviteListScreen(
+  Future<T?> showInviteListScreen<T>(
     BuildContext context,
-  ) {
-    return showGeneralDialog(
+  ) async {
+    return await showGeneralDialog<T>(
       context: context,
       pageBuilder: (_, __, ___) =>
           chatRoomReceivedInviteListScreenBuilder?.call(context) ??
@@ -179,12 +184,12 @@ class ChatService {
     );
   }
 
-  Future showOpenChatJoinListScreen(BuildContext context) {
-    return $showChatRoomListScreen?.call(
+  Future<T?> showOpenChatJoinListScreen<T>(BuildContext context) {
+    return $showChatRoomListScreen?.call<T>(
           context: context,
           openGroupChatsOnly: true,
         ) ??
-        showGeneralDialog(
+        showGeneralDialog<T>(
           context: context,
           pageBuilder: (_, __, ___) => const ChatRoomListScreen(
             open: true,
@@ -193,12 +198,12 @@ class ChatService {
   }
 
   /// Shows the list of all Open rooms, whether user is joined or not
-  Future showOpenChatRoomListScreen(BuildContext context) {
-    // TODO customization
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (_, __, ___) => const ChatOpenRoomListScreen(),
-    );
+  Future<T?> showOpenChatRoomListScreen<T>(BuildContext context) {
+    return $showOpenChatRoomListScreen?.call<T>(context) ??
+        showGeneralDialog<T>(
+          context: context,
+          pageBuilder: (_, __, ___) => const ChatOpenRoomListScreen(),
+        );
   }
 
   /// Show the chat room edit screen. It's for borth create and update.
@@ -219,31 +224,28 @@ class ChatService {
   /// Display the chat room screen.
   ///
   /// [join] is the chat join data.
-  showChatRoomScreen(
+  Future<T?> showChatRoomScreen<T>(
     BuildContext context, {
     User? user,
     ChatRoom? room,
     ChatJoin? join,
   }) async {
     assert(user != null || room != null || join != null);
-
-    if (context.mounted) {
-      return showGeneralDialog(
-        context: context,
-        barrierLabel: "Chat Room",
-        pageBuilder: (_, __, ___) => ChatRoomScreen(
-          user: user,
-          room: room,
-          join: join,
-        ),
-      );
-    }
+    return await showGeneralDialog<T>(
+      context: context,
+      barrierLabel: "Chat Room",
+      pageBuilder: (_, __, ___) => ChatRoomScreen(
+        user: user,
+        room: room,
+        join: join,
+      ),
+    );
   }
 
-  showRejectListScreen(
+  Future<T?> showRejectListScreen<T>(
     BuildContext context,
   ) {
-    return showGeneralDialog(
+    return showGeneralDialog<T>(
       context: context,
       pageBuilder: (_, __, ___) =>
           chatRoomRejectedInviteListScreenBuilder?.call(context) ??
@@ -275,7 +277,7 @@ class ChatService {
     );
     // onSendMessage should be called after sending message
     // other extra process comes after it.
-    onSendMessage?.call(message: newMessage, room: room);
+    await onSendMessage?.call(message: newMessage, room: room);
     await updateCountAndJoinAfterMessageSent(
       room: room,
       text: text,
@@ -325,7 +327,7 @@ class ChatService {
   /// - To update the unread message count of the chat room user.
   ///
   /// Refere README.md for more details
-  Future updateCountAndJoinAfterMessageSent({
+  Future<void> updateCountAndJoinAfterMessageSent({
     required ChatRoom room,
     String? text,
     String? photoUrl,
@@ -455,7 +457,6 @@ class ChatService {
       rejectedUserRef(myUid!).child(room.id).path: null,
       // Add uid in users
       room.ref.child('users').child(myUid!).path: true,
-
       // Add in chat joins
       'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
     };
@@ -484,7 +485,7 @@ class ChatService {
   /// Where:
   /// - ChatRoomScreen -> ChatRoomInputBox -> inviteOtherUserInSingleChat
   /// - This method can be used in anywhere.
-  Future inviteOtherUserIfSingleChat(ChatRoom room) async {
+  Future<void> inviteOtherUserIfSingleChat(ChatRoom room) async {
     // Return if it's not single chat
     if (room.single == false) return;
 
@@ -552,7 +553,7 @@ class ChatService {
   /// And if it's the 'invitation-not-sent' protocol, it deletes the message.
   ///
   /// Refer README.md for more details.
-  deleteInvitationNotSentMessage({
+  Future<void> deleteInvitationNotSentMessage({
     required int index,
     required ChatMessage message,
     required int length,
@@ -580,23 +581,30 @@ class ChatService {
   /// - It's used in ChatRoomScreen menu to invite a user.
   /// - It's called from ChatService::inviteOtherUserInSingleChat
   /// - This can be used in any where.
-  Future inviteUser(ChatRoom room, String uid) async {
+  Future<void> inviteUser(ChatRoom room, String uid) async {
     // To prevent the invitation from getting overlooked or from
     // getting buried by earlier ignored invitations.
     final reverseOrder = (await getServerTimestamp()) * -1;
     await invitedUserRef(uid).child(room.id).set(reverseOrder);
-    onInvite?.call(room: room, uid: uid);
+    await onInvite?.call(room: room, uid: uid);
   }
 
   /// Leave from Chat Room
   ///
-  /// TODO: delete settings also.
+  /// Removes uid in Room's users field
+  /// Deletes the chat joins
+  /// Deletes the mySettings that is related to the room
   Future<void> leave(ChatRoom room) async {
     final leave = {
       // remove uid in room's user
       roomRef(room.id).child('users').child(myUid!).path: null,
-      // remove roomId in user's chat joins
+
+      // delete user's chat join (of the room)
       'chat/joins/${myUid!}/${room.id}': null,
+
+      // For now, this is the only setting to be deleted.
+      // Other settings must be deleted, as well.
+      mySettingRef.child('unread-message-count').child(room.id).path: null,
     };
     await sendMessage(room, protocol: ChatProtocol.left);
     await FirebaseDatabase.instance.ref().update(leave);
@@ -605,19 +613,17 @@ class ChatService {
   /// URL Preview 업데이트
   ///
   /// 채팅 메시지 자체에 업데이트하므로, 한번만 가져온다.
-  Future updateUrlPreview(ChatMessage message, String? text) async {
+  Future<void> updateUrlPreview(ChatMessage message, String? text) async {
     /// Update url preview
     final model = UrlPreviewModel();
     await model.load(text);
-
-    if (model.hasData) {
-      await message.update(
-        previewUrl: model.firstLink,
-        previewTitle: model.title,
-        previewDescription: model.description,
-        previewImageUrl: model.image,
-      );
-    }
+    if (!model.hasData) return;
+    await message.update(
+      previewUrl: model.firstLink,
+      previewTitle: model.title,
+      previewDescription: model.description,
+      previewImageUrl: model.image,
+    );
   }
 
   Future<void> showEditMessageDialog(
@@ -648,9 +654,9 @@ class ChatService {
 
   /// Accepts the room invitation
   ///
-  /// Logic is very similar to setJoin.
+  /// Logic is very similar to join.
   ///
-  /// Alias for `setJoin()`
+  /// Alias for `join()`
   Future<void> accept(ChatRoom room) async => await join(room);
 
   /// Rejects the room invitation
@@ -665,21 +671,20 @@ class ChatService {
   }
 
   /// Removes and blocks the user from the group
-  block(ChatRoom room, String uid) async {
+  Future<void> block(ChatRoom room, String uid) async {
     // throw 'Not implemented yet';
     // 1. check if the user is the master
     if (!room.masterUsers.contains(myUid!)) {
-      // TODO trs
       throw ChatException(
         "not-master",
-        "You are not the master to block someone in this room",
+        "you are not the master to block someone in this room".t,
       );
     }
     // 2. check if the user can be blocked
     if (room.blockedUids.contains(uid)) {
       throw ChatException(
         "already-blocked",
-        "User is already blocked",
+        "user is already blocked".t,
       );
     }
     // 3. block the user
@@ -693,20 +698,19 @@ class ChatService {
   }
 
   /// Removes user from the blocklist of the group
-  unblock(ChatRoom room, String uid) async {
+  Future<void> unblock(ChatRoom room, String uid) async {
     // 1. check if the user is the master
     if (!room.masterUsers.contains(myUid!)) {
-      // TODO trs
       throw ChatException(
         "not-master",
-        "You are not the master to block someone in this room",
+        "you are not the master to unblock someone in this room".t,
       );
     }
     // 2. check if the user can be unblocked
     if (!room.blockedUids.contains(uid)) {
       throw ChatException(
         "not-blocked",
-        "User is not blocked already",
+        "User is already not blocked",
       );
     }
     // 3. unblock the user

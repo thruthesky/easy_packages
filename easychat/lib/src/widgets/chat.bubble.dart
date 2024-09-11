@@ -408,7 +408,6 @@ class ChatBubble extends StatelessWidget {
           children: [
             if (message.isUpdated)
               Text(
-                // "${'edited'.t} • ${DateTime.fromMillisecondsSinceEpoch(message.editedAt!).shortDateTime}",
                 'edited'.t,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: Theme.of(context)

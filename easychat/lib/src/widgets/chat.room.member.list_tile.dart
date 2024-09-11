@@ -55,6 +55,8 @@ class ChatRoomMemberListTile extends StatelessWidget {
             )
           : Text(
               user.displayName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
       subtitle: blocked
           ? null
