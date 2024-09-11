@@ -30,7 +30,7 @@ class ChatRoomDoc extends StatelessWidget {
       ref: ref,
       initialData: chatRoomDataCache[roomId],
       builder: (v, r) {
-        // caching is happening inside ChatRoom.fromJson
+        chatRoomDataCache[roomId] = Map<String, dynamic>.from(v as Map);
         final room = ChatRoom.fromJson(
           Map<String, dynamic>.from(v),
           ref.key!,

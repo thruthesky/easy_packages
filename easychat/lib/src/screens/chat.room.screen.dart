@@ -219,6 +219,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: joined
           ? ChatRoomDoc(
               roomId: room!.id,
+              // Review because without this, drawer may need to
+              // load a bit of time.
+              // This will help room to load instantly upon opening the room
+              onLoading: ChatRoomMenuDrawer(
+                room: room,
+                user: user,
+              ),
               builder: (room) {
                 return ChatRoomMenuDrawer(
                   room: room,
