@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   test() async {
-    final FirebaseApp app = Firebase.app();
+    // final FirebaseApp app = Firebase.app();
     // FirebaseAuth.instanceFor(app: app).signInAnonymously();
     // int ts = await getServerTimestamp();
     // print(

@@ -21,9 +21,7 @@ class UserService {
 
   bool initialized = false;
 
-  FirebaseApp? app;
-
-  fa.FirebaseAuth get auth => fa.FirebaseAuth.instanceFor(app: app!);
+  fa.FirebaseAuth get auth => fa.FirebaseAuth.instance;
 
   CollectionReference get col => FirebaseFirestore.instance.collection('users');
   CollectionReference get metaCol => col.doc(myUid).collection('user-meta');
@@ -79,7 +77,6 @@ class UserService {
   bool get isPhoneSignIn => currentUser?.providerData.where((e) => e.providerId == 'phone').isNotEmpty ?? false;
 
   init({
-    FirebaseApp? app,
     bool enableAnonymousSignIn = false,
     Widget Function(BuildContext, User?)? showPublicProfileScreen,
     Widget Function()? showProfileUpdateScreen,
@@ -94,8 +91,6 @@ class UserService {
     dog('UserService::init() begins;');
 
     initialized = true;
-
-    this.app = app;
 
     this.prefixActionBuilderOnPublicProfileScreen = prefixActionBuilderOnPublicProfileScreen;
     this.suffixActionBuilderOnPublicProfileScreen = suffixActionBuilderOnPublicProfileScreen;

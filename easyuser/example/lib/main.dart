@@ -71,27 +71,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Firebase: $firebaseAppName'),
-            Wrap(
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      UserService.instance.app = Firebase.app();
-                      setState(() {
-                        firebaseAppName = '[DEFAULT]';
-                      });
-                    },
-                    child: const Text('User 1st Firebase')),
-                ElevatedButton(
-                    onPressed: () {
-                      UserService.instance.app = Firebase.app('withcenter-test-4');
-                      setState(() {
-                        firebaseAppName = 'withcenter-test-4';
-                      });
-                    },
-                    child: const Text('User 2nd Firebase')),
-              ],
-            ),
             AuthStateChanges(
               builder: (user) {
                 return user == null

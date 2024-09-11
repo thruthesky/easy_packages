@@ -1,4 +1,6 @@
 import 'package:easy_like/easy_like.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class LikeService {
   static LikeService? _instance;
@@ -14,12 +16,10 @@ class LikeService {
   /// If the user has unliked it (from the state of liked), then it is false.
   Function({required Like like, required bool isLiked})? onLiked;
 
-    FirebaseApp? app,
+  FirebaseAuth get auth => FirebaseAuth.instance;
   init({
-    FirebaseApp? app,
     Function({required Like like, required bool isLiked})? onLiked,
   }) {
-    this.app = app;
     this.onLiked = onLiked;
   }
 }
