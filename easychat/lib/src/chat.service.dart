@@ -472,8 +472,6 @@ class ChatService {
 
   /// Invite the other user on a 1:1 chat and delete invitation not sent message.
   ///
-  ///
-  ///
   /// This is only for single chat.
   ///
   /// Purpose:
