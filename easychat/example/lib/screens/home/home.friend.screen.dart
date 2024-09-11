@@ -130,7 +130,9 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                 return const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Divider(),
+                    Divider(
+                      height: 1,
+                    ),
                   ],
                 );
               },

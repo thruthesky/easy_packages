@@ -66,7 +66,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
 - Blocking
 - push notification (subscription, and receiving messages)
 
-
+- TODO:
+  - How should we order Open Chat? Should we add a field called openAt?
 
 
 
