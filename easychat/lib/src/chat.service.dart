@@ -303,7 +303,7 @@ class ChatService {
     final Map<String, Object?> updates = {};
     for (String uid in room.userUids) {
       updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] =
-          updatedMessage.deleted;
+          updatedMessage.deleted == true ? true : null;
       updates['chat/joins/$uid/${room.id}/$lastMessageUid'] =
           updatedMessage.uid;
       updates['chat/joins/$uid/${room.id}/$lastText'] =
