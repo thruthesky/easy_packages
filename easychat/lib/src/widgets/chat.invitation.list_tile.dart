@@ -28,50 +28,58 @@ class ChatInvitationListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (room.single == true) {
-      return UserDoc.sync(
-        uid: getOtherUserUidFromRoomId(room.id)!,
-        builder: (user) {
-          return ListTile(
-            minTileHeight: _minTileHeight,
-            leading: GestureDetector(
-              onTap: () => UserService.instance.showPublicProfileScreen(
-                context,
-                user: user!,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                ),
-                width: 48,
-                height: 48,
-                clipBehavior: Clip.hardEdge,
-                child: user == null
-                    ? const Icon(Icons.person)
-                    : UserAvatar(user: user),
-              ),
-            ),
-            title: Text(
-              user?.displayName ?? "...",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle:
-                user?.stateMessage != null && user!.stateMessage!.isNotEmpty
-                    ? Text(
-                        user.stateMessage ?? "",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    : null,
-            trailing: ChatInvitationListTileActions(
-              onTapAccept: () => onTapAccept(user),
-              onTapReject: () => onTapReject(user),
-            ),
-            contentPadding: _contentPadding,
-          );
-        },
-      );
+      final otherUid = getOtherUserUidFromRoomId(room.id)!;
+      return UserBlocked(
+          otherUid: otherUid,
+          builder: (blocked) {
+            if (blocked) {
+              return const SizedBox.shrink();
+            }
+            return UserDoc.sync(
+              uid: otherUid,
+              builder: (user) {
+                return ListTile(
+                  minTileHeight: _minTileHeight,
+                  leading: GestureDetector(
+                    onTap: () => UserService.instance.showPublicProfileScreen(
+                      context,
+                      user: user!,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                      ),
+                      width: 48,
+                      height: 48,
+                      clipBehavior: Clip.hardEdge,
+                      child: user == null
+                          ? const Icon(Icons.person)
+                          : UserAvatar(user: user),
+                    ),
+                  ),
+                  title: Text(
+                    user?.displayName ?? "...",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: user?.stateMessage != null &&
+                          user!.stateMessage!.isNotEmpty
+                      ? Text(
+                          user.stateMessage ?? "",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : null,
+                  trailing: ChatInvitationListTileActions(
+                    onTapAccept: () => onTapAccept(user),
+                    onTapReject: () => onTapReject(user),
+                  ),
+                  contentPadding: _contentPadding,
+                );
+              },
+            );
+          });
     }
 
     // else, it means it is a group chat
@@ -102,7 +110,7 @@ class ChatInvitationListTile extends StatelessWidget {
       ),
       subtitle: Text(
         room.description,
-        maxLines: 2,
+        maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
       trailing: ChatInvitationListTileActions(

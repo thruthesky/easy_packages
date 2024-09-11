@@ -48,9 +48,6 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
   double maxWidth(BuildContext context) =>
       MediaQuery.of(context).size.width * 0.56;
 
-  /// Uids of the users in the room
-  final List<String> users = [];
-
   @override
   void initState() {
     super.initState();

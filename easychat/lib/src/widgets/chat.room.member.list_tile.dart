@@ -53,8 +53,30 @@ class ChatRoomMemberListTile extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             )
-          : Text(
-              user.displayName,
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: Text(
+                    user.displayName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (room!.masterUsers.contains(user.uid))
+                  Text(
+                    " (Master)",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withAlpha(100),
+                          height: 1.7,
+                        ),
+                  ),
+              ],
             ),
       subtitle: blocked
           ? null
