@@ -115,14 +115,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void listenToUsersUpdate() {
     usersSubscription = room!.ref.child("users").onValue.listen((e) {
       room!.users = Map<String, bool>.from(e.snapshot.value as Map);
-      if (room!.userUids.contains(myUid!) == false && mounted) {
-        Navigator.of(context).pop();
-        dog("The user is no longer a member. Check if the user is just blocked or kicked out.");
-        throw ChatException(
-          "removed-from-chat",
-          "removed from the chat".t,
-        );
-      }
+      // THIS WILL NOT WORK if the user is looking at the drawer
+      // This should be handled by Security
+      // if (room!.userUids.contains(myUid!) == false && mounted) {
+      //   Navigator.of(context).pop();
+      //   dog("The user is no longer a member. Check if the user is just blocked or kicked out.");
+      //   throw ChatException(
+      //     "removed-from-chat",
+      //     "removed from the chat".t,
+      //   );
+      // }
     });
   }
 
@@ -217,11 +219,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       endDrawer: joined
           ? ChatRoomDoc(
               roomId: room!.id,
-              // This will make the Drawer display faster
-              onLoading: ChatRoomMenuDrawer(
-                room: room,
-                user: user,
-              ),
               builder: (room) {
                 return ChatRoomMenuDrawer(
                   room: room,
