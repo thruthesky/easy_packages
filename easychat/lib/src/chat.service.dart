@@ -693,6 +693,8 @@ class ChatService {
     };
     await FirebaseDatabase.instance.ref().update(blockUpdates);
     // TODO protocol on removing from the group
+    // Issue: How can we pass who was removed from the group?
+    // await sendMessage(room, protocol: ChatProtocol.removed);
   }
 
   /// Removes user from the blocklist of the group

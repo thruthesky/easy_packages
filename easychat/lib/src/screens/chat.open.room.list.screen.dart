@@ -45,6 +45,9 @@ class ChatOpenRoomListScreen extends StatelessWidget {
             .orderByChild("open")
             // TODO field for open chat room to order properly
             // Open at?
+            // Should we Use opened at field?
+            // If yes, it must be updated every time master updates the
+            // chat room.
             .equalTo(true),
         builder: (context, snapshot, child) {
           if (snapshot.hasError) {
