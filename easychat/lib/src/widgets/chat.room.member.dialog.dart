@@ -104,7 +104,7 @@ class ChatRoomMemberDialog extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  room!.block(user.uid);
+                  ChatService.instance.block(room!, user.uid);
                   Navigator.of(context).pop();
                 },
               ),
@@ -126,7 +126,7 @@ class ChatRoomMemberDialog extends StatelessWidget {
                 ),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  await room!.unblock(user.uid);
+                  await ChatService.instance.unblock(room!, user.uid);
                 },
               ),
             ],

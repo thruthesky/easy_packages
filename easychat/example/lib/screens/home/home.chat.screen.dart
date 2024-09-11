@@ -1,3 +1,4 @@
+import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
 
 class HomeChatScreen extends StatefulWidget {
@@ -11,10 +12,6 @@ class HomeChatScreen extends StatefulWidget {
 class _HomeChatScreenState extends State<HomeChatScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        SafeArea(child: Text("Chat")),
-      ],
-    );
+    return const ChatOpenRoomListScreen();
   }
 }

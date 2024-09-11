@@ -43,7 +43,9 @@ class ChatRoomListTile extends StatelessWidget {
       otherUid: getOtherUserUidFromRoomId(join.roomId)!,
       builder: (blocked) {
         if (blocked) {
-          // TODO need to review because this wont do since we use separator
+          dog("Blocked: ${join.roomId}\nTake note that if we are using a separator,\nusing SizedBox.shrink here will not look good.");
+          // Take note that if we are using a separator,
+          // using SizedBox.shrink here will not look good.
           return const SizedBox.shrink();
         }
         return ListTile(
@@ -63,7 +65,6 @@ class ChatRoomListTile extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(20),
-                      // border: border,
                     ),
                     child: CachedNetworkImage(
                       imageUrl: join.photoUrl!,
@@ -109,35 +110,59 @@ class ChatRoomListTile extends StatelessWidget {
     // Is a protocol message?
     if (join.lastProtocol.notEmpty) {
       String text = join.lastProtocol!.t;
-      if (join.lastProtocol != null) {
-        // TODO this is conflicting with displayName of the doer.
-        // Should we not display the protocol when it is single chat?
-        // Scenario with issue:
-        //      I just joined the room. There is a chance that it will display
-        //      that the other user joined the room.
+      if (join.single) {
+        if ([ChatProtocol.join, ChatProtocol.left]
+            .contains(join.lastProtocol)) {
+          // Added one extra code for getting the correct displayName, (only for single chat).
+          // In protocol, we are using join.displayName field to put the displayName of protocol's sender
+          // However, in single chat, we are also using join.displayName for the other user.
+          // This will help show the correct display name in single chat;
+          // Group chats are not affected because they are not using displayName field.
+          // Just make sure that join.lastMessageUid is always correctly provided.
+          final displayName =
+              join.lastMessageUid == myUid ? my.displayName : join.displayName;
+          text = join.lastProtocol!.tr(args: {'displayName': displayName});
+        }
+      } else {
+        // if (join.group)
+        // For group we simply, use join.displayName
+        // In case protocol translation doesn't have "{displayName}", it is fine,
+        // since it wont alter any text anyway if there is no "{displayName}".
         text = join.lastProtocol!.tr(args: {'displayName': join.displayName});
       }
       return Text(
         text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
-            ),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+        ),
       );
-    } else if (!join.lastText.isNullOrEmpty &&
-        !join.lastPhotoUrl.isNullOrEmpty) {
+    } else if (join.lastMessageDeleted == true) {
+      return Text(
+        "last message was deleted".t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+        ),
+      );
+    } else if (!join.lastText.isNullOrEmpty && !join.lastUrl.isNullOrEmpty) {
       return Row(
         children: [
-          Text(
-            join.lastText!,
-          ),
-          const SizedBox(width: 4),
           Icon(
             Icons.photo,
             color: Theme.of(context).colorScheme.onSurface.withAlpha(180),
-            size: 20,
-          )
+            size: 16,
+          ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              join.lastText!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       );
     } else if (!join.lastText.isNullOrEmpty) {
@@ -146,24 +171,25 @@ class ChatRoomListTile extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
-    } else if (!join.lastPhotoUrl.isNullOrEmpty) {
+    } else if (!join.lastUrl.isNullOrEmpty) {
       return Row(
         children: [
-          Text(
-            "[${'photo'.t}]",
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
-                ),
-          ),
-          const SizedBox(width: 4),
           Icon(
             Icons.photo,
             color: Theme.of(context).colorScheme.onSurface.withAlpha(180),
-            size: 20,
-          )
+            size: 16,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            "[${'photo'.t}]",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+            ),
+          ),
         ],
       );
     } else {
+      dog("Something is wrong because the code should never go here. Check chat.room.list_tile.dart");
       // This is mostly an error
       return null;
     }

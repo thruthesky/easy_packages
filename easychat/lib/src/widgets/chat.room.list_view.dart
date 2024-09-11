@@ -86,6 +86,15 @@ class ChatRoomListView extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
+        final blockedUids = UserService.instance.blocks.keys.toList();
+        // Filter out the single chat rooms where other user is blocked.
+        // If the user is just blocked, it is not going to update the chat
+        snapshot.docs.removeWhere((doc) {
+          if (!isSingleChatRoom(doc.key!)) return false;
+          final otherUid = getOtherUserUidFromRoomId(doc.key!)!;
+          return blockedUids.contains(otherUid);
+        });
+
         return CustomScrollView(
           slivers: [
             // TODO: support custom app bar.

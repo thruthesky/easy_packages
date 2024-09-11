@@ -163,6 +163,18 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': "No message yet.\nYou can send a message.",
     'ko': "메시지가 없습니다.\n메시지를 보낼 수 있습니다.",
   },
+  "failed to join in the chat room, because the user is blocked": {
+    'en': 'Failed to join in the chat room, because the user is blocked.',
+    'ko': "사용자가 차단되어 채팅방에 참여하지 못했습니다.",
+  },
+  "failed to join in the chat room, because the user is not invited": {
+    'en': 'Failed to join in the chat room, because the user is not invited.',
+    'ko': "사용자가 초대되지 않았습니다 채팅방에 참여하지 못했습니다.",
+  },
+  "removed from the chat": {
+    'en': 'Removed from the chat',
+    'ko': '채팅방에서 나갔습니다',
+  },
 
   // received.chat.room.invite_list.screen.dart
   'accept/reject chat requests': {
@@ -425,6 +437,18 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en':
         'You can only send a message to a chat room where you are a member or an invited user, or the room is an open group chat room',
     'ko': "회원이거나 초대된 사용자이거나, 방이 오픈 그룹 채팅방인 경우에만 메시지를 보낼 수 있습니다."
+  },
+  "you are not the master to block someone in this room": {
+    'en': "You are not the master to block someone in this room",
+    'ko': "이 방에서 다른 사용자를 차단할 권한이 없습니다.",
+  },
+  "user is already blocked": {
+    'en': "The user is already blocked.",
+    'ko': "해당 사용자는 이미 차단되었습니다.",
+  },
+  "you are not the master to unblock someone in this room": {
+    'en': 'You are not the master to unblock someone in this room',
+    'ko': '이 방에서 다른 사용자의 차단을 해제할 권한이 없습니다.',
   },
 
   // invitation

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_locale/easy_locale.dart';
 import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -82,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             builder: (v, r) {
                               return ElevatedButton(
                                 onPressed: () async {
-                                  print('UserField(birthDay): ${r.path}');
+                                  log('UserField(birthDay): ${r.path}');
                                   await r.set((v ?? 0) + 1);
                                 },
                                 child: Text('UserField(birthDay): $v'),

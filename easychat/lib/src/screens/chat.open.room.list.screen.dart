@@ -45,6 +45,9 @@ class ChatOpenRoomListScreen extends StatelessWidget {
             .orderByChild("open")
             // TODO field for open chat room to order properly
             // Open at?
+            // Should we Use opened at field?
+            // If yes, it must be updated every time master updates the
+            // chat room.
             .equalTo(true),
         builder: (context, snapshot, child) {
           if (snapshot.hasError) {
@@ -66,18 +69,11 @@ class ChatOpenRoomListScreen extends StatelessWidget {
                 snapshot.fetchMore();
               }
 
-              // TODO return the room tile
               final room = ChatRoom.fromSnapshot(snapshot.docs[index]);
               return itemBuilder?.call(context, room, index) ??
                   ChatOpenRoomListTile(
                     room: room,
                   );
-
-              // ChatJoin join = ChatJoin.fromSnapshot(snapshot.docs[index]);
-              // return itemBuilder?.call(context, join, index) ??
-              //     ChatRoomListTile(
-              //       join: join,
-              //     );
             },
           );
         },

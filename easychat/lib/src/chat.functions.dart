@@ -8,13 +8,10 @@ import 'package:firebase_database/firebase_database.dart';
 const String chatRoomDivider = '---';
 
 // /// 채팅방 ID 에서, 1:1 채팅방인지 확인한다.
-isSingleChatRoom(String roomId) {
+bool isSingleChatRoom(String roomId) {
   final splits = roomId.split(chatRoomDivider);
   return splits.length == 2 && splits[0].isNotEmpty && splits[1].isNotEmpty;
 }
-
-// /// 채팅방 ID 에서 그룹 채팅방 ID 인지 확인한다.
-// isGroupChat(String roomId) => roomId.split('-').length == 1;
 
 /// Returns the other user's uid from the 1:1 chat room ID.
 ///
@@ -74,47 +71,18 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
 
   if (join != null) {
     if (join.group) {
-      return join.name ??
-          ''; // TODO: group has no name? put some default value from configuration.
+      return join.name ?? 'no name'.t;
+      // TODO: group has no name? put some default value from configuration.
+      // Issue: Need to consider the translations.
     }
     if (join.single) {
-      return join.displayName ??
-          ''; // TODO: if the user has no name then, display some default value from the configuration.
+      return join.displayName ?? 'no name'.t;
+      // TODO: if the user has no name then, display some default value from the configuration.
+      // Issue: Need to consider the translations.
     }
   }
   return 'chat room'.t;
 }
-
-// bool get iAmInvited => $room?.invitedUsers.contains(myUid!) ?? false;
-// bool get iRejected => $room?.rejectedUsers.contains(myUid!) ?? false;
-
-// String notMemberMessage(ChatRoom? room) {
-//   if (iAmInvited) {
-//     return 'unaccepted yet, accept before reading message'.t;
-//   }
-//   if (iRejected) {
-//     return 'the chat was rejected, unable to show message'.t;
-//   }
-//   if (isJoiningNow) {
-//     return 'please wait'.t;
-//   }
-//   // Else, it should be handled by the Firestore rulings.
-//   return 'the chat room may be private or deleted'.t;
-// }
-
-// String notMemberTitle(ChatRoom? room) {
-//   if (iAmInvited) {
-//     return "chat invitation".t;
-//   }
-//   if (iRejected) {
-//     return 'rejected chat'.t;
-//   }
-//   if (isJoiningNow) {
-//     return 'loading'.t;
-//   }
-//   // Else, it should be handled by the Firestore rulings.
-//   return 'unable to chat'.t;
-// }
 
 /// Returns the server timestamp.
 ///

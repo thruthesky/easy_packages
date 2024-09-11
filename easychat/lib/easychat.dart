@@ -4,6 +4,7 @@ export 'src/models/chat.message.dart';
 export 'src/models/chat.room.dart';
 
 // Screens =====================================================
+export 'src/screens/chat.open.room.list.screen.dart';
 export 'src/screens/chat.room.edit.screen.dart';
 export 'src/screens/chat.room.list.screen.dart';
 export 'src/screens/chat.room.screen.dart';

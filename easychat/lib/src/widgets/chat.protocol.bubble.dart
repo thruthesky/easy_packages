@@ -21,7 +21,7 @@ class ChatProtocolBubble extends StatelessWidget {
         'displayName': message.displayName,
       },
     );
-    // }
+
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Row(
