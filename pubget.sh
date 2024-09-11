@@ -4,7 +4,7 @@
 folders=($(ls -d */))
 
 # 배열 변수 출력 (디버깅용)
-echo "Folders: ${folders[@]}"
+echo "Folders To Run 'flutter pub get': ${folders[@]}"
 
 # for 루프로 배열 변수 folders 의 각 요소를 처리
 for folder in "${folders[@]}"; do
