@@ -185,14 +185,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.11"
+  easy_realtime_database:
+    dependency: transitive
+    description:
+      name: easy_realtime_database
+      sha256: "775e1bdd2306ad8689d823b8885169b39e7402dd89a8f96d7eabb1be19582315"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
+  easy_report:
+    dependency: transitive
+    description:
+      name: easy_report
+      sha256: edbd85515ff33660f7b0944250fa3a032dd662eff13404a2b3ba71b762f19bf4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   easy_storage:
     dependency: transitive
     description:
       name: easy_storage
-      sha256: "7ae7356cfe6da9c4bb1eabdee9aa00c64340c481eba0438a3c4fa5720f1022ff"
+      sha256: "68066e826962cd1a39819554c3877ffb687132d25617c8c154debcfe018ff6ab"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.13"
+    version: "0.0.14"
   easy_task:
     dependency: "direct main"
     description:
@@ -204,10 +220,10 @@ packages:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: e16dc6e05dc0c3091f00dee03e0f584fd5e50e9fb9bf9db006dfbdcc6350c7b7
+      sha256: "27447c372a4350922c4fa05c3de2680f1e3da29cf7483cace78df5c84ac1910e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.24"
+    version: "0.0.26"
   fake_async:
     dependency: transitive
     description:
@@ -866,5 +882,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.3 <4.0.0"
+  dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.22.0"
