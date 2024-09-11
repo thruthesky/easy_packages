@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
-            label: 'Chat',
+            label: 'Open Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),

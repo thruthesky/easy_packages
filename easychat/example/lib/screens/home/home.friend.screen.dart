@@ -54,6 +54,10 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                       child: Text("Find friend"),
                     ),
                     const PopupMenuItem(
+                      value: 'blocked-users',
+                      child: Text("Blocked Users"),
+                    ),
+                    const PopupMenuItem(
                       value: 'signout',
                       child: Text("Sign Out"),
                     ),
@@ -62,8 +66,6 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                 onSelected: (String value) async {
                   if (value == 'profile') {
                     // Navigator.of(context).pushNamed(UserProfileScreen.routeName);
-                  } else if (value == 'signout') {
-                    UserService.instance.signOut();
                   } else if (value == 'find-friend') {
                     final user =
                         await UserService.instance.showSearchDialog(context);
@@ -75,6 +77,10 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                         );
                       }
                     }
+                  } else if (value == 'blocked-users') {
+                    await UserService.instance.showBlockListScreen(context);
+                  } else if (value == 'signout') {
+                    UserService.instance.signOut();
                   }
                 },
                 icon: const Icon(Icons.menu),
