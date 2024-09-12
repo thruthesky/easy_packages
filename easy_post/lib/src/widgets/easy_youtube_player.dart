@@ -27,7 +27,7 @@ class EasyYoutubePlayer extends StatefulWidget {
 
   final Post post;
   final bool autoPlay;
-  final Widget? thumbnail;
+  final Widget Function(PlayerState)? thumbnail;
   final double? width;
   final double aspectRatio;
   @override
@@ -36,6 +36,9 @@ class EasyYoutubePlayer extends StatefulWidget {
 
 class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
   late YoutubePlayerController youtubeController;
+
+  ValueNotifier<PlayerState> isPlayerStateNotifier =
+      ValueNotifier(PlayerState.unStarted);
 
   @override
   void initState() {
@@ -47,8 +50,15 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
         autoPlay: widget.autoPlay,
         mute: false,
         controlsVisibleAtStart: false,
+        enableCaption: false,
       ),
-    );
+    )..addListener(listener);
+  }
+
+  listener() {
+    if (mounted && youtubeController.value.isReady) {
+      isPlayerStateNotifier.value = youtubeController.value.playerState;
+    }
   }
 
   @override
@@ -71,47 +81,54 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayer(
-      aspectRatio: widget.aspectRatio,
-      width: widget.width,
-      bottomActions: [
-        IconButton(
-            onPressed: () {
-              youtubeController.value.isPlaying
-                  ? youtubeController.pause()
-                  : youtubeController.play();
-            },
-            icon: Icon(
-              youtubeController.value.isPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow,
-              color: Colors.white,
-            )),
-        const CurrentPosition(),
-        const ProgressBar(
-          colors: ProgressBarColors(
-              playedColor: Colors.white,
-              handleColor: Colors.white,
-              backgroundColor: Colors.grey),
-          isExpanded: true,
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        const RemainingDuration(),
-        // FullScreenButton(),
-      ],
-      topActions: const [],
-      controller: youtubeController,
-      // when thumbnail is not provideo it will try to get from the provided post
-      // when it is also not exist in the post it will show a  default arrow
-      thumbnail: widget.thumbnail ??
-          CachedNetworkImage(
-            imageUrl: widget.post.youtube['thumbnails']['maxres']['url'],
-            errorWidget: (context, error, _) => const Center(
-              child: Icon(Icons.play_arrow),
-            ),
-          ),
-    );
+    /// use notifier instead of setState because theres a lot of side effect its setState
+    ///
+    return ValueListenableBuilder(
+        valueListenable: isPlayerStateNotifier,
+        builder: (context, state, child) {
+          return YoutubePlayer(
+            aspectRatio: widget.aspectRatio,
+            width: widget.width,
+            bottomActions: [
+              IconButton(
+                onPressed: () {
+                  youtubeController.value.isPlaying
+                      ? youtubeController.pause()
+                      : youtubeController.play();
+                },
+                icon: Icon(
+                  youtubeController.value.isPlaying
+                      ? Icons.pause
+                      : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+              ),
+              const CurrentPosition(),
+              const ProgressBar(
+                colors: ProgressBarColors(
+                    playedColor: Colors.white,
+                    handleColor: Colors.white,
+                    backgroundColor: Colors.grey),
+                isExpanded: true,
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              const RemainingDuration(),
+              // FullScreenButton(),
+            ],
+            topActions: const [],
+            controller: youtubeController,
+            // when thumbnail is not provideo it will try to get from the provided post
+            // when it is also not exist in the post it will show a  default arrow
+            thumbnail: widget.thumbnail?.call(state) ??
+                CachedNetworkImage(
+                  imageUrl: widget.post.youtube['thumbnails']['maxres']['url'],
+                  errorWidget: (context, error, _) => const Center(
+                    child: Icon(Icons.play_arrow),
+                  ),
+                ),
+          );
+        });
   }
 }

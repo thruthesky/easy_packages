@@ -1,3 +1,4 @@
+export 'package:youtube_player_flutter/src/enums/player_state.dart';
 export './src/post.dart';
 export 'src/post.locales.dart';
 export './src/post.service.dart';
