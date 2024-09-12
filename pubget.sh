@@ -13,3 +13,7 @@ for folder in "${folders[@]}"; do
   flutter pub get  # 현재 폴더의 내용 출력
   cd ..  # 원래 폴더로 돌아옴
 done
+
+cd example
+flutter pub get
+cd ..

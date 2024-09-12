@@ -1,3 +1,6 @@
+## 0.0.8
+* Update. TaskService init.
+
 ## 0.0.7
 * Update. Document update.
 
