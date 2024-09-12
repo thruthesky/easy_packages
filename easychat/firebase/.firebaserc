@@ -1,7 +1,9 @@
 {
   "projects": {
     "default": "withcenter-test-5",
-    "test3": "withcenter-test-3"
+    "test3": "withcenter-test-3",
+    "school": "withcenter-school",
+    "test4": "withcenter-test-4"
   },
   "targets": {},
   "etags": {},
