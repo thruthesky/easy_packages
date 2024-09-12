@@ -124,6 +124,42 @@ For your information on `easychat` history:
 
 
 ```json
+// easychat package security rules.
+"chat": {
+  "-info": {
+    "timestamp": {
+      ".read": true,
+      ".write": true,
+    }
+  },
+  "invited-users": {
+    ".read": true,
+    ".write": true
+  },
+  "rejected-users": {
+    ".read": true,
+    ".write": true
+  },
+  "joins": {
+    ".read": true,
+    ".write": true
+  },
+  "messages": {
+    "$room_id": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["protocol"]
+    }
+  },
+  "rooms": {
+    ".read": true,
+    ".write": true
+  },
+  "settings": {
+    ".read": true,
+    ".write": true
+  }
+}
 ```
 
 
