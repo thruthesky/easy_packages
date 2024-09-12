@@ -30,7 +30,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   StreamSubscription? resetMessageCountSubscription;
   StreamSubscription? usersSubscription;
-  StreamSubscription? lastMessageAtSubscription;
 
   @override
   void initState() {
@@ -107,7 +106,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // Listeners
     listenToUsersUpdate();
     listenToUnreadMessageCountUpdate();
-    listenToLastMessageAtUpdate();
   }
 
   /// To have real time updates for users
@@ -128,10 +126,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     });
   }
 
+  /// Listen to the login user's chat room for the updates of unread message count.
+  ///
+  /// Why:
+  /// - To reset the unread message count
+  /// - To re-render the chat room in list view.
+  ///
+  /// What:
+  /// - The listener will be triggered once when the user enters the room. If there is new message,
+  ///  then, reset it.
+  /// - Since the user is inside the room, the unread message count should be reset.
   void listenToUnreadMessageCountUpdate() {
-    // Should listen to the actual value.
-    // Listening to every update of last message is not effective because
-    // we write the new message and the count separately.
     resetMessageCountSubscription = ChatService.instance
         .unreadMessageCountRef(room!.id)
         .onValue
@@ -142,20 +147,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     });
   }
 
-  /// Will be helpful for more accurate reordering.
-  void listenToLastMessageAtUpdate() {
-    lastMessageAtSubscription = room!.ref.child("lastMessageAt").onValue.listen(
-      (e) {
-        room!.lastMessageAt = e.snapshot.value as int?;
-      },
-    );
-  }
-
   @override
   dispose() {
     resetMessageCountSubscription?.cancel();
     usersSubscription?.cancel();
-    lastMessageAtSubscription?.cancel();
     super.dispose();
   }
 

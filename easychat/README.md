@@ -13,6 +13,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Storage Rules](#storage-rules)
     - [Firestore Rules](#firestore-rules)
     - [Firestore Indexes](#firestore-indexes)
+  - [Initialization](#initialization)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
   - [Group chat room creation](#group-chat-room-creation)
@@ -29,7 +30,9 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Saving unread number of messages.](#saving-unread-number-of-messages)
     - [Changing the chat room name](#changing-the-chat-room-name)
     - [Saving push notifications](#saving-push-notifications)
+  - [Chat Room Leaving](#chat-room-leaving)
   - [Invited, Rejected Users](#invited-rejected-users)
+  - [Chat Blocking](#chat-blocking)
   - [Server timestamp](#server-timestamp)
 - [Widgets](#widgets)
   - [Displaying chat room information](#displaying-chat-room-information)
@@ -118,6 +121,12 @@ For your information on `easychat` history:
 ## Secuirty rules
 
 ### Realtime Database Security Rules
+
+
+```json
+```
+
+
 
 ### Storage Rules
 

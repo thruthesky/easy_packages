@@ -101,6 +101,10 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
 /// - Don't use it for saving chat messages which needs ultamite performance
 ///   for writing and the chat messages are often created. Use this only for
 ///   ordering the chat rooms.
+///
+/// * Recommendation
+/// - If the time is used for the login user only, simple user [DateTime].
+/// - If the time is used for multiple users, use this function to the server time.
 Future<int> getServerTimestamp() async {
   final ref = FirebaseDatabase.instance
       .ref()

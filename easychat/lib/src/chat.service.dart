@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
+import 'package:easychat/src/enums/order_type.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -42,10 +43,15 @@ class ChatService {
   DatabaseReference joinRef(String roomId) =>
       joinsRef.child(myUid!).child(roomId);
 
+  /// Reference: the list of user and the room list that the user invited to.
   final DatabaseReference invitedUsersRef =
       FirebaseDatabase.instance.ref().child('chat/invited-users');
 
+  /// Reference: the chat room list that the user invited to.
   DatabaseReference invitedUserRef(String uid) => invitedUsersRef.child(uid);
+
+  /// Reference: the chat room list that the login user invited to.
+  DatabaseReference get myInvitationsRef => invitedUserRef(myUid!);
 
   final DatabaseReference rejectedUsersRef =
       FirebaseDatabase.instance.ref().child('chat').child('rejected-users');
@@ -58,6 +64,7 @@ class ChatService {
       .child('settings')
       .child(myUid!);
 
+  /// Reference: the login user's unread message count of the chat room
   DatabaseReference unreadMessageCountRef(String roomId) =>
       mySettingRef.child('unread-message-count').child(roomId);
 
@@ -111,6 +118,8 @@ class ChatService {
   Widget Function(BuildContext context, ChatRoom room)?
       blockedUsersDialogBuilder;
 
+  OpenOrderType openOrderType = OpenOrderType.lastSeen;
+
   init({
     Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})?
         $showChatRoomListScreen,
@@ -130,12 +139,15 @@ class ChatService {
     Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
     Widget Function(BuildContext context, ChatRoom room)?
         blockedUsersDialogBuilder,
+    OpenOrderType orderType = OpenOrderType.lastSeen,
   }) {
     dog('ChatService::init() begins');
     dog('UserService.instance.init();');
     UserService.instance.init();
 
     initialized = true;
+
+    openOrderType = orderType;
 
     this.newMessageBuilder = newMessageBuilder;
     this.$showChatRoomListScreen =
@@ -410,26 +422,43 @@ class ChatService {
     }
   }
 
+  /// Reset the login user's unread message count and re-order the chat joins.
+  ///
+  /// From:
+  /// - ChatRoomScreen
+  ///
+  /// Why:
+  /// - To reset the unread message count and re-order the chat joins.
+  ///
+  /// Note:
+  /// - If the order is based on the `room.lastMessageAt`, then the chat room will be placed in the order of the last message.
+  /// - If the order is based on the `current time`, then the chat room will be placed in the order of the last seen.
   Future<void> resetUnreadMessage(ChatRoom room) async {
+    /// Reset the unread message count
     final Map<String, Object?> resetUnread = {
       unreadMessageCountRef(room.id).path: 0,
     };
-    final lastMessageAt = room.lastMessageAt;
-    if (lastMessageAt != null) {
-      final updatedOrder = lastMessageAt * -1;
-      resetUnread['chat/joins/${myUid!}/${room.id}/order'] = updatedOrder;
-      if (room.single) {
-        resetUnread['chat/joins/${myUid!}/${room.id}/$singleOrder'] =
-            updatedOrder;
-      }
-      if (room.group) {
-        resetUnread['chat/joins/${myUid!}/${room.id}/$groupOrder'] =
-            updatedOrder;
-      }
-      if (room.open) {
-        resetUnread['chat/joins/${myUid!}/${room.id}/$openOrder'] =
-            updatedOrder;
-      }
+
+    /// Re-order
+    final lastMessageAt = room.lastMessageAt?.millisecondsSinceEpoch ??
+        DateTime.now().millisecondsSinceEpoch;
+
+    int updatedOrder = lastMessageAt * -1;
+    if (openOrderType == OpenOrderType.lastMessage) {
+    } else if (openOrderType == OpenOrderType.lastSeen) {
+      updatedOrder = DateTime.now().millisecondsSinceEpoch * -1;
+    }
+
+    resetUnread['chat/joins/${myUid!}/${room.id}/order'] = updatedOrder;
+    if (room.single) {
+      resetUnread['chat/joins/${myUid!}/${room.id}/$singleOrder'] =
+          updatedOrder;
+    }
+    if (room.group) {
+      resetUnread['chat/joins/${myUid!}/${room.id}/$groupOrder'] = updatedOrder;
+    }
+    if (room.open) {
+      resetUnread['chat/joins/${myUid!}/${room.id}/$openOrder'] = updatedOrder;
     }
     await FirebaseDatabase.instance.ref().update(resetUnread);
   }
@@ -714,5 +743,11 @@ class ChatService {
     }
     // 3. unblock the user
     await room.ref.child('blockedUsers').child(uid).set(null);
+  }
+
+  /// Returns the number of invitations that the LOGIN user has.
+  Future<int> getMyInvitationCount() async {
+    final DataSnapshot snapshot = await myInvitationsRef.get();
+    return snapshot.children.length;
   }
 }

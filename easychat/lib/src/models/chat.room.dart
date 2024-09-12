@@ -72,7 +72,7 @@ class ChatRoom {
   bool group;
 
   /// [lastMessageAt] is the time when last message was sent to chat room.
-  int? lastMessageAt;
+  DateTime? lastMessageAt;
 
   /// [gender] to filter the chat room by user's gender.
   /// If it's M, then only male can enter the chat room. And if it's F,
@@ -137,8 +137,9 @@ class ChatRoom {
       updatedAt: json[field.updatedAt] is num
           ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt])
           : DateTime.now(),
-      lastMessageAt:
-          json[field.lastMessageAt] ?? DateTime.now().millisecondsSinceEpoch,
+      lastMessageAt: json[field.lastMessageAt] == null
+          ? DateTime.now()
+          : DateTime.fromMillisecondsSinceEpoch(json[field.lastMessageAt]),
       allMembersCanInvite: json[field.allMembersCanInvite] ?? false,
       gender: json[field.gender],
       domain: json[field.domain],

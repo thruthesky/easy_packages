@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 /// Display the number of new messages in the chat room.
 ///
 /// This widget rebuild when the number of new messages changes.
+///
+/// TODO: Add chat-joinsj/uid/room-id/unread-message-count just the same as unread-message-count in the setting. IMPORTANT !!! maintain the chat/settigns/uid/unread-message-count as it is. it will be used for counting the whole number of messages.
 class ChatNewMessageCounter extends StatelessWidget {
   const ChatNewMessageCounter({
     super.key,
