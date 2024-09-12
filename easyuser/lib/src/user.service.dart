@@ -5,6 +5,7 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,6 +21,8 @@ class UserService {
 
   bool initialized = false;
 
+  fa.FirebaseAuth get auth => fa.FirebaseAuth.instance;
+
   CollectionReference get col => FirebaseFirestore.instance.collection('users');
   CollectionReference get metaCol => col.doc(myUid).collection('user-meta');
 
@@ -27,8 +30,7 @@ class UserService {
   DocumentReference get blockDoc => metaCol.doc('blocks');
 
   /// RTDB /mirror-users reference
-  DatabaseReference get mirrorUsersRef =>
-      FirebaseDatabase.instance.ref('mirror-users');
+  DatabaseReference get mirrorUsersRef => FirebaseDatabase.instance.ref('mirror-users');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -42,8 +44,7 @@ class UserService {
   Map<String, dynamic> blocks = {};
 
   /// Fires whenever the user blocking data changes.
-  BehaviorSubject<Map<String, dynamic>> blockChanges =
-      BehaviorSubject.seeded({});
+  BehaviorSubject<Map<String, dynamic>> blockChanges = BehaviorSubject.seeded({});
 
   /// Enable anonymous sign in, by default it is false.
   ///
@@ -73,11 +74,7 @@ class UserService {
   List<Widget> Function(User)? suffixActionBuilderOnPublicProfileScreen;
 
   /// True if the user is signed in with phone number.
-  bool get isPhoneSignIn =>
-      currentUser?.providerData
-          .where((e) => e.providerId == 'phone')
-          .isNotEmpty ??
-      false;
+  bool get isPhoneSignIn => currentUser?.providerData.where((e) => e.providerId == 'phone').isNotEmpty ?? false;
 
   init({
     bool enableAnonymousSignIn = false,
@@ -95,10 +92,8 @@ class UserService {
 
     initialized = true;
 
-    this.prefixActionBuilderOnPublicProfileScreen =
-        prefixActionBuilderOnPublicProfileScreen;
-    this.suffixActionBuilderOnPublicProfileScreen =
-        suffixActionBuilderOnPublicProfileScreen;
+    this.prefixActionBuilderOnPublicProfileScreen = prefixActionBuilderOnPublicProfileScreen;
+    this.suffixActionBuilderOnPublicProfileScreen = suffixActionBuilderOnPublicProfileScreen;
 
     this.enableAnonymousSignIn = enableAnonymousSignIn;
     listenDocumentChanges();
@@ -118,8 +113,7 @@ class UserService {
 
   /// Listen to my document
   StreamSubscription<fa.User?>? firebaseAuthSubscription;
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
-      firestoreMyDocSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? firestoreMyDocSubscription;
 
   StreamSubscription<DocumentSnapshot>? firestoreBlockingSubscription;
 
@@ -146,8 +140,7 @@ class UserService {
         /// User signed in (or changed)
 
         /// The signed user's ref.
-        final signedInUserRef =
-            FirebaseFirestore.instance.collection('users').doc(faUser.uid);
+        final signedInUserRef = FirebaseFirestore.instance.collection('users').doc(faUser.uid);
 
         /// * Fire user document update immediately *
         /// This is required for the case where the app(or device) has no
@@ -181,8 +174,7 @@ class UserService {
         /// 사용자 문서 초기화
         await initUserLogin(faUser.uid);
 
-        firestoreMyDocSubscription =
-            signedInUserRef.snapshots().listen((snapshot) {
+        firestoreMyDocSubscription = signedInUserRef.snapshots().listen((snapshot) {
           // 주의: 여기서는 어떤 경우에도 사용자 문서를 업데이트해서는 안된다.
           if (snapshot.exists) {
             user = User.fromSnapshot(snapshot);
@@ -214,14 +206,14 @@ class UserService {
       final user = currentUser;
       if (user == null) {
         dog('initAnonymousSignIn: sign in anonymously');
-        await fa.FirebaseAuth.instance.signInAnonymously();
+        await auth.signInAnonymously();
       }
     }
   }
 
   /// Get my user document
   Future<void> signOut() async {
-    await fa.FirebaseAuth.instance.signOut();
+    await auth.signOut();
   }
 
   /// Initialize(update) user document on login
@@ -302,9 +294,7 @@ class UserService {
       /// update the phone number in `/user-phone-sign-in-numbers`.
       final phoneNumber = currentUser?.phoneNumber;
       if (phoneNumber != null) {
-        final doc = FirebaseFirestore.instance
-            .collection('user-phone-sign-in-numbers')
-            .doc(phoneNumber);
+        final doc = FirebaseFirestore.instance.collection('user-phone-sign-in-numbers').doc(phoneNumber);
         await doc.set(
           {
             'lastSignedInAt': FieldValue.serverTimestamp(),
@@ -325,9 +315,7 @@ class UserService {
   ///
   /// See README.md for details
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
-    final doc = FirebaseFirestore.instance
-        .collection('user-phone-sign-in-numbers')
-        .doc(phoneNumber);
+    final doc = FirebaseFirestore.instance.collection('user-phone-sign-in-numbers').doc(phoneNumber);
     final snapshot = await doc.get();
     return snapshot.exists;
   }
@@ -341,8 +329,7 @@ class UserService {
     return showGeneralDialog(
       context: context,
       pageBuilder: (context, _, __) {
-        return $showPublicProfileScreen?.call(context, user) ??
-            UserPublicProfileScreen(user: user);
+        return $showPublicProfileScreen?.call(context, user) ?? UserPublicProfileScreen(user: user);
       },
     );
   }
@@ -350,8 +337,7 @@ class UserService {
   showProfileUpdaeScreen(BuildContext context) {
     return showGeneralDialog(
       context: context,
-      pageBuilder: (context, _, __) =>
-          $showProfileUpdateScreen?.call() ?? const UserProfileUpdateScreen(),
+      pageBuilder: (context, _, __) => $showProfileUpdateScreen?.call() ?? const UserProfileUpdateScreen(),
     );
   }
 

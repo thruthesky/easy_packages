@@ -39,8 +39,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final documentReference =
-      FirebaseFirestore.instance.collection('tmp').doc('bbb');
+  final documentReference = FirebaseFirestore.instance.collection('tmp').doc('bbb');
   @override
   void initState() {
     super.initState();

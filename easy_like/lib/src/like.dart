@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_like/easy_like.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 /// Support like only. Not dislike.
 /// See README.md for more information.
 class Like {
-  static CollectionReference get col =>
-      FirebaseFirestore.instance.collection('likes');
+  static CollectionReference get col => FirebaseFirestore.instance.collection('likes');
 
   /// original document reference. It is called 'target document reference'.
   final DocumentReference documentReference;
@@ -48,7 +46,7 @@ class Like {
   /// - Increase the likes count
   /// - Increaes the likes count in the document
   Future<void> like() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
+    final currentUser = LikeService.instance.auth.currentUser;
 
     if (currentUser == null) {
       throw LikeException('like/sign-in-required', 'User is not signed in');
@@ -62,8 +60,7 @@ class Like {
       List<String> likedBy = [];
       final snapshot = await likeRef.get();
       if (snapshot.exists) {
-        final Map<String, dynamic> data =
-            snapshot.data() as Map<String, dynamic>;
+        final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
         likedBy = List<String>.from(data['likedBy'] ?? []);
       }
 

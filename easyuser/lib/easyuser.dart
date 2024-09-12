@@ -27,3 +27,4 @@ export './src/user.dart';
 export './src/user.defines.dart';
 export './src/user.functions.dart';
 export './src/user.service.dart';
+export './src/user.test.service.dart';

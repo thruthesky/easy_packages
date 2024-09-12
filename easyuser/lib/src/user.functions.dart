@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easyuser/easyuser.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 /// Login or register
 ///
@@ -40,14 +41,13 @@ Future loginOrRegister({
 }) async {
   try {
     // login
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
+    await UserService.instance.auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
   } catch (e) {
     // create
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
+    await UserService.instance.auth.createUserWithEmailAndPassword(email: email, password: password);
     return;
   }
 }

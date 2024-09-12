@@ -683,6 +683,15 @@ UserCircleAvatar(
 
 
 
+# Testing with 2nd Firebase
+
+If you set up second firebase, the default firebase app is no longer used. And only the 2nd Firebase project is used. You can use it for the test purpose.
+
+```dart
+UserService.instance.ini(app: '2nd-firebase-app');
+```
+
+
 
 # Known Issues and Common Problems
 
