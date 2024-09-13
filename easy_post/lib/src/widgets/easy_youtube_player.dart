@@ -116,7 +116,6 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
                 width: 8,
               ),
               const RemainingDuration(),
-              // FullScreenButton(),
             ],
             topActions: const [],
             controller: youtubeController,
