@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // youtube player to display yout youtube video
@@ -8,11 +7,13 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class EasyYoutubePlayer extends StatefulWidget {
   /// `autoPlay` if true the player will automatically play or start when initialized
   ///
-  /// `thumbnail` use this to display thumbnail if the youtube is idle or not playing
+  /// `thumbnailBuilder` use this to display thumbnail if the youtube is idle or not playing
   ///
   /// `aspectRatio` use to change the aspectRatio of the Youtube player
   ///
   /// `width` use to change the width of the youtube player
+  ///
+  /// `actionPadding` use to change the padding of the action buttons
   ///
   /// note: this widget is only for displaying youtube video. this widget does not
   /// provide aditional customization and other control actions
@@ -20,16 +21,18 @@ class EasyYoutubePlayer extends StatefulWidget {
     super.key,
     required this.post,
     this.autoPlay = false,
-    this.thumbnail,
+    this.thumbnailBuilder,
     this.width,
     this.aspectRatio = 16 / 9,
+    this.actionPadding = const EdgeInsets.all(8),
   });
 
   final Post post;
   final bool autoPlay;
-  final Widget Function(PlayerState)? thumbnail;
+  final Widget Function(PlayerState)? thumbnailBuilder;
   final double? width;
   final double aspectRatio;
+  final EdgeInsetsGeometry actionPadding;
   @override
   State<EasyYoutubePlayer> createState() => _EasyYoutubePlayerState();
 }
@@ -37,8 +40,7 @@ class EasyYoutubePlayer extends StatefulWidget {
 class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
   late YoutubePlayerController youtubeController;
 
-  ValueNotifier<PlayerState> isPlayerStateNotifier =
-      ValueNotifier(PlayerState.unStarted);
+  ValueNotifier<PlayerState> isPlayerStateNotifier = ValueNotifier(PlayerState.unStarted);
 
   @override
   void initState() {
@@ -73,7 +75,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
   @override
   void didUpdateWidget(covariant EasyYoutubePlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.post.youtube['id'] != widget.post.youtube['']) {
+    if (oldWidget.post.youtube['id'] != widget.post.youtube['id']) {
       youtubeController.load(widget.post.youtube['id']);
       widget.autoPlay ? youtubeController.play() : youtubeController.pause();
     }
@@ -87,28 +89,27 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
         valueListenable: isPlayerStateNotifier,
         builder: (context, state, child) {
           return YoutubePlayer(
+            actionsPadding: widget.actionPadding,
             aspectRatio: widget.aspectRatio,
             width: widget.width,
             bottomActions: [
               IconButton(
+                visualDensity: VisualDensity.compact,
                 onPressed: () {
-                  youtubeController.value.isPlaying
-                      ? youtubeController.pause()
-                      : youtubeController.play();
+                  state == PlayerState.playing ? youtubeController.pause() : youtubeController.play();
                 },
                 icon: Icon(
-                  youtubeController.value.isPlaying
-                      ? Icons.pause
-                      : Icons.play_arrow,
+                  state == PlayerState.playing ? Icons.pause : Icons.play_arrow,
                   color: Colors.white,
                 ),
               ),
               const CurrentPosition(),
               const ProgressBar(
                 colors: ProgressBarColors(
-                    playedColor: Colors.white,
-                    handleColor: Colors.white,
-                    backgroundColor: Colors.grey),
+                  playedColor: Colors.white,
+                  handleColor: Colors.white,
+                  backgroundColor: Colors.grey,
+                ),
                 isExpanded: true,
               ),
               const SizedBox(
@@ -120,14 +121,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
             topActions: const [],
             controller: youtubeController,
             // when thumbnail is not provideo it will try to get from the provided post
-            // when it is also not exist in the post it will show a  default arrow
-            thumbnail: widget.thumbnail?.call(state) ??
-                CachedNetworkImage(
-                  imageUrl: widget.post.youtube['thumbnails']['maxres']['url'],
-                  errorWidget: (context, error, _) => const Center(
-                    child: Icon(Icons.play_arrow),
-                  ),
-                ),
+            thumbnail: widget.thumbnailBuilder?.call(state),
           );
         });
   }

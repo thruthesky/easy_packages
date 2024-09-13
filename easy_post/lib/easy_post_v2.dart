@@ -1,4 +1,3 @@
-export 'package:youtube_player_flutter/src/enums/player_state.dart';
 export './src/post.dart';
 export 'src/post.locales.dart';
 export './src/post.service.dart';
@@ -25,3 +24,4 @@ export './src/screens/youtube.list.screen.dart';
 export './src/widgets/youtube.tile.dart';
 
 export './src/post.functions.dart';
+export 'package:youtube_player_flutter/src/enums/player_state.dart';
