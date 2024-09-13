@@ -30,7 +30,7 @@ class ChatRoomListTile extends StatelessWidget {
                   "${join.unreadMessageCount}",
                 ),
               ),
-        Text((join.lastMessageAt).short),
+        if (join.lastMessageAt != null) Text((join.lastMessageAt!).short),
       ],
     );
     if (join.group) {

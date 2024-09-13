@@ -9,8 +9,8 @@ class ChatJoin {
   final int? groupOrder;
   final int? openOrder;
   final int order;
-  final String lastMessageUid;
-  final DateTime lastMessageAt;
+  final String? lastMessageUid;
+  final DateTime? lastMessageAt;
   final bool? lastMessageDeleted;
   final String? lastText;
   final String? lastUrl;
@@ -58,7 +58,7 @@ class ChatJoin {
       singleOrder: json[f.singleOrder],
       groupOrder: json[f.groupOrder],
       openOrder: json[f.openOrder],
-      order: json[f.order],
+      order: json[f.order] ?? DateTime.now().millisecondsSinceEpoch,
       lastMessageUid: json[f.lastMessageUid],
       lastMessageAt: DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
       lastMessageDeleted: json[f.lastMessageDeleted],
