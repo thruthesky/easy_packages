@@ -16,6 +16,8 @@ class ChatJoin {
   final String? lastUrl;
   final String? lastProtocol;
 
+  final int unreadMessageCount;
+
   final String? name;
   final String? iconUrl;
   final String? displayName;
@@ -38,6 +40,7 @@ class ChatJoin {
     required this.lastText,
     required this.lastUrl,
     required this.lastProtocol,
+    this.unreadMessageCount = 0,
     this.name,
     this.iconUrl,
     this.displayName,
@@ -57,12 +60,12 @@ class ChatJoin {
       openOrder: json[f.openOrder],
       order: json[f.order],
       lastMessageUid: json[f.lastMessageUid],
-      lastMessageAt:
-          DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
+      lastMessageAt: DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
       lastMessageDeleted: json[f.lastMessageDeleted],
       lastUrl: json[f.lastUrl],
       lastText: json[f.lastText],
       lastProtocol: json[f.lastProtocol],
+      unreadMessageCount: json[f.unreadMessageCount] ?? 0,
       name: json[f.name],
       iconUrl: json[f.iconUrl],
       displayName: json[f.displayName],
@@ -84,6 +87,7 @@ class ChatJoin {
       f.lastText: lastText,
       f.lastUrl: lastUrl,
       f.lastProtocol: lastProtocol,
+      f.unreadMessageCount: unreadMessageCount,
       'name': name,
       'iconUrl': iconUrl,
       'displayName': displayName,

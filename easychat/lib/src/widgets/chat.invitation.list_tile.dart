@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +23,11 @@ class ChatInvitationListTile extends StatelessWidget {
 
   static const double _minTileHeight = 70;
 
-  static const EdgeInsetsGeometry _contentPadding =
-      EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsetsGeometry _contentPadding = EdgeInsets.symmetric(horizontal: 16);
 
   @override
   Widget build(BuildContext context) {
+    dog("Initation List tile");
     if (room.single == true) {
       final otherUid = getOtherUserUidFromRoomId(room.id)!;
       return UserBlocked(
@@ -53,9 +54,7 @@ class ChatInvitationListTile extends StatelessWidget {
                       width: 48,
                       height: 48,
                       clipBehavior: Clip.hardEdge,
-                      child: user == null
-                          ? const Icon(Icons.person)
-                          : UserAvatar(user: user),
+                      child: user == null ? const Icon(Icons.person) : UserAvatar(user: user),
                     ),
                   ),
                   title: Text(
@@ -63,8 +62,7 @@ class ChatInvitationListTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: user?.stateMessage != null &&
-                          user!.stateMessage!.isNotEmpty
+                  subtitle: user?.stateMessage != null && user!.stateMessage!.isNotEmpty
                       ? Text(
                           user.stateMessage ?? "",
                           maxLines: 1,
