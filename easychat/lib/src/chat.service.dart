@@ -495,9 +495,11 @@ class ChatService {
     // Return if the other user rejected. Don't send invitation again once rejected.
     final otherUserUid = getOtherUserUidFromRoomId(room.id)!;
 
-    // Check if the other user is rejected
-    final rejectedSnapshot = await ChatService.instance.rejectedUserRef(otherUserUid).get();
+    // Check if the other user rejected the invitation already
+    final rejectedSnapshot = await ChatService.instance.rejectedUserRef(otherUserUid).child(room.id).get();
     if (rejectedSnapshot.exists) {
+      // Take note that if we are using a separator,
+      // using SizedBox.shrink here will not look good.)
       return;
     }
 
