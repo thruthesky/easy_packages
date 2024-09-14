@@ -24,3 +24,4 @@ export './src/screens/youtube.list.screen.dart';
 export './src/widgets/youtube.tile.dart';
 
 export './src/post.functions.dart';
+export 'package:youtube_player_flutter/src/enums/player_state.dart';
