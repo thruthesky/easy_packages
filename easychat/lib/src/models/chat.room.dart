@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easychat/easychat.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easyuser/easyuser.dart';
@@ -72,7 +73,7 @@ class ChatRoom {
   bool group;
 
   /// [lastMessageAt] is the time when last message was sent to chat room.
-  int? lastMessageAt;
+  DateTime? lastMessageAt;
 
   /// [gender] to filter the chat room by user's gender.
   /// If it's M, then only male can enter the chat room. And if it's F,
@@ -112,8 +113,10 @@ class ChatRoom {
 
   /// Return the chat room object from the snapshot.
   factory ChatRoom.fromSnapshot(DataSnapshot data) {
-    return ChatRoom.fromJson(
-        (Map<String, dynamic>.from(data.value as Map)), data.key!);
+    if (data.value is int) {
+      dog("data.value is int");
+    }
+    return ChatRoom.fromJson((Map<String, dynamic>.from(data.value as Map)), data.key!);
   }
 
   /// Return the chat room object from the json.
@@ -126,9 +129,7 @@ class ChatRoom {
       open: json[field.open],
       single: json[field.single],
       group: json[field.group],
-      users: json[field.users] is Map
-          ? Map<String, bool>.from(json[field.users])
-          : {},
+      users: json[field.users] is Map ? Map<String, bool>.from(json[field.users]) : {},
       masterUsers: List<String>.from(json[field.masterUsers]),
       blockedUsers: Map<String, bool>.from(json[field.blockedUsers] ?? {}),
       createdAt: json[field.createdAt] is num
@@ -137,8 +138,9 @@ class ChatRoom {
       updatedAt: json[field.updatedAt] is num
           ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt])
           : DateTime.now(),
-      lastMessageAt:
-          json[field.lastMessageAt] ?? DateTime.now().millisecondsSinceEpoch,
+      lastMessageAt: json[field.lastMessageAt] == null
+          ? DateTime.now()
+          : DateTime.fromMillisecondsSinceEpoch(json[field.lastMessageAt]),
       allMembersCanInvite: json[field.allMembersCanInvite] ?? false,
       gender: json[field.gender],
       domain: json[field.domain],
@@ -168,14 +170,12 @@ class ChatRoom {
     };
   }
 
-  @Deprecated(
-      'DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
+  @Deprecated('DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
   copyFromSnapshot(DataSnapshot doc) {
     copyFrom(ChatRoom.fromSnapshot(doc));
   }
 
-  @Deprecated(
-      'DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
+  @Deprecated('DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
   copyFrom(ChatRoom room) {
     // copy all the fields from the room
     id = room.id;
@@ -312,8 +312,7 @@ class ChatRoom {
       if (open != null) field.open: open,
       if (single != null) field.single: single,
       if (group != null) field.group: group,
-      if (allMembersCanInvite != null)
-        field.allMembersCanInvite: allMembersCanInvite,
+      if (allMembersCanInvite != null) field.allMembersCanInvite: allMembersCanInvite,
       field.updatedAt: ServerValue.timestamp,
     };
 

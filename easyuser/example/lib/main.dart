@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_locale/easy_locale.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easyuser/easyuser.dart';
@@ -10,20 +10,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   lo.init();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await Firebase.initializeApp(
-    name: 'withcenter-test-4',
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyC4JBZruWm7i8GI6W5Ge8HjXPN6LxEzZqM',
-      appId: '1:109766947030:ios:ad65ec34614b14ea239977',
-      messagingSenderId: '109766947030',
-      projectId: 'withcenter-test-4',
-      databaseURL: 'https://withcenter-test-4-default-rtdb.firebaseio.com',
-      storageBucket: 'withcenter-test-4.appspot.com',
-      iosBundleId: 'com.exam.banana.RunnerTests',
-    ),
-  );
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   runApp(const MyApp());
 }
 
@@ -79,7 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
-                            onPressed: () => UserService.instance.showProfileUpdaeScreen(context),
+                            onPressed: () => UserService.instance
+                                .showProfileUpdaeScreen(context),
                             child: const Text('Profile update'),
                           ),
                           ElevatedButton(
@@ -118,7 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () async {
                 UserService.instance.signOut();
-                final String uid = await UserTestService.instance.createTestUser();
+                final String uid =
+                    await UserTestService.instance.createTestUser();
                 log('loginOrRegister uid: $uid');
               },
               child: const Text('loginOrRegister on 2nd Firebase'),

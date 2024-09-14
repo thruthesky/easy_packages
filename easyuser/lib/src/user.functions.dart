@@ -1,5 +1,4 @@
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 /// Login or register
 ///

@@ -69,18 +69,19 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
     return room!.name;
   }
 
-  if (join != null) {
-    if (join.group) {
-      return join.name ?? 'no name'.t;
-      // TODO: group has no name? put some default value from configuration.
-      // Issue: Need to consider the translations.
-    }
-    if (join.single) {
-      return join.displayName ?? 'no name'.t;
-      // TODO: if the user has no name then, display some default value from the configuration.
-      // Issue: Need to consider the translations.
-    }
+  if (join == null) return 'chat room'.t;
+
+  if (join.group) {
+    return join.name ?? 'no name'.t;
+    // CONSIDER: group has no name? put some default value from configuration.
+    // Issue: Need to consider the translations.
   }
+  if (join.single) {
+    return join.displayName ?? 'no name'.t;
+    // CONSIDER: if the user has no name then, display some default value from the configuration.
+    // Issue: Need to consider the translations.
+  }
+
   return 'chat room'.t;
 }
 
@@ -101,17 +102,16 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
 /// - Don't use it for saving chat messages which needs ultamite performance
 ///   for writing and the chat messages are often created. Use this only for
 ///   ordering the chat rooms.
+///
+/// * Recommendation
+/// - If the time is used for the login user only, simple user [DateTime].
+/// - If the time is used for multiple users, use this function to the server time.
 Future<int> getServerTimestamp() async {
-  final ref = FirebaseDatabase.instance
-      .ref()
-      .child('chat')
-      .child('-info')
-      .child('timestamp');
+  final ref = FirebaseDatabase.instance.ref().child('chat').child('-info').child('timestamp');
   await ref.set(ServerValue.timestamp);
   final snapshot = await ref.get();
   return snapshot.value as int;
 }
 
 /// Returns the chat room reference. Shotcut for the ChatService.instance.roomRef(roomId).
-DatabaseReference roomRef(String roomId) =>
-    ChatService.instance.roomsRef.child(roomId);
+DatabaseReference roomRef(String roomId) => ChatService.instance.roomsRef.child(roomId);

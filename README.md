@@ -99,6 +99,8 @@ dependency_overrides:
 # Packages
 
 
+
+
 ## Storage
 
 This package helps your app upload photos and videos to Firebase Storage.
@@ -545,4 +547,14 @@ The easy packages have a rule for this work.
   - The name of the builder must begin with `actionBuilderOn`.
   - ex: `actionBuilderOnXxxScreen`.
 
+
+
+# Developer's tips
+
+
+
+## Run flutter pub get on each packages
+
+
+Run `./pubget.sh` under the `easy_packages` folder. This will run `flutter pub get` under each packages.
 

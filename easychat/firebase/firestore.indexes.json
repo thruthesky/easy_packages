@@ -1,11 +1,11 @@
 {
   "indexes": [
     {
-      "collectionGroup": "chat_rooms",
+      "collectionGroup": "chat-rooms",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "users",
+          "fieldPath": "invitedUsers",
           "arrayConfig": "CONTAINS"
         },
         {
@@ -19,8 +19,8 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "invitedUsers",
-          "arrayConfig": "CONTAINS"
+          "fieldPath": "open",
+          "order": "ASCENDING"
         },
         {
           "fieldPath": "updatedAt",
@@ -61,12 +61,82 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "category",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "likeCount",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "posts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "category",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "score",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "posts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "size",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "score",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "posts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "uid",
           "order": "ASCENDING"
         },
         {
           "fieldPath": "createdAt",
           "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "posts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "score",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "puzzle-score",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "size",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "time",
+          "order": "ASCENDING"
         }
       ]
     },

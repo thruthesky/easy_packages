@@ -4,6 +4,7 @@ const String openOrder = 'openOrder';
 const String joinedAt = 'joinedAt';
 const String order = 'order';
 const String lastMessageUid = 'lastMessageUid';
+const String unreadMessageCount = 'unread-message-count';
 const String lastMessageAt = 'lastMessageAt';
 const String lastMessageDeleted = 'lastMessageDeleted';
 const String lastText = 'lastText';

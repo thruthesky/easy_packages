@@ -13,6 +13,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Storage Rules](#storage-rules)
     - [Firestore Rules](#firestore-rules)
     - [Firestore Indexes](#firestore-indexes)
+  - [Initialization](#initialization)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
   - [Group chat room creation](#group-chat-room-creation)
@@ -29,7 +30,9 @@ This `easychat` package offers everything you need to build a chat app. With thi
     - [Saving unread number of messages.](#saving-unread-number-of-messages)
     - [Changing the chat room name](#changing-the-chat-room-name)
     - [Saving push notifications](#saving-push-notifications)
+  - [Chat Room Leaving](#chat-room-leaving)
   - [Invited, Rejected Users](#invited-rejected-users)
+  - [Chat Blocking](#chat-blocking)
   - [Server timestamp](#server-timestamp)
 - [Widgets](#widgets)
   - [Displaying chat room information](#displaying-chat-room-information)
@@ -118,6 +121,48 @@ For your information on `easychat` history:
 ## Secuirty rules
 
 ### Realtime Database Security Rules
+
+
+```json
+// easychat package security rules.
+"chat": {
+  "-info": {
+    "timestamp": {
+      ".read": true,
+      ".write": true,
+    }
+  },
+  "invited-users": {
+    ".read": true,
+    ".write": true
+  },
+  "rejected-users": {
+    ".read": true,
+    ".write": true
+  },
+  "joins": {
+    ".read": true,
+    ".write": true
+  },
+  "messages": {
+    "$room_id": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["protocol"]
+    }
+  },
+  "rooms": {
+    ".read": true,
+    ".write": true
+  },
+  "settings": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+
+
 
 ### Storage Rules
 
@@ -270,6 +315,16 @@ ChatInvitationCount(builder: (int no) {
   return Badge(label: Text("$no"));
 }),
 ```
+
+
+## Number of New Messages Counting
+
+The new message is maintained in:
+- `chat/settings/<uid>/unread-message-count/<room-id>:0`.
+- `chat-joins/uid/room-id/unread-message-count:0`
+
+Therefore, when there is new message, there fields will increment.
+Moreover, when user reads the new message, it will become `null`.
 
 # Database Strucutre
 

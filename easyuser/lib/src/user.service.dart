@@ -5,7 +5,6 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -74,7 +73,8 @@ class UserService {
   List<Widget> Function(User)? suffixActionBuilderOnPublicProfileScreen;
 
   /// True if the user is signed in with phone number.
-  bool get isPhoneSignIn => currentUser?.providerData.where((e) => e.providerId == 'phone').isNotEmpty ?? false;
+  bool get isPhoneSignIn =>
+      currentUser?.providerData.where((e) => e.providerId == 'phone').isNotEmpty ?? false;
 
   init({
     bool enableAnonymousSignIn = false,
