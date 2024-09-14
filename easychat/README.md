@@ -316,6 +316,16 @@ ChatInvitationCount(builder: (int no) {
 }),
 ```
 
+
+## Number of New Messages Counting
+
+The new message is maintained in:
+- `chat/settings/<uid>/unread-message-count/<room-id>:0`.
+- `chat-joins/uid/room-id/unread-message-count:0`
+
+Therefore, when there is new message, there fields will increment.
+Moreover, when user reads the new message, it will become `null`.
+
 # Database Strucutre
 
 

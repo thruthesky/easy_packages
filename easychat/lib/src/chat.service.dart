@@ -27,25 +27,20 @@ class ChatService {
 
   /// Database path for chat room and message
   /// Database of chat room and message
-  final DatabaseReference roomsRef =
-      FirebaseDatabase.instance.ref().child('chat/rooms');
+  final DatabaseReference roomsRef = FirebaseDatabase.instance.ref().child('chat/rooms');
 
   DatabaseReference roomRef(String roomId) => roomsRef.child(roomId);
 
-  final DatabaseReference messagesRef =
-      FirebaseDatabase.instance.ref().child('chat/messages');
+  final DatabaseReference messagesRef = FirebaseDatabase.instance.ref().child('chat/messages');
 
   DatabaseReference messageRef(String roomId) => messagesRef.child(roomId);
 
-  final DatabaseReference joinsRef =
-      FirebaseDatabase.instance.ref().child('chat/joins');
+  final DatabaseReference joinsRef = FirebaseDatabase.instance.ref().child('chat/joins');
 
-  DatabaseReference joinRef(String roomId) =>
-      joinsRef.child(myUid!).child(roomId);
+  DatabaseReference joinRef(String roomId) => joinsRef.child(myUid!).child(roomId);
 
   /// Reference: the list of user and the room list that the user invited to.
-  final DatabaseReference invitedUsersRef =
-      FirebaseDatabase.instance.ref().child('chat/invited-users');
+  final DatabaseReference invitedUsersRef = FirebaseDatabase.instance.ref().child('chat/invited-users');
 
   /// Reference: the chat room list that the user invited to.
   DatabaseReference invitedUserRef(String uid) => invitedUsersRef.child(uid);
@@ -58,22 +53,17 @@ class ChatService {
 
   DatabaseReference rejectedUserRef(String uid) => rejectedUsersRef.child(uid);
 
-  DatabaseReference get mySettingRef => FirebaseDatabase.instance
-      .ref()
-      .child('chat')
-      .child('settings')
-      .child(myUid!);
+  DatabaseReference get mySettingRef =>
+      FirebaseDatabase.instance.ref().child('chat').child('settings').child(myUid!);
 
   /// Reference: the login user's unread message count of the chat room
   DatabaseReference unreadMessageCountRef(String roomId) =>
       mySettingRef.child('unread-message-count').child(roomId);
 
   /// Callback function
-  Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})?
-      $showChatRoomListScreen;
+  Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})? $showChatRoomListScreen;
 
-  Future<T?> Function<T>(BuildContext context, {ChatRoom? room})?
-      $showChatRoomEditScreen;
+  Future<T?> Function<T>(BuildContext context, {ChatRoom? room})? $showChatRoomEditScreen;
 
   /// Openn chat room screen
   Future<T?> Function<T>(BuildContext context)? $showOpenChatRoomListScreen;
@@ -85,15 +75,13 @@ class ChatService {
   /// Callback on chatMessage send, use this if you want to do task after message is created.,
   /// Usage: e.g. send push notification after message is created
   /// Callback will have the new [message] ChatMessage information and [room] ChatRoom information
-  FutureOr<void> Function(
-      {required ChatMessage message, required ChatRoom room})? onSendMessage;
+  FutureOr<void> Function({required ChatMessage message, required ChatRoom room})? onSendMessage;
 
   /// Callback on after userInvite. Can be use if you want to do task after invite.
   /// Usage: e.g. send push notification after user was invited
   /// [room] current ChatRoom
   /// [uid] uid of the user that is being invited
-  FutureOr<void> Function({required ChatRoom room, required String uid})?
-      onInvite;
+  FutureOr<void> Function({required ChatRoom room, required String uid})? onInvite;
 
   /// It gets String parameter because the [no] can be something like "3+"
   Widget Function(String no)? newMessageBuilder;
@@ -104,41 +92,32 @@ class ChatService {
   Widget Function(BuildContext context)? loginButtonBuilder;
 
   /// Builder for showing a screen for chat room invites received by user.
-  Widget Function(BuildContext context)?
-      chatRoomReceivedInviteListScreenBuilder;
+  Widget Function(BuildContext context)? chatRoomReceivedInviteListScreenBuilder;
 
   /// Builder for showing a screen for chat room invites rejected by user.
-  Widget Function(BuildContext context)?
-      chatRoomRejectedInviteListScreenBuilder;
+  Widget Function(BuildContext context)? chatRoomRejectedInviteListScreenBuilder;
 
   /// Builder for showing Dialog for chat member list
   Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder;
 
   /// Builder for showing Dialog for blocked user list
-  Widget Function(BuildContext context, ChatRoom room)?
-      blockedUsersDialogBuilder;
+  Widget Function(BuildContext context, ChatRoom room)? blockedUsersDialogBuilder;
 
   OpenOrderType openOrderType = OpenOrderType.lastSeen;
 
   init({
-    Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})?
-        $showChatRoomListScreen,
-    Future<T?> Function<T>(BuildContext context, {ChatRoom? room})?
-        $showChatRoomEditScreen,
-    Function({required ChatMessage message, required ChatRoom room})?
-        onSendMessage,
+    Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})? $showChatRoomListScreen,
+    Future<T?> Function<T>(BuildContext context, {ChatRoom? room})? $showChatRoomEditScreen,
+    Function({required ChatMessage message, required ChatRoom room})? onSendMessage,
     Function({required ChatRoom room, required String uid})? onInvite,
     Widget Function(ChatRoom)? chatRoomActionButton,
     Widget Function(String no)? newMessageBuilder,
     Widget Function(int invites)? chatRoomInvitationCountBuilder,
     Widget Function(BuildContext context)? loginButtonBuilder,
-    Widget Function(BuildContext context)?
-        chatRoomReceivedInviteListScreenBuilder,
-    Widget Function(BuildContext context)?
-        chatRoomRejectedInviteListScreenBuilder,
+    Widget Function(BuildContext context)? chatRoomReceivedInviteListScreenBuilder,
+    Widget Function(BuildContext context)? chatRoomRejectedInviteListScreenBuilder,
     Widget Function(BuildContext context, ChatRoom room)? membersDialogBuilder,
-    Widget Function(BuildContext context, ChatRoom room)?
-        blockedUsersDialogBuilder,
+    Widget Function(BuildContext context, ChatRoom room)? blockedUsersDialogBuilder,
     OpenOrderType orderType = OpenOrderType.lastSeen,
   }) {
     dog('ChatService::init() begins');
@@ -150,18 +129,14 @@ class ChatService {
     openOrderType = orderType;
 
     this.newMessageBuilder = newMessageBuilder;
-    this.$showChatRoomListScreen =
-        $showChatRoomListScreen ?? this.$showChatRoomListScreen;
-    this.$showChatRoomEditScreen =
-        $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
+    this.$showChatRoomListScreen = $showChatRoomListScreen ?? this.$showChatRoomListScreen;
+    this.$showChatRoomEditScreen = $showChatRoomEditScreen ?? this.$showChatRoomEditScreen;
     this.chatRoomActionButton = chatRoomActionButton;
     this.onSendMessage = onSendMessage;
     this.onInvite = onInvite;
     this.loginButtonBuilder = loginButtonBuilder;
-    this.chatRoomReceivedInviteListScreenBuilder =
-        chatRoomReceivedInviteListScreenBuilder;
-    this.chatRoomRejectedInviteListScreenBuilder =
-        chatRoomRejectedInviteListScreenBuilder;
+    this.chatRoomReceivedInviteListScreenBuilder = chatRoomReceivedInviteListScreenBuilder;
+    this.chatRoomRejectedInviteListScreenBuilder = chatRoomRejectedInviteListScreenBuilder;
     this.membersDialogBuilder = membersDialogBuilder;
     this.blockedUsersDialogBuilder = blockedUsersDialogBuilder;
   }
@@ -220,8 +195,7 @@ class ChatService {
   /// Show the chat room edit screen. It's for borth create and update.
   /// Return Dialog/Screen that may return DocReference
   ///
-  Future<T?> showChatRoomEditScreen<T>(BuildContext context,
-      {ChatRoom? room, bool defaultOpen = false}) {
+  Future<T?> showChatRoomEditScreen<T>(BuildContext context, {ChatRoom? room, bool defaultOpen = false}) {
     return $showChatRoomEditScreen?.call<T>(context, room: room) ??
         showGeneralDialog<T>(
           context: context,
@@ -317,16 +291,12 @@ class ChatService {
     for (String uid in room.userUids) {
       updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] =
           updatedMessage.deleted == true ? true : null;
-      updates['chat/joins/$uid/${room.id}/$lastMessageUid'] =
-          updatedMessage.uid;
+      updates['chat/joins/$uid/${room.id}/$lastMessageUid'] = updatedMessage.uid;
       updates['chat/joins/$uid/${room.id}/$lastText'] =
           updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
       updates['chat/joins/$uid/${room.id}/$lastUrl'] =
-          (updatedMessage.url?.trim()).isNullOrEmpty
-              ? null
-              : updatedMessage.url;
-      updates['chat/joins/$uid/${room.id}/$lastProtocol'] =
-          updatedMessage.protocol;
+          (updatedMessage.url?.trim()).isNullOrEmpty ? null : updatedMessage.url;
+      updates['chat/joins/$uid/${room.id}/$lastProtocol'] = updatedMessage.protocol;
     }
     await FirebaseDatabase.instance.ref().update(updates);
   }
@@ -364,6 +334,7 @@ class ChatService {
         if (room.open) {
           updates['chat/joins/$uid/${room.id}/$openOrder'] = lessImportant;
         }
+        // updates['chat/settings/$uid/unread-message-count/${room.id}'] = null;
       } else {
         updates['chat/joins/$uid/${room.id}/order'] = moreImportant;
         if (room.single) {
@@ -375,8 +346,8 @@ class ChatService {
         if (room.open) {
           updates['chat/joins/$uid/${room.id}/$openOrder'] = moreImportant;
         }
-        updates['chat/settings/$uid/unread-message-count/${room.id}'] =
-            ServerValue.increment(1);
+        updates['chat/settings/$uid/unread-message-count/${room.id}'] = ServerValue.increment(1);
+        updates['chat/joins/$uid/${room.id}/unread-message-count'] = ServerValue.increment(1);
       }
 
       updates['chat/joins/$uid/${room.id}/$lastMessageAt'] = timestamp;
@@ -436,23 +407,26 @@ class ChatService {
   Future<void> resetUnreadMessage(ChatRoom room) async {
     /// Reset the unread message count
     final Map<String, Object?> resetUnread = {
-      unreadMessageCountRef(room.id).path: 0,
+      // unreadMessageCountRef(room.id).path: 0,
+      // REVIEW: Is it better if we will save null?
+      unreadMessageCountRef(room.id).path: null,
     };
 
     /// Re-order
-    final lastMessageAt = room.lastMessageAt?.millisecondsSinceEpoch ??
-        DateTime.now().millisecondsSinceEpoch;
+    final lastMessageAt =
+        room.lastMessageAt?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch;
 
     int updatedOrder = lastMessageAt * -1;
     if (openOrderType == OpenOrderType.lastMessage) {
+      // Do nothing.
+      // The updatedOrder is already using lastMessageAt * -1;
     } else if (openOrderType == OpenOrderType.lastSeen) {
       updatedOrder = DateTime.now().millisecondsSinceEpoch * -1;
     }
-
     resetUnread['chat/joins/${myUid!}/${room.id}/order'] = updatedOrder;
+    resetUnread['chat/joins/${myUid!}/${room.id}/unread-message-count'] = null;
     if (room.single) {
-      resetUnread['chat/joins/${myUid!}/${room.id}/$singleOrder'] =
-          updatedOrder;
+      resetUnread['chat/joins/${myUid!}/${room.id}/$singleOrder'] = updatedOrder;
     }
     if (room.group) {
       resetUnread['chat/joins/${myUid!}/${room.id}/$groupOrder'] = updatedOrder;
@@ -521,18 +495,16 @@ class ChatService {
     // Return if the other user rejected. Don't send invitation again once rejected.
     final otherUserUid = getOtherUserUidFromRoomId(room.id)!;
 
-    // Check if the other user is rejected
-    final rejectedSnapshot =
-        await ChatService.instance.rejectedUserRef(otherUserUid).get();
+    // Check if the other user rejected the invitation already
+    final rejectedSnapshot = await ChatService.instance.rejectedUserRef(otherUserUid).child(room.id).get();
     if (rejectedSnapshot.exists) {
+      // Take note that if we are using a separator,
+      // using SizedBox.shrink here will not look good.)
       return;
     }
 
     // Check if the other user is already invited
-    final invitedSnapshot = await ChatService.instance
-        .invitedUserRef(otherUserUid)
-        .child(room.id)
-        .get();
+    final invitedSnapshot = await ChatService.instance.invitedUserRef(otherUserUid).child(room.id).get();
     if (invitedSnapshot.exists) {
       return;
     }

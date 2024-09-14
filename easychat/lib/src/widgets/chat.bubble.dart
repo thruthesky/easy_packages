@@ -37,8 +37,7 @@ class ChatBubble extends StatelessWidget {
       // space in left if it is our own message.
       MediaQuery.of(context).size.width * 0.90 - 48;
 
-  double photoHeight(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56;
+  double photoHeight(BuildContext context) => MediaQuery.of(context).size.width * 0.56;
 
   Color replyDividerColor(BuildContext context) => message.uid == myUid
       ? const Color.fromARGB(255, 232, 205, 130)
@@ -77,12 +76,13 @@ class ChatBubble extends StatelessWidget {
     if (message.isProtocol) {
       return ChatProtocolBubble(message: message);
     }
+
+    dog("message display name: ${message.displayName}");
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
           ? (details) async {
-              if (UserService.instance.blockChanges.value
-                  .containsKey(message.uid)) {
+              if (UserService.instance.blockChanges.value.containsKey(message.uid)) {
                 return;
               }
               final value = await showMenu(
@@ -147,10 +147,7 @@ class ChatBubble extends StatelessWidget {
                         Text(
                           "blocked user".t,
                           style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withAlpha(100),
+                            color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -159,10 +156,7 @@ class ChatBubble extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: context.surface,
                             border: Border.all(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withAlpha(50),
+                              color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -173,15 +167,8 @@ class ChatBubble extends StatelessWidget {
                           child: Text(
                             "this message is comming from a blocked user".t,
                             style: TextStyle(
-                              fontSize: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.fontSize ??
-                                  8,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withAlpha(100),
+                              fontSize: Theme.of(context).textTheme.bodySmall?.fontSize ?? 8,
+                              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                             ),
                           ),
                         ),
@@ -193,9 +180,7 @@ class ChatBubble extends StatelessWidget {
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: message.uid != myUid
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.end,
+                mainAxisAlignment: message.uid != myUid ? MainAxisAlignment.start : MainAxisAlignment.end,
                 children: [
                   if (message.uid != myUid) ...[
                     Padding(
@@ -206,9 +191,8 @@ class ChatBubble extends StatelessWidget {
                             ? const ChatAvatarLoader()
                             : GestureDetector(
                                 behavior: HitTestBehavior.opaque,
-                                onTap: () => UserService.instance
-                                    .showPublicProfileScreen(context,
-                                        user: user),
+                                onTap: () =>
+                                    UserService.instance.showPublicProfileScreen(context, user: user),
                                 child: UserAvatar(user: user),
                               ),
                       ),
@@ -221,17 +205,25 @@ class ChatBubble extends StatelessWidget {
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: message.uid != myUid
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.end,
+                      crossAxisAlignment:
+                          message.uid != myUid ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                       children: [
                         if (message.uid != myUid) ...[
                           UserField(
+                            key: ValueKey("ChatBubbleDisplayName_${message.id}"),
                             uid: message.uid,
-                            initialData: message.displayName,
+                            initialData: message.displayName.isEmpty ? "..." : message.displayName,
                             field: 'displayName',
                             builder: (v, r) {
-                              return Text(v ?? '...');
+                              // TODO need to review this User Field because
+                              //      There is a chance of flicker when other user has no display name.
+                              if (v == null) {
+                                return const Text("...");
+                              }
+                              if (v is String) {
+                                return Text(v.trim().isEmpty ? "..." : v);
+                              }
+                              return const Text("...");
                             },
                           ),
                           const SizedBox(width: 8),
@@ -250,13 +242,8 @@ class ChatBubble extends StatelessWidget {
                               padding: const EdgeInsets.all(12),
                               child: Text(
                                 'this message has been deleted'.t,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface,
                                     ),
                               ),
                             ),
@@ -264,9 +251,8 @@ class ChatBubble extends StatelessWidget {
                         ],
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: message.uid != myUid
-                              ? MainAxisAlignment.start
-                              : MainAxisAlignment.end,
+                          mainAxisAlignment:
+                              message.uid != myUid ? MainAxisAlignment.start : MainAxisAlignment.end,
                           children: [
                             if (message.uid == myUid) timeText(context),
                             Flexible(
@@ -274,16 +260,11 @@ class ChatBubble extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: message.uid == myUid
                                       ? Colors.amber.shade200
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainerHigh,
+                                      : Theme.of(context).colorScheme.surfaceContainerHigh,
                                   borderRadius: BorderRadius.only(
-                                    topLeft: message.uid == myUid
-                                        ? const Radius.circular(12)
-                                        : Radius.zero,
-                                    topRight: message.uid == myUid
-                                        ? Radius.zero
-                                        : const Radius.circular(12),
+                                    topLeft: message.uid == myUid ? const Radius.circular(12) : Radius.zero,
+                                    topRight:
+                                        message.uid == myUid ? Radius.zero : const Radius.circular(12),
                                     bottomLeft: const Radius.circular(12),
                                     bottomRight: const Radius.circular(12),
                                   ),
@@ -318,34 +299,29 @@ class ChatBubble extends StatelessWidget {
                                             ? BoxDecoration(
                                                 border: Border(
                                                   top: BorderSide(
-                                                    color: replyDividerColor(
-                                                        context),
+                                                    color: replyDividerColor(context),
                                                   ),
                                                 ),
                                               )
                                             : null,
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             if (message.url != null) ...[
                                               Container(
                                                 decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .surfaceContainerHighest,
+                                                  color:
+                                                      Theme.of(context).colorScheme.surfaceContainerHighest,
                                                 ),
                                                 height: photoHeight(context),
                                                 width: maxWidth(context),
                                                 child: CachedNetworkImage(
                                                   key: ValueKey(message.url),
                                                   fadeInDuration: Duration.zero,
-                                                  fadeOutDuration:
-                                                      Duration.zero,
+                                                  fadeOutDuration: Duration.zero,
                                                   fit: BoxFit.cover,
                                                   imageUrl: message.url!,
-                                                  errorWidget:
-                                                      (context, url, error) {
+                                                  errorWidget: (context, url, error) {
                                                     dog("Error in Image Chat Bubble: $error");
                                                     return Center(
                                                       child: Icon(
@@ -359,8 +335,7 @@ class ChatBubble extends StatelessWidget {
                                             ],
                                             if (message.text.notEmpty)
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.all(12),
+                                                padding: const EdgeInsets.all(12),
                                                 child: Text(
                                                   message.text!,
                                                 ),
@@ -402,27 +377,20 @@ class ChatBubble extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(6, 0, 6, 1),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: myUid == message.uid
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+          crossAxisAlignment: myUid == message.uid ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             if (message.isUpdated)
               Text(
                 'edited'.t,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withAlpha(100),
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                       fontWeight: FontWeight.bold,
                     ),
               ),
             Text(
-              DateTime.fromMillisecondsSinceEpoch(message.createdAt)
-                  .shortDateTime,
+              DateTime.fromMillisecondsSinceEpoch(message.createdAt).shortDateTime,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                   ),
             ),
           ],
