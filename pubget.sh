@@ -14,6 +14,3 @@ for folder in "${folders[@]}"; do
   cd ..  # 원래 폴더로 돌아옴
 done
 
-cd example
-flutter pub get
-cd ..
