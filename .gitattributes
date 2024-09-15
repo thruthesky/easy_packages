@@ -1,0 +1,2 @@
+easyuser/example/**/firebase_options.dart merge=ours
+easyuser/example/**/GoogleService-Info.plist merge=ours
