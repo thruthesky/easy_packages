@@ -94,6 +94,10 @@ dependency_overrides:
 ```
 
 
+# Firebase SDK
+
+- The fultter uses a specific version of Firebase SDK. So, you need to use the same version of Firebase SDK in your app.
+  - This is because all the easy packages must use the same version of Firebase SDK to avoid any compatibility issues.
 
 
 # Packages
