@@ -60,7 +60,8 @@ class ChatJoin {
       openOrder: json[f.openOrder],
       order: json[f.order] ?? DateTime.now().millisecondsSinceEpoch,
       lastMessageUid: json[f.lastMessageUid],
-      lastMessageAt: DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
+      lastMessageAt:
+          DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
       lastMessageDeleted: json[f.lastMessageDeleted],
       lastUrl: json[f.lastUrl],
       lastText: json[f.lastText],

@@ -40,7 +40,8 @@ class EasyYoutubePlayer extends StatefulWidget {
 class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
   late YoutubePlayerController youtubeController;
 
-  ValueNotifier<PlayerState> isPlayerStateNotifier = ValueNotifier(PlayerState.unStarted);
+  ValueNotifier<PlayerState> isPlayerStateNotifier =
+      ValueNotifier(PlayerState.unStarted);
 
   @override
   void initState() {
@@ -96,7 +97,9 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
               IconButton(
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
-                  state == PlayerState.playing ? youtubeController.pause() : youtubeController.play();
+                  state == PlayerState.playing
+                      ? youtubeController.pause()
+                      : youtubeController.play();
                 },
                 icon: Icon(
                   state == PlayerState.playing ? Icons.pause : Icons.play_arrow,

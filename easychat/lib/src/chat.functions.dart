@@ -107,11 +107,16 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
 /// - If the time is used for the login user only, simple user [DateTime].
 /// - If the time is used for multiple users, use this function to the server time.
 Future<int> getServerTimestamp() async {
-  final ref = FirebaseDatabase.instance.ref().child('chat').child('-info').child('timestamp');
+  final ref = FirebaseDatabase.instance
+      .ref()
+      .child('chat')
+      .child('-info')
+      .child('timestamp');
   await ref.set(ServerValue.timestamp);
   final snapshot = await ref.get();
   return snapshot.value as int;
 }
 
 /// Returns the chat room reference. Shotcut for the ChatService.instance.roomRef(roomId).
-DatabaseReference roomRef(String roomId) => ChatService.instance.roomsRef.child(roomId);
+DatabaseReference roomRef(String roomId) =>
+    ChatService.instance.roomsRef.child(roomId);
