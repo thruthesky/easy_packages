@@ -48,8 +48,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       setState(() {});
     }
     // 2. Prepare other user
-    if (isSingleChatRoom(widget.join?.roomId ?? room!.id)) {
-      user ??= await User.get(getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
+    if (user == null && isSingleChatRoom(widget.join?.roomId ?? room!.id)) {
+      user = await User.get(getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
+      setState(() {});
     }
     await onRoomReady();
   }

@@ -58,25 +58,30 @@ class ChatRoomListTile extends StatelessWidget {
         }
         return ListTile(
           minTileHeight: 72,
-          leading: join.photoUrl.isEmpty
-              ? CircleAvatar(
-                  child: Text(getOtherUserUidFromRoomId(join.roomId)!.characters.first.toUpperCase()),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: CachedNetworkImage(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.tertiaryContainer,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: join.photoUrl.isEmpty
+                  ? Center(
+                      child: Text(
+                        getOtherUserUidFromRoomId(join.roomId)!.characters.first.toUpperCase(),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onTertiaryContainer,
+                            ),
+                      ),
+                    )
+                  : CachedNetworkImage(
                       imageUrl: join.photoUrl!,
                       fit: BoxFit.cover,
                     ),
-                  ),
-                ),
+            ),
+          ),
           title: Text(roomTitle(null, null, join)),
           subtitle: subtitle(context),
           trailing: trailing,
