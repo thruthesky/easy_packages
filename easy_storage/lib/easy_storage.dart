@@ -11,3 +11,4 @@ export './src/widgets/upload.form.dart';
 export './src/enum/source_type.dart';
 export './src/screens/photo.view.screen.dart';
 export './src/storage.extensions.dart';
+export './src/widgets/thumbnail_image.dart';

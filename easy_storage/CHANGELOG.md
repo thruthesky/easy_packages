@@ -1,3 +1,6 @@
+## 0.0.16
+* Fix. `ThumbnailImage`.
+
 ## 0.0.15
 * Add. `ThumbnailImage`.
 

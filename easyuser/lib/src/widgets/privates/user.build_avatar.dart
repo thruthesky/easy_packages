@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_storage/easy_storage.dart';
 
 class UserBuildAvatar extends StatelessWidget {
   const UserBuildAvatar({
