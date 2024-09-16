@@ -17,8 +17,7 @@ extension EasyHelperStringExtension on String {
   }
 
   /// Returns true if the string is an email address
-  bool get isEmail =>
-      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(this);
+  bool get isEmail => RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(this);
 
   /// If the string is empty, return the newString.
   ///
@@ -81,8 +80,7 @@ extension EasyHelperStringExtension on String {
   /// ```
   ///
   /// From: https://github.com/ScerIO/packages.dart/tree/master/packages
-  String capitalizeFirstLetter() =>
-      isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : this;
+  String capitalizeFirstLetter() => isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : this;
 
   /// Alias of [capitalizeFirstLetter]
   String get ucFirst => capitalizeFirstLetter();
@@ -108,11 +106,41 @@ extension EasyHelperStringExtension on String {
   bool get isNumeric => double.tryParse(this) != null;
 
   /// Return true if the string contains the url.
-  bool get hasUrl =>
-      contains('http://') || contains('https://') || contains('www.');
+  bool get hasUrl => contains('http://') || contains('https://') || contains('www.');
 
   /// Check if string is URL
   bool get isURL => hasMatch(r'^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?$');
+
+  /// https://firebasestorage.googleapis.com/v0/b/grc-30ca7.appspot.com/o/users%2FNx85sXadVXT7KDSgD5SY132B4z42%2Fpexels-alejandro-navarrete-gonzalez-6959712.jpg?alt=media&token=bd30c81a-eb7d-4c17-ac58-9285b037fe51
+  String get thumbnail {
+    String u = this;
+    u = u.replaceFirst(RegExp(".WEBP", caseSensitive: false), "_200x200.webp");
+    u = u.replaceFirst(RegExp(".JPG", caseSensitive: false), "_200x200.webp");
+    u = u.replaceFirst(RegExp(".JPEG", caseSensitive: false), "_200x200.webp");
+    u = u.replaceFirst(RegExp(".PNG", caseSensitive: false), "_200x200.webp");
+    u = u.replaceFirst(RegExp(".GIF", caseSensitive: false), "_200x200.webp");
+    return u;
+  }
+
+  String get thumbnailMedium {
+    String u = this;
+    u = u.replaceFirst(RegExp(".WEBP", caseSensitive: false), "_600x600.webp");
+    u = u.replaceFirst(RegExp(".JPG", caseSensitive: false), "_600x600.webp");
+    u = u.replaceFirst(RegExp(".JPEG", caseSensitive: false), "_600x600.webp");
+    u = u.replaceFirst(RegExp(".PNG", caseSensitive: false), "_600x600.webp");
+    u = u.replaceFirst(RegExp(".GIF", caseSensitive: false), "_600x600.webp");
+    return u;
+  }
+
+  String get thumbnailLarge {
+    String u = this;
+    u = u.replaceFirst(RegExp(".WEBP", caseSensitive: false), "_1200x1200.webp");
+    u = u.replaceFirst(RegExp(".JPG", caseSensitive: false), "_1200x1200.webp");
+    u = u.replaceFirst(RegExp(".JPEG", caseSensitive: false), "_1200x1200.webp");
+    u = u.replaceFirst(RegExp(".PNG", caseSensitive: false), "_1200x1200.webp");
+    u = u.replaceFirst(RegExp(".GIF", caseSensitive: false), "_1200x1200.webp");
+    return u;
+  }
 }
 
 /// String Extension to check if a string is null or empty

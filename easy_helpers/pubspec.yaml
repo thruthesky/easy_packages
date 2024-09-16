@@ -1,6 +1,6 @@
 name: easy_helpers
 description: "Provides helper classes, functions, and extensions for easy to build flutter apps."
-version: 0.0.13
+version: 0.0.14
 homepage: https://github.com/thruthesky/easy_frame
 
 environment:

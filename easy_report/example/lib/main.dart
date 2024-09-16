@@ -40,16 +40,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   init() async {
-    print("firebase instance: ${FirebaseDatabase.instance.app.name}");
-    final ref = FirebaseDatabase.instance.ref().child('reports').orderByChild('reporter').equalTo('user-uid');
-    print('ref: ${ref.path}');
-    final snapshot = await ref.get();
+    // print("firebase instance: ${FirebaseDatabase.instance.app.name}");
+    // final ref = FirebaseDatabase.instance.ref().child('reports').orderByChild('reporter').equalTo('user-uid');
+    // print('ref: ${ref.path}');
+    // final snapshot = await ref.get();
 
-    print('snapshot: ${snapshot.value}');
+    // print('snapshot: ${snapshot.value}');
 
-    // ref.onValue.listen((event) {
-    //   print('event: ${event.snapshot.value}');
-    // });
+    // // ref.onValue.listen((event) {
+    // //   print('event: ${event.snapshot.value}');
+    // // });
   }
 
   @override
@@ -88,24 +88,40 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text('Report a user'),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              ReportService.instance.report(
+                context: context,
+                reportee: 'u2',
+                type: 'post',
+                path: 'post 1',
+                summary: 'summary 1',
+              );
+            },
             child: const Text('Report a Post'),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              ReportService.instance.report(
+                context: context,
+                reportee: 'u3',
+                type: 'comment',
+                path: 'comment 1',
+                summary: 'I report this comment 3',
+              );
+            },
             child: const Text('Report a Comment'),
           ),
           ElevatedButton(
             onPressed: () {},
             child: const Text('Report a Chat Room'),
           ),
-          // AuthStateChanges(
-          //   builder: (user) => user == null
-          //       ? const SizedBox.shrink()
-          //       : const Expanded(
-          //           child: ReportListView(),
-          //         ),
-          // ),
+          AuthStateChanges(
+            builder: (user) => user == null
+                ? const SizedBox.shrink()
+                : const Expanded(
+                    child: ReportListView(),
+                  ),
+          ),
         ],
       ),
     );

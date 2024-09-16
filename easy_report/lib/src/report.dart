@@ -26,7 +26,7 @@ class Report {
 
   factory Report.fromSnapshot(DataSnapshot snapshot) {
     return Report.fromJson(
-      snapshot.value as Map<String, dynamic>,
+      Map<String, dynamic>.from(snapshot.value as Map),
       snapshot.key!,
     );
   }
@@ -40,7 +40,7 @@ class Report {
       reason: json['reason'],
       type: json['type'],
       summary: json['summary'],
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
     );
   }
 

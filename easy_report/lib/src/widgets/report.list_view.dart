@@ -1,5 +1,5 @@
+import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/gestures.dart';
@@ -63,29 +63,25 @@ class ReportListView extends StatelessWidget {
       keyboardDismissBehavior: keyboardDismissBehavior,
       restorationId: restorationId,
       clipBehavior: clipBehavior,
-      query: FirebaseDatabase.instance.ref('reports')
-      // .orderByChild('reporter')
-      // .equalTo(FirebaseAuth.instance.currentUser!.uid),
-      ,
+      query: ReportService.instance.myReportsRef.orderByKey(),
       itemBuilder: (context, snapshot) {
         final report = Report.fromSnapshot(snapshot);
         return ListTile(
-          // leading: UserAvatar.fromUid(uid: report.reportee),
-          // title: UserDoc(
-          //   uid: report.reportee,
-          //   builder: (user) {
-          //     if (user == null) {
-          //       return const SizedBox.shrink();
-          //     }
-          //     return DisplayName(user: user);
-          //   },
-          // ),
-          /// TODO: get user data from RTDB and display
-          title: const Text('TODO: get user data from RTDB and display'),
+          leading: UserAvatar.fromUid(uid: report.reportee),
+          title: Value.once(
+            ref: FirebaseDatabase.instance
+                .ref(ReportService.instance.userNamePath.replaceFirst('{uid}', report.reportee)),
+            builder: (v, r) {
+              if (v == null) {
+                return const SizedBox.shrink();
+              }
+              return Text('$v');
+            },
+          ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(report.reason),
+              Text('${report.reason} ${report.type} ${report.summary}'),
               Text(report.createdAt.yMdjm),
             ],
           ),

@@ -30,9 +30,7 @@ class UserBuildAvatar extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                user.displayName.isEmpty
-                    ? user.uid[0].toUpperCase()
-                    : user.displayName[0].toUpperCase(),
+                user.displayName.isEmpty ? user.uid[0].toUpperCase() : user.displayName[0].toUpperCase(),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
@@ -46,6 +44,7 @@ class UserBuildAvatar extends StatelessWidget {
             radius: radius,
             border: border,
             child: CachedNetworkImage(
+              /// TODO: make it use thumbnail
               imageUrl: user.photoUrl!,
               fit: BoxFit.cover,
             ),
