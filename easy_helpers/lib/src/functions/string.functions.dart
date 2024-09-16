@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 /// Replaces characters in [input] that are illegal/unsafe for filenames.
 ///
 /// You can also use a custom [replacement] if needed.
@@ -62,4 +65,11 @@ String sanitizeFilename(String input, {String replacement = ''}) {
       .replaceFirst(RegExp(r'[\. ]+$'), replacement);
 
   return result.length > 255 ? result.substring(0, 255) : result;
+}
+
+/// Generates a random string with a length of [length].
+randomString({int length = 10}) {
+  final random = Random.secure();
+  final values = List<int>.generate(length, (i) => random.nextInt(255));
+  return base64Url.encode(values);
 }

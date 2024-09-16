@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easyuser/easyuser.dart';
 
 /// Login or register
@@ -31,6 +35,8 @@ import 'package:easyuser/easyuser.dart';
 /// );
 /// ```
 ///
+/// Note, it waits 3 seconds to update user data
+///
 /// Return the user object of firebase auth and whether the user is registered or not.
 Future loginOrRegister({
   required String email,
@@ -44,9 +50,37 @@ Future loginOrRegister({
       email: email,
       password: password,
     );
+
+    /// TODO: This is notw orking. Fix to update user display name and photo url.
+    Future.delayed(const Duration(seconds: 3)).then((v) {
+      UserService.instance.user?.update(
+        displayName: displayName ?? email,
+        photoUrl: photoUrl ?? 'https://picsum.photos/id/1/200/200',
+      );
+    });
   } catch (e) {
     // create
     await UserService.instance.auth.createUserWithEmailAndPassword(email: email, password: password);
     return;
   }
+}
+
+/// Generates a random string with a length of [length].
+randomString({int length = 10}) {
+  final random = Random.secure();
+  final values = List<int>.generate(length, (i) => random.nextInt(255));
+  return base64Url.encode(values);
+}
+
+/// Let the user login as a random email creation.
+Future randomLogin() async {
+  final email = "${randomString()}@gmail.com";
+  dog('msg: $email');
+  final randomUser = await loginOrRegister(
+    displayName: email,
+    email: email,
+    password: '12345a',
+    photoUrl: 'https://picsum.photos/id/1/200/200',
+  );
+  return randomUser;
 }

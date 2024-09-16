@@ -67,8 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
-                            onPressed: () => UserService.instance
-                                .showProfileUpdaeScreen(context),
+                            onPressed: () => UserService.instance.showProfileUpdaeScreen(context),
                             child: const Text('Profile update'),
                           ),
                           ElevatedButton(
@@ -107,8 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () async {
                 UserService.instance.signOut();
-                final String uid =
-                    await UserTestService.instance.createTestUser();
+                final String uid = await UserTestService.instance.createTestUser();
                 log('loginOrRegister uid: $uid');
               },
               child: const Text('loginOrRegister on 2nd Firebase'),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:easychat/easychat.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +69,7 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                   if (value == 'profile') {
                     // Navigator.of(context).pushNamed(UserProfileScreen.routeName);
                   } else if (value == 'find-friend') {
-                    final user =
-                        await UserService.instance.showSearchDialog(context);
+                    final user = await UserService.instance.showSearchDialog(context);
                     if (user != null) {
                       if (context.mounted) {
                         ChatService.instance.showChatRoomScreen(
@@ -88,15 +89,30 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
             ],
           ),
         ),
-        Text('my uid: $myUid'),
+        AuthStateChanges(builder: (user) {
+          return Text('my uid: ${user?.uid}');
+        }),
         const Divider(),
         Wrap(
           children: [
             TextButton(
-              onPressed: () => ChatTestService.instance.invitationNotSent(
-                'jp38SPAWRDUfbHoVbIZhY1fJTDM2',
-              ),
-              child: const Text('TEST invitationNotSent'),
+              onPressed: () => randomLogin(),
+              child: const Text('Random Login'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final snapshot = await UserService.instance.mirrorUsersRef.limitToFirst(10).get();
+                int i = Random.secure().nextInt(snapshot.children.length);
+                final first = snapshot.children.elementAt(i);
+                final user = User.fromDatabaseSnapshot(first);
+                if (context.mounted) {
+                  await ChatService.instance.showChatRoomScreen(
+                    context,
+                    user: user,
+                  );
+                }
+              },
+              child: const Text('Random 1:1 Chat'),
             ),
             TextButton(
               onPressed: () async {

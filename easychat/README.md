@@ -22,6 +22,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Chat message sending](#chat-message-sending)
   - [Ordering](#ordering)
   - [Counting the invitation](#counting-the-invitation)
+  - [Number of New Messages Counting](#number-of-new-messages-counting)
 - [Database Strucutre](#database-strucutre)
   - [Chat room](#chat-room)
   - [Chat message](#chat-message)
@@ -40,6 +41,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [ChatInvitationListView](#chatinvitationlistview)
 - [Coding Guideline](#coding-guideline)
   - [How to get server timestamp](#how-to-get-server-timestamp)
+- [Developer's Tip](#developers-tip)
+  - [Create a random user](#create-a-random-user)
 - [Tests](#tests)
   - [Invitation not sent protocol test](#invitation-not-sent-protocol-test)
 - [Known Issues](#known-issues)
@@ -480,6 +483,18 @@ ChatInvitationListView(),
 ```dart
 int ts = await getServerTimestamp();
 print('ts: ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
+```
+
+
+# Developer's Tip
+
+
+## Create a random user
+
+Simply call `randomLogin()` function which calls `loginOrRegister()` wiht random email and password.
+
+```dart
+randomLogin()
 ```
 
 
