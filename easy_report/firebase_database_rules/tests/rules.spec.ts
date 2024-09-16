@@ -1,12 +1,11 @@
 import {
     RulesTestEnvironment,
-    assertFails,
     assertSucceeds,
     initializeTestEnvironment
 } from "@firebase/rules-unit-testing";
-import firebase from 'firebase/compat/app';
-import { ref, get, update, orderByChild, equalTo, query } from 'firebase/database';
-import { readFileSync } from "node:fs";
+import { assert } from "console";
+import { ref, get, orderByChild, equalTo, query, update, DataSnapshot } from 'firebase/database';
+import { readFileSync } from "fs";
 import { before } from "mocha";
 
 
@@ -31,30 +30,7 @@ describe('Overall Rules Test', async () => {
                 host,
                 port,
                 // Read the Database Security Rules file once every run.
-                rules: JSON.stringify({
-                    "rules": {
-                        "users": {
-                            ".read": true,
-                            "$uid": {
-                                ".write": "$uid === auth.uid"
-                            },
-                            ".indexOn": [
-                                "createdAt"
-                            ]
-                        },
-                        "reports": {
-                            "$reportKey": {
-                                ".read": "data.child('reporter').val() === auth.uid",
-                                ".write": true
-                            },
-                            ".indexOn": [
-                                "reporter",
-                                "reportee",
-                                "path"
-                            ]
-                        }
-                    }
-                }),
+                rules: readFileSync('database.rules.json', 'utf8'),
             },
         });
 
@@ -63,34 +39,33 @@ describe('Overall Rules Test', async () => {
     // Clear all data in the local Firestore before each test.
     beforeEach(async () => {
         await testEnv.clearDatabase();
-
-        // Setup: some sample data by passing the security rules
         await testEnv.withSecurityRulesDisabled(async (context) => {
             await context.database().ref('test/a').set({ name: 'apple', no: 1 });
         });
-
     });
 
-    it('Public Profile Read Test - Success - Reference without logging in', async () => {
-        // Setup: Create Rules Test Context
-        const unauthedDb = testEnv.unauthenticatedContext().database();
-        await assertSucceeds(get(ref(unauthedDb, 'users/foobar')));
-    });
 
-    it('Get my report', async () => {
-        await testEnv.withSecurityRulesDisabled(async (context) => {
-            await context.database().ref('reports/report-1').set({ reporter: 'user1' });
-        });
+    it('Create a report', async () => {
         const authedDb = testEnv.authenticatedContext('user1').database();
-        await assertSucceeds(get(ref(authedDb, 'reports/report-1')));
+        await assertSucceeds(update(ref(authedDb, 'reports/report-1'), { reporter: 'user1' }));
     });
 
     it('Get the list of my reports', async () => {
         await testEnv.withSecurityRulesDisabled(async (context) => {
-            await context.database().ref('reports/report-1').set({ reporter: 'user1' });
+            await context.database().ref('reports/report-1').set({ reporter: 'user1', data: 'data1' });
+        });
+        await testEnv.withSecurityRulesDisabled(async (context) => {
+            await context.database().ref('reports/report-2').set({ reporter: 'user1', data: 'data2' });
+        });
+        await testEnv.withSecurityRulesDisabled(async (context) => {
+            await context.database().ref('reports/report-3').set({ reporter: 'user3', data: 'data3' });
         });
         const authedDb = testEnv.authenticatedContext('user1').database();
         const reportsQuery = query(ref(authedDb, 'reports'), orderByChild('reporter'), equalTo('user1'));
         await assertSucceeds(get(reportsQuery));
+
+        const snapshot: DataSnapshot = await get(reportsQuery);
+        const reports = snapshot.val();
+        assert(Object.keys(reports).length == 2);
     });
 });

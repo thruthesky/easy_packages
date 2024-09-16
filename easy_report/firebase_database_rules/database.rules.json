@@ -1,18 +1,9 @@
 {
   "rules": {
-    "users": {
-      ".read": true,
-      "$uid": {
-        ".write": "$uid === auth.uid"
-      },
-      ".indexOn": [
-        "createdAt"
-      ]
-    },
     "reports": {
+      ".read": "auth.uid !== null",
       "$reportKey": {
-        ".read": "data.child('reporter').val() === auth.uid",
-        ".write": true
+        ".write": "newData.child('reporter').val() === auth.uid"
       },
       ".indexOn": [
         "reporter",
