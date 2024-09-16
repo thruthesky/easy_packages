@@ -43,8 +43,7 @@ class UserBuildAvatar extends StatelessWidget {
             size: size,
             radius: radius,
             border: border,
-            child: CachedNetworkImage(
-              /// TODO: make it use thumbnail
+            child: ThumbnailImage(
               imageUrl: user.photoUrl!,
               fit: BoxFit.cover,
             ),

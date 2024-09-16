@@ -1,3 +1,6 @@
+## 0.0.15
+* Add. `ThumbnailImage`.
+
 ## 0.0.14
 * Refactor. `fromGallery`, `fromFile`.
 
