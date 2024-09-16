@@ -1,3 +1,7 @@
+## 0.0.5
+* Refactor. Move data to Realtime database.
+* Refactor. Remove easy_user package.
+
 ## 0.0.4
 * Update. Bump the easy_user package dependency.
 

@@ -11,7 +11,6 @@
 
 
 
-
 # Concept
 
 - It does not require an input from user to avoid the inconveniencing the user. Instead, it ask users to press a button for the reason of the report. And it offers three options. `Spam`, `Abusive`, `Other` and I think these are enough.
