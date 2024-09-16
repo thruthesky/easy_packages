@@ -23,7 +23,8 @@ class ChatInvitationListTile extends StatelessWidget {
 
   static const double _minTileHeight = 70;
 
-  static const EdgeInsetsGeometry _contentPadding = EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsetsGeometry _contentPadding =
+      EdgeInsets.symmetric(horizontal: 16);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,9 @@ class ChatInvitationListTile extends StatelessWidget {
                       width: 48,
                       height: 48,
                       clipBehavior: Clip.hardEdge,
-                      child: user == null ? const Icon(Icons.person) : UserAvatar(user: user),
+                      child: user == null
+                          ? const Icon(Icons.person)
+                          : UserAvatar(user: user),
                     ),
                   ),
                   title: Text(
@@ -62,7 +65,8 @@ class ChatInvitationListTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: user?.stateMessage != null && user!.stateMessage!.isNotEmpty
+                  subtitle: user?.stateMessage != null &&
+                          user!.stateMessage!.isNotEmpty
                       ? Text(
                           user.stateMessage ?? "",
                           maxLines: 1,

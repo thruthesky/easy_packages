@@ -1,29 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_report/easy_report.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Report {
   final String id;
   final String reporter;
   final String reportee;
-  final DocumentReference documentReference;
+  final String path;
   final String reason;
+  final String type;
+  final String summary;
   final DateTime createdAt;
 
-  DocumentReference get ref => ReportService.instance.col.doc(id);
+  DatabaseReference get ref => ReportService.instance.reportsRef.child(id);
 
   Report({
     required this.id,
     required this.reporter,
     required this.reportee,
-    required this.documentReference,
+    required this.path,
     required this.reason,
+    required this.type,
+    required this.summary,
     required this.createdAt,
   });
 
-  factory Report.fromSnapshot(DocumentSnapshot snapshot) {
+  factory Report.fromSnapshot(DataSnapshot snapshot) {
     return Report.fromJson(
-      snapshot.data() as Map<String, dynamic>,
-      snapshot.id,
+      snapshot.value as Map<String, dynamic>,
+      snapshot.key!,
     );
   }
 
@@ -32,9 +36,11 @@ class Report {
       id: id,
       reporter: json['reporter'],
       reportee: json['reportee'],
-      documentReference: json['documentReference'],
+      path: json['path'],
       reason: json['reason'],
-      createdAt: (json['createdAt'] as Timestamp).toDate(),
+      type: json['type'],
+      summary: json['summary'],
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -43,7 +49,7 @@ class Report {
       'id': id,
       'reporter': reporter,
       'reportee': reportee,
-      'documentReference': documentReference,
+      'path': path,
       'reason': reason,
       'createdAt': createdAt,
     };

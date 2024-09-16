@@ -60,8 +60,7 @@ class MyAppState extends State<MyApp> {
       return [
         ElevatedButton(
             onPressed: () {
-              ChatService.instance
-                  .showChatRoomScreen(globalContext, user: user);
+              ChatService.instance.showChatRoomScreen(globalContext, user: user);
             },
             child: const Text('Chat')),
       ];
@@ -215,8 +214,7 @@ class MyAppState extends State<MyApp> {
       ChatService.instance.showInviteListScreen(globalContext);
 
       /// If action is post or comment then redirect to post view screen
-    } else if (message.data['action'] == 'post' ||
-        message.data['action'] == 'comment') {
+    } else if (message.data['action'] == 'post' || message.data['action'] == 'comment') {
       Post post = await Post.get(message.data['postId']);
       if (globalContext.mounted) {
         PostService.instance.showPostDetailScreen(
@@ -247,29 +245,24 @@ class MyAppState extends State<MyApp> {
       alert(
         context: globalContext,
         title: Text("Report ${message.notification?.title ?? ''}"),
-        message:
-            Text("${message.notification?.body} ${message.data.toString()}"),
+        message: Text("${message.notification?.body} ${message.data.toString()}"),
       );
 
       /// or display something if on the screen
     } else {
       alert(
         context: globalContext,
-        title: Text(
-            "Notification wasnt handled0 ${message.notification?.title ?? ''}"),
-        message:
-            Text("${message.notification?.body} ${message.data.toString()}"),
+        title: Text("Notification wasnt handled0 ${message.notification?.title ?? ''}"),
+        message: Text("${message.notification?.body} ${message.data.toString()}"),
       );
     }
   }
 
   messagingInit() async {
     MessagingService.instance.init(
-      sendMessageToTokensApi:
-          'https://sendmessagetotokens-mkxv2itpca-uc.a.run.app',
+      sendMessageToTokensApi: 'https://sendmessagetotokens-mkxv2itpca-uc.a.run.app',
       sendMessageToUidsApi: 'https://sendmessagetouids-mkxv2itpca-uc.a.run.app',
-      sendMessageToSubscriptionApi:
-          'https://sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
+      sendMessageToSubscriptionApi: 'https://sendmessagetosubscription-mkxv2itpca-uc.a.run.app',
       onMessageOpenedFromBackground: (message) {
         WidgetsBinding.instance.addPostFrameCallback((duration) async {
           dog('onMessageOpenedFromBackground: $message');
@@ -302,12 +295,10 @@ class MyAppState extends State<MyApp> {
 
       /// Register the channel with the system.
       /// If there is already a registed channel (with same id), then it will be re-registered.
-      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-          FlutterLocalNotificationsPlugin();
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
       await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
     }
   }
@@ -315,16 +306,12 @@ class MyAppState extends State<MyApp> {
   postInit() {
     PostService.instance.init(
       postListActionButton: (category) => PushNotificationToggleIcon(
-        subscriptionName: category.isNullOrEmpty
-            ? 'post-sub-no-category'
-            : "post-sub-$category",
+        subscriptionName: category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-$category",
       ),
       onCreate: (Post post) async {
         /// send push notification to subscriber
         MessagingService.instance.sendMessageToSubscription(
-          subscription: post.category.isNullOrEmpty
-              ? 'post-sub-no-category'
-              : "post-sub-${post.category}",
+          subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
           title: 'post title ${post.title}  ${DateTime.now()}',
           body: 'post body ${post.content}',
           data: {
@@ -340,8 +327,7 @@ class MyAppState extends State<MyApp> {
     CommentService.instance.init(
       onCreate: (Comment comment) async {
         /// get ancestor uid
-        List<String> ancestorUids =
-            await CommentService.instance.getAncestorsUid(comment.id);
+        List<String> ancestorUids = await CommentService.instance.getAncestorsUid(comment.id);
 
         /// get post information
         Post post = await Post.get(comment.documentReference.id);
@@ -384,8 +370,7 @@ class MyAppState extends State<MyApp> {
         subscriptionName: room.id,
         reverse: true,
       ),
-      onSendMessage: (
-          {required ChatMessage message, required ChatRoom room}) async {
+      onSendMessage: ({required ChatMessage message, required ChatRoom room}) async {
         final uids = room.userUids.where((uid) => uid != myUid).toList();
         if (uids.isEmpty) return;
         MessagingService.instance.sendMessageToUids(
@@ -401,8 +386,7 @@ class MyAppState extends State<MyApp> {
         MessagingService.instance.sendMessageToUids(
           uids: [uid],
           title: 'Chat Invite ${DateTime.now()}',
-          body:
-              '${my.displayName} Has invited you to join the chat room ${room.id} ${room.name}',
+          body: '${my.displayName} Has invited you to join the chat room ${room.id} ${room.name}',
           data: {"action": 'chatInvite', 'roomId': room.id},
         );
       },
@@ -429,7 +413,10 @@ class MyAppState extends State<MyApp> {
           data: {
             "action": 'report',
             'reportId': report.id,
-            'documentReference': report.documentReference.toString(),
+            'path': report.path,
+            'type': report.type,
+            'reporter': report.reporter,
+            'reportee': report.reportee,
           },
         );
       },
@@ -473,9 +460,7 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          colorScheme: Theme.of(context).colorScheme.copyWith()),
+      theme: ThemeData(primarySwatch: Colors.blue, colorScheme: Theme.of(context).colorScheme.copyWith()),
     );
   }
 }

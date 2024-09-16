@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// Report service
@@ -11,7 +11,7 @@ class ReportService {
   static ReportService get instance => _instance ??= ReportService._();
   ReportService._();
 
-  CollectionReference col = FirebaseFirestore.instance.collection('reports');
+  DatabaseReference reportsRef = FirebaseDatabase.instance.ref('reports');
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
@@ -27,15 +27,17 @@ class ReportService {
 
   /// Report
   ///
-  /// It reports the [otherUid] user with the [documentReference] document reference.
+  /// It reports the [reportee] user with the [path] document reference.
   ///
   /// Use this method to report a user.
   ///
   /// Refer to README.md for details.
   Future<void> report({
     required BuildContext context,
-    required DocumentReference documentReference,
-    required String otherUid,
+    required String path,
+    required String reportee,
+    required String type,
+    required String summary,
   }) async {
     if (currentUser == null) {
       if (context.mounted) {
@@ -44,23 +46,18 @@ class ReportService {
       return;
     }
 
-    if (currentUser?.uid == otherUid) {
+    if (currentUser?.uid == reportee) {
       if (context.mounted) {
         toast(context: context, message: Text('You cannot report yourself'.t));
       }
       return;
     }
 
-    // Check if the user has already reported by you.
-    final snapshot = await col
-        .where('reporter', isEqualTo: currentUser!.uid)
-        .where('reportee', isEqualTo: otherUid)
-        .get();
-    if (snapshot.docs.isNotEmpty) {
+    // Check if the login user has already reported the same data(user, post, comment, chat room, etc)
+    final snapshot = await reportsRef.orderByChild('path').equalTo(path).get();
+    if (snapshot.value != null) {
       if (context.mounted) {
-        toast(
-            context: context,
-            message: Text('You have already reported this user'.t));
+        toast(context: context, message: Text('You have already reported this'.t));
       }
       return;
     }
@@ -71,8 +68,10 @@ class ReportService {
       reason = await showDialog<String>(
         context: context,
         builder: (context) => ReportDialog(
-          reportee: otherUid,
-          documentReference: documentReference,
+          reportee: reportee,
+          path: path,
+          type: type,
+          summary: summary,
         ),
       );
 
@@ -81,20 +80,23 @@ class ReportService {
 
     final data = {
       'reporter': currentUser!.uid,
-      'reportee': otherUid,
+      'reportee': reportee,
       'reason': reason,
-      'documentReference': documentReference,
-      'createdAt': FieldValue.serverTimestamp(),
+      'path': path,
+      'type': type,
+      'summary': summary,
+      'createdAt': ServerValue.timestamp,
     };
 
-    final ref = await col.add(data);
+    final ref = reportsRef.push();
+
+    await ref.set(data);
 
     /// if onCreate is set, then call the call back.
-    onCreate?.call(Report.fromJson(data, ref.id));
+    onCreate?.call(Report.fromJson(data, ref.key!));
 
     if (context.mounted) {
-      toast(
-          context: context, message: Text('You have reported this user now'.t));
+      toast(context: context, message: Text('You have reported this user now'.t));
     }
   }
 

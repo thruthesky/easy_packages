@@ -42,9 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           InkWell(
             child: MyDoc(
-              builder: (user) => user == null
-                  ? const AnonymousAvatar()
-                  : UserAvatar(user: user),
+              builder: (user) => user == null ? const AnonymousAvatar() : UserAvatar(user: user),
             ),
             onTap: () => i.signedIn
                 ? UserService.instance.showProfileUpdaeScreen(context)
@@ -122,8 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Theme(
               data: Theme.of(context).copyWith(
                 elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0)),
+                  style: ElevatedButton.styleFrom(padding: const EdgeInsets.fromLTRB(4, 0, 4, 0)),
                 ),
               ),
               child: Wrap(
@@ -156,8 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                       if (user != null) {
                         if (context.mounted) {
-                          UserService.instance
-                              .showPublicProfileScreen(context, user: user);
+                          UserService.instance.showPublicProfileScreen(context, user: user);
                         }
                       }
                     },
@@ -175,8 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                       // print('user; $user');
                     },
-                    child:
-                        const Text('User Search Dialog: partial search search'),
+                    child: const Text('User Search Dialog: partial search search'),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -228,20 +223,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () =>
-                        ReportService.instance.showReportListScreen(context),
+                    onPressed: () => ReportService.instance.showReportListScreen(context),
                     child: const Text(
                       'Report list',
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () =>
-                        TaskService.instance.showTaskCreateScreen(context),
+                    onPressed: () => TaskService.instance.showTaskCreateScreen(context),
                     child: const Text('Task Crate'),
                   ),
                   ElevatedButton(
-                    onPressed: () =>
-                        TaskService.instance.showTaskListScreen(context),
+                    onPressed: () => TaskService.instance.showTaskListScreen(context),
                     child: const Text('Task List of my creation'),
                   ),
                   ElevatedButton(
@@ -265,8 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      UserGroupService.instance
-                          .showUserGroupListScreen(context);
+                      UserGroupService.instance.showUserGroupListScreen(context);
                     },
                     child: const Text('User Group'),
                   ),
@@ -283,8 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       UserAvatar(user: user),
                       Text('c: $index'),
                       TextButton(
-                        onPressed: () =>
-                            ChatService.instance.showChatRoomScreen(
+                        onPressed: () => ChatService.instance.showChatRoomScreen(
                           context,
                           user: user,
                           // room: room,
@@ -304,8 +294,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () async {
                           await ReportService.instance.report(
                             context: context,
-                            otherUid: user.uid,
-                            documentReference: user.ref,
+                            reportee: user.uid,
+                            path: user.ref.path,
+                            type: 'user',
+                            summary: 'Reporting: ${user.displayName}, uid: ${user.uid}',
                           );
                         },
                         child: const Text('Report'),

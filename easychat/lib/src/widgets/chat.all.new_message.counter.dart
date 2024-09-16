@@ -41,14 +41,16 @@ class ChatAllNewMessageCounter extends StatelessWidget {
           ref: ChatService.instance.mySettingRef.child('unread-message-count'),
           builder: (value, ref) {
             final allUnreads = Map<String, int>.from((value ?? {}) as Map);
-            final int totalCount = allUnreads.values.fold(0, (sum, element) => sum + element);
+            final int totalCount =
+                allUnreads.values.fold(0, (sum, element) => sum + element);
             if (builder != null) {
               // It's dev choice if they want to show the (0)
               return builder!.call(totalCount);
             }
             if (ChatService.instance.newMessageBuilder != null) {
               // It's dev choice if they want to show the (0)
-              return ChatService.instance.newMessageBuilder!.call(totalCount.toString());
+              return ChatService.instance.newMessageBuilder!
+                  .call(totalCount.toString());
             }
             if (totalCount == 0) {
               // By default, if no builders, it doesn't show anything

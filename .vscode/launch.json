@@ -78,6 +78,16 @@
         },
 
         {
+            "name": "Easy Report - iPhone 15 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro Max",
+            "cwd": "easy_report/example",
+            "program": "lib/main.dart"
+        },
+
+
+        {
             "name": "EasyChat - iPhone 15 Pro Max - Example",
             "request": "launch",
             "type": "dart",

@@ -28,7 +28,8 @@ class ChatNewMessageCounter extends StatelessWidget {
         if (count == 0) {
           return const SizedBox.shrink();
         }
-        return ChatService.instance.newMessageBuilder?.call((value).toString()) ??
+        return ChatService.instance.newMessageBuilder
+                ?.call((value).toString()) ??
             builder?.call(count) ??
             Badge(
               label: Text(

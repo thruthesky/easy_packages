@@ -60,7 +60,8 @@ Future loginOrRegister({
     });
   } catch (e) {
     // create
-    await UserService.instance.auth.createUserWithEmailAndPassword(email: email, password: password);
+    await UserService.instance.auth
+        .createUserWithEmailAndPassword(email: email, password: password);
     return;
   }
 }

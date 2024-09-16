@@ -4,7 +4,8 @@ import 'package:easy_like/easy_like.dart';
 /// Support like only. Not dislike.
 /// See README.md for more information.
 class Like {
-  static CollectionReference get col => FirebaseFirestore.instance.collection('likes');
+  static CollectionReference get col =>
+      FirebaseFirestore.instance.collection('likes');
 
   /// original document reference. It is called 'target document reference'.
   final DocumentReference documentReference;
@@ -60,7 +61,8 @@ class Like {
       List<String> likedBy = [];
       final snapshot = await likeRef.get();
       if (snapshot.exists) {
-        final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        final Map<String, dynamic> data =
+            snapshot.data() as Map<String, dynamic>;
         likedBy = List<String>.from(data['likedBy'] ?? []);
       }
 
