@@ -1,5 +1,6 @@
 import 'package:easy_report/easy_report.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,10 @@ class ReportListView extends StatelessWidget {
       keyboardDismissBehavior: keyboardDismissBehavior,
       restorationId: restorationId,
       clipBehavior: clipBehavior,
-      query: ReportService.instance.reportsRef.orderByChild('reporter').equalTo(FirebaseAuth.instance.currentUser!.uid),
+      query: FirebaseDatabase.instance.ref('reports')
+      // .orderByChild('reporter')
+      // .equalTo(FirebaseAuth.instance.currentUser!.uid),
+      ,
       itemBuilder: (context, snapshot) {
         final report = Report.fromSnapshot(snapshot);
         return ListTile(
