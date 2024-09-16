@@ -48,9 +48,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                             width: double.infinity,
                             height: double.infinity,
                             decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           )
                         : CachedNetworkImage(
@@ -58,9 +56,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                               width: double.infinity,
                               height: double.infinity,
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                             imageUrl: user.statePhotoUrl!,
@@ -119,10 +115,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                           ),
                           Text(
                             user.displayName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
+                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -132,17 +125,13 @@ class UserPublicProfileScreen extends StatelessWidget {
                           ),
                           if (user.stateMessage.notEmpty)
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Text(
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 user.stateMessage!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                       color: Colors.white,
                                     ),
                               ),
@@ -151,13 +140,10 @@ class UserPublicProfileScreen extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                ...?UserService.instance
-                                    .prefixActionBuilderOnPublicProfileScreen
-                                    ?.call(user),
+                                ...?UserService.instance.prefixActionBuilderOnPublicProfileScreen?.call(user),
                                 TextButton(
                                   onPressed: () async {
-                                    await i.block(
-                                        context: context, otherUid: user.uid);
+                                    await i.block(context: context, otherUid: user.uid);
                                   },
                                   child: UserBlocked(
                                     otherUid: user.uid,
@@ -173,7 +159,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                                   onPressed: () async {
                                     await ReportService.instance.report(
                                       context: context,
-                                      otherUid: user.uid,
+                                      reportee: user.uid,
                                       documentReference: user.ref,
                                     );
                                   },

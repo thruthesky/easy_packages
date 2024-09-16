@@ -1,18 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_locale/easy_locale.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 /// Report dialog
 class ReportDialog extends StatelessWidget {
   const ReportDialog({
     super.key,
+    required this.path,
     required this.reportee,
-    required this.documentReference,
+    required this.type,
+    required this.summary,
   });
 
+  final String path;
+  final String type;
   final String reportee;
-  final DocumentReference documentReference;
+  final String summary;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +30,7 @@ class ReportDialog extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 8.0, 8.0, 0),
                 child: IconButton(
                   style: IconButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
+                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                   ),
                   icon: const Icon(Icons.close),
                   onPressed: () => Navigator.of(context).pop(),
@@ -42,20 +43,26 @@ class ReportDialog extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
-            UserDoc(
-                uid: reportee,
-                builder: (user) {
-                  if (user == null) {
-                    return Text('User not found'.t);
-                  }
-                  return Column(
-                    children: [
-                      UserAvatar(user: user),
-                      const SizedBox(height: 8),
-                      Text(user.displayName),
-                    ],
-                  );
-                }),
+
+            /// TODO: Get user data from RTDB
+            const Text("TODO: Get user data from RTDB, and display"),
+            // UserDoc(
+            //   uid: reportee,
+            //   builder: (user) {
+            //     if (user == null) {
+            //       return Text('User not found'.t);
+            //     }
+            //     return Column(
+            //       children: [
+            //         UserAvatar(user: user),
+            //         const SizedBox(height: 8),
+            //         Text(user.displayName),
+            //       ],
+            //     );
+            //   },
+            // ),
+            Text('Type: $type'),
+            Text('Summary: $summary'),
             const SizedBox(height: 24),
             Text(
               'Select a reason for reporting'.t,
