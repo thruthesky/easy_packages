@@ -1,6 +1,6 @@
 {
   "rules": {
-    "mirror-users": {
+    "users": {
       ".read": true,
       "$uid": {
         ".write": "$uid === auth.uid"
@@ -10,83 +10,15 @@
       ]
     },
     "reports": {
-      ".read": "data.child('reporter').val() === auth.uid",
-      ".write": true,
+      "$reportKey": {
+        ".read": "data.child('reporter').val() === auth.uid",
+        ".write": true
+      },
       ".indexOn": [
         "reporter",
         "reportee",
         "path"
       ]
-    },
-    "settings": {
-      ".read": true
-    },
-    "fcm-tokens": {
-      ".read": true,
-      "$token": {
-        ".write": "newData.val() === auth.uid"
-      },
-      ".indexOn": [
-        ".value"
-      ]
-    },
-    "fcm-subscriptions": {
-      ".read": true,
-      "$subscriptionId": {
-        "$uid": {
-          ".write": "$uid === auth.uid"
-        }
-      }
-    },
-    "chat": {
-      "-info": {
-        "timestamp": {
-          ".read": true,
-          ".write": true
-        }
-      },
-      "invited-users": {
-        ".read": true,
-        ".write": true
-      },
-      "rejected-users": {
-        ".read": true,
-        ".write": true
-      },
-      "joins": {
-        ".read": true,
-        ".write": true,
-        "$uid": {
-          "$room_id": {
-            ".indexOn": [
-              "order"
-            ]
-          }
-        }
-      },
-      "messages": {
-        "$room_id": {
-          ".read": true,
-          ".write": true,
-          ".indexOn": [
-            "protocol"
-          ]
-        }
-      },
-      "rooms": {
-        ".read": true,
-        ".write": true
-      },
-      "settings": {
-        ".read": true,
-        ".write": true
-      }
-    },
-    "ai-chat": {
-      "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
-      }
     }
   }
 }
