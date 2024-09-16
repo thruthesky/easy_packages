@@ -1,15 +1,21 @@
 {
   "rules": {
     "reports": {
-      ".read": "auth.uid !== null",
-      "$reportKey": {
-        ".write": "newData.child('reporter').val() === auth.uid"
+      "---key-list": {
+        ".read": true,
+        "$reportKey": {
+          ".write": "newData.val() === auth.uid"
+        }
       },
-      ".indexOn": [
-        "reporter",
-        "reportee",
-        "path"
-      ]
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        "$reportKey": {
+          ".write": "newData.child('reporter').val() === auth.uid"
+        },
+        ".indexOn": [
+          "path"
+        ]
+      }
     }
   }
 }

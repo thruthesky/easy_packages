@@ -97,6 +97,7 @@ class ReportService {
     final ref = myReportsRef.push();
 
     await ref.set(data);
+    await reportsRef.child('---key-list').child(ref.key!).set(currentUser!.uid);
 
     /// if onCreate is set, then call the call back.
     onCreate?.call(Report.fromJson(data, ref.key!));

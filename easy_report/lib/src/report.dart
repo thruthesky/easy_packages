@@ -40,7 +40,7 @@ class Report {
       reason: json['reason'],
       type: json['type'],
       summary: json['summary'],
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
+      createdAt: json['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
     );
   }
 
