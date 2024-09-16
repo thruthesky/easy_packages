@@ -216,6 +216,7 @@ class ChatService {
     ChatJoin? join,
   }) async {
     assert(user != null || room != null || join != null);
+    if (!context.mounted) return null;
     return await showGeneralDialog<T>(
       context: context,
       barrierLabel: "Chat Room",

@@ -320,7 +320,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 const SizedBox(height: 24),
                 horizontalPadding(
                   child: Text(
-                    user?.displayName ?? "no name".t,
+                    user?.displayName.isEmpty == true ? "no name".t : user!.displayName,
                     style: Theme.of(context).textTheme.titleLarge,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

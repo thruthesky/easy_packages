@@ -77,7 +77,6 @@ class ChatBubble extends StatelessWidget {
       return ChatProtocolBubble(message: message);
     }
 
-    dog("message display name: ${message.displayName}");
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
@@ -210,20 +209,16 @@ class ChatBubble extends StatelessWidget {
                       children: [
                         if (message.uid != myUid) ...[
                           UserField(
-                            key: ValueKey("ChatBubbleDisplayName_${message.id}"),
                             uid: message.uid,
-                            initialData: message.displayName.isEmpty ? "..." : message.displayName,
+                            initialData: message.displayName.trim().isEmpty ? "..." : message.displayName,
                             field: 'displayName',
                             builder: (v, r) {
-                              // TODO need to review this User Field because
-                              //      There is a chance of flicker when other user has no display name.
+                              // REVIEW need to review this User Field because
+                              //        There is a chance of flicker when other user has no display name.
                               if (v == null) {
                                 return const Text("...");
                               }
-                              if (v is String) {
-                                return Text(v.trim().isEmpty ? "..." : v);
-                              }
-                              return const Text("...");
+                              return Text(v.trim().isEmpty ? "..." : v);
                             },
                           ),
                           const SizedBox(width: 8),
