@@ -1,6 +1,7 @@
 import 'package:easy_firestore/easy_firestore.dart';
 import 'package:flutter/material.dart';
 
+/// TODO: move it to realtime database
 class Setting extends StatelessWidget {
   const Setting({super.key, required this.id, required this.builder});
 

@@ -85,7 +85,7 @@ class ChatMessagesListView extends StatelessWidget {
                       onSave: () async {
                         if (index != 0) return;
                         dog("Last message is updated in room ${message.roomId}");
-                        await ChatService.instance.updateLastMessageInJoins(
+                        await ChatService.instance.updateLastMessageInChatJoins(
                           room,
                           message,
                         );

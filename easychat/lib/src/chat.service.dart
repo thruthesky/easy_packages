@@ -263,7 +263,7 @@ class ChatService {
     // onSendMessage should be called after sending message
     // other extra process comes after it.
     await onSendMessage?.call(message: newMessage, room: room);
-    await updateCountAndJoinAfterMessageSent(
+    await updateUnreadMessageCountAndJoinAfterMessageSent(
       room: room,
       text: text,
       photoUrl: photoUrl,
@@ -283,7 +283,7 @@ class ChatService {
     await FirebaseDatabase.instance.ref().update(updates);
   }
 
-  Future<void> updateLastMessageInJoins(
+  Future<void> updateLastMessageInChatJoins(
     ChatRoom room,
     ChatMessage updatedMessage,
   ) async {
@@ -308,7 +308,7 @@ class ChatService {
   /// - To update the unread message count of the chat room user.
   ///
   /// Refere README.md for more details
-  Future<void> updateCountAndJoinAfterMessageSent({
+  Future<void> updateUnreadMessageCountAndJoinAfterMessageSent({
     required ChatRoom room,
     String? text,
     String? photoUrl,
@@ -346,8 +346,17 @@ class ChatService {
         if (room.open) {
           updates['chat/joins/$uid/${room.id}/$openOrder'] = moreImportant;
         }
-        updates['chat/settings/$uid/unread-message-count/${room.id}'] = ServerValue.increment(1);
-        updates['chat/joins/$uid/${room.id}/unread-message-count'] = ServerValue.increment(1);
+
+        /// Increment the unread message count if the message is not
+        /// - join,
+        /// - left,
+        /// - or invitation-not-sent
+        if (protocol != ChatProtocol.join &&
+            protocol != ChatProtocol.left &&
+            protocol != ChatProtocol.invitationNotSent) {
+          updates['chat/settings/$uid/unread-message-count/${room.id}'] = ServerValue.increment(1);
+          updates['chat/joins/$uid/${room.id}/unread-message-count'] = ServerValue.increment(1);
+        }
       }
 
       updates['chat/joins/$uid/${room.id}/$lastMessageAt'] = timestamp;
