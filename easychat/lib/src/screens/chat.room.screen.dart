@@ -49,8 +49,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
     // 2. Prepare other user
     if (isSingleChatRoom(widget.join?.roomId ?? room!.id)) {
-      user ??= await User.get(
-          getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
+      user ??= await User.get(getOtherUserUidFromRoomId(widget.join?.roomId ?? room!.id)!);
     }
     await onRoomReady();
   }
@@ -79,9 +78,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
 
     // If current user is one of the user in the single chat room, can join
-    if (room!.joined == false &&
-        room!.single &&
-        room!.id.split(chatRoomDivider).contains(myUid!)) {
+    if (room!.joined == false && room!.single && room!.id.split(chatRoomDivider).contains(myUid!)) {
       await join();
     }
 
@@ -137,10 +134,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///  then, reset it.
   /// - Since the user is inside the room, the unread message count should be reset.
   void listenToUnreadMessageCountUpdate() {
-    resetMessageCountSubscription = ChatService.instance
-        .unreadMessageCountRef(room!.id)
-        .onValue
-        .listen((e) async {
+    resetMessageCountSubscription =
+        ChatService.instance.unreadMessageCountRef(room!.id).onValue.listen((e) async {
       final newMessageCount = (e.snapshot.value ?? 0) as int;
       if (newMessageCount == 0) return;
       await ChatService.instance.resetUnreadMessage(room!);
@@ -161,8 +156,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   /// Join or User must be provided or else it will throw a null error
   /// It is already handled by assert on constructor
   Future<void> loadRoomOrCreateSingleChatRoom() async {
-    room =
-        await ChatRoom.get(widget.join?.roomId ?? singleChatRoomId(user!.uid));
+    room = await ChatRoom.get(widget.join?.roomId ?? singleChatRoomId(user!.uid));
     if (room != null) return;
     final newRoomRef = await ChatRoom.createSingle(user!.uid);
     room = await ChatRoom.get(newRoomRef.key!);
@@ -306,12 +300,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   Icons.people,
                   color: Theme.of(context).colorScheme.onTertiaryContainer,
                 )
-              : CircleAvatar(
+              : Center(
                   child: Text(
-                    getOtherUserUidFromRoomId(widget.join!.roomId)!
-                        .characters
-                        .first
-                        .toUpperCase(),
+                    getOtherUserUidFromRoomId(widget.join!.roomId)!.characters.first.toUpperCase(),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onTertiaryContainer,
+                        ),
                   ),
                 ),
     );
