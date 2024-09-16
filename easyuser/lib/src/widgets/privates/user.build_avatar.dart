@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +44,7 @@ class UserBuildAvatar extends StatelessWidget {
             radius: radius,
             border: border,
             child: ThumbnailImage(
-              imageUrl: user.photoUrl!,
+              url: user.photoUrl!,
               fit: BoxFit.cover,
             ),
           );

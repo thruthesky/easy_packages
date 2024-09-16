@@ -8,7 +8,8 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  easy_helpers: ^0.0.11
+  cached_network_image: ^3.4.1
+  easy_helpers: ^0.0.14
   easy_locale: ^0.0.11
   easy_realtime_database: ^0.0.7
   firebase_auth: ^5.1.1

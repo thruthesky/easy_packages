@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -74,7 +75,7 @@ class ReportListView extends StatelessWidget {
               if (v == null) {
                 return const SizedBox.shrink();
               }
-              return CircleAvatar(child: CachedNetworkImage,)
+              return CircleAvatar(child: CachedNetworkImage(imageUrl: (v as String).thumbnail));
             },
           ),
           title: Value.once(
