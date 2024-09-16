@@ -323,7 +323,7 @@ packages:
       path: "../easy_task"
       relative: true
     source: path
-    version: "0.0.7"
+    version: "0.0.8"
   easy_url_preview:
     dependency: transitive
     description:
