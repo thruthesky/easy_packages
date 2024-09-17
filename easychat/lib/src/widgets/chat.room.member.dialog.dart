@@ -41,67 +41,74 @@ class ChatRoomMemberDialog extends StatelessWidget {
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (UserService.instance.blockChanges.value.containsKey(user.uid)) ...[
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: context.onSurface.withAlpha(50),
-                      ),
-                      width: 48,
-                      height: 48,
-                      child: Icon(
-                        Icons.block,
-                        color: context.onSurface.withAlpha(50),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "blocked user".t,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 12),
-                    Text("you have blocked this user. to check, tap this user or here".t)
-                  ] else ...[
-                    // REVIEW UserAvatar
-                    // User Avater needs to reload every time.
-                    // It may be because of ThumbnailImage.
-                    // Upon checking it is calling the thumbnail image first.
-                    // When it errors, it shows the original image.
-                    //
-                    // UserAvatar(user: user),
-                    //
-                    // For now, using this:
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(20),
-                          // border: border,
+              child: UserBlocked(
+                otherUid: user.uid,
+                builder: (blocked) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (blocked) ...[
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: context.onSurface.withAlpha(50),
+                          ),
+                          width: 48,
+                          height: 48,
+                          child: Icon(
+                            Icons.block,
+                            color: context.onSurface.withAlpha(50),
+                          ),
                         ),
-                        child: CachedNetworkImage(
-                          imageUrl: user.photoUrl!,
-                          fit: BoxFit.cover,
+                        const SizedBox(height: 8),
+                        Text(
+                          "blocked user".t,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    if (user.displayName.isNotEmpty)
-                      Text(
-                        user.displayName,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                  ]
-                ],
+                        const SizedBox(height: 12),
+                        Text("you have blocked this user. to check, tap this user or here".t)
+                      ] else ...[
+                        // REVIEW UserAvatar
+                        // User Avater needs to reload every time.
+                        // It may be because of ThumbnailImage.
+                        // Upon checking it is calling the thumbnail image first.
+                        // When it errors, it shows the original image.
+                        //
+                        // UserAvatar(user: user),
+                        //
+                        // For now, using this:
+                        user.photoUrl != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primaryContainer,
+                                    borderRadius: BorderRadius.circular(20),
+                                    // border: border,
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl: user.photoUrl!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            : UserAvatar.buildAnonymouseAvatar(size: 48),
+                        const SizedBox(height: 8),
+                        if (user.displayName.isNotEmpty)
+                          Text(
+                            user.displayName,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                      ]
+                    ],
+                  );
+                },
               ),
             ),
           ),

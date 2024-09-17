@@ -160,6 +160,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                                 setState(() {
                                   url = null;
                                 });
+                                canSubmitNotifier.value = canSubmit;
                               },
                             ),
                           ),
@@ -205,6 +206,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                                 setState(() {
                                   this.url = url;
                                 });
+                                canSubmitNotifier.value = canSubmit;
                               },
                             ),
                             suffixIcon: IconButton(
@@ -215,7 +217,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                                   return Icon(
                                     Icons.send,
                                     color: v
-                                        ? Theme.of(context).colorScheme.scrim
+                                        ? Theme.of(context).colorScheme.onSurface
                                         : Theme.of(context).disabledColor,
                                   );
                                 },
@@ -256,6 +258,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     textController.clear();
     this.url = null;
     ChatService.instance.clearReply();
+    canSubmitNotifier.value = canSubmit;
     setState(() {});
 
     // Send the message
