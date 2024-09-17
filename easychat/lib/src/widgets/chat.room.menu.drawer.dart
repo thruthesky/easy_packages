@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_report/easy_report.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.blocked.users.dialog.dart';
 import 'package:easyuser/easyuser.dart';
@@ -222,10 +223,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       }
 
                       // Get if user is already invited and rejected the invitation
-                      final rejection = await ChatService.instance
-                          .rejectedUserRef(selectedUser.uid)
-                          .child(room!.id)
-                          .get();
+                      final rejection =
+                          await ChatService.instance.rejectedUserRef(selectedUser.uid).child(room!.id).get();
                       if (rejection.exists) {
                         dog("The user is already rejected: ${rejection.value}");
                         throw ChatException(
@@ -248,9 +247,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
                           'user has been invited'.tr(
                             args: {
-                              'username': selectedUser.displayName.isEmpty
-                                  ? selectedUser.name
-                                  : selectedUser.displayName,
+                              'username':
+                                  selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName,
                             },
                           ),
                         ),
@@ -373,9 +371,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 if (room?.single == true || user != null)
                   ListTile(
                     title: Text(
-                      UserService.instance.blockChanges.value.containsKey(user!.uid)
-                          ? "unblock".t
-                          : "block".t,
+                      UserService.instance.blockChanges.value.containsKey(user!.uid) ? "unblock".t : "block".t,
                     ),
                     onTap: () async {
                       final re = await UserService.instance.block(
@@ -400,16 +396,13 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 ListTile(
                   title: Text('report'.t),
                   onTap: () {
-                    throw UnimplementedError(
-                        'Report service must be updated since it only support Firestore document. Make it support the path of the document. So it can support realtime database.');
-
-                    /// TODO: Report service must accept the path of the document as String.
-                    /// TODO: Report service must have the title, content, reason, photo urls, etc. to report with enough information.
-                    // ReportService.instance.report(
-                    //   context: context,
-                    //   documentReference: room?.ref.path ?? user!.ref.path,
-                    //   otherUid: user?.uid ?? room!.masterUsers.first,
-                    // );
+                    ReportService.instance.report(
+                      context: context,
+                      reportee: user?.uid ?? room!.masterUsers.first,
+                      path: room!.ref.path,
+                      type: 'chat',
+                      summary: 'Reporting a chat room',
+                    );
                   },
                 )
               ],
@@ -427,8 +420,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return ChatService.instance.membersDialogBuilder?.call(context, room!) ??
-            ChatRoomMemberListDialog(room: room!);
+        return ChatService.instance.membersDialogBuilder?.call(context, room!) ?? ChatRoomMemberListDialog(room: room!);
       },
     );
   }
