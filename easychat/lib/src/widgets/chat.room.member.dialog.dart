@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
@@ -43,8 +44,7 @@ class ChatRoomMemberDialog extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (UserService.instance.blockChanges.value
-                      .containsKey(user.uid)) ...[
+                  if (UserService.instance.blockChanges.value.containsKey(user.uid)) ...[
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
@@ -61,20 +61,39 @@ class ChatRoomMemberDialog extends StatelessWidget {
                     Text(
                       "blocked user".t,
                       style: TextStyle(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withAlpha(100),
+                        color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                        "you have blocked this user. to check, tap this user or here"
-                            .t)
+                    Text("you have blocked this user. to check, tap this user or here".t)
                   ] else ...[
-                    UserAvatar(user: user),
+                    // REVIEW UserAvatar
+                    // User Avater needs to reload every time.
+                    // It may be because of ThumbnailImage.
+                    // Upon checking it is calling the thumbnail image first.
+                    // When it errors, it shows the original image.
+                    //
+                    // UserAvatar(user: user),
+                    //
+                    // For now, using this:
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(20),
+                          // border: border,
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: user.photoUrl!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     if (user.displayName.isNotEmpty)
                       Text(
@@ -88,8 +107,7 @@ class ChatRoomMemberDialog extends StatelessWidget {
           ),
           const SizedBox(height: 36),
           if (room?.masterUsers.contains(myUid) == true) ...[
-            if (user.uid != myUid &&
-                room?.blockedUids.contains(user.uid) == false) ...[
+            if (user.uid != myUid && room?.blockedUids.contains(user.uid) == false) ...[
               const Divider(
                 height: 0,
               ),
@@ -109,8 +127,7 @@ class ChatRoomMemberDialog extends StatelessWidget {
                 },
               ),
             ],
-            if (room?.blockedUids.contains(user.uid) == true &&
-                user.uid != myUid) ...[
+            if (room?.blockedUids.contains(user.uid) == true && user.uid != myUid) ...[
               const Divider(
                 height: 0,
               ),

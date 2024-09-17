@@ -1,6 +1,7 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_report/easy_report.dart';
+import 'package:easy_report/report.locale.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,8 @@ class ReportService {
     String userPhotoUrlPath = 'mirror-users/{uid}/photoUrl',
   }) {
     this.onCreate = onCreate;
+
+    applyReportLocales();
   }
 
   /// Report
@@ -47,14 +50,14 @@ class ReportService {
   }) async {
     if (currentUser == null) {
       if (context.mounted) {
-        toast(context: context, message: Text('You are not signed in'.t));
+        toast(context: context, message: Text('you are not signed in'.t));
       }
       return;
     }
 
     if (currentUser?.uid == reportee) {
       if (context.mounted) {
-        toast(context: context, message: Text('You cannot report yourself'.t));
+        toast(context: context, message: Text('you cannot report yourself'.t));
       }
       return;
     }
@@ -63,7 +66,7 @@ class ReportService {
     final snapshot = await myReportsRef.orderByChild('path').equalTo(path).get();
     if (snapshot.value != null) {
       if (context.mounted) {
-        toast(context: context, message: Text('You have already reported this'.t));
+        toast(context: context, message: Text('you already have reported this'.t));
       }
       return;
     }

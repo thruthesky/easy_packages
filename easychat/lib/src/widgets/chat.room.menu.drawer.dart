@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easy_report/easy_report.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.blocked.users.dialog.dart';
 import 'package:easyuser/easyuser.dart';
@@ -341,6 +342,23 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               const SizedBox(height: 24),
               if (user?.admin != true) label(context: context, text: "options".t),
               const SizedBox(height: 8),
+              ListTile(
+                title: Text('report'.t),
+                onTap: () {
+                  // throw UnimplementedError(
+                  // 'Report service must be updated since it only support Firestore document. Make it support the path of the document. So it can support realtime database.');
+
+                  /// TODO: Report service must accept the path of the document as String.
+                  /// TODO: Report service must have the title, content, reason, photo urls, etc. to report with enough information.
+                  ReportService.instance.report(
+                    context: context,
+                    path: room?.ref.path ?? user!.ref.path,
+                    type: 'Chat',
+                    reportee: user?.uid ?? room!.masterUsers.first,
+                    summary: "Chat Room Report",
+                  );
+                },
+              ),
               if (room?.joined == true) ...[
                 if (room!.group && room!.masterUsers.contains(my.uid))
                   ListTile(
@@ -397,21 +415,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       }
                     },
                   ),
-                ListTile(
-                  title: Text('report'.t),
-                  onTap: () {
-                    throw UnimplementedError(
-                        'Report service must be updated since it only support Firestore document. Make it support the path of the document. So it can support realtime database.');
-
-                    /// TODO: Report service must accept the path of the document as String.
-                    /// TODO: Report service must have the title, content, reason, photo urls, etc. to report with enough information.
-                    // ReportService.instance.report(
-                    //   context: context,
-                    //   documentReference: room?.ref.path ?? user!.ref.path,
-                    //   otherUid: user?.uid ?? room!.masterUsers.first,
-                    // );
-                  },
-                )
               ],
               const SizedBox(
                 height: 36,

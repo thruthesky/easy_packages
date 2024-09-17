@@ -185,6 +185,7 @@ class ChatBubble extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: UserDoc.sync(
+                        key: ValueKey("ChatAvatarDoc_${message.id}"),
                         uid: message.uid,
                         builder: (user) => user == null
                             ? const ChatAvatarLoader()
@@ -192,7 +193,36 @@ class ChatBubble extends StatelessWidget {
                                 behavior: HitTestBehavior.opaque,
                                 onTap: () =>
                                     UserService.instance.showPublicProfileScreen(context, user: user),
-                                child: UserAvatar(user: user),
+                                // MUST REVIEW
+                                // Something is wrong in the User Avatar
+                                // Somehow, the image must reload when Firebase list
+                                // is updated (upon testing in real iPhone Device)
+                                //
+                                // It may be because of ThumbnailImage.
+                                // Upon checking it is calling the thumbnail image first.
+                                // When it errors, it shows the original image.
+                                //
+                                // child: UserAvatar(
+                                //   user: user,
+                                // ),
+                                //
+                                // For now, using this instead of UserAvatar:
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.primaryContainer,
+                                      borderRadius: BorderRadius.circular(20),
+                                      // border: border,
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: user.photoUrl!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
                               ),
                       ),
                     ),

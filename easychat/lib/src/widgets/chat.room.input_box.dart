@@ -39,14 +39,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
 
   String? url;
 
-  double photoWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.20;
+  double photoWidth(BuildContext context) => MediaQuery.of(context).size.width * 0.20;
 
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
 
-  double maxWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56;
+  double maxWidth(BuildContext context) => MediaQuery.of(context).size.width * 0.56;
 
   @override
   void initState() {
@@ -85,8 +83,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
           initialData: uploadProgress.value,
           stream: uploadProgress,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting &&
-                !snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
               return const Padding(
                 padding: EdgeInsets.only(bottom: 8.0),
                 child: LinearProgressIndicator(),
@@ -114,16 +111,13 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
           behavior: HitTestBehavior.opaque,
           child: Container(
             decoration: BoxDecoration(
-              border:
-                  Theme.of(context).inputDecorationTheme.enabledBorder != null
-                      ? Border.all(
-                          color: enabledBorderSide(context)?.color ??
-                              const Color(0xFF000000),
-                          width: enabledBorderSide(context)?.width ?? 1.0,
-                          style: enabledBorderSide(context)?.style ??
-                              BorderStyle.solid,
-                        )
-                      : Border.all(),
+              border: Theme.of(context).inputDecorationTheme.enabledBorder != null
+                  ? Border.all(
+                      color: enabledBorderSide(context)?.color ?? const Color(0xFF000000),
+                      width: enabledBorderSide(context)?.width ?? 1.0,
+                      style: enabledBorderSide(context)?.style ?? BorderStyle.solid,
+                    )
+                  : Border.all(),
               borderRadius: BorderRadius.circular(12),
             ),
             margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
@@ -194,8 +188,7 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                           minLines: 1,
                           decoration: InputDecoration(
                             prefixIcon: UploadIconButton.image(
-                              progress: (prog) =>
-                                  mounted ? uploadProgress.add(prog) : null,
+                              progress: (prog) => mounted ? uploadProgress.add(prog) : null,
                               onUpload: (url) async {
                                 if (this.url != null) {
                                   // This means the photo before sending is being

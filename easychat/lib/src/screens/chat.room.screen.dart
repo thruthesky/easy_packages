@@ -226,23 +226,32 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           : null,
       body: room == null
           ? const Center(child: CircularProgressIndicator.adaptive())
-          : Column(
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ChatMessagesListView(
+          : GestureDetector(
+              // Purpose: To remove the keyboard when user is reading
+              //          on the chat messages (when user taps the messages).
+              //
+              // Why: In iPhone Device, user must have a way to toggle off the
+              //      keyboard itself.
+              //
+              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ChatMessagesListView(
+                        room: room!,
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    top: false,
+                    child: ChatRoomInputBox(
                       room: room!,
                     ),
                   ),
-                ),
-                SafeArea(
-                  top: false,
-                  child: ChatRoomInputBox(
-                    room: room!,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }
