@@ -24,8 +24,7 @@ class MessagingService {
   static DatabaseReference rootRef = FirebaseDatabase.instance.ref();
 
   DatabaseReference fcmTokensRef = FirebaseDatabase.instance.ref(fcmTokens);
-  Query get myTokenQuery =>
-      fcmTokensRef.orderByChild('uid').equalTo(currentUser!.uid);
+  Query get myTokenQuery => fcmTokensRef.orderByChild('uid').equalTo(currentUser!.uid);
 
   DatabaseReference subscriptionRef(String subscriptionName) =>
       rootRef.child('$fcmSubscriptions/$subscriptionName/${currentUser!.uid}');
@@ -97,8 +96,7 @@ class MessagingService {
     this.onMessageOpenedFromTerminated = onMessageOpenedFromTerminated;
     this.onMessageOpenedFromBackground = onMessageOpenedFromBackground;
     this.onNotificationPermissionDenied = onNotificationPermissionDenied;
-    this.onNotificationPermissionNotDetermined =
-        onNotificationPermissionNotDetermined;
+    this.onNotificationPermissionNotDetermined = onNotificationPermissionNotDetermined;
 
     _initializeEventHandlers();
 
@@ -113,8 +111,7 @@ class MessagingService {
     /// Permission request for iOS only. For Android, the permission is granted by default.
     ///
     if (kIsWeb || Platform.isIOS) {
-      NotificationSettings settings =
-          await FirebaseMessaging.instance.requestPermission(
+      NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
         alert: true,
         announcement: false,
         badge: true,
@@ -126,14 +123,12 @@ class MessagingService {
 
       /// Check if permission had given.
       if (settings.authorizationStatus == AuthorizationStatus.denied) {
-        onNotificationPermissionDenied?.call() ??
-            Exception('messaging/permission-denied Permission Denied');
+        onNotificationPermissionDenied?.call() ?? Exception('messaging/permission-denied Permission Denied');
         return;
       }
       if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
         onNotificationPermissionNotDetermined?.call() ??
-            Exception(
-                'messaging/permission-not-determined Permission Not Determined');
+            Exception('messaging/permission-not-determined Permission Not Determined');
         return;
       }
     }
@@ -149,17 +144,14 @@ class MessagingService {
     ///
     /// `/fcm_tokens/<docId>/{token: '...', uid: '...'}`
     /// Save(or update) token
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((user) => _saveToken(token));
+    FirebaseAuth.instance.authStateChanges().listen((user) => _saveToken(token));
 
     /// Token refreshed. update it.
     ///
     /// Run this subscription on the whole lifecycle. (No unsubscription)
     ///
     // Any time the token refreshes, store this in the database too.
-    FirebaseMessaging.instance.onTokenRefresh
-        .listen((token) => _saveToken(token));
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) => _saveToken(token));
 
     /// Get token from device and save it into Firestore
     ///
@@ -226,8 +218,7 @@ class MessagingService {
     FirebaseMessaging.onMessage.listen(onForegroundMessage);
 
     // Check if app is opened from CLOSED(TERMINATED) state and get message data.
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
       onMessageOpenedFromTerminated?.call(initialMessage);
     }
@@ -258,8 +249,10 @@ class MessagingService {
   /// If error throw error message
   ///
   preResponse(http.Response response) {
-    dog('preResponse status: ${response.statusCode}');
-    dog('preResponse body: ${response.body}');
+    /// TODO: this produce an exception when the cloud function returns an error or the function is not found.
+    /// TODO: Handle fo rthe jsonDecode error and produce error nicely.
+    dog('messaging.service.dart -> preResponse status: ${response.statusCode}');
+    dog('messaging.service.dart -> preResponse body: ${response.body}');
     final decode = jsonDecode(response.body);
     if (decode is Map && decode['error'] is String) {
       throw "messaging/response-error ${decode['error']}";

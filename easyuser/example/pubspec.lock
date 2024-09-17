@@ -173,10 +173,10 @@ packages:
     dependency: transitive
     description:
       name: easy_helpers
-      sha256: "25d45ea1a8a65655a5be4aa43dc11c5784079f9bdbcd6c777f596a865bf93c39"
+      sha256: "16463bfcf8e9452eb56df55de028d8aa0ecc96ac2a5fdf906f9505e105a68fa5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.13"
+    version: "0.0.14"
   easy_locale:
     dependency: "direct main"
     description:
@@ -204,10 +204,10 @@ packages:
     dependency: transitive
     description:
       name: easy_storage
-      sha256: "68066e826962cd1a39819554c3877ffb687132d25617c8c154debcfe018ff6ab"
+      sha256: "36871d377c0c90ecd8c0084660c43a52e13691b38ce0e69adc4e3592758d2fcf"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.14"
+    version: "0.0.16"
   easyuser:
     dependency: "direct main"
     description:

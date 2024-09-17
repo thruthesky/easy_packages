@@ -1,0 +1,21 @@
+{
+  "rules": {
+    "reports": {
+      "---key-list": {
+        ".read": true,
+        "$reportKey": {
+          ".write": "newData.val() === auth.uid"
+        }
+      },
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        "$reportKey": {
+          ".write": "newData.child('reporter').val() === auth.uid"
+        },
+        ".indexOn": [
+          "path"
+        ]
+      }
+    }
+  }
+}

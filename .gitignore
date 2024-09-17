@@ -4,6 +4,7 @@
 .idea
 
 
+**/node_modules/
 
 # remove firebase config
 .firebase/

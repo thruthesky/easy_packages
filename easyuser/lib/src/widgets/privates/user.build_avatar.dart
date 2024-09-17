@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_storage/easy_storage.dart';
 
 class UserBuildAvatar extends StatelessWidget {
   const UserBuildAvatar({
@@ -30,9 +30,7 @@ class UserBuildAvatar extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                user.displayName.isEmpty
-                    ? user.uid[0].toUpperCase()
-                    : user.displayName[0].toUpperCase(),
+                user.displayName.isEmpty ? user.uid[0].toUpperCase() : user.displayName[0].toUpperCase(),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
@@ -45,8 +43,8 @@ class UserBuildAvatar extends StatelessWidget {
             size: size,
             radius: radius,
             border: border,
-            child: CachedNetworkImage(
-              imageUrl: user.photoUrl!,
+            child: ThumbnailImage(
+              url: user.photoUrl!,
               fit: BoxFit.cover,
             ),
           );

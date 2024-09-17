@@ -4,9 +4,11 @@
 
 
 
+
 # TODO
 
 - Let admin list the reported users and their contents. And decide to block(disbable) their account. So that they cannot use the app.
+
 
 
 # Concept
@@ -23,8 +25,8 @@
 
 # Database Structure
 
-- `reports` path
-  - `reportId` data
+- `reports/$reportKey` path
+  - `$reportKey` is the node data key.
     - `reportee` field: The uid of the user who is responsible for the data.
     - `reporter` field: The uid of the user who created the report. It is usually the login user's uid.
 
@@ -34,7 +36,23 @@
     - `summary` field: The summary of the report.
     - `createdAt` field: The time when the report is created.
 
+- `reports/---key-list/$reportKey` path
+  - `---key-list` is the node data key. It holds all the report Keys. This is for admin's report listing purpose.
+    - `$reportKey` field: This key is the reoprt key. It has uid as value.
+
+
 # How to use
+
+## Initialize
+
+- You may(or may not) want to initialize the `ReportService` before using it.
+- With the `init` method, you can
+  - customize the `onCreate` callback. The `onCreate` callback is called after the report is created. It contains the newly created `report` information.
+  - set the path of user name and photo url. The default path is `user-mirrors/{uid}/name` and `user-mirrors/{uid}/photoUrl`. If your database has different structure, you can set the path with `userNamePath` and `photoUrlPath` parameters.
+
+```dart
+ReportService.instance.init();
+```
 
 ## Displaying a report button
 

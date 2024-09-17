@@ -12,6 +12,7 @@ class ReportService {
   ReportService._();
 
   DatabaseReference reportsRef = FirebaseDatabase.instance.ref('reports');
+  DatabaseReference get myReportsRef => reportsRef.child(FirebaseAuth.instance.currentUser!.uid);
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
@@ -19,8 +20,13 @@ class ReportService {
   /// Usage: e.g. send push notification after report to admin or user
   Function(Report)? onCreate;
 
+  String get userNamePath => 'mirror-users/{uid}/displayName';
+  String get userPhotoUrlPath => 'mirror-users/{uid}/photoUrl';
+
   init({
     Function(Report)? onCreate,
+    String userNamePath = 'mirror-users/{uid}/displayName',
+    String userPhotoUrlPath = 'mirror-users/{uid}/photoUrl',
   }) {
     this.onCreate = onCreate;
   }
@@ -54,7 +60,7 @@ class ReportService {
     }
 
     // Check if the login user has already reported the same data(user, post, comment, chat room, etc)
-    final snapshot = await reportsRef.orderByChild('path').equalTo(path).get();
+    final snapshot = await myReportsRef.orderByChild('path').equalTo(path).get();
     if (snapshot.value != null) {
       if (context.mounted) {
         toast(context: context, message: Text('You have already reported this'.t));
@@ -88,9 +94,10 @@ class ReportService {
       'createdAt': ServerValue.timestamp,
     };
 
-    final ref = reportsRef.push();
+    final ref = myReportsRef.push();
 
     await ref.set(data);
+    await reportsRef.child('---key-list').child(ref.key!).set(currentUser!.uid);
 
     /// if onCreate is set, then call the call back.
     onCreate?.call(Report.fromJson(data, ref.key!));

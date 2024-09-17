@@ -94,6 +94,10 @@ dependency_overrides:
 ```
 
 
+# Firebase SDK
+
+- The fultter uses a specific version of Firebase SDK. So, you need to use the same version of Firebase SDK in your app.
+  - This is because all the easy packages must use the same version of Firebase SDK to avoid any compatibility issues.
 
 
 # Packages
@@ -529,6 +533,12 @@ UserService.instance.init(
 
 - Note that, the callback **must pass** the BuildContext.
 
+
+## Database Structure Customization
+
+- Each app has its own database structure. The easy packages are designed to work with the default database structure. If you want to use the easy packages with your own database structure, you can customize the database structure to work with the easy packages.
+- Use `userNamePath` and `photoUrlPath` to customize the path of the user name and photo URL in the database.
+  - Most of the easy packages support this customization to display the user name and photo while using your own database structure.
 
 
 ## Customizing Action Buttons
