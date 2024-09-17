@@ -1,3 +1,6 @@
+## 0.0.6
+* Fix. `cached_network_image` package version update.
+
 ## 0.0.5
 * Refactor. Move data to Realtime database.
 * Refactor. Remove easy_user package.
