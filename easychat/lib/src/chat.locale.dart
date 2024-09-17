@@ -12,8 +12,7 @@ final localeTexts = <String, Map<String, dynamic>>{
 
   // chat.room.dart
   'failed joining. something went wrong. the room may be private or deleted.': {
-    'en':
-        'Failed joining chat room. Something went wrong. The room may be private or deleted',
+    'en': 'Failed joining chat room. Something went wrong. The room may be private or deleted',
     'ko': "채팅방에 참여하지 못했습니다. 문제가 발생했습니다. 방이 비공개이거나 삭제되었을 수 있습니다.",
   },
 
@@ -315,8 +314,7 @@ final localeTexts = <String, Map<String, dynamic>>{
 
   // chat.room.member.list.dialog.dart
   "you have blocked this user. to check, tap this user or here": {
-    'en':
-        'You have blocked this user. To check who this is, you may tap this user or here.',
+    'en': 'You have blocked this user. To check who this is, you may tap this user or here.',
     'ko': '이 사용자를 차단했습니다. 이 사용자가 누구인지 확인하려면 이 사용자 또는 여기를 탭하세요.',
   },
 
@@ -393,6 +391,14 @@ final localeTexts = <String, Map<String, dynamic>>{
   'report': {
     'en': 'Report',
     'ko': '신고',
+  },
+  "report this user": {
+    'en': "Report this user",
+    'ko': '이 사용자를 신고합니다',
+  },
+  "reporting the master because of his/her room": {
+    'en': 'Reporting the master because of his/her room',
+    'ko': '방 때문에 마스터를 신고합니다.',
   },
 
   // chat.room.replying_to

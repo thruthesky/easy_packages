@@ -337,7 +337,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
-                ],
+                ] else
+                  const SizedBox(height: 12),
               ],
               const SizedBox(height: 24),
               if (user?.admin != true) label(context: context, text: "options".t),
@@ -345,17 +346,14 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               ListTile(
                 title: Text('report'.t),
                 onTap: () {
-                  // throw UnimplementedError(
-                  // 'Report service must be updated since it only support Firestore document. Make it support the path of the document. So it can support realtime database.');
-
-                  /// TODO: Report service must accept the path of the document as String.
-                  /// TODO: Report service must have the title, content, reason, photo urls, etc. to report with enough information.
                   ReportService.instance.report(
                     context: context,
                     path: room?.ref.path ?? user!.ref.path,
                     type: 'Chat',
                     reportee: user?.uid ?? room!.masterUsers.first,
-                    summary: "Chat Room Report",
+                    summary: room?.group == true
+                        ? "reporting the master because of his/her room".t
+                        : "report this user".t,
                   );
                 },
               ),

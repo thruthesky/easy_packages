@@ -54,22 +54,24 @@ class ChatRoomMemberListTile extends StatelessWidget {
               // child: UserAvatar(user: user),
               //
               // For now, using this:
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(20),
-                    // border: border,
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: user.photoUrl!,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+              child: user.photoUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(20),
+                          // border: border,
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: user.photoUrl!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : UserAvatar.buildAnonymouseAvatar(size: 48),
             ),
       title: blocked
           ? Text(
