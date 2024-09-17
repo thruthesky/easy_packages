@@ -123,7 +123,8 @@ class MessagingService {
 
       /// Check if permission had given.
       if (settings.authorizationStatus == AuthorizationStatus.denied) {
-        onNotificationPermissionDenied?.call() ?? Exception('messaging/permission-denied Permission Denied');
+        onNotificationPermissionDenied?.call() ??
+            Exception('messaging/permission-denied Permission Denied');
         return;
       }
       if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
@@ -248,16 +249,19 @@ class MessagingService {
   /// Return the list of tokens that has errors,
   /// If error throw error message
   ///
-  preResponse(http.Response response) {
-    /// TODO: this produce an exception when the cloud function returns an error or the function is not found.
-    /// TODO: Handle fo rthe jsonDecode error and produce error nicely.
-    dog('messaging.service.dart -> preResponse status: ${response.statusCode}');
-    dog('messaging.service.dart -> preResponse body: ${response.body}');
-    final decode = jsonDecode(response.body);
-    if (decode is Map && decode['error'] is String) {
-      throw "messaging/response-error ${decode['error']}";
+  handleResponse(http.Response response) {
+    switch (response.statusCode) {
+      case 200:
+        dog('messaging.service.dart -> preResponse status: ${response.statusCode}');
+        dog('messaging.service.dart -> preResponse body: ${response.body}');
+        final decode = jsonDecode(response.body);
+        if (decode is Map && decode['error'] is String) {
+          throw "messaging/response-error ${decode['error']}";
+        }
+        return List<String>.from(decode);
+      default:
+        throw "messaging/response-error ${response.statusCode} ${response.reasonPhrase ?? response.body}";
     }
-    return List<String>.from(decode);
   }
 
   /// Send a message to the users via tokens
@@ -280,7 +284,7 @@ class MessagingService {
       },
     );
 
-    return preResponse(response);
+    return handleResponse(response);
   }
 
   /// Send a message to the users with list of uid
@@ -311,7 +315,7 @@ class MessagingService {
       },
     );
 
-    return preResponse(response);
+    return handleResponse(response);
   }
 
   /// Send a message to the users via subscriptions
@@ -336,7 +340,7 @@ class MessagingService {
       },
     );
 
-    return preResponse(response);
+    return handleResponse(response);
   }
 
   /// Prepare http post request
