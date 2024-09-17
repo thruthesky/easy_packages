@@ -37,8 +37,7 @@ class ChatBubble extends StatelessWidget {
       // space in left if it is our own message.
       MediaQuery.of(context).size.width * 0.90 - 48;
 
-  double photoHeight(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56;
+  double photoHeight(BuildContext context) => MediaQuery.of(context).size.width * 0.56;
 
   Color replyDividerColor(BuildContext context) => message.uid == myUid
       ? const Color.fromARGB(255, 232, 205, 130)
@@ -74,17 +73,23 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (UserService.instance.blockChanges.value.containsKey(message.uid)) {
+      // Simply hide everything if the other user is blocked
+      // this doesn't have to be a live listening and it will be updated
+      // whenever state is updated.
+      // I think it is not critical.
+      return const SizedBox.shrink();
+    }
+
     if (message.isProtocol) {
       return ChatProtocolBubble(message: message);
     }
 
-    dog("message display name: ${message.displayName}");
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPressStart: menuItems.isNotEmpty
           ? (details) async {
-              if (UserService.instance.blockChanges.value
-                  .containsKey(message.uid)) {
+              if (UserService.instance.blockChanges.value.containsKey(message.uid)) {
                 return;
               }
               final value = await showMenu(
@@ -123,289 +128,220 @@ class ChatBubble extends StatelessWidget {
         // we will set it into 8.
         // margin: const EdgeInsets.symmetric(vertical: 4),
         margin: const EdgeInsets.symmetric(vertical: 8),
-        child: UserBlocked(
-            otherUid: message.uid,
-            builder: (blocked) {
-              if (blocked) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: context.onSurface.withAlpha(50),
-                      ),
-                      width: 48,
-                      height: 48,
-                      child: Icon(
-                        Icons.block,
-                        color: context.onSurface.withAlpha(50),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "blocked user".t,
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withAlpha(100),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: message.uid != myUid ? MainAxisAlignment.start : MainAxisAlignment.end,
+          children: [
+            if (message.uid != myUid) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: UserDoc.sync(
+                  key: ValueKey("ChatAvatarDoc_${message.id}"),
+                  uid: message.uid,
+                  builder: (user) => user == null
+                      ? const ChatAvatarLoader()
+                      : GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => UserService.instance.showPublicProfileScreen(context, user: user),
+                          // MUST REVIEW
+                          // Something is wrong in the User Avatar
+                          // Somehow, the image must reload when Firebase list
+                          // is updated (upon testing in real iPhone Device)
+                          //
+                          // It may be because of ThumbnailImage.
+                          // Upon checking it is calling the thumbnail image first.
+                          // When it errors, it shows the original image.
+                          //
+                          // child: UserAvatar(
+                          //   user: user,
+                          // ),
+                          //
+                          // For now, using this instead of UserAvatar:
+                          child: user.photoUrl != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.primaryContainer,
+                                      borderRadius: BorderRadius.circular(20),
+                                      // border: border,
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: user.photoUrl!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                )
+                              : UserAvatar.buildAnonymouseAvatar(size: 48),
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: context.surface,
-                            border: Border.all(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withAlpha(50),
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          constraints: BoxConstraints(
-                            maxWidth: maxWidth(context) * 3 / 4,
-                          ),
-                          padding: const EdgeInsets.all(12),
-                          child: Text(
-                            "this message is comming from a blocked user".t,
-                            style: TextStyle(
-                              fontSize: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.fontSize ??
-                                  8,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withAlpha(100),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              }
-              return Row(
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: maxWidth(context),
+              ),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: message.uid != myUid
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.end,
+                crossAxisAlignment:
+                    message.uid != myUid ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   if (message.uid != myUid) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: UserDoc.sync(
-                        uid: message.uid,
-                        builder: (user) => user == null
-                            ? const ChatAvatarLoader()
-                            : GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () => UserService.instance
-                                    .showPublicProfileScreen(context,
-                                        user: user),
-                                child: UserAvatar(user: user),
-                              ),
-                      ),
+                    UserField(
+                      uid: message.uid,
+                      initialData: message.displayName.trim().isEmpty ? "..." : message.displayName,
+                      field: 'displayName',
+                      builder: (v, r) {
+                        // REVIEW need to review this User Field because
+                        //        There is a chance of flicker when other user has no display name.
+                        if (v == null) {
+                          return const Text("...");
+                        }
+                        return Text(v.trim().isEmpty ? "..." : v);
+                      },
                     ),
                     const SizedBox(width: 8),
                   ],
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: maxWidth(context),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: message.uid != myUid
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.end,
-                      children: [
-                        if (message.uid != myUid) ...[
-                          UserField(
-                            key:
-                                ValueKey("ChatBubbleDisplayName_${message.id}"),
-                            uid: message.uid,
-                            initialData: message.displayName.isEmpty
-                                ? "..."
-                                : message.displayName,
-                            field: 'displayName',
-                            builder: (v, r) {
-                              // TODO need to review this User Field because
-                              //      There is a chance of flicker when other user has no display name.
-                              if (v == null) {
-                                return const Text("...");
-                              }
-                              if (v is String) {
-                                return Text(v.trim().isEmpty ? "..." : v);
-                              }
-                              return const Text("...");
-                            },
+                  if (message.deleted) ...[
+                    Opacity(
+                      opacity: 0.38,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline,
                           ),
-                          const SizedBox(width: 8),
-                        ],
-                        if (message.deleted) ...[
-                          Opacity(
-                            opacity: 0.38,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          'this message has been deleted'.t,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
-                              padding: const EdgeInsets.all(12),
-                              child: Text(
-                                'this message has been deleted'.t,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                    ),
-                              ),
+                        ),
+                      ),
+                    )
+                  ],
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment:
+                        message.uid != myUid ? MainAxisAlignment.start : MainAxisAlignment.end,
+                    children: [
+                      if (message.uid == myUid) timeText(context),
+                      Flexible(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: message.uid == myUid
+                                ? Colors.amber.shade200
+                                : Theme.of(context).colorScheme.surfaceContainerHigh,
+                            borderRadius: BorderRadius.only(
+                              topLeft: message.uid == myUid ? const Radius.circular(12) : Radius.zero,
+                              topRight: message.uid == myUid ? Radius.zero : const Radius.circular(12),
+                              bottomLeft: const Radius.circular(12),
+                              bottomRight: const Radius.circular(12),
                             ),
-                          )
-                        ],
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: message.uid != myUid
-                              ? MainAxisAlignment.start
-                              : MainAxisAlignment.end,
-                          children: [
-                            if (message.uid == myUid) timeText(context),
-                            Flexible(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: message.uid == myUid
-                                      ? Colors.amber.shade200
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainerHigh,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: message.uid == myUid
-                                        ? const Radius.circular(12)
-                                        : Radius.zero,
-                                    topRight: message.uid == myUid
-                                        ? Radius.zero
-                                        : const Radius.circular(12),
-                                    bottomLeft: const Radius.circular(12),
-                                    bottomRight: const Radius.circular(12),
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (message.replyTo != null) ...[
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: replyDividerColor(context),
+                                      ),
+                                    ),
+                                  ),
+                                  child: ChatBubbleReply(
+                                    message: message,
+                                    maxWidth: maxWidth(context),
                                   ),
                                 ),
-                                clipBehavior: Clip.hardEdge,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (message.replyTo != null) ...[
-                                      Container(
-                                        decoration: BoxDecoration(
+                              ],
+                              Transform.translate(
+                                offset: Offset(
+                                  0,
+                                  message.replyTo != null ? -1 : 0,
+                                ),
+                                child: Container(
+                                  decoration: message.replyTo != null
+                                      ? BoxDecoration(
                                           border: Border(
-                                            bottom: BorderSide(
+                                            top: BorderSide(
                                               color: replyDividerColor(context),
                                             ),
                                           ),
+                                        )
+                                      : null,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (message.url != null) ...[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                          ),
+                                          height: photoHeight(context),
+                                          width: maxWidth(context),
+                                          child: CachedNetworkImage(
+                                            key: ValueKey(message.url),
+                                            fadeInDuration: Duration.zero,
+                                            fadeOutDuration: Duration.zero,
+                                            fit: BoxFit.cover,
+                                            imageUrl: message.url!,
+                                            errorWidget: (context, url, error) {
+                                              dog("Error in Image Chat Bubble: $error");
+                                              return Center(
+                                                child: Icon(
+                                                  Icons.error,
+                                                  color: context.error,
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ),
-                                        child: ChatBubbleReply(
-                                          message: message,
-                                          maxWidth: maxWidth(context),
+                                      ],
+                                      if (message.text.notEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: Text(
+                                            message.text!,
+                                          ),
                                         ),
-                                      ),
                                     ],
-                                    Transform.translate(
-                                      offset: Offset(
-                                        0,
-                                        message.replyTo != null ? -1 : 0,
-                                      ),
-                                      child: Container(
-                                        decoration: message.replyTo != null
-                                            ? BoxDecoration(
-                                                border: Border(
-                                                  top: BorderSide(
-                                                    color: replyDividerColor(
-                                                        context),
-                                                  ),
-                                                ),
-                                              )
-                                            : null,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            if (message.url != null) ...[
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .surfaceContainerHighest,
-                                                ),
-                                                height: photoHeight(context),
-                                                width: maxWidth(context),
-                                                child: CachedNetworkImage(
-                                                  key: ValueKey(message.url),
-                                                  fadeInDuration: Duration.zero,
-                                                  fadeOutDuration:
-                                                      Duration.zero,
-                                                  fit: BoxFit.cover,
-                                                  imageUrl: message.url!,
-                                                  errorWidget:
-                                                      (context, url, error) {
-                                                    dog("Error in Image Chat Bubble: $error");
-                                                    return Center(
-                                                      child: Icon(
-                                                        Icons.error,
-                                                        color: context.error,
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                            if (message.text.notEmpty)
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(12),
-                                                child: Text(
-                                                  message.text!,
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            if (message.uid != myUid) timeText(context),
-                          ],
-                        ),
-                        if (message.previewUrl != null)
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
-                            child: UrlPreview(
-                              previewUrl: message.previewUrl!,
-                              title: message.previewTitle,
-                              description: message.previewDescription,
-                              imageUrl: message.previewImageUrl,
-                            ),
+                            ],
                           ),
-                      ],
-                    ),
+                        ),
+                      ),
+                      if (message.uid != myUid) timeText(context),
+                    ],
                   ),
+                  if (message.previewUrl != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+                      child: UrlPreview(
+                        previewUrl: message.previewUrl!,
+                        title: message.previewTitle,
+                        description: message.previewDescription,
+                        imageUrl: message.previewImageUrl,
+                      ),
+                    ),
                 ],
-              );
-            }),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -416,27 +352,20 @@ class ChatBubble extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(6, 0, 6, 1),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: myUid == message.uid
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+          crossAxisAlignment: myUid == message.uid ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             if (message.isUpdated)
               Text(
                 'edited'.t,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withAlpha(100),
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                       fontWeight: FontWeight.bold,
                     ),
               ),
             Text(
-              DateTime.fromMillisecondsSinceEpoch(message.createdAt)
-                  .shortDateTime,
+              DateTime.fromMillisecondsSinceEpoch(message.createdAt).shortDateTime,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                   ),
             ),
           ],

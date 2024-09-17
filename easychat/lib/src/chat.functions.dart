@@ -61,7 +61,7 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
   assert(room != null || user != null || join != null);
 
   if (user != null) {
-    return user.displayName.or('no name'.t);
+    return user.displayName.trim().isNotEmpty ? user.displayName : 'no name'.t;
   }
 
   // Single chat or group chat can have name.
@@ -77,7 +77,7 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
     // Issue: Need to consider the translations.
   }
   if (join.single) {
-    return join.displayName ?? 'no name'.t;
+    return !(join.displayName?.trim()).isNullOrEmpty ? join.displayName! : 'no name'.t;
     // CONSIDER: if the user has no name then, display some default value from the configuration.
     // Issue: Need to consider the translations.
   }
