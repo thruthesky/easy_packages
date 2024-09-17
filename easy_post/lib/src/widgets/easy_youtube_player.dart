@@ -20,19 +20,26 @@ class EasyYoutubePlayer extends StatefulWidget {
   const EasyYoutubePlayer({
     super.key,
     required this.post,
+    this.hideControls = false,
     this.autoPlay = false,
+    this.loop = false,
     this.thumbnailBuilder,
     this.width,
     this.aspectRatio = 16 / 9,
     this.actionPadding = const EdgeInsets.all(8),
+    this.onReady,
   });
 
   final Post post;
+  final bool hideControls;
   final bool autoPlay;
+  final bool loop;
   final Widget Function(PlayerState)? thumbnailBuilder;
   final double? width;
   final double aspectRatio;
   final EdgeInsetsGeometry actionPadding;
+  final Function()? onReady;
+
   @override
   State<EasyYoutubePlayer> createState() => _EasyYoutubePlayerState();
 }
@@ -40,8 +47,7 @@ class EasyYoutubePlayer extends StatefulWidget {
 class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
   late YoutubePlayerController youtubeController;
 
-  ValueNotifier<PlayerState> isPlayerStateNotifier =
-      ValueNotifier(PlayerState.unStarted);
+  ValueNotifier<PlayerState> isPlayerStateNotifier = ValueNotifier(PlayerState.unStarted);
 
   @override
   void initState() {
@@ -50,7 +56,9 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
     youtubeController = YoutubePlayerController(
       initialVideoId: widget.post.youtube['id'],
       flags: YoutubePlayerFlags(
+        hideControls: widget.hideControls,
         autoPlay: widget.autoPlay,
+        loop: widget.loop,
         mute: false,
         controlsVisibleAtStart: false,
         enableCaption: false,
@@ -93,13 +101,12 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
             actionsPadding: widget.actionPadding,
             aspectRatio: widget.aspectRatio,
             width: widget.width,
+            onReady: widget.onReady,
             bottomActions: [
               IconButton(
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
-                  state == PlayerState.playing
-                      ? youtubeController.pause()
-                      : youtubeController.play();
+                  state == PlayerState.playing ? youtubeController.pause() : youtubeController.play();
                 },
                 icon: Icon(
                   state == PlayerState.playing ? Icons.pause : Icons.play_arrow,
