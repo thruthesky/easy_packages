@@ -1,4 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 /// Report dialog
@@ -44,23 +45,23 @@ class ReportDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            /// TODO: Get user data from RTDB
-            const Text("TODO: Get user data from RTDB, and display"),
-            // UserDoc(
-            //   uid: reportee,
-            //   builder: (user) {
-            //     if (user == null) {
-            //       return Text('User not found'.t);
-            //     }
-            //     return Column(
-            //       children: [
-            //         UserAvatar(user: user),
-            //         const SizedBox(height: 8),
-            //         Text(user.displayName),
-            //       ],
-            //     );
-            //   },
-            // ),
+            /// REVIEW: Get user data from RTDB
+            // const Text("TODO: Get user data from RTDB, and display"),
+            UserDoc(
+              uid: reportee,
+              builder: (user) {
+                if (user == null) {
+                  return Text('User not found'.t);
+                }
+                return Column(
+                  children: [
+                    UserAvatar(user: user),
+                    const SizedBox(height: 8),
+                    Text(user.displayName),
+                  ],
+                );
+              },
+            ),
             Text('Type: $type'),
             Text('Summary: $summary'),
             const SizedBox(height: 24),
@@ -69,22 +70,25 @@ class ReportDialog extends StatelessWidget {
               style: Theme.of(context).textTheme.labelSmall,
             ),
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop('spam'),
-                  child: Text('Spam'.t),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop('abusive'),
-                  child: Text('Abusive'.t),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop('other'),
-                  child: Text('Other'.t),
-                ),
-              ],
+            SizedBox(
+              width: double.maxFinite,
+              child: Wrap(
+                alignment: WrapAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop('spam'),
+                    child: Text('Spam'.t),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop('abusive'),
+                    child: Text('Abusive'.t),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop('other'),
+                    child: Text('Other'.t),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
           ],
