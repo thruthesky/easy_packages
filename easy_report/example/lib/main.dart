@@ -1,5 +1,5 @@
 import 'package:easyuser/easyuser.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:easy_report/easy_report.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print('firebase project id: ${FirebaseDatabase.instance.app.options.projectId}');
   runApp(const EasyReportApp());
 }

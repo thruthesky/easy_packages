@@ -99,6 +99,12 @@ dependency_overrides:
 - The fultter uses a specific version of Firebase SDK. So, you need to use the same version of Firebase SDK in your app.
   - This is because all the easy packages must use the same version of Firebase SDK to avoid any compatibility issues.
 
+- Some other packages also must use a specific version to match the Firebase SDK version.
+  - For instance, `cached_network_image` must use a specific version for dependency compatibility issues.
+  - Your app and all the dependecies of your app must use the same version of `cached_network_image` to avoid any compatibility issues.
+  - This is why choosing the version of Firebase SDK is important.
+
+
 
 # Packages
 
