@@ -296,7 +296,7 @@ final localeTexts = <String, Map<String, dynamic>>{
   },
   "last message is coming from a blocked user": {
     'en': 'A blocked user sent a message.',
-    'ko': '마지막 메시지는 차단된 사용자의 메시지입니다',
+    'ko': '차단된 사용자의 메시지입니다',
   },
   'no message yet': {
     'en': 'No message yet.',
