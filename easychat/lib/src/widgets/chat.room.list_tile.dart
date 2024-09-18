@@ -20,12 +20,8 @@ class ChatRoomListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // TODO: cleanup
-        // ChatNewMessageCounter(roomId: join.roomId),
-        // if (join.unreadMessageCount > 0) Text("${join.unreadMessageCount}"),
         if (join.unreadMessageCount > 0)
-          ChatService.instance.newMessageBuilder
-                  ?.call((join.unreadMessageCount).toString()) ??
+          ChatService.instance.newMessageBuilder?.call((join.unreadMessageCount).toString()) ??
               Badge(
                 label: Text(
                   "${join.unreadMessageCount}",
@@ -45,8 +41,7 @@ class ChatRoomListTile extends StatelessWidget {
         ),
         subtitle: subtitle(context),
         trailing: trailing,
-        onTap: () =>
-            ChatService.instance.showChatRoomScreen(context, join: join),
+        onTap: () => ChatService.instance.showChatRoomScreen(context, join: join),
       );
     }
     return UserBlocked(
@@ -60,33 +55,34 @@ class ChatRoomListTile extends StatelessWidget {
         }
         return ListTile(
           minTileHeight: 72,
-          leading: join.photoUrl.isEmpty
-              ? CircleAvatar(
-                  child: Text(getOtherUserUidFromRoomId(join.roomId)!
-                      .characters
-                      .first
-                      .toUpperCase()),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: CachedNetworkImage(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.tertiaryContainer,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: join.photoUrl.isEmpty
+                  ? Center(
+                      child: Text(
+                        getOtherUserUidFromRoomId(join.roomId)!.characters.first.toUpperCase(),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onTertiaryContainer,
+                            ),
+                      ),
+                    )
+                  : CachedNetworkImage(
                       imageUrl: join.photoUrl!,
                       fit: BoxFit.cover,
                     ),
-                  ),
-                ),
+            ),
+          ),
           title: Text(roomTitle(null, null, join)),
           subtitle: subtitle(context),
           trailing: trailing,
-          onTap: () =>
-              ChatService.instance.showChatRoomScreen(context, join: join),
+          onTap: () => ChatService.instance.showChatRoomScreen(context, join: join),
         );
       },
     );
@@ -117,20 +113,28 @@ class ChatRoomListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
+    if (join.lastMessageUid != null && UserService.instance.blocks.containsKey(join.lastMessageUid)) {
+      return Text(
+        "last message is coming from a blocked user".t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+        ),
+      );
+    }
     // Is a protocol message?
-    if (join.lastProtocol.notEmpty) {
+    else if (join.lastProtocol.notEmpty) {
       String text = join.lastProtocol!.t;
       if (join.single) {
-        if ([ChatProtocol.join, ChatProtocol.left]
-            .contains(join.lastProtocol)) {
+        if ([ChatProtocol.join, ChatProtocol.left].contains(join.lastProtocol)) {
           // Added one extra code for getting the correct displayName, (only for single chat).
           // In protocol, we are using join.displayName field to put the displayName of protocol's sender
           // However, in single chat, we are also using join.displayName for the other user.
           // This will help show the correct display name in single chat;
           // Group chats are not affected because they are not using displayName field.
           // Just make sure that join.lastMessageUid is always correctly provided.
-          final displayName =
-              join.lastMessageUid == myUid ? my.displayName : join.displayName;
+          final displayName = join.lastMessageUid == myUid ? my.displayName : join.displayName;
           text = join.lastProtocol!.tr(args: {'displayName': displayName});
         }
       } else {

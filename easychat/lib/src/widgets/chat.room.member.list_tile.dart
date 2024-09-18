@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easychat/src/widgets/chat.room.member.dialog.dart';
@@ -17,8 +18,7 @@ class ChatRoomMemberListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final blocked =
-        UserService.instance.blockChanges.value.containsKey(user.uid);
+    final blocked = UserService.instance.blockChanges.value.containsKey(user.uid);
     return ListTile(
       minTileHeight: 72,
       leading: blocked
@@ -42,7 +42,36 @@ class ChatRoomMemberListTile extends StatelessWidget {
                   user: user,
                 );
               },
-              child: UserAvatar(user: user),
+              // REVIEW UserAvatar
+              // Something is wrong in the User Avatar
+              // Somehow, the image must reload whenever we need
+              // to show it. (upon testing in real iPhone Device)
+              //
+              // It may be because of ThumbnailImage.
+              // Upon checking it is calling the thumbnail image first.
+              // When it errors, it shows the original image.
+              //
+              // child: UserAvatar(user: user),
+              //
+              // For now, using this:
+              child: user.photoUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(20),
+                          // border: border,
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: user.photoUrl!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : UserAvatar.buildAnonymouseAvatar(size: 48),
             ),
       title: blocked
           ? Text(
@@ -69,10 +98,7 @@ class ChatRoomMemberListTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withAlpha(100),
+                          color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                           height: 1.7,
                         ),
                   ),

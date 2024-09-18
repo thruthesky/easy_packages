@@ -318,7 +318,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 const SizedBox(height: 24),
                 horizontalPadding(
                   child: Text(
-                    user?.displayName ?? "no name".t,
+                    user?.displayName.isEmpty == true ? "no name".t : user!.displayName,
                     style: Theme.of(context).textTheme.titleLarge,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -334,11 +334,25 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
-                ],
+                ] else
+                  const SizedBox(height: 12),
               ],
               const SizedBox(height: 24),
               if (user?.admin != true) label(context: context, text: "options".t),
               const SizedBox(height: 8),
+              ListTile(
+                title: Text('report'.t),
+                onTap: () {
+                  ReportService.instance.report(
+                    context: context,
+                    path: room?.ref.path ?? user!.ref.path,
+                    type: 'Chat',
+                    reportee: user?.uid ?? room!.masterUsers.first,
+                    summary:
+                        room?.group == true ? "reporting the master because of his/her room".t : "report this user".t,
+                  );
+                },
+              ),
               if (room?.joined == true) ...[
                 if (room!.group && room!.masterUsers.contains(my.uid))
                   ListTile(
