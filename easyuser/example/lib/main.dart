@@ -46,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     UserService.instance.init();
+
+    displayNameUpdateTest();
   }
 
   @override
@@ -104,16 +106,31 @@ class _MyHomePageState extends State<MyHomePage> {
             const Divider(),
             const Text('TESTs'),
             ElevatedButton(
-              onPressed: () async {
-                UserService.instance.signOut();
-                final String uid = await UserTestService.instance.createTestUser();
-                log('loginOrRegister uid: $uid');
-              },
-              child: const Text('loginOrRegister on 2nd Firebase'),
+                onPressed: () async {
+                  UserService.instance.signOut();
+                  await UserTestService.instance.createTestUser();
+                },
+                child: const Text('Create a user')),
+            ElevatedButton(
+              onPressed: displayNameUpdateTest,
+              child: const Text('Update display name'),
             ),
           ],
         ),
       ),
     );
+  }
+
+  displayNameUpdateTest() async {
+    final displayName = 'newName:${DateTime.now().millisecond}';
+    UserService.instance.signOut();
+    await UserTestService.instance.createTestUser();
+    await waitUntil(() async => UserService.instance.user != null);
+    await UserService.instance.user!.update(
+      displayName: displayName,
+    );
+    final updated = await User.get(my.uid, cache: false);
+    assert(updated!.displayName == displayName,
+        "uid: ${my.uid}, updated name from Database: ${updated.displayName} vs displayName: $displayName");
   }
 }
