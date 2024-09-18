@@ -111,7 +111,15 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text('Report a Comment'),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              ReportService.instance.report(
+                context: context,
+                reportee: 'uid of the user: if it is a chat room, report one of the master',
+                type: 'chat',
+                summary: 'Reporting chat room',
+                path: '/chat/room/chat_room_id',
+              );
+            },
             child: const Text('Report a Chat Room'),
           ),
           AuthStateChanges(
