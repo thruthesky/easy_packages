@@ -107,7 +107,9 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
             width: widget.width,
             onReady: widget.onReady,
             onEnded: (YoutubeMetaData metaData) {
-              /// Seek start and pause.
+              /// If not loop true and the youtube ended it shows random recommendation.
+              /// To prevent showing unwanted youtube list after the video is ended.
+              /// SeekTo start the current video and pause.
               if (widget.loop == false) {
                 youtubeController.seekTo(const Duration(seconds: 0));
                 youtubeController.pause();
@@ -141,7 +143,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
             ],
             topActions: const [],
             controller: youtubeController,
-            // when thumbnail is not provideo it will try to get from the provided post
+            // when thumbnail is not provided it will try to get from the provided post
             thumbnail: widget.thumbnailBuilder?.call(state),
           );
         });
