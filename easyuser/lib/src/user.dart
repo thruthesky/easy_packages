@@ -75,8 +75,7 @@ class User {
   DocumentReference get ref => doc;
 
   /// Current user's mirror reference in the RTDB.
-  DatabaseReference get mirrorRef =>
-      UserService.instance.mirrorUsersRef.child(uid);
+  DatabaseReference get mirrorRef => UserService.instance.mirrorUsersRef.child(uid);
 
   User({
     required this.uid,
@@ -127,8 +126,7 @@ class User {
       throw Exception('User.fromDatabaseSnapshot: value is null.');
     }
 
-    final Map<String, dynamic> data =
-        Map<String, dynamic>.from((snapshot.value as Map?) ?? {});
+    final Map<String, dynamic> data = Map<String, dynamic>.from((snapshot.value as Map?) ?? {});
 
     return User.fromJson(data, snapshot.key!);
   }
@@ -155,15 +153,9 @@ class User {
       displayName: json['displayName'] ?? '',
       name: json['name'] ?? '',
       gender: json['gender'],
-      createdAt: json['createdAt'] is Timestamp
-          ? (json['createdAt'] as Timestamp).toDate()
-          : null,
-      updatedAt: json['updatedAt'] is Timestamp
-          ? (json['updatedAt'] as Timestamp).toDate()
-          : null,
-      lastLoginAt: json['lastLoginAt'] is Timestamp
-          ? (json['lastLoginAt'] as Timestamp).toDate()
-          : null,
+      createdAt: json['createdAt'] is Timestamp ? (json['createdAt'] as Timestamp).toDate() : null,
+      updatedAt: json['updatedAt'] is Timestamp ? (json['updatedAt'] as Timestamp).toDate() : null,
+      lastLoginAt: json['lastLoginAt'] is Timestamp ? (json['lastLoginAt'] as Timestamp).toDate() : null,
       birthYear: json['birthYear'],
       birthMonth: json['birthMonth'],
       birthDay: json['birthDay'],
@@ -203,15 +195,16 @@ class User {
     String uid, {
     bool cache = true,
   }) async {
-    return await getData(uid, cache: cache, database: true);
+    return await getData(uid, cache: cache);
   }
 
   /// Get the user data from Firestore
+  @Deprecated('Do not use firestore')
   static Future<User?> getFromFirestore(
     String uid, {
     bool cache = true,
   }) async {
-    return await getData(uid, cache: cache, firestore: true);
+    return await getData(uid, cache: cache);
   }
 
   /// Get the user data with the given [uid].
@@ -229,8 +222,6 @@ class User {
   static Future<User?> getData(
     String uid, {
     bool cache = true,
-    bool? firestore,
-    bool? database,
   }) async {
     User? user;
     if (cache) {
@@ -240,36 +231,22 @@ class User {
       }
     }
 
-    /// Get the user data from the server
-    if (firestore == true) {
-      final DocumentSnapshot snapshot =
-          await UserService.instance.col.doc(uid).get();
-      if (snapshot.exists) {
-        user = User.fromSnapshot(snapshot);
-      }
-    } else if (database == true) {
-      DataSnapshot snapshot;
-      final ref = UserService.instance.mirrorUsersRef.child(uid);
+    DataSnapshot snapshot;
+    final ref = UserService.instance.mirrorUsersRef.child(uid);
 
-      ///
-      try {
-        snapshot = await ref.get();
-      } catch (e) {
-        throw UserException(
-          'user/get-data from database: at: ${ref.path} ',
-          e.toString(),
-        );
-      }
-
-      ///
-      if (snapshot.exists) {
-        user = User.fromDatabaseSnapshot(snapshot);
-      }
-    } else {
+    ///
+    try {
+      snapshot = await ref.get();
+    } catch (e) {
       throw UserException(
-        'user/get-data',
-        'firestore or database must be true.',
+        'user/get-data from database: at: ${ref.path} ',
+        e.toString(),
       );
+    }
+
+    ///
+    if (snapshot.exists) {
+      user = User.fromDatabaseSnapshot(snapshot);
     }
 
     /// If the snapshot does not exist, return null.
@@ -282,10 +259,8 @@ class User {
   /// Don't use create method. It's not for creating a user.
   ///
   /// Use update method instead to create user data.
-  @Deprecated('This is not for use.')
-  static create({
-    required String uid,
-  }) {
+  @Deprecated('User data is created automatically when the user logs in. This is not for use.')
+  static create() {
     throw UnimplementedError('This is not for use.');
   }
 
@@ -311,8 +286,7 @@ class User {
     final data = <String, dynamic>{
       'updatedAt': FieldValue.serverTimestamp(),
       if (displayName != null) 'displayName': displayName.trim(),
-      if (displayName != null)
-        'caseIncensitiveDisplayName': displayName.toLowerCase().trim(),
+      if (displayName != null) 'caseIncensitiveDisplayName': displayName.toLowerCase().trim(),
       if (name != null) 'name': name.trim(),
       if (name != null) 'caseIncensitveName': name.toLowerCase().trim(),
       if (birthYear != null) 'birthYear': birthYear,
@@ -352,5 +326,7 @@ class User {
       throw 'user-delete/not-your-document You dont have permission to delete other user';
     }
     await doc.delete();
+
+    // TODO the delete user in RTDB
   }
 }

@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easyuser/easyuser.dart';
 
-/// Login or register
+/// Login or register into Firebase auth
 ///
 /// Creates a user account if it's not existing.
 ///
@@ -60,8 +60,7 @@ Future loginOrRegister({
     });
   } catch (e) {
     // create
-    await UserService.instance.auth
-        .createUserWithEmailAndPassword(email: email, password: password);
+    await UserService.instance.auth.createUserWithEmailAndPassword(email: email, password: password);
     return;
   }
 }
