@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_locale/easy_locale.dart';
+import 'package:example/firebase_options.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   lo.init();
   await Firebase.initializeApp(
-      // options: DefaultFirebaseOptions.currentPlatform,
-      );
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -105,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text('TESTs'),
             ElevatedButton(
               onPressed: () async {
-                UserService.instance.signOut();
+                await UserService.instance.signOut();
                 final String uid = await UserTestService.instance.createTestUser();
                 log('loginOrRegister uid: $uid');
               },
