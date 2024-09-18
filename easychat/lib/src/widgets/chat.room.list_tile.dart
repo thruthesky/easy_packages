@@ -113,8 +113,18 @@ class ChatRoomListTile extends StatelessWidget {
   ///
   /// It gets the last message from the chat/message/<room-id>.
   Widget? subtitle(BuildContext context) {
+    if (join.lastMessageUid != null && UserService.instance.blocks.containsKey(join.lastMessageUid)) {
+      return Text(
+        "last message is coming from a blocked user".t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+        ),
+      );
+    }
     // Is a protocol message?
-    if (join.lastProtocol.notEmpty) {
+    else if (join.lastProtocol.notEmpty) {
       String text = join.lastProtocol!.t;
       if (join.single) {
         if ([ChatProtocol.join, ChatProtocol.left].contains(join.lastProtocol)) {
