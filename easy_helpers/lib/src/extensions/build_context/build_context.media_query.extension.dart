@@ -41,4 +41,8 @@ extension EasyHelperMediaQueryExtension on BuildContext {
 
   /// Check if the device is in landscape mode.
   bool get isLandscape => orientation == Orientation.landscape;
+
+  /// Return true if the device is a phone. Not a tablet, iPad, or desktop, etc.
+  /// Return true if the narrowest side of the device is less than or equal to 460 points.
+  bool get isPhone => screenWidth <= 460 || screenHeight <= 460;
 }

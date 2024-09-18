@@ -223,10 +223,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       }
 
                       // Get if user is already invited and rejected the invitation
-                      final rejection = await ChatService.instance
-                          .rejectedUserRef(selectedUser.uid)
-                          .child(room!.id)
-                          .get();
+                      final rejection =
+                          await ChatService.instance.rejectedUserRef(selectedUser.uid).child(room!.id).get();
                       if (rejection.exists) {
                         dog("The user is already rejected: ${rejection.value}");
                         throw ChatException(
@@ -249,9 +247,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
                           'user has been invited'.tr(
                             args: {
-                              'username': selectedUser.displayName.isEmpty
-                                  ? selectedUser.name
-                                  : selectedUser.displayName,
+                              'username':
+                                  selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName,
                             },
                           ),
                         ),
@@ -351,9 +348,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     path: room?.ref.path ?? user!.ref.path,
                     type: 'Chat',
                     reportee: user?.uid ?? room!.masterUsers.first,
-                    summary: room?.group == true
-                        ? "reporting the master because of his/her room".t
-                        : "report this user".t,
+                    summary:
+                        room?.group == true ? "reporting the master because of his/her room".t : "report this user".t,
                   );
                 },
               ),
@@ -389,9 +385,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 if (room?.single == true || user != null)
                   ListTile(
                     title: Text(
-                      UserService.instance.blockChanges.value.containsKey(user!.uid)
-                          ? "unblock".t
-                          : "block".t,
+                      UserService.instance.blockChanges.value.containsKey(user!.uid) ? "unblock".t : "block".t,
                     ),
                     onTap: () async {
                       final re = await UserService.instance.block(
@@ -413,6 +407,18 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       }
                     },
                   ),
+                ListTile(
+                  title: Text('report'.t),
+                  onTap: () {
+                    ReportService.instance.report(
+                      context: context,
+                      reportee: user?.uid ?? room!.masterUsers.first,
+                      path: room!.ref.path,
+                      type: 'chat',
+                      summary: 'Reporting a chat room',
+                    );
+                  },
+                )
               ],
               const SizedBox(
                 height: 36,
@@ -428,8 +434,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return ChatService.instance.membersDialogBuilder?.call(context, room!) ??
-            ChatRoomMemberListDialog(room: room!);
+        return ChatService.instance.membersDialogBuilder?.call(context, room!) ?? ChatRoomMemberListDialog(room: room!);
       },
     );
   }
