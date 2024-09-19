@@ -38,7 +38,7 @@
 
 - Displays the user information in realtiem.
 
-- `field`: is the field of the user to display.
+- `field`: Required. It is to get the minium data of the user field.
 
 - `uid`: is the user id to display.
 

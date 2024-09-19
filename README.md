@@ -211,6 +211,29 @@ This is the style guide of the development easy packages.
 - The code must be readable and short. If the code is complicated, then that code will be deleted. If the code is long, then that code will be deleted, also.
 
 
+## Best practices
+
+- Get only the necessary data
+  - Unlike the Firestore document, you can get only one field of the data in Database. If you get data more than necessary, it's no good for everyone.
+    - The developer is not the only one who has to pay more,
+    - but also the user must pay more for their data usage.
+    - And the worse is that, the phone loses battery causing to charge more frequently, costing more electricity bill
+    - It may ruins the battery life of the device.
+
+
+
+## Comments and Documentation Rules
+
+
+- `required`:
+  - If it is used with field description, it means the field must exists in the data always.
+  - If it is used with a parameter, it means the parameter must be provided always.
+
+- `optional`:
+  - If it is used with field description, it means the field may or may not exists in the data.
+  - If it is used with a parameter, it means the parameter may or may not be provided.
+
+
 
 ## Mermaid
 
