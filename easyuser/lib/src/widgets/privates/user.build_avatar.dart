@@ -1,4 +1,3 @@
-import 'package:easyuser/easyuser.dart';
 import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_storage/easy_storage.dart';

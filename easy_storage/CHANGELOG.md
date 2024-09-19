@@ -1,3 +1,6 @@
+## 0.0.19
+* Refactor. bump to 19
+
 ## 0.0.18
 * Refactor. bump to 18
 
