@@ -31,3 +31,10 @@ final snippet = await youtube.getSnippet(apiKey: '___xxx___');
 
 print('snippet: $snippet');
 ```
+
+
+
+## Features
+
+- `onReady` - Callback when player is ready.
+- `onEnded` - Callback when player has ended.
