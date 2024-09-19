@@ -196,9 +196,10 @@ packages:
   easy_storage:
     dependency: "direct main"
     description:
-      path: "../easy_storage"
-      relative: true
-    source: path
+      name: easy_storage
+      sha256: "36871d377c0c90ecd8c0084660c43a52e13691b38ce0e69adc4e3592758d2fcf"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.16"
   fake_async:
     dependency: transitive
