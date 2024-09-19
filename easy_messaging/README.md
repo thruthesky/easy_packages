@@ -16,7 +16,7 @@
 
 ## Install
 
-### Security rules
+### Security rules Realtime Database
 
 ```json
     "fcm-tokens": {
@@ -36,13 +36,59 @@
     },
 ```
 
-- `fcm tokens` are saved under `fcm-tokens/{uid}` in realtime database.
-
 ## Logic
 
-- Save the tokens in the realtime database only when the user signs in.
-- Subscribe to `all` and platform even the user is not signed in.
+- `fcm tokens` are saved under `fcm-tokens/{uid}` in realtime database.
+
+- `Save` the tokens in the `realtime database` only when the user `signs in`.
+- `Subscribe` to `all` and `android,ios,fuchsia,linux,windows,macos` device platform topics even the user is not signed in.
 - When the user signs out, and signs in another user, the same token will be saved into the another user.
+
+```mermaid
+flowchart TB
+  node_2(["Initialization"])
+  node_4["Android"]
+  node_5["iOS / web"]
+  node_6["Get Permission"]
+  node_7["Get token"]
+  node_1{"Is user logged in?"}
+  node_3[("Save to rtdb")]
+  node_8["Subscribe to topics"]
+  node_9(["sendMessageToUids\nsendMessageToTokens\nsendMessageToSubscription"])
+  node_10(("Cloud Function API"))
+  node_11["Send Push Message"]
+  node_12[("Save result\nto rtdb")]
+  node_13{{"onBackgroundMessage\nonForegroundMessage\nonMessageOpenedFromTerminated\nonMessageOpenedFromBackground\nonNotificationPermissionDenied\nonNotificationPermissionNotDetermined"}}
+  node_14["MessagingService.instance"]
+  node_2 --> node_4
+  node_2 --> node_5
+  node_5 --> node_6
+  node_4 --> node_7
+  node_6 --> node_7
+  node_7 --> node_1
+  node_1 --"Yes"--> node_3
+  node_1 --"No"--> node_8
+  node_3 --> node_8
+  node_9 --> node_10
+  node_10 --> node_11
+  node_11 --> node_12
+  node_2 --"handle events"--> node_13
+  node_14 --> node_9
+  node_14 --> node_2
+```
+
+```mermaid
+
+flowchart TB
+  node_1["Deploy Cloud Function"]
+  node_2["sendMessageToTokensApi"]
+  node_3["sendMessageToUidsApi"]
+  node_4["sendMessageToSubscriptionApi"]
+  node_1 --> node_2
+  node_1 --> node_3
+  node_1 --> node_4
+
+```
 
 ## How to get the tokens of multiple users
 
