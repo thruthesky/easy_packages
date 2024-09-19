@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
@@ -137,8 +136,7 @@ class StorageService {
   ///
   /// If the url is null or empty, it does nothing.
   ///
-  /// If the [ref] and the [field] are passed, it will delete the field of the
-  /// document when the url is deleted.
+  /// If the [ref] is set, it will delete the field when the url is deleted.
   ///
   /// When the file does not exist in Firebsae Stroage,
   /// - If the [ref] is null, it will simply returns without firing exception.
@@ -150,7 +148,6 @@ class StorageService {
   Future<void> delete(
     String? url, {
     DatabaseReference? ref,
-    String? field,
   }) async {
     if (url == null || url == '') return;
     final storageRef = FirebaseStorage.instance.refFromURL(url);
@@ -173,8 +170,8 @@ class StorageService {
       log(e.toString());
     }
 
-    if (ref != null && field != null) {
-      await ref.update({field: FieldValue.delete()});
+    if (ref != null) {
+      await ref.remove();
     }
   }
 
@@ -314,7 +311,7 @@ class StorageService {
     return null;
   }
 
-  /// Upload a file (or an image) and save the url at the field of the document reference in Firestore.
+  /// Upload a file (or an image) and save the url at the field reference in Database.
   ///
   /// It can be any field of any document as long as it has permission.
   ///
@@ -335,7 +332,7 @@ class StorageService {
   /// ```
   Future<String?> uploadAt({
     required BuildContext context,
-    required DocumentReference ref,
+    required DatabaseReference ref,
     required String field,
     Function(double)? progress,
     Function()? complete,
@@ -351,14 +348,13 @@ class StorageService {
     String? oldUrl;
     String? url;
 
-    if (context.mounted == false) return null;
-
-    /// Get the previous document and the url
+    /// Get the previous url
     final snapshot = await ref.get();
     if (snapshot.exists) {
-      final Map<String, dynamic> data = Map<String, dynamic>.from(snapshot.data() as Map);
-      oldUrl = data[field];
+      oldUrl = snapshot.value as String?;
     }
+
+    if (context.mounted == false) return null;
 
     if (context.mounted) {
       url = await upload(
@@ -380,11 +376,7 @@ class StorageService {
     if (url == null) return null;
 
     /// Upload success, update the field
-    if (!snapshot.exists) {
-      ref.set({field: url});
-    } else {
-      ref.update({field: url});
-    }
+    ref.set(url);
 
     /// Delete old url
     ///

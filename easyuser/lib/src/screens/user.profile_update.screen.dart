@@ -17,8 +17,7 @@ class UserProfileUpdateScreen extends StatefulWidget {
   const UserProfileUpdateScreen({super.key});
 
   @override
-  State<UserProfileUpdateScreen> createState() =>
-      _UserProfileUpdateScreenState();
+  State<UserProfileUpdateScreen> createState() => _UserProfileUpdateScreenState();
 }
 
 class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
@@ -126,11 +125,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                         endYear: DateTime.now().year,
                         beginYear: DateTime.now().year - 100,
                         ascendingYear: false,
-                        initialDate: (
-                          year: birthYear,
-                          month: birthMonth,
-                          day: birthDay
-                        ),
+                        initialDate: (year: birthYear, month: birthMonth, day: birthDay),
                         onChanged: (year, month, day) {
                           birthYear = year;
                           birthMonth = month;
@@ -143,8 +138,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                       ),
                       const SizedBox(height: 24),
                       TextField(
-                        decoration:
-                            InputDecoration(label: Text('state message'.t)),
+                        decoration: InputDecoration(label: Text('state message'.t)),
                         controller: stateMessageController,
                       ),
                       const SizedBox(height: 24),
@@ -167,8 +161,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                                     top: 0,
                                     child: IconButton(
                                       style: IconButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.white.withOpacity(0.5),
+                                        backgroundColor: Colors.white.withOpacity(0.5),
                                       ),
                                       icon: const Icon(Icons.delete),
                                       onPressed: () async {
@@ -193,10 +186,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                         fromGallery: false,
                         fromFile: false,
                         icon: Row(
-                          children: [
-                            const Icon(Icons.camera_alt),
-                            Text('Upload State Photo'.t)
-                          ],
+                          children: [const Icon(Icons.camera_alt), Text('Upload State Photo'.t)],
                         ),
                         onUpload: (url) async {
                           /// TODO: delete existing photo.
