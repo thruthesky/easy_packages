@@ -157,6 +157,14 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "EasyUser Example - iPhone 16 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "easyuser/example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "EasyUser Example - emulator-5554",
             "request": "launch",
             "type": "dart",

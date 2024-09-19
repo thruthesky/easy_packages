@@ -123,7 +123,10 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                       StorageService.instance.delete(my.photoUrl);
 
                       /// TODO: update photo url
+                      // TODO review: is saving as "", okay?
+                      // REVIEW: How to delete properly
                       // my.update(photoUrl: FieldValue.delete());
+                      my.update(photoUrl: '');
                     },
                     padding: EdgeInsets.zero,
                     visualDensity: VisualDensity.compact,

@@ -27,12 +27,10 @@ class MyDoc extends StatelessWidget {
       initialData: UserService.instance.user,
       stream: UserService.instance.changes,
       builder: (_, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.hasData == false) {
+        if (snapshot.hasError) return Text(snapshot.error.toString());
+        if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
           return const SizedBox.shrink();
         }
-        if (snapshot.hasError) return Text(snapshot.error.toString());
-
         return builder(snapshot.data);
       },
     );
