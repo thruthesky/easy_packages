@@ -16,7 +16,7 @@
 
 ## Install
 
-### Security rules
+### Security rules Realtime Database
 
 ```json
     "fcm-tokens": {
@@ -36,13 +36,23 @@
     },
 ```
 
-- `fcm tokens` are saved under `fcm-tokens/{uid}` in realtime database.
-
 ## Logic
 
-- Save the tokens in the realtime database only when the user signs in.
-- Subscribe to `all` and platform even the user is not signed in.
+- `fcm tokens` are saved under `fcm-tokens/{uid}` in realtime database.
+
+- `Save` the tokens in the `realtime database` only when the user `signs in`.
+- `Subscribe` to `all` and `android,ios,fuchsia,linux,windows,macos` device platform topics even the user is not signed in.
 - When the user signs out, and signs in another user, the same token will be saved into the another user.
+
+```mermaid
+flowchart TB
+  node_2(["Initialization"])
+  node_1("new_node")
+```
+
+```mermaid
+
+```
 
 ## How to get the tokens of multiple users
 
