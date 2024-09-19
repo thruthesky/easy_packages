@@ -76,28 +76,26 @@ class UserListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return FirebaseDatabaseQueryBuilder(
       pageSize: pageSize,
-      query: query ?? UserService.instance.mirrorUsersRef,
+      query: query ?? UserService.instance.usersRef,
+      // TODO cleanup
+      // query: query ?? UserService.instance.mirrorUsersRef,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
-          return loadingBuilder?.call() ??
-              const Center(child: CircularProgressIndicator.adaptive());
+          return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
         }
 
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');
-          return errorBuilder?.call(snapshot.error.toString()) ??
-              Text('Something went wrong! ${snapshot.error}');
+          return errorBuilder?.call(snapshot.error.toString()) ?? Text('Something went wrong! ${snapshot.error}');
         }
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
-          return emptyBuilder?.call() ??
-              const Center(child: Text('empty list'));
+          return emptyBuilder?.call() ?? const Center(child: Text('empty list'));
         }
 
         return ListView.separated(
           itemCount: snapshot.docs.length,
-          separatorBuilder: (context, index) =>
-              separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
+          separatorBuilder: (context, index) => separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
           scrollDirection: scrollDirection,
           reverse: reverse,
           controller: controller,

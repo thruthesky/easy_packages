@@ -157,6 +157,22 @@
             "program": "lib/main.dart"
         },
         {
+            "name": "EasyUser Example - emulator-5554",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554",
+            "cwd": "easyuser/example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "EasyUser Example - SM A045F",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "SM A045F",
+            "cwd": "easyuser/example",
+            "program": "lib/main.dart"
+        },
+        {
             "name": "EasyTask Example - iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",

@@ -30,6 +30,20 @@ class UserTestService {
 
     return uid;
   }
+
+  List<String> errors = [];
+
+  Future<List<String>> test(List<FutureOr<dynamic> Function()> functions) async {
+    errors = [];
+    for (final f in functions) {
+      try {
+        await f();
+      } catch (e, stackTrace) {
+        errors.add("Error: $e \n\nStack Trace: \n$stackTrace");
+      }
+    }
+    return errors;
+  }
 }
 
 /// Wait until the condition is true.

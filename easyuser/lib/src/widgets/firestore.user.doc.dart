@@ -27,78 +27,79 @@ import 'package:memory_cache/memory_cache.dart';
 ///
 ///
 ///
-class FirestoreUserDoc extends StatelessWidget {
-  const FirestoreUserDoc({
-    required this.uid,
-    this.cache = true,
-    required this.builder,
-    this.sync = false,
-    super.key,
-  });
-  final String uid;
-  final bool cache;
-  final Widget Function(User?) builder;
-  final bool sync;
+// TODO clean up
+// class FirestoreUserDoc extends StatelessWidget {
+//   const FirestoreUserDoc({
+//     required this.uid,
+//     this.cache = true,
+//     required this.builder,
+//     this.sync = false,
+//     super.key,
+//   });
+//   final String uid;
+//   final bool cache;
+//   final Widget Function(User?) builder;
+//   final bool sync;
 
-  @override
-  Widget build(BuildContext context) {
-    if (sync) {
-      return StreamBuilder<User>(
-        initialData: MemoryCache.instance.read<User?>(uid),
-        stream: UserService.instance.col
-            .doc(uid)
-            .snapshots()
-            .map((snapshot) => User.fromSnapshot(snapshot)),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              snapshot.hasData == false) {
-            return const SizedBox.shrink();
-          }
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
+//   @override
+//   Widget build(BuildContext context) {
+//     if (sync) {
+//       return StreamBuilder<User>(
+//         initialData: MemoryCache.instance.read<User?>(uid),
+//         stream: UserService.instance.col
+//             .doc(uid)
+//             .snapshots()
+//             .map((snapshot) => User.fromSnapshot(snapshot)),
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting &&
+//               snapshot.hasData == false) {
+//             return const SizedBox.shrink();
+//           }
+//           if (snapshot.hasError) {
+//             return Text(snapshot.error.toString());
+//           }
 
-          /// Got data from database
-          User? user = snapshot.data;
+//           /// Got data from database
+//           User? user = snapshot.data;
 
-          /// Save it into memory
-          MemoryCache.instance.create(uid, user);
-          return builder(user);
-        },
-      );
-    }
+//           /// Save it into memory
+//           MemoryCache.instance.create(uid, user);
+//           return builder(user);
+//         },
+//       );
+//     }
 
-    /// sync = false 이고, cache = true 인 경우, 캐시된 데이터만 사용하는가?
-    if (cache) {
-      /// 캐시 데이터가 있으면, 캐시 데이터만 사용한다.
-      User? user = MemoryCache.instance.read<User?>(uid);
-      if (user != null) {
-        return builder(user);
-      }
-    }
+//     /// sync = false 이고, cache = true 인 경우, 캐시된 데이터만 사용하는가?
+//     if (cache) {
+//       /// 캐시 데이터가 있으면, 캐시 데이터만 사용한다.
+//       User? user = MemoryCache.instance.read<User?>(uid);
+//       if (user != null) {
+//         return builder(user);
+//       }
+//     }
 
-    /// 캐시된 데이터가 없거나, cache 가 아닌 경우, 서버에서 데이터를 읽어온다.
-    return FutureBuilder(
-      /// 캐시된 데이터가 있으면, 캐시된 데이터를 먼저 사용해서 보여준다.
-      initialData: MemoryCache.instance.read<User?>(uid),
-      future: User.getFromFirestore(uid, cache: false),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.hasData == false) {
-          return const SizedBox.shrink();
-        }
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        return builder(snapshot.data);
-      },
-    );
-  }
+//     /// 캐시된 데이터가 없거나, cache 가 아닌 경우, 서버에서 데이터를 읽어온다.
+//     return FutureBuilder(
+//       /// 캐시된 데이터가 있으면, 캐시된 데이터를 먼저 사용해서 보여준다.
+//       initialData: MemoryCache.instance.read<User?>(uid),
+//       future: User.getFromFirestore(uid, cache: false),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting &&
+//             snapshot.hasData == false) {
+//           return const SizedBox.shrink();
+//         }
+//         if (snapshot.hasError) {
+//           return Text(snapshot.error.toString());
+//         }
+//         return builder(snapshot.data);
+//       },
+//     );
+//   }
 
-  const FirestoreUserDoc.sync({
-    required this.uid,
-    required this.builder,
-    super.key,
-  })  : cache = false,
-        sync = true;
-}
+//   const FirestoreUserDoc.sync({
+//     required this.uid,
+//     required this.builder,
+//     super.key,
+//   })  : cache = false,
+//         sync = true;
+// }

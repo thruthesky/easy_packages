@@ -65,17 +65,24 @@ class User {
 
   /// Collection reference of the user's collection.
   ///
-  CollectionReference col = UserService.instance.col;
-  CollectionReference metaCol = UserService.instance.metaCol;
+  // CollectionReference col = UserService.instance.col;
+  DatabaseReference usersRef = UserService.instance.usersRef;
+
+  // TODO cleanup
+  // CollectionReference metaCol = UserService.instance.metaCol;
+  DatabaseReference metaRef = UserService.instance.metaRef;
 
   /// [doc] is the document reference of this user model.
-  DocumentReference get doc => col.doc(uid);
+  // DocumentReference get doc => col.doc(uid);
+  DatabaseReference get doc => usersRef.child(uid);
 
   /// [ref] is an alias of [doc].
-  DocumentReference get ref => doc;
+  DatabaseReference get ref => doc;
 
   /// Current user's mirror reference in the RTDB.
-  DatabaseReference get mirrorRef => UserService.instance.mirrorUsersRef.child(uid);
+  /// TODO cleanup
+  /// for now, no need to mirror to Firestore
+  // DatabaseReference get mirrorRef => UserService.instance.mirrorUsersRef.child(uid);
 
   User({
     required this.uid,
@@ -232,7 +239,7 @@ class User {
     }
 
     DataSnapshot snapshot;
-    final ref = UserService.instance.mirrorUsersRef.child(uid);
+    final ref = UserService.instance.usersRef.child(uid);
 
     ///
     try {
@@ -298,9 +305,8 @@ class User {
       if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
     };
     final List<Future> futures = [];
-    futures.add(ref.set(
+    futures.add(ref.update(
       data,
-      SetOptions(merge: true),
     ));
 
     /// Mirror to RTDB. Update the same data to the RTDB.
@@ -313,7 +319,7 @@ class User {
       data['photoUrl'] = null;
     }
 
-    futures.add(mirrorRef.update(data));
+    futures.add(ref.update(data));
 
     await Future.wait(futures);
   }
@@ -325,6 +331,8 @@ class User {
     if (uid != my.uid) {
       throw 'user-delete/not-your-document You dont have permission to delete other user';
     }
-    await doc.delete();
+    // TODO cleanup
+    // await doc.delete();
+    await ref.set(null);
   }
 }

@@ -62,11 +62,16 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        ///
-        final url = await StorageService.instance.uploadAt(
+        /// TODO cleanup
+        // final url = await StorageService.instance.uploadAt(
+        //   context: context,
+        //   ref: my.doc,
+        //   field: 'photoUrl',
+        //   progress: (p) => setState(() => progress = p),
+        //   complete: () => setState(() => progress = null),
+        // );
+        final url = await StorageService.instance.upload(
           context: context,
-          ref: my.doc,
-          field: 'photoUrl',
           progress: (p) => setState(() => progress = p),
           complete: () => setState(() => progress = null),
         );
@@ -112,6 +117,8 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
             ),
           if (widget.delete && isNotUploading)
             StreamBuilder(
+                // TODO cleanup
+                // stream: UserService.instance.col.doc(my.uid).snapshots(),
                 stream: UserService.instance.col.doc(my.uid).snapshots(),
                 builder: (_, event) {
                   if (event.data == null) return const SizedBox.shrink();
@@ -133,9 +140,7 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                               final re = await confirm(
                                   context: context,
                                   title: Text('Delete Avatar?'.t),
-                                  message: Text(
-                                      'Are you sure you wanted to delete this avatar?'
-                                          .t));
+                                  message: Text('Are you sure you wanted to delete this avatar?'.t));
                               if (re == false) return;
                               StorageService.instance.delete(data['photoUrl']);
                               my.update(photoUrl: FieldValue.delete());

@@ -44,12 +44,15 @@ class UserDoc extends StatelessWidget {
     if (sync) {
       return StreamBuilder<User>(
         initialData: MemoryCache.instance.read<User?>(uid),
-        stream: UserService.instance.mirrorUsersRef.child(uid).onValue.map(
+        // TODO cleanup
+        // stream: UserService.instance.mirrorUsersRef.child(uid).onValue.map(
+        //       (s) => User.fromDatabaseSnapshot(s.snapshot),
+        //     ),
+        stream: UserService.instance.usersRef.child(uid).onValue.map(
               (s) => User.fromDatabaseSnapshot(s.snapshot),
             ),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              snapshot.hasData == false) {
+          if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
             return const SizedBox.shrink();
           }
           if (snapshot.hasError) {
@@ -82,8 +85,7 @@ class UserDoc extends StatelessWidget {
       initialData: MemoryCache.instance.read<User?>(uid),
       future: User.get(uid, cache: false),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.hasData == false) {
+        if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
           return const SizedBox.shrink();
         }
         if (snapshot.hasError) {
