@@ -167,8 +167,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                                       onPressed: () async {
                                         await StorageService.instance.delete(
                                           my.statePhotoUrl!,
-                                          ref: my.ref,
-                                          field: User.field.statePhotoUrl,
+                                          ref: my.ref.child(User.field.statePhotoUrl),
                                         );
                                       },
                                       color: Colors.red,

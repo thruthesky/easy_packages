@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// ImageUploadCard
@@ -8,9 +8,7 @@ import 'package:flutter/material.dart';
 /// Displays a card style UI for uploading an image. It displays a circle
 /// image, title, and subtitle.
 ///
-/// [ref] is the firestore document reference.
-///
-/// [field] is the field name of the firestore document
+/// [ref] is the RTDB reference of the field.
 ///
 /// If the [ref] and [field] are provided, the uploaded image will be saved to
 /// the firestore.
@@ -36,7 +34,7 @@ class ImageUploadCard extends StatefulWidget {
     this.title,
     this.subtitle,
     this.ref,
-    this.field,
+    // this.field,
     this.onUpload,
     this.imageBuilder,
     this.progressBar = true,
@@ -52,8 +50,8 @@ class ImageUploadCard extends StatefulWidget {
   final Function(String? url)? onUpload;
   final Widget Function(Widget child)? imageBuilder;
 
-  final DocumentReference? ref;
-  final String? field;
+  final DatabaseReference? ref;
+  // final String? field;
 
   final bool progressBar;
   final bool progressIndicatorBackdrop;
@@ -101,7 +99,7 @@ class _UploadImageState extends State<ImageUploadCard> {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         String? uploadedUrl;
-        if (widget.ref == null || widget.field == null) {
+        if (widget.ref == null) {
           uploadedUrl = await StorageService.instance.upload(
             context: context,
             spacing: widget.uploadBottomSheetSpacing,
@@ -112,8 +110,9 @@ class _UploadImageState extends State<ImageUploadCard> {
         } else {
           uploadedUrl = await StorageService.instance.uploadAt(
             context: context,
+            // TODO review
             ref: widget.ref!,
-            field: widget.field!,
+            // field: widget.field!,
             spacing: widget.uploadBottomSheetSpacing,
             padding: widget.uploadBottomSheetPadding,
             progress: (p) => setState(() => progress = p),
@@ -151,8 +150,7 @@ class _UploadImageState extends State<ImageUploadCard> {
                   ),
                 ),
               uploadedPercentageIndicator(),
-              if (widget.progressBar)
-                uploadProgressIndicator(color: Colors.blue),
+              if (widget.progressBar) uploadProgressIndicator(color: Colors.blue),
               const Positioned(
                 right: 0,
                 bottom: 0,

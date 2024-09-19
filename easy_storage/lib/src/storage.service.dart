@@ -333,7 +333,6 @@ class StorageService {
   Future<String?> uploadAt({
     required BuildContext context,
     required DatabaseReference ref,
-    required String field,
     Function(double)? progress,
     Function()? complete,
     String? saveAs,
