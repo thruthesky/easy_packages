@@ -1,3 +1,9 @@
+## 0.0.18
+* Refactor. bump to 18
+
+## 0.0.17
+* Refactor. Change database from firestore to realtime database.
+
 ## 0.0.16
 * Fix. `ThumbnailImage`.
 

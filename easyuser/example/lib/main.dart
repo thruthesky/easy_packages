@@ -79,15 +79,17 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
-                          UserField(
+                          UserDoc<int?>(
                             uid: user.uid,
                             field: 'birthDay',
-                            initialData: 4,
-                            builder: (v, r) {
+                            builder: (v) {
                               return ElevatedButton(
                                 onPressed: () async {
-                                  log('UserField(birthDay): ${r.path}');
-                                  await r.set((v ?? 0) + 1);
+                                  // log('UserField(birthDay): ${r.path}');
+                                  // await r.set((v ?? 0) + 1);
+                                  final easyUser = await User.get(user.uid);
+                                  log('UserField(birthDay): ${easyUser?.ref.child(User.field.birthDay).path}');
+                                  easyUser?.ref.child(User.field.birthDay).set((v ?? 0) + 1);
                                 },
                                 child: Text('UserField(birthDay): $v'),
                               );

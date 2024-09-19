@@ -42,7 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           InkWell(
             child: MyDoc(
-              builder: (user) => user == null ? const AnonymousAvatar() : UserAvatar(user: user),
+              builder: (user) => user == null
+                  ? const AnonymousAvatar()
+                  : UserAvatar(
+                      photoUrl: user.photoUrl,
+                      initials: (user.displayName).or((user.name).or(user.uid)),
+                    ),
             ),
             onTap: () => i.signedIn
                 ? UserService.instance.showProfileUpdaeScreen(context)
@@ -271,7 +276,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (user, index) {
                   return Row(
                     children: [
-                      UserAvatar(user: user),
+                      UserAvatar(
+                        photoUrl: user.photoUrl,
+                        initials: (user.displayName).or((user.name).or(user.uid)),
+                      ),
                       Text('c: $index'),
                       TextButton(
                         onPressed: () => ChatService.instance.showChatRoomScreen(

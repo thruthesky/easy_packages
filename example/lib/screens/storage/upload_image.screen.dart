@@ -58,8 +58,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               const Text("Upload Icon for user profile photo"),
               ImageUploadCard(
                 initialData: my.photoUrl,
-                ref: my.ref,
-                field: 'photoUrl',
+                ref: my.ref.child(User.field.photoUrl),
                 icon: const Icon(
                   Icons.image,
                   size: 80,
@@ -122,10 +121,8 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               const SizedBox(height: 24),
               const Divider(),
               const Text("Upload Buttons in Comic Theme"),
-              Text(
-                  "uploadBottomSheetPadding: ${StorageService.instance.uploadBottomSheetPadding}"),
-              Text(
-                  "uploadBottomSheetSpacing: ${StorageService.instance.uploadBottomSheetSpacing}"),
+              Text("uploadBottomSheetPadding: ${StorageService.instance.uploadBottomSheetPadding}"),
+              Text("uploadBottomSheetSpacing: ${StorageService.instance.uploadBottomSheetSpacing}"),
               const SizedBox(height: 24),
               ComicTheme(
                 child: Row(
