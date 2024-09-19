@@ -7,23 +7,27 @@ import 'package:flutter/material.dart';
 ///
 /// This displays a user's avatar.
 ///
-/// [user] is the user model object. The whole user model object is required
-/// due to displaying the first letter or user display name when the user's
-/// photoUrl is not available.
+/// [photoUrl] is the user's photo url.
 ///
-/// [UserAvatar.fromUid] is a constructor that takes a user's uid and
-/// fetches the user's data from the firestore and with sync option, it can
-/// rebuild the avatar realtime when the user's data changes.
+/// [initials] can be a uid, a displayName, or a name of the user. Only the first letter will be display if
+/// there is no photo url.
+///
+/// [UserAvatar.fromUid] is a constructor that takes a user's uid and fetches
+/// the user's data from the firestore and with sync option, it can
+/// rebuild the avatar realtime when the user's data changes. The [uid] must
+/// be the user's UID. It cannot be a name or a display name.
 ///
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
     super.key,
-    required this.user,
+    required this.photoUrl,
+    required this.initials,
     this.size = 48,
     this.radius = 20,
     this.border,
   });
-  final User user;
+  final String? photoUrl;
+  final String initials;
   final double size;
   final double radius;
   final Border? border;
@@ -31,7 +35,8 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UserBuildAvatar(
-      user: user,
+      photoUrl: photoUrl,
+      initials: initials,
       size: size,
       radius: radius,
       border: border,
@@ -50,13 +55,15 @@ class UserAvatar extends StatelessWidget {
     Border? border,
     bool sync = false,
   }) {
-    return UserDoc(
+    return UserDoc<String?>(
       uid: uid,
+      field: User.field.photoUrl,
       sync: sync,
-      builder: (user) => user == null
+      builder: (url) => url == null
           ? buildAnonymouseAvatar(size: size, radius: radius, border: border)
           : UserBuildAvatar(
-              user: user,
+              photoUrl: url,
+              initials: uid,
               size: size,
               radius: radius,
               border: border,

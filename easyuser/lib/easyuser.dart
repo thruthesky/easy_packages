@@ -12,7 +12,6 @@ export './src/widgets/my_doc.ready.dart';
 export './src/widgets/user.avatar.dart';
 export './src/widgets/user.blocked.dart';
 export './src/widgets/user.doc.dart';
-export './src/widgets/user.field.dart';
 export './src/widgets/user.list_tile.dart';
 export './src/widgets/user.list_view.dart';
 export './src/widgets/user_change.dart';

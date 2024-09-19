@@ -205,13 +205,26 @@ class User {
     return await getData(uid, cache: cache);
   }
 
-  /// Get the user data from Firestore
-  @Deprecated('Do not use firestore')
-  static Future<User?> getFromFirestore(
-    String uid, {
+  static Future getField<T>({
+    required String uid,
+    required String field,
     bool cache = true,
   }) async {
-    return await getData(uid, cache: cache);
+    String key = '$uid+$field';
+    final value = MemoryCache.instance.read<T>(key);
+    if (cache && value != null) {
+      return value;
+    }
+
+    ///
+    final snapshot = await userFieldRef(uid, field).get();
+
+    if (snapshot.exists) {
+      final value = snapshot.value;
+      MemoryCache.instance.create(key, value);
+      return value;
+    }
+    return null;
   }
 
   /// Get the user data with the given [uid].

@@ -221,6 +221,16 @@ This is the style guide of the development easy packages.
     - It may ruins the battery life of the device.
 
 
+## All the package must run on web
+
+- To support better for other flutter related framework like FlutterFlow, all the packages in easy_packages must run on web.
+
+
+
+
+
+
+
 
 ## Comments and Documentation Rules
 

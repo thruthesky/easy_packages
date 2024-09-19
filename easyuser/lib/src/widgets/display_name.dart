@@ -7,22 +7,28 @@ import 'package:flutter/material.dart';
 class DisplayName extends StatelessWidget {
   const DisplayName({
     super.key,
-    required this.user,
+    required this.uid,
     this.maxLines = 1,
     this.overflow,
   });
 
-  final User user;
+  final String uid;
   final int maxLines;
   final TextOverflow? overflow;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      user.displayName,
-      maxLines: maxLines,
-      overflow: overflow,
-      style: Theme.of(context).textTheme.labelMedium,
+    return UserDoc<String?>(
+      uid: uid,
+      field: User.field.displayName,
+      builder: (displayName) {
+        return Text(
+          displayName ?? '',
+          maxLines: maxLines,
+          overflow: overflow,
+          style: Theme.of(context).textTheme.labelMedium,
+        );
+      },
     );
   }
 }

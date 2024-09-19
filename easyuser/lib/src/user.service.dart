@@ -11,6 +11,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:easy_engine/easy_engine.dart';
 
+/// The user's reference. Helper function.
+DatabaseReference userRef(String uid) => UserService.instance.usersRef.child(uid);
+
+/// The user's field reference. Helper function.
+DatabaseReference userFieldRef(String uid, String field) => userRef(uid).child(field);
+
 /// This is the user service class that will be used to manage the user's authentication and user data management.
 class UserService {
   static UserService? _instance;
@@ -466,18 +472,13 @@ class UserService {
     }
 
     /// Display user info as subtitle in the confirmation dialog.
-    Widget userInfoSubtitle = UserDoc(
-      uid: otherUid,
-      builder: (user) => user == null
-          ? const SizedBox.shrink()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                UserAvatar(user: user),
-                DisplayName(user: user),
-              ],
-            ),
+    Widget userInfoSubtitle = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        UserAvatar.fromUid(uid: otherUid),
+        DisplayName(uid: otherUid),
+      ],
     );
 
     /// The user is alredy blocked?

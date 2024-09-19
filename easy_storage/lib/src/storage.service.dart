@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
@@ -103,8 +104,7 @@ class StorageService {
     }
 
     final storageRef = FirebaseStorage.instance.ref();
-    final fileRef =
-        storageRef.child(saveAs ?? "users/$myUid/${file.path.split('/').last}");
+    final fileRef = storageRef.child(saveAs ?? "users/$myUid/${file.path.split('/').last}");
     // Review: Here only Image can be compressed. File and Video cannot be compressed.
     // It may cause error if you try to compress file or video.
     // So, we should check the file type before compressing.
@@ -149,7 +149,7 @@ class StorageService {
   /// can continue the logic.
   Future<void> delete(
     String? url, {
-    DocumentReference? ref,
+    DatabaseReference? ref,
     String? field,
   }) async {
     if (url == null || url == '') return;
@@ -356,8 +356,7 @@ class StorageService {
     /// Get the previous document and the url
     final snapshot = await ref.get();
     if (snapshot.exists) {
-      final Map<String, dynamic> data =
-          Map<String, dynamic>.from(snapshot.data() as Map);
+      final Map<String, dynamic> data = Map<String, dynamic>.from(snapshot.data() as Map);
       oldUrl = data[field];
     }
 
@@ -447,16 +446,13 @@ class StorageService {
         );
         return image?.path;
       } else if (source == SourceType.photoGallery) {
-        final XFile? image =
-            await ImagePicker().pickImage(source: ImageSource.gallery);
+        final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
         return image?.path;
       } else if (source == SourceType.videoCamera) {
-        final XFile? video =
-            await ImagePicker().pickVideo(source: ImageSource.camera);
+        final XFile? video = await ImagePicker().pickVideo(source: ImageSource.camera);
         return video?.path;
       } else if (source == SourceType.videoGallery) {
-        final XFile? video =
-            await ImagePicker().pickVideo(source: ImageSource.gallery);
+        final XFile? video = await ImagePicker().pickVideo(source: ImageSource.gallery);
         return video?.path;
       } else if (source == SourceType.mediaGallery) {
         final XFile? image = await ImagePicker().pickMedia();

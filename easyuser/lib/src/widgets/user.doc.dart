@@ -1,5 +1,6 @@
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:easy_helpers/easy_helpers.dart';
+import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:memory_cache/memory_cache.dart';
@@ -11,6 +12,8 @@ import 'package:memory_cache/memory_cache.dart';
 /// [uid] User's uid.
 ///
 /// There are three different modes.
+///
+///
 ///
 /// [sync] if [sync] is set to true, then it will display widget with memory
 /// data first, then it gets data from server in realtime and updates the
@@ -26,81 +29,57 @@ import 'package:memory_cache/memory_cache.dart';
 ///
 /// If [sync] and [cache] are set to true at the same time, then [cache] is
 /// ignored.
-class UserDoc extends StatelessWidget {
+///
+/// [sync] option helps to reduce the blinking(flickering) on the UI.
+class UserDoc<T> extends StatelessWidget {
   const UserDoc({
     required this.uid,
+    required this.field,
     this.cache = true,
     required this.builder,
-    this.sync = false,
+    this.onLoading,
+    this.sync = true,
     super.key,
   });
   final String uid;
+  final String field;
   final bool cache;
-  final Widget Function(User?) builder;
+  final Widget Function(T) builder;
   final bool sync;
+  final Widget? onLoading;
 
   @override
   Widget build(BuildContext context) {
+    String key = '$uid+$field';
+    final value = MemoryCache.instance.read<T>(key);
+
     if (sync) {
-      return StreamBuilder<User>(
-        initialData: MemoryCache.instance.read<User?>(uid),
-        // TODO cleanup
-        // stream: UserService.instance.mirrorUsersRef.child(uid).onValue.map(
-        //       (s) => User.fromDatabaseSnapshot(s.snapshot),
-        //     ),
-        stream: UserService.instance.usersRef.child(uid).onValue.map(
-              (s) => User.fromDatabaseSnapshot(s.snapshot),
-            ),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
-            return const SizedBox.shrink();
-          }
-          if (snapshot.hasError) {
-            dog('UserDoc() uid: $uid -> StreamBuilder() -> hasError: ${snapshot.error}');
-            return Text(snapshot.error.toString());
-          }
-
-          /// Got data from database
-          User? user = snapshot.data;
-
-          /// Save it into memory
-          MemoryCache.instance.create(uid, user);
-          return builder(user);
+      return Value(
+        ref: userFieldRef(uid, field),
+        initialData: value,
+        builder: (v, _) {
+          MemoryCache.instance.create(key, v);
+          return builder(v);
         },
+        onLoading: onLoading,
       );
     }
 
-    /// sync = false 이고, cache = true 인 경우, 캐시된 데이터만 사용하는가?
-    if (cache) {
-      /// 캐시 데이터가 있으면, 캐시 데이터만 사용한다.
-      User? user = MemoryCache.instance.read<User?>(uid);
-      if (user != null) {
-        return builder(user);
-      }
+    /// If [sync] is false and [cache] is true, and there is a cached data,
+    if (cache && value != null) {
+      return builder(value);
     }
 
-    /// 캐시된 데이터가 없거나, cache 가 아닌 경우, 서버에서 데이터를 읽어온다.
-    return FutureBuilder(
-      /// 캐시된 데이터가 있으면, 캐시된 데이터를 먼저 사용해서 보여준다.
-      initialData: MemoryCache.instance.read<User?>(uid),
-      future: User.get(uid, cache: false),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
-          return const SizedBox.shrink();
-        }
-        if (snapshot.hasError) {
-          dog('UserDoc() -> FutureBuilder() -> hasError: ${snapshot.error}');
-          return Text(snapshot.error.toString());
-        }
-        return builder(snapshot.data);
+    /// When [sync] is false, and [cache] is false of there is no cached data,
+    ///
+    return Value.once(
+      ref: userFieldRef(uid, field),
+      initialData: value,
+      builder: (v, _) {
+        MemoryCache.instance.create(key, v);
+        return builder(v);
       },
+      onLoading: onLoading,
     );
   }
-
-  const UserDoc.sync({
-    required this.uid,
-    required this.builder,
-    super.key,
-  })  : cache = false,
-        sync = true;
 }
