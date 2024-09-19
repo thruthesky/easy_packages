@@ -49,8 +49,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     UserService.instance.init();
-
-    displayNameUpdateTest();
   }
 
   @override
