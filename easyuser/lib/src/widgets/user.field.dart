@@ -26,7 +26,7 @@ class UserField extends StatelessWidget {
   Widget build(BuildContext context) {
     if (sync) {
       return Value(
-        ref: UserService.instance.mirrorUsersRef.child(uid).child(field),
+        ref: UserService.instance.usersRef.child(uid).child(field),
         initialData: initialData,
         builder: (value, ref) {
           return builder(value, ref);
@@ -34,7 +34,7 @@ class UserField extends StatelessWidget {
       );
     } else {
       return Value.once(
-        ref: UserService.instance.mirrorUsersRef.child(uid).child(field),
+        ref: UserService.instance.usersRef.child(uid).child(field),
         initialData: initialData,
         builder: (value, ref) {
           return builder(value, ref);

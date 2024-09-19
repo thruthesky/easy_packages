@@ -3,6 +3,7 @@ import 'dart:math' hide log;
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:example/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -106,12 +107,14 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('User Search Dialog'),
             ),
             const Divider(),
-            const Text('TESTs'),
+            const Text('TESTS'),
             ElevatedButton(
                 onPressed: () async {
                   log("Begin Test", name: '❗️');
                   final errors = await UserTestService.instance.test([
                     getDataTest,
+                    recordPhoneSignInNumberTest,
+                    alreadyRegisteredPhoneNumberTest,
                     anonymousSignInTest,
                     displayNameUpdateTest,
                     nameUpdateTest,
@@ -137,6 +140,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
                 child: const Text('TEST ALL')),
+            const Divider(),
+            ElevatedButton(
+              onPressed: recordPhoneSignInNumberTest,
+              child: const Text("Record Phone Number Test"),
+            ),
+            ElevatedButton(
+              onPressed: alreadyRegisteredPhoneNumberTest,
+              child: const Text("Already Registered Phone Number Test"),
+            ),
+            const Divider(),
             ElevatedButton(
               onPressed: () async {
                 await UserService.instance.signOut();
@@ -145,8 +158,12 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Create a user'),
             ),
             ElevatedButton(
-              onPressed: () async {},
+              onPressed: anonymousSignInTest,
               child: const Text('Anonymous sign in test'),
+            ),
+            ElevatedButton(
+              onPressed: blockUserTest,
+              child: const Text('Block user test'),
             ),
             ElevatedButton(
               onPressed: getDataTest,
@@ -211,6 +228,148 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  static const phoneNumber = "+11111111111";
+  PhoneAuthCredential? _phoneAuthCredential;
+
+  _logInAs11111111111() async {
+    const verificationCode = "111111";
+
+    // Step 1: Sign out any previous session
+    await UserService.instance.signOut();
+
+    // Step 2: Start phone number verification
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      // ignore: invalid_use_of_visible_for_testing_member
+      autoRetrievedSmsCodeForTesting: verificationCode,
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // Auto-retrieval or instant verification can be handled here
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        debugPrint('Auto-sign in completed');
+      },
+      verificationFailed: (FirebaseAuthException error) {
+        debugPrint('Verification failed: ${error.message}');
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        debugPrint('Code sent. Please enter the verification code.');
+
+        // Wait for the code to be sent and verificationId to be set
+        // Step 3: Manually sign in using the verification code and verificationId
+        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: verificationCode,
+        );
+
+        // Sign in with the credential
+        await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+
+        debugPrint('Phone number successfully verified and signed in.');
+
+        _phoneAuthCredential = phoneAuthCredential;
+      },
+      codeAutoRetrievalTimeout: (String verificationId) async {
+        debugPrint('Auto retrieval timeout. Manual sign-in required.');
+        // Wait for the code to be sent and verificationId to be set
+        // Step 3: Manually sign in using the verification code and verificationId
+        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: verificationCode,
+        );
+
+        // Sign in with the credential
+        await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+
+        _phoneAuthCredential = phoneAuthCredential;
+      },
+      timeout: const Duration(seconds: 120), // Set the timeout duration
+    );
+  }
+
+  bool checkTimeWithin30Seconds(int timestamp, int timestamp2) {
+    final difference = (timestamp - timestamp2).abs();
+    // 30 seconds = 30 * 1000 milliseconds
+    if (difference <= 30 * 1000) {
+      debugPrint("The timestamp is within 30 seconds of the current time.");
+      return true;
+    } else {
+      debugPrint("The timestamp is not within 30 seconds of the current time.");
+      return false;
+    }
+  }
+
+  recordPhoneSignInNumberTest() async {
+    await UserService.instance.signOut();
+
+    // To clear the user-phone-sign-in-numbers node
+    await UserService.instance.database.ref('user-phone-sign-in-numbers').set(null);
+
+    await _logInAs11111111111();
+
+    await waitUntil(() async => UserService.instance.user != null);
+    final timeNow = DateTime.now().millisecondsSinceEpoch;
+
+    debugPrint("Is it recorded? ${await UserService.instance.isPhoneNumberRegistered(phoneNumber)}");
+
+    final checkRecord = await UserService.instance.database
+        .ref()
+        .child('user-phone-sign-in-numbers')
+        .child(phoneNumber)
+        .child("lastSignedInAt")
+        .get();
+    assert(checkRecord.value != null, "recordPhoneSignInNumberTest: The phone sign in was not recorded.");
+
+    final lastSignedInAt = checkRecord.value as int;
+
+    debugPrint("lastSignedInAt $lastSignedInAt");
+
+    assert(
+      checkTimeWithin30Seconds(lastSignedInAt, timeNow),
+      "recordPhoneSignInNumberTest: It's either delayed, or not recorded with correct time. Difference: ${(lastSignedInAt - timeNow).abs()}",
+    );
+  }
+
+  alreadyRegisteredPhoneNumberTest() async {
+    // There is no linkingAuthToAnonymous in User Service dart.
+
+    Object? error;
+    try {
+      // SignOut
+      await UserService.instance.signOut();
+
+      // Login anonymously
+      await UserService.instance.initAnonymousSignIn();
+
+      // Login as 111 and link
+      await _logInAs11111111111();
+
+      await waitUntil(() async => UserService.instance.user != null);
+      await FirebaseAuth.instance.currentUser?.linkWithCredential(_phoneAuthCredential!);
+
+      // Sign Out
+      await UserService.instance.signOut();
+
+      // Login anonymously
+      await UserService.instance.initAnonymousSignIn();
+
+      // Login as 111 and link
+      await _logInAs11111111111();
+
+      // Login as 111 and link
+      await waitUntil(() async => UserService.instance.user != null);
+      await FirebaseAuth.instance.currentUser?.linkWithCredential(_phoneAuthCredential!);
+    } catch (e) {
+      error = e;
+    }
+    assert(error == null, "alreadyRegisteredPhoneNumberTest: There is an error: $error");
+
+    if (error == null) {
+      log("No error", name: '🟢');
+    } else {
+      log("ERROR", name: '🔴');
+      debugPrint(error.toString());
+    }
+  }
+
   anonymousSignInTest() async {
     await UserService.instance.signOut();
     final originalSetup = UserService.instance.enableAnonymousSignIn;
@@ -230,6 +389,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   blockUserTest() async {
+    UnimplementedError("Unable to Unit test because of confirmation");
+
     // User 1
     await UserService.instance.signOut();
     final uid1 = await UserTestService.instance.createTestUser();

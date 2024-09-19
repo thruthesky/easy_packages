@@ -24,20 +24,26 @@ class UserService {
 
   FirebaseDatabase get database => FirebaseDatabase.instance;
 
+  // TODO cleanup
+  // @Deprecated('Do not use firestore.')
+  // CollectionReference get col => FirebaseFirestore.instance.collection('users');
   DatabaseReference get usersRef => database.ref().child('users');
 
-  @Deprecated('Do not use firestore.')
-  CollectionReference get col => FirebaseFirestore.instance.collection('users');
-  @Deprecated('Do not use firestore.')
-  CollectionReference get metaCol => col.doc(myUid).collection('user-meta');
+  // TODO cleanup
+  // @Deprecated('Do not use firestore.')
+  // CollectionReference get metaCol => col.doc(myUid).collection('user-meta');
+  DatabaseReference get metaRef => usersRef.child(myUid!).child('user-meta');
 
   /// Reference of the block document.
-  @Deprecated('Do not use firestore.')
-  DocumentReference get blockDoc => metaCol.doc('blocks');
+  // @Deprecated('Do not use firestore.')
+  // DocumentReference get blockDoc => metaCol.doc('blocks');
+  DatabaseReference get blockDoc => metaRef.child('blocks');
 
+  // TODO cleanup
+  // No need to mirror
   /// RTDB /mirror-users reference
-  @Deprecated('Do not use firestore.')
-  DatabaseReference get mirrorUsersRef => FirebaseDatabase.instance.ref('users');
+  // @Deprecated('Do not use firestore.')
+  // DatabaseReference get mirrorUsersRef => FirebaseDatabase.instance.ref('users');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -122,7 +128,9 @@ class UserService {
   StreamSubscription<fa.User?>? firebaseAuthSubscription;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? firestoreMyDocSubscription;
 
-  StreamSubscription<DocumentSnapshot>? firestoreBlockingSubscription;
+  /// StreamSubscription from "blocks" in RTDB
+  StreamSubscription<DatabaseEvent>? blockingSubscription;
+  // StreamSubscription<DocumentSnapshot>? firestoreBlockingSubscription;
 
   listenDocumentChanges() {
     firebaseAuthSubscription?.cancel();
@@ -191,18 +199,31 @@ class UserService {
           changes.add(user);
         });
 
-        firestoreBlockingSubscription?.cancel();
-        firestoreBlockingSubscription = blockDoc.snapshots().listen(
-          (snapshot) {
-            if (snapshot.exists) {
-              blocks = snapshot.data() as Map<String, dynamic>;
-            } else {
-              blocks = {};
-            }
-            // dog('updated blocks: $blocks');
-            blockChanges.add(blocks);
-          },
-        );
+        // TODO cleanup
+        // firestoreBlockingSubscription?.cancel();
+        blockingSubscription?.cancel();
+
+        // TODO cleanup
+        // firestoreBlockingSubscription = blockDoc.snapshots().listen(
+        //   (snapshot) {
+        //     if (snapshot.exists) {
+        //       blocks = snapshot.data() as Map<String, dynamic>;
+        //     } else {
+        //       blocks = {};
+        //     }
+        //     // dog('updated blocks: $blocks');
+        //     blockChanges.add(blocks);
+        //   },
+        // );
+        blockingSubscription = blockDoc.onValue.listen((event) {
+          if (event.snapshot.exists) {
+            blocks = event.snapshot.value as Map<String, dynamic>;
+          } else {
+            blocks = {};
+          }
+          // dog('updated blocks: $blocks');
+          blockChanges.add(blocks);
+        });
       }
     });
   }
@@ -257,33 +278,44 @@ class UserService {
     _recordPhoneSignInNumber(uid);
 
     /// 나의 정보를 가져온다.
-    final got = await User.getFromFirestore(uid, cache: false);
+    // TODO cleanup
+    // final got = await User.getFromFirestore(uid, cache: false);
+    final got = await User.get(uid, cache: false);
 
     final Map<String, dynamic> data = {
-      'lastLoginAt': FieldValue.serverTimestamp(),
+      // TODO cleanup
+      // 'lastLoginAt': FieldValue.serverTimestamp(),
+      'lastLoginAt': ServerValue.timestamp,
     };
 
     if (got == null || got.createdAt == null) {
+      // TODO cleanup
       // dog('최초 1회 문서를 생성하고, 코드를 실행.');
-      data['createdAt'] = FieldValue.serverTimestamp();
+      // data['createdAt'] = FieldValue.serverTimestamp();
+      data['createdAt'] = ServerValue.timestamp;
     }
 
     final u = User.fromUid(uid);
 
     /// Create or update the user data
-    await u.ref.set(
+    // TODO cleanup
+    // await u.ref.set(
+    //   data,
+    //   SetOptions(merge: true),
+    // );
+    await u.ref.update(
       data,
-      SetOptions(merge: true),
     );
 
+    // TODO clean up
     /// Mirror to RTDB
-    if (data['createdAt'] != null) {
-      data['createdAt'] = ServerValue.timestamp;
-    }
-    data['lastLoginAt'] = ServerValue.timestamp;
+    // if (data['createdAt'] != null) {
+    //   data['createdAt'] = ServerValue.timestamp;
+    // }
+    // data['lastLoginAt'] = ServerValue.timestamp;
 
-    dog('Mirror to RTDB at: ${u.mirrorRef.path}');
-    await u.mirrorRef.update(data);
+    // dog('Mirror to RTDB at: ${u.mirrorRef.path}');
+    // await u.mirrorRef.update(data);
   }
 
   /// Record the phone number if the user signed in as Phone sign-in auth.
@@ -295,22 +327,17 @@ class UserService {
   /// the phone number is recorded over again.
   ///
   /// It will also record again when the app restarts.
-  // TODO: move it rtdb.
-  _recordPhoneSignInNumber(String uid) async {
-    if (isPhoneSignIn) {
-      dog('Phone sign-in user signed in. Record the phone number.');
+  Future<void> _recordPhoneSignInNumber(String uid) async {
+    if (!isPhoneSignIn) return;
+    dog('Phone sign-in user signed in. Record the phone number.');
 
-      /// update the phone number in `/user-phone-sign-in-numbers`.
-      final phoneNumber = currentUser?.phoneNumber;
-      if (phoneNumber != null) {
-        final doc = FirebaseFirestore.instance.collection('user-phone-sign-in-numbers').doc(phoneNumber);
-        await doc.set(
-          {
-            'lastSignedInAt': FieldValue.serverTimestamp(),
-          },
-          SetOptions(merge: true),
-        );
-      }
+    // update the phone number in `/user-phone-sign-in-numbers`.
+    final phoneNumber = currentUser?.phoneNumber;
+    if (phoneNumber != null) {
+      final ref = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber);
+      await ref.set({
+        'lastSignedInAt': ServerValue.timestamp,
+      });
     }
   }
 
@@ -323,8 +350,14 @@ class UserService {
   /// do this, it needs to know if the phone number is already in use.
   ///
   /// See README.md for details
+  // TODO cleanup
+  // Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
+  //   final doc = FirebaseFirestore.instance.collection('user-phone-sign-in-numbers').doc(phoneNumber);
+  //   final snapshot = await doc.get();
+  //   return snapshot.exists;
+  // }
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
-    final doc = FirebaseFirestore.instance.collection('user-phone-sign-in-numbers').doc(phoneNumber);
+    final doc = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber).child("lastSignedInAt");
     final snapshot = await doc.get();
     return snapshot.exists;
   }
@@ -459,7 +492,9 @@ class UserService {
       if (re != true) return null;
 
       await blockDoc.update({
-        otherUid: FieldValue.delete(),
+        // TODO clean up
+        // otherUid: FieldValue.delete(),
+        otherUid: null,
       });
       if (context.mounted) {
         toast(context: context, message: Text('user is un-blocked'.t));
@@ -479,10 +514,12 @@ class UserService {
     await blockDoc.set(
       {
         otherUid: {
-          'blockedAt': FieldValue.serverTimestamp(),
+          // TODO clean up
+          // 'blockedAt': FieldValue.serverTimestamp(),
+          'blockedAt': ServerValue.timestamp,
         },
       },
-      SetOptions(merge: true),
+      // SetOptions(merge: true),
     );
 
     if (context.mounted) {
