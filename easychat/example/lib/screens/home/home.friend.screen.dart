@@ -69,8 +69,7 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
                   if (value == 'profile') {
                     // Navigator.of(context).pushNamed(UserProfileScreen.routeName);
                   } else if (value == 'find-friend') {
-                    final user =
-                        await UserService.instance.showSearchDialog(context);
+                    final user = await UserService.instance.showSearchDialog(context);
                     if (user != null) {
                       if (context.mounted) {
                         ChatService.instance.showChatRoomScreen(
@@ -102,9 +101,7 @@ class _HomeFriendScreenState extends State<HomeFriendScreen> {
             ),
             TextButton(
               onPressed: () async {
-                final snapshot = await UserService.instance.mirrorUsersRef
-                    .limitToFirst(10)
-                    .get();
+                final snapshot = await UserService.instance.usersRef.limitToFirst(10).get();
                 int i = Random.secure().nextInt(snapshot.children.length);
                 final first = snapshot.children.elementAt(i);
                 final user = User.fromDatabaseSnapshot(first);
