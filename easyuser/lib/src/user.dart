@@ -64,24 +64,15 @@ class User {
 
   /// Collection reference of the user's collection.
   ///
-  // CollectionReference col = UserService.instance.col;
   DatabaseReference usersRef = UserService.instance.usersRef;
 
-  // TODO cleanup
-  // CollectionReference metaCol = UserService.instance.metaCol;
   DatabaseReference metaRef = UserService.instance.metaRef;
 
   /// [doc] is the document reference of this user model.
-  // DocumentReference get doc => col.doc(uid);
   DatabaseReference get doc => usersRef.child(uid);
 
   /// [ref] is an alias of [doc].
   DatabaseReference get ref => doc;
-
-  /// Current user's mirror reference in the RTDB.
-  /// TODO cleanup
-  /// for now, no need to mirror to Firestore
-  // DatabaseReference get mirrorRef => UserService.instance.mirrorUsersRef.child(uid);
 
   User({
     required this.uid,
@@ -153,7 +144,6 @@ class User {
 
   /// Serialize the user data to the json format.
   ///
-  /// TODO: the date time can be Firestore Timestamp or Realtime Database integer.
   factory User.fromJson(Map<String, dynamic> json, String uid) {
     return User(
       uid: uid,
@@ -161,11 +151,6 @@ class User {
       displayName: json['displayName'] ?? '',
       name: json['name'] ?? '',
       gender: json['gender'],
-      // TODO review
-      // TODO cleanup
-      // createdAt: json['createdAt'] is Timestamp ? (json['createdAt'] as Timestamp).toDate() : null,
-      // updatedAt: json['updatedAt'] is Timestamp ? (json['updatedAt'] as Timestamp).toDate() : null,
-      // lastLoginAt: json['lastLoginAt'] is Timestamp ? (json['lastLoginAt'] as Timestamp).toDate() : null,
       createdAt: json['createdAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
       updatedAt: json['updatedAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
       lastLoginAt:
@@ -312,8 +297,6 @@ class User {
     String? statePhotoUrl,
   }) async {
     final data = <String, dynamic>{
-      // TODO cleanup
-      // 'updatedAt': FieldValue.serverTimestamp(),
       field.updatedAt: ServerValue.timestamp,
       if (displayName != null) field.displayName: displayName.trim(),
       if (displayName != null) field.caseIncensitiveDisplayName: displayName.toLowerCase().trim(),
@@ -328,34 +311,10 @@ class User {
       if (statePhotoUrl != null) field.statePhotoUrl: statePhotoUrl,
     };
 
-    // TODO cleanup
-    // final List<Future> futures = [];
-    // futures.add(ref.update(
-    //   data,
-    // ));
-    // await ref.update(data);
-    /// Mirror to RTDB. Update the same data to the RTDB.
-    ///
-    /// TODO: Make a function in easy_firebase to convert the data for rtdb.
-    // if (data['updatedAt'] != null) {
-    //   data['updatedAt'] = ServerValue.timestamp;
-    // }
-
-    // TODO need to review how to delete field
-    //  REVIEW: If there is any code that uses the delete function in update.
-    // if (data['photoUrl'] == FieldValue.delete()) {
-    //   data['photoUrl'] = null;
-    // }
-
-    // futures.add(ref.update(data));
-
-    // await Future.wait(futures);
-
     await ref.update(data);
   }
 
   // TODO should we add deleteFields Function?
-
   // deleteFields() {
   //  delete fields
   // }
@@ -367,7 +326,7 @@ class User {
     if (uid != my.uid) {
       throw 'user-delete/not-your-document You dont have permission to delete other user';
     }
-    // TODO cleanup
+    // TODO Need to review the delete here
     // await doc.delete();
     await ref.set(null);
   }

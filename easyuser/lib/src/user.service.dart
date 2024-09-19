@@ -419,8 +419,6 @@ class UserService {
       if (re != true) return null;
 
       await blockDoc.update({
-        // TODO clean up
-        // otherUid: FieldValue.delete(),
         otherUid: null,
       });
       if (context.mounted) {
@@ -438,16 +436,11 @@ class UserService {
         ));
     if (re != true) return null;
 
-    await blockDoc.set(
-      {
-        otherUid: {
-          // TODO clean up
-          // 'blockedAt': FieldValue.serverTimestamp(),
-          'blockedAt': ServerValue.timestamp,
-        },
+    await blockDoc.update({
+      otherUid: {
+        'blockedAt': ServerValue.timestamp,
       },
-      // SetOptions(merge: true),
-    );
+    });
 
     if (context.mounted) {
       toast(context: context, message: Text('user is blocked'.t));
