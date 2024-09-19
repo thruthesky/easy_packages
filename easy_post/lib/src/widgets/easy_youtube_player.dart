@@ -17,6 +17,8 @@ class EasyYoutubePlayer extends StatefulWidget {
   ///
   /// note: this widget is only for displaying youtube video. this widget does not
   /// provide aditional customization and other control actions
+  ///
+  ///
   const EasyYoutubePlayer({
     super.key,
     required this.post,
@@ -28,6 +30,7 @@ class EasyYoutubePlayer extends StatefulWidget {
     this.aspectRatio = 16 / 9,
     this.actionPadding = const EdgeInsets.all(8),
     this.onReady,
+    this.onEnded,
   });
 
   final Post post;
@@ -39,6 +42,7 @@ class EasyYoutubePlayer extends StatefulWidget {
   final double aspectRatio;
   final EdgeInsetsGeometry actionPadding;
   final Function()? onReady;
+  final Function(YoutubeMetaData)? onEnded;
 
   @override
   State<EasyYoutubePlayer> createState() => _EasyYoutubePlayerState();
@@ -102,6 +106,16 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
             aspectRatio: widget.aspectRatio,
             width: widget.width,
             onReady: widget.onReady,
+            onEnded: (YoutubeMetaData metaData) {
+              /// If not loop true and the youtube ended it shows random recommendation.
+              /// To prevent showing unwanted youtube list after the video is ended.
+              /// SeekTo start the current video and pause.
+              if (widget.loop == false) {
+                youtubeController.seekTo(const Duration(seconds: 0));
+                youtubeController.pause();
+              }
+              widget.onEnded?.call(metaData);
+            },
             bottomActions: [
               IconButton(
                 visualDensity: VisualDensity.compact,
@@ -129,7 +143,7 @@ class _EasyYoutubePlayerState extends State<EasyYoutubePlayer> {
             ],
             topActions: const [],
             controller: youtubeController,
-            // when thumbnail is not provideo it will try to get from the provided post
+            // when thumbnail is not provided it will try to get from the provided post
             thumbnail: widget.thumbnailBuilder?.call(state),
           );
         });
