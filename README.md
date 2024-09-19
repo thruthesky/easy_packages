@@ -109,6 +109,14 @@ dependency_overrides:
 # Packages
 
 
+## Firebase SDK
+
+- We use `BoM 2.8.0` as of Sept 19, 2024.
+  - See details: https://github.com/firebase/flutterfire/blob/main/VERSIONS.md
+
+
+
+
 
 
 ## Storage

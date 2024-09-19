@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:memory_cache/memory_cache.dart';
@@ -138,17 +137,17 @@ class User {
     return User.fromJson(data, snapshot.key!);
   }
 
-  factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
-    if (snapshot.exists == false) {
-      throw Exception('User.fromSnapshot: Document does not exist.');
-    }
-    final Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
-    if (data == null) {
-      throw Exception('User.fromSnapshot: Document data is null.');
-    }
+  // factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
+  //   if (snapshot.exists == false) {
+  //     throw Exception('User.fromSnapshot: Document does not exist.');
+  //   }
+  //   final Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+  //   if (data == null) {
+  //     throw Exception('User.fromSnapshot: Document data is null.');
+  //   }
 
-    return User.fromJson(data, snapshot.id);
-  }
+  //   return User.fromJson(data, snapshot.id);
+  // }
 
   /// Serialize the user data to the json format.
   ///
