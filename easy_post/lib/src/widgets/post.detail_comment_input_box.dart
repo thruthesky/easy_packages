@@ -12,14 +12,16 @@ class PostDetailCommentInputBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      minimum: const EdgeInsets.only(bottom: 16),
-      child: CommentFakeInputBox(onTap: () {
-        CommentService.instance.showCommentEditDialog(
-          context: context,
-          documentReference: post.ref,
-        );
-      }),
-    );
+    return const Placeholder();
+    // TODO: Since we changed to DatabaseReference, the CommentListTreeView is still using Firestore.
+    // return SafeArea(
+    //   minimum: const EdgeInsets.only(bottom: 16),
+    //   child: CommentFakeInputBox(onTap: () {
+    //     CommentService.instance.showCommentEditDialog(
+    //       context: context,
+    //       documentReference: post.ref,
+    //     );
+    //   }),
+    // );
   }
 }

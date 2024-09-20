@@ -12,8 +12,10 @@ class PostDetailCommentListTreeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommentListTreeView(
-      documentReference: post.ref,
-    );
+    // TODO: Since we changed to DatabaseReference, the CommentListTreeView is still using Firestore.
+    // return CommentListTreeView(
+    //   documentReference: post.ref,
+    // );
+    return const Placeholder();
   }
 }
