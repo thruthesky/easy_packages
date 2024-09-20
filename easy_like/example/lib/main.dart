@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_like/easy_like.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,8 +38,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final documentReference =
-      FirebaseFirestore.instance.collection('tmp').doc('bbb');
+  // final documentReference = FirebaseFirestore.instance.collection('tmp').doc('bbb');
   @override
   void initState() {
     super.initState();
@@ -83,45 +81,47 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('Test Likes'),
             ),
-            LikeDoc(
-              documentReference: documentReference,
-              builder: (liked) {
-                return Column(
-                  children: [
-                    Icon(liked ? Icons.favorite : Icons.favorite_border),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final like = Like(
-                          documentReference: documentReference,
-                        );
-                        await like.like();
-                      },
-                      child: Text('(Future) Like: $liked'),
-                    ),
-                  ],
-                );
-              },
-            ),
-            LikeDoc(
-              sync: true,
-              documentReference: documentReference,
-              builder: (liked) {
-                return Column(
-                  children: [
-                    Icon(liked ? Icons.favorite : Icons.favorite_border),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final like = Like(
-                          documentReference: documentReference,
-                        );
-                        await like.like();
-                      },
-                      child: Text('(Sync) Like: $liked'),
-                    ),
-                  ],
-                );
-              },
-            ),
+
+            /// TODO: implement this: refactoring-database
+            // LikeDoc(
+            //   documentReference: documentReference,
+            //   builder: (liked) {
+            //     return Column(
+            //       children: [
+            //         Icon(liked ? Icons.favorite : Icons.favorite_border),
+            //         ElevatedButton(
+            //           onPressed: () async {
+            //             final like = Like(
+            //               documentReference: documentReference,
+            //             );
+            //             await like.like();
+            //           },
+            //           child: Text('(Future) Like: $liked'),
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // ),
+            // LikeDoc(
+            //   sync: true,
+            //   documentReference: documentReference,
+            //   builder: (liked) {
+            //     return Column(
+            //       children: [
+            //         Icon(liked ? Icons.favorite : Icons.favorite_border),
+            //         ElevatedButton(
+            //           onPressed: () async {
+            //             final like = Like(
+            //               documentReference: documentReference,
+            //             );
+            //             await like.like();
+            //           },
+            //           child: Text('(Sync) Like: $liked'),
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),
