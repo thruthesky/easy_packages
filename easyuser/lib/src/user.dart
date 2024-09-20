@@ -281,9 +281,6 @@ class User {
   /// User `update` method is used to update the user data.
   ///
   /// [photoUrl] is dynamic since it can be a string of url or FieldValue.delete().
-  ///
-  /// It mirros the data to the RTDB and it does not use transaction because
-  /// mirroring is not for transaction.
   Future<void> update({
     String? displayName,
     String? name,
@@ -314,10 +311,21 @@ class User {
     await ref.update(data);
   }
 
-  // TODO should we add deleteFields Function?
-  // deleteFields() {
-  //  delete fields
-  // }
+  /// Delete the specified fields of user doc.
+  ///
+  /// Purpose: To delete the values of the fields.
+  ///
+  /// Why: Using the update method wont work in deletion in RTDB.
+  ///
+  /// Reason: If we set "null" in the update, it won't do anything
+  ///         since de check it like (fieldName != null).
+  Future<void> deleteFields(List<String> fieldNames) async {
+    final data = <String, dynamic>{};
+    for (final fieldName in fieldNames) {
+      data[fieldName] = null;
+    }
+    await ref.update(data);
+  }
 
   /// delete user
   ///
@@ -326,8 +334,6 @@ class User {
     if (uid != my.uid) {
       throw 'user-delete/not-your-document You dont have permission to delete other user';
     }
-    // TODO Need to review the delete here
-    // await doc.delete();
     await ref.set(null);
   }
 }

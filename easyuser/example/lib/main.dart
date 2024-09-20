@@ -323,6 +323,9 @@ class _MyHomePageState extends State<MyHomePage> {
         .child(phoneNumber)
         .child("lastSignedInAt")
         .get();
+
+    debugPrint("Last Signed in at: ${checkRecord.value}");
+
     assert(checkRecord.value != null, "recordPhoneSignInNumberTest: The phone sign in was not recorded.");
 
     final lastSignedInAt = checkRecord.value as int;
@@ -577,8 +580,7 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint("Check if Updated: ${checkUpdate?.name ?? 'null'}");
     await UserService.instance.user!.delete();
     final deleted = await User.get(myUid, cache: false);
-    debugPrint("Check if nulled: ${checkUpdate?.name ?? 'null'}");
-
+    debugPrint("Check if nulled: ${deleted?.name ?? 'null'}");
     assert(
       deleted == null,
       "userDeletetest: uid: $myUid, deleted from Database: $deleted",
