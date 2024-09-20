@@ -1,5 +1,6 @@
 ## 0.0.27
 * Update. Add more fields on `User.field`
+* Refactor. Move from Firestore to Realtime database.
 
 ## 0.0.26
 * Update. `icon` widget property in `AnonymousAvatar`.

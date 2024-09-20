@@ -173,10 +173,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_storage
-      sha256: "2bc2359a8408e36a2607e987e426cdc56da8f2d3d0ce795e7d0fa652cbbd9baa"
+      sha256: "38dbb44536cc22d170510d9284bfcde8a0ab785979822ae16fb00bf5f4a127a3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.17"
+    version: "0.0.19"
   fake_async:
     dependency: transitive
     description:

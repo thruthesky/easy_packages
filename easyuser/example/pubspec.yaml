@@ -13,8 +13,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.6
-  firebase_core: 3.5.0
-  firebase_auth: 5.3.0
+  firebase_core: ^3.5.0
+  firebase_auth: ^5.3.0
   easyuser:
   easy_locale:
     path: ../../easy_locale
