@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_locale/easy_locale.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// CommentListTreeView
 class CommentListTreeView extends StatefulWidget {
-  const CommentListTreeView({super.key, required this.documentReference});
+  const CommentListTreeView({super.key, required this.parentReference});
 
-  final DocumentReference documentReference;
+  final DatabaseReference parentReference;
 
   @override
   State<CommentListTreeView> createState() => _CommentListTreeViewState();
@@ -28,22 +28,22 @@ class _CommentListTreeViewState extends State<CommentListTreeView> {
 
   init() async {
     // Getting all the comments first
-    comments = await CommentService.instance
-        .getAll(documentReference: widget.documentReference);
+    comments = await CommentService.instance.getAll(parentReference: widget.parentReference);
     if (mounted) {
       setState(() {});
     }
 
+    /// TODO: show comment edit dialog: refactoring-database
     // Listens to newly created data on the path 'comments' collection
-    // of the documentReference
-    newCommentSubscription = Comment.col
-        .where('documentReference', isEqualTo: widget.documentReference)
-        .orderBy('order')
-        .snapshots()
-        .listen((event) {
-      comments = CommentService.instance.fromQuerySnapshot(event);
-      setState(() {});
-    });
+    // of the parentReference
+    // newCommentSubscription = Comment.col
+    //     .where('parentReference', isEqualTo: widget.parentReference)
+    //     .orderBy('order')
+    //     .snapshots()
+    //     .listen((event) {
+    //   comments = CommentService.instance.fromQuerySnapshot(event);
+    // setState(() {});
+    // });
   }
 
   @override
@@ -55,8 +55,7 @@ class _CommentListTreeViewState extends State<CommentListTreeView> {
   @override
   Widget build(BuildContext context) {
     if (comments == null) {
-      return const SliverToBoxAdapter(
-          child: Center(child: CircularProgressIndicator()));
+      return const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
     }
     if (comments!.isEmpty) {
       return SliverToBoxAdapter(
@@ -72,7 +71,7 @@ class _CommentListTreeViewState extends State<CommentListTreeView> {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return CommentTreeDetail(
-            documentReference: widget.documentReference,
+            parentReference: widget.parentReference,
             comment: comments![index],
             comments: comments!,
             index: index,

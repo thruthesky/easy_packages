@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// Generate a comment input box in a StatefulWidget which takes a category as a parameter and a documentReference,
@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 class CommentInputBox extends StatefulWidget {
   const CommentInputBox({
     super.key,
-    this.documentReference,
+    this.parentRef,
     this.parent,
     this.comment,
   });
 
-  final DocumentReference? documentReference;
+  final DatabaseReference? parentRef;
   final Comment? parent;
   final Comment? comment;
 
@@ -30,10 +30,7 @@ class _CommentInputBoxState extends State<CommentInputBox> {
   final storageService = StorageService.instance;
 
   /// Get document reference
-  DocumentReference get documentReference =>
-      widget.documentReference ??
-      widget.parent?.documentReference ??
-      widget.comment!.documentReference;
+  DatabaseReference get ref => widget.parentRef ?? widget.parent?.ref ?? widget.comment!.ref;
 
   @override
   void dispose() {
@@ -74,7 +71,7 @@ class _CommentInputBoxState extends State<CommentInputBox> {
               icon: const Icon(Icons.send),
               onPressed: () async {
                 await Comment.create(
-                  documentReference: documentReference,
+                  parentRef: ref,
                   parent: widget.parent,
                   content: commentController.text,
                 );
