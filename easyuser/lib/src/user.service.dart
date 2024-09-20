@@ -184,7 +184,7 @@ class UserService {
         firebaseBlockingSubscription?.cancel();
 
         firebaseBlockingSubscription = blockDoc.onValue.listen((event) {
-          blocks = (event.snapshot.value ?? {}) as Map<String, dynamic>;
+          blocks = Map<String, dynamic>.from((event.snapshot.value ?? {}) as Map);
           // dog('updated blocks: $blocks');
           blockChanges.add(blocks);
         });

@@ -107,6 +107,13 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('User Search Dialog'),
             ),
             const Divider(),
+            ElevatedButton(
+              onPressed: () async {
+                await UserService.instance.showProfileUpdaeScreen(context);
+              },
+              child: const Text("Update Profile"),
+            ),
+            const Divider(),
             const Text('TESTS'),
             ElevatedButton(
                 onPressed: () async {
