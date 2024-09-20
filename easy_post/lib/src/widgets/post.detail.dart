@@ -30,13 +30,13 @@ class _PostDetailState extends State<PostDetail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        UserDoc<String>(
+        UserField<String>(
           field: User.field.displayName,
           uid: post.uid,
           builder: (displayName) {
             return Row(
               children: [
-                UserDoc<String>(
+                UserField<String>(
                     field: User.field.photoUrl,
                     uid: post.uid,
                     builder: (photoUrl) {
