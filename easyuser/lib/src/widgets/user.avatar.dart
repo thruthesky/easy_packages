@@ -17,6 +17,12 @@ import 'package:flutter/material.dart';
 /// rebuild the avatar realtime when the user's data changes. The [uid] must
 /// be the user's UID. It cannot be a name or a display name.
 ///
+/// [size] is the size of the avatar.
+///
+/// [radius] is the radius of the avatar.
+///
+/// [onTap] is a function that is called when the avatar is tapped.
+///
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
     super.key,
@@ -25,21 +31,31 @@ class UserAvatar extends StatelessWidget {
     this.size = 48,
     this.radius = 20,
     this.border,
+    this.onTap,
   });
   final String? photoUrl;
   final String initials;
   final double size;
   final double radius;
   final Border? border;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return UserBuildAvatar(
+    final child = UserBuildAvatar(
       photoUrl: photoUrl,
       initials: initials,
       size: size,
       radius: radius,
       border: border,
+    );
+    if (onTap == null) {
+      return child;
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: child,
     );
   }
 
@@ -54,21 +70,32 @@ class UserAvatar extends StatelessWidget {
     double radius = 20,
     Border? border,
     bool sync = false,
+    final Function()? onTap,
   }) {
-    return UserDoc<String?>(
-      uid: uid,
-      field: User.field.photoUrl,
-      sync: sync,
-      builder: (url) => url == null
-          ? buildAnonymouseAvatar(size: size, radius: radius, border: border)
-          : UserBuildAvatar(
-              photoUrl: url,
-              initials: uid,
-              size: size,
-              radius: radius,
-              border: border,
-            ),
-    );
+    return UserField<String?>(
+        uid: uid,
+        field: User.field.photoUrl,
+        sync: sync,
+        builder: (url) {
+          if (url == null) {
+            return buildAnonymouseAvatar(size: size, radius: radius, border: border);
+          }
+          final child = UserBuildAvatar(
+            photoUrl: url,
+            initials: uid,
+            size: size,
+            radius: radius,
+            border: border,
+          );
+          if (onTap == null) {
+            return child;
+          }
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTap,
+            child: child,
+          );
+        });
   }
 
   static buildAnonymouseAvatar({

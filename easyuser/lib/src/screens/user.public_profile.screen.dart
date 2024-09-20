@@ -100,7 +100,7 @@ class UserPublicProfileScreen extends StatelessWidget {
               child: Column(
                 children: [
                   const Spacer(),
-                  UserDoc<String>(
+                  UserField<String>(
                     uid: user.uid,
                     field: User.field.photoUrl,
                     builder: (photoUrl) {

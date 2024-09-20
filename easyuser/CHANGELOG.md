@@ -1,3 +1,20 @@
+## 0.0.32
+* Fix. User model is nullable on the callback of `UserModel`.
+
+## 0.0.31
+* Bump
+
+## 0.0.30
+* Update. `UserDoc` is replaced with `UserField`.
+* Add. `UserModel`.
+
+## 0.0.29
+* Update. `initailData` is added to `UserDoc.fromUid`.
+
+## 0.0.28
+* Update. `onTap` is added to `UserAvatar`.
+* Update. `initailData` is added to `UserDoc`.
+
 ## 0.0.27
 * Update. Add more fields on `User.field`
 * Refactor. Move from Firestore to Realtime database.

@@ -1,3 +1,6 @@
+## 0.0.6
+* Update. bump to the latest version of youtube player.
+
 ## 0.0.5
 * Refactor. Move from Firestore to Realtime database.
 

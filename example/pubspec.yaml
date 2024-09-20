@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   cached_network_image: ^3.3.1
-  cloud_functions: 5.0.2
+  cloud_functions: ^5.1.2
   cupertino_icons: ^1.0.6
   dio: ^5.4.3+1
   easy_category: ^0.0.2
@@ -28,11 +28,11 @@ dependencies:
   easy_youtube:
   easychat:
   easyuser:
-  # firebase_auth: 5.1.1
-  # firebase_core: 3.1.1
-  # firebase_database: 11.0.2
-  # firebase_messaging: 15.0.2
-  # firebase_storage: 12.1.0
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.5.0
+  firebase_database: ^11.1.3
+  firebase_messaging: ^15.1.2
+  firebase_storage: ^12.3.1
   firebase_vertexai: ^0.2.2+1
   flutter:
     sdk: flutter
@@ -47,15 +47,9 @@ dependencies:
   phone_sign_in: ^0.0.8
   record: ^5.1.2
   social_design_system: ^0.0.19
-  web: ^0.5.1
 
 dependency_overrides:
   rxdart: ^0.28.0
-  firebase_auth: 5.1.1
-  firebase_core: 3.1.1
-  firebase_database: 11.0.2
-  firebase_messaging: 15.0.2
-  firebase_storage: 12.1.0
   easy_comment:
     path: ../easy_comment
   easy_engine:
@@ -84,6 +78,13 @@ dependency_overrides:
     path: ../easychat
   easyuser:
     path: ../easyuser
+
+  # TODO: Recheck once flutter_inappwebview version >6.0.0 is released
+  flutter_inappwebview_ios:
+    git:
+      url: https://github.com/IncM/flutter_inappwebview
+      path: flutter_inappwebview_ios
+      ref: cbc214c7b2cf5fd7996ff2e9e25d203946b74bc3
 
 dev_dependencies:
   flutter_test:

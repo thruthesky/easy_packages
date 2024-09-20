@@ -166,12 +166,15 @@ class User {
     );
   }
 
+  /// Serialize the user data to the json format.
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['uid'] = uid;
     data['admin'] = admin;
     data['displayName'] = displayName;
+    data['caseInsensitiveDisplayName'] = caseInsensitiveDisplayName;
     data['name'] = name;
+    data['caseInsensitiveName'] = caseInsensitiveName;
     data['gender'] = gender;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
@@ -213,7 +216,7 @@ class User {
     // final snapshot = await userFieldRef(uid, field).get();
     debugPrint("userFieldRef(uid, field).path: ${userFieldRef(uid, field).path}");
     // TODO using get is getting all the fields. Need to review.
-    final snapshot = await UserService.instance.database.ref().child(userFieldRef(uid, field).path).once();
+    final snapshot = await userFieldRef(uid, field).once();
 
     debugPrint("Snapshot Value: ${snapshot.snapshot.value}");
 

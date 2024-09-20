@@ -36,7 +36,7 @@ class ChatRoomBlockedUsersDialog extends StatelessWidget {
         child: ListView.builder(
           itemCount: room.blockedUsers.length,
           itemBuilder: (context, index) {
-            return UserDoc(
+            return UserModel(
               uid: room.blockedUids[index],
               builder: (user) {
                 if (user == null) {

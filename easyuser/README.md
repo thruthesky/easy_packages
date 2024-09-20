@@ -34,9 +34,9 @@
 # Widgets
 
 
-## User
+## UserField
 
-- Displays the user information in realtiem.
+This wdigets gets only one field of user data and displays.
 
 - `field`: Required. It is to get the minium data of the user field.
 
@@ -45,6 +45,31 @@
 - `onLoading`: is the loading state of the widget.
 
 - `onError`: is the error state of the widget.
+
+- `builder`: is the builder function to build the widget.
+
+- `sync`: is the sync option. if it's true, it will rebuild the widget when the user data is updated.
+
+- `initialData`: is the initial data that is used on very first time. The data may be cached. If the data is not cached, then it will be used as initial data.
+
+- `cache`: is the cache option. If it's true, then it will use cached data only. If there is no cached data, then it will get data from the server.
+
+
+
+
+## UserModel
+
+This wdiget passes the User model object on the builder method. Meaning, this widget can display all the user data.
+
+- `uid`: is the user id to display.
+- `onLoading`: is the loading state of the widget.
+- `builder`: is the builder function to build the widget.
+- `sync`: is the sync option. if it's true, it will rebuild the widget when the user data is updated.
+
+- `initialData`: is the initial data that is used on very first time. The data may be cached. If the data is not cached, then it will be used as initial data.
+
+- `cache`: is the cache option. If it's true, then it will use cached data only. If there is no cached data, then it will get data from the server.
+
 
 
 

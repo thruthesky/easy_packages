@@ -65,30 +65,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  cloud_firestore:
-    dependency: transitive
-    description:
-      name: cloud_firestore
-      sha256: "1232370ad04c21c699d0e73b2dc2e1c3b49258f89a16f0119036fd3c6e8aa2f5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.2"
-  cloud_firestore_platform_interface:
-    dependency: transitive
-    description:
-      name: cloud_firestore_platform_interface
-      sha256: cfc64ae4a48bbb0ff6730b04f2d4653043c7a9b9008a991b1f2012a534b79e26
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.8"
-  cloud_firestore_web:
-    dependency: transitive
-    description:
-      name: cloud_firestore_web
-      sha256: "3db4e4c10feae18d80da86982781578c8e76cb6a43cf83110d8d6a62af9a952a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.2"
   cloud_functions:
     dependency: transitive
     description:
@@ -205,10 +181,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_storage
-      sha256: "68066e826962cd1a39819554c3877ffb687132d25617c8c154debcfe018ff6ab"
+      sha256: "38dbb44536cc22d170510d9284bfcde8a0ab785979822ae16fb00bf5f4a127a3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.14"
+    version: "0.0.19"
   easy_url_preview:
     dependency: "direct main"
     description:
@@ -221,10 +197,10 @@ packages:
     dependency: "direct main"
     description:
       name: easyuser
-      sha256: "27447c372a4350922c4fa05c3de2680f1e3da29cf7483cace78df5c84ac1910e"
+      sha256: c2143136af92580c4f23af544aa556e801ac18ac7a9827edfa503501d2ef3f78
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.26"
+    version: "0.0.32"
   fake_async:
     dependency: transitive
     description:
@@ -365,10 +341,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_storage
-      sha256: "01fdcef335d2c86a265e9eb3c5b3b489ddc5589e7fc18a74df84b31be9f0c15b"
+      sha256: "81a111623da3af66c90f8aae2dabc35d8fc78a497c14c66b6ac89be3b6dda264"
       url: "https://pub.dev"
     source: hosted
-    version: "12.1.0"
+    version: "12.3.1"
   firebase_storage_platform_interface:
     dependency: transitive
     description:
@@ -393,14 +369,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.4"
-  firebase_ui_firestore:
-    dependency: transitive
-    description:
-      name: firebase_ui_firestore
-      sha256: de7f184194b20f544d259091b1b3125886572acb08fbd68d97178d25fa394fd6
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.6.4"
   firebase_ui_localizations:
     dependency: transitive
     description:
@@ -409,14 +377,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
-  firebase_ui_shared:
-    dependency: transitive
-    description:
-      name: firebase_ui_shared
-      sha256: f1d07c130a39104d32fba1dab274b7bcb13be2bf4e652624a4ccabb58f9781f1
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.1"
   fixnum:
     dependency: transitive
     description:

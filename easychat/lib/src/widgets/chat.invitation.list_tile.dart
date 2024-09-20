@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// Use:
 /// - To display the chat room invitation list on top of the chat room list.
 /// - You may use it to display the invitation list on home screen.
-class ChatInvitationListTile extends StatelessWidget {
+class ChatInvitationListTile extends StatefulWidget {
   const ChatInvitationListTile({
     super.key,
     required this.room,
@@ -23,70 +23,61 @@ class ChatInvitationListTile extends StatelessWidget {
 
   static const double _minTileHeight = 70;
 
-  static const EdgeInsetsGeometry _contentPadding =
-      EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsetsGeometry _contentPadding = EdgeInsets.symmetric(horizontal: 16);
+
+  @override
+  State<ChatInvitationListTile> createState() => _ChatInvitationListTileState();
+}
+
+class _ChatInvitationListTileState extends State<ChatInvitationListTile> {
+  User? user;
+  late final String otherUid;
+  @override
+  void initState() {
+    super.initState();
+    otherUid = getOtherUserUidFromRoomId(widget.room.id)!;
+    User.get(otherUid).then((u) => user = u);
+  }
 
   @override
   Widget build(BuildContext context) {
     dog("Initation List tile");
-    if (room.single == true) {
-      final otherUid = getOtherUserUidFromRoomId(room.id)!;
+    if (widget.room.single == true) {
       return UserBlocked(
-          otherUid: otherUid,
-          builder: (blocked) {
-            if (blocked) {
-              return const SizedBox.shrink();
-            }
-            return UserDoc.sync(
+        otherUid: otherUid,
+        builder: (blocked) {
+          if (blocked) {
+            return const SizedBox.shrink();
+          }
+          return ListTile(
+            minTileHeight: ChatInvitationListTile._minTileHeight,
+            leading: UserAvatar.fromUid(
               uid: otherUid,
-              builder: (user) {
-                return ListTile(
-                  minTileHeight: _minTileHeight,
-                  leading: GestureDetector(
-                    onTap: () => UserService.instance.showPublicProfileScreen(
-                      context,
-                      user: user!,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Theme.of(context).colorScheme.tertiaryContainer,
-                      ),
-                      width: 48,
-                      height: 48,
-                      clipBehavior: Clip.hardEdge,
-                      child: user == null
-                          ? const Icon(Icons.person)
-                          : UserAvatar(user: user),
-                    ),
-                  ),
-                  title: Text(
-                    user?.displayName ?? "...",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: user?.stateMessage != null &&
-                          user!.stateMessage!.isNotEmpty
-                      ? Text(
-                          user.stateMessage ?? "",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      : null,
-                  trailing: ChatInvitationListTileActions(
-                    onTapAccept: () => onTapAccept(user),
-                    onTapReject: () => onTapReject(user),
-                  ),
-                  contentPadding: _contentPadding,
-                );
-              },
-            );
-          });
+              onTap: () => UserService.instance.showPublicProfileScreen(
+                context,
+                user: user!,
+              ),
+            ),
+            title: DisplayName(uid: otherUid),
+            subtitle: UserField<String?>(
+                uid: otherUid,
+                field: User.field.stateMessage,
+                builder: (stateMessage) {
+                  return Text(stateMessage ?? '');
+                }),
+            trailing: ChatInvitationListTileActions(
+              onTapAccept: () => onTapAccept(user),
+              onTapReject: () => onTapReject(user),
+            ),
+            contentPadding: ChatInvitationListTile._contentPadding,
+          );
+        },
+      );
     }
 
     // else, it means it is a group chat
     return ListTile(
-      minTileHeight: _minTileHeight,
+      minTileHeight: ChatInvitationListTile._minTileHeight,
       leading: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -95,9 +86,9 @@ class ChatInvitationListTile extends StatelessWidget {
         width: 48,
         height: 48,
         clipBehavior: Clip.hardEdge,
-        child: room.iconUrl != null && room.iconUrl!.isNotEmpty
+        child: widget.room.iconUrl != null && widget.room.iconUrl!.isNotEmpty
             ? CachedNetworkImage(
-                imageUrl: room.iconUrl!,
+                imageUrl: widget.room.iconUrl!,
                 fit: BoxFit.cover,
               )
             : Icon(
@@ -106,12 +97,12 @@ class ChatInvitationListTile extends StatelessWidget {
               ),
       ),
       title: Text(
-        room.name,
+        widget.room.name,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        room.description,
+        widget.room.description,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -119,17 +110,17 @@ class ChatInvitationListTile extends StatelessWidget {
         onTapAccept: onTapAccept,
         onTapReject: onTapReject,
       ),
-      contentPadding: _contentPadding,
+      contentPadding: ChatInvitationListTile._contentPadding,
     );
   }
 
   Future onTapAccept([User? user]) async {
-    await ChatService.instance.accept(room);
-    onAccept?.call(room, user);
+    await ChatService.instance.accept(widget.room);
+    widget.onAccept?.call(widget.room, user);
   }
 
   Future onTapReject([User? user]) async {
-    await ChatService.instance.reject(room);
-    onReject?.call(room, user);
+    await ChatService.instance.reject(widget.room);
+    widget.onReject?.call(widget.room, user);
   }
 }

@@ -4,7 +4,7 @@ import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:memory_cache/memory_cache.dart';
 
-/// UserDoc
+/// UserModel
 ///
 /// Gets user data from Realtime Database and keep it in memory cache.
 ///
@@ -30,10 +30,14 @@ import 'package:memory_cache/memory_cache.dart';
 /// ignored.
 ///
 /// [sync] option helps to reduce the blinking(flickering) on the UI.
-class UserDoc<T> extends StatelessWidget {
-  const UserDoc({
+///
+/// [initialData] is the initial data that is used on very first time. The data
+/// may be cached. If the data is not cached, then it will be used as initial
+/// data.
+class UserModel extends StatelessWidget {
+  const UserModel({
     required this.uid,
-    required this.field,
+    this.initialData,
     this.cache = true,
     required this.builder,
     this.onLoading,
@@ -41,42 +45,44 @@ class UserDoc<T> extends StatelessWidget {
     super.key,
   });
   final String uid;
-  final String field;
+  final User? initialData;
   final bool cache;
-  final Widget Function(T) builder;
+  final Widget Function(User? user) builder;
   final bool sync;
   final Widget? onLoading;
 
   @override
   Widget build(BuildContext context) {
-    String key = '$uid+$field';
-    final value = MemoryCache.instance.read<T>(key);
+    final cachedUser = MemoryCache.instance.read<User?>(uid);
+    final json = cachedUser?.toJson() ?? initialData?.toJson();
 
     if (sync) {
       return Value(
-        ref: userFieldRef(uid, field),
-        initialData: value,
+        ref: userRef(uid),
+        initialData: json,
         builder: (v, _) {
-          MemoryCache.instance.create(key, v);
-          return builder(v);
+          final user = User.fromJson(v, uid);
+          MemoryCache.instance.create(uid, user);
+          return builder(user);
         },
         onLoading: onLoading,
       );
     }
 
     /// If [sync] is false and [cache] is true, and there is a cached data,
-    if (cache && value != null) {
-      return builder(value);
+    if (cache && cachedUser != null) {
+      return builder(cachedUser);
     }
 
     /// When [sync] is false, and [cache] is false of there is no cached data,
     ///
     return Value.once(
-      ref: userFieldRef(uid, field),
-      initialData: value,
+      ref: userRef(uid),
+      initialData: json,
       builder: (v, _) {
-        MemoryCache.instance.create(key, v);
-        return builder(v);
+        final user = User.fromJson(v, uid);
+        MemoryCache.instance.create(uid, user);
+        return builder(user);
       },
       onLoading: onLoading,
     );
