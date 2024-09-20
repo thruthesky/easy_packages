@@ -120,13 +120,8 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                           title: Text('Delete Avatar?'.t),
                           message: Text('Are you sure you wanted to delete this avatar?'.t));
                       if (re == false) return;
-                      StorageService.instance.delete(my.photoUrl);
-
-                      /// TODO: update photo url
-                      // TODO review: is saving as "", okay?
-                      // REVIEW: How to delete properly
-                      // my.update(photoUrl: FieldValue.delete());
-                      my.update(photoUrl: '');
+                      await StorageService.instance.delete(my.photoUrl);
+                      await my.deleteFields([User.field.photoUrl]);
                     },
                     padding: EdgeInsets.zero,
                     visualDensity: VisualDensity.compact,
