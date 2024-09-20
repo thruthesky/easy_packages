@@ -165,6 +165,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Create a user'),
             ),
             ElevatedButton(
+              onPressed: deleteFieldTest,
+              child: const Text('Delete Field Test'),
+            ),
+            ElevatedButton(
               onPressed: anonymousSignInTest,
               child: const Text('Anonymous sign in test'),
             ),
@@ -378,6 +382,48 @@ class _MyHomePageState extends State<MyHomePage> {
       log("ERROR", name: '🔴');
       debugPrint(error.toString());
     }
+  }
+
+  deleteFieldTest() async {
+    await UserService.instance.signOut();
+    final uid1 = await UserTestService.instance.createTestUser();
+    await waitUntil(() async => UserService.instance.user != null);
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    const testDisplayNameVal = "Test Display Name";
+    const testNameVal = "Test Name";
+
+    await my.update(
+      displayName: testDisplayNameVal,
+      name: testNameVal,
+    );
+
+    final myDataUpdate = await User.get(uid1, cache: false);
+
+    assert(
+      myDataUpdate?.displayName == testDisplayNameVal,
+      "deleteFieldTest: Something went wrong in the middle of testing",
+    );
+    assert(
+      myDataUpdate?.name == testNameVal,
+      "deleteFieldTest: Something went wrong in the middle of testing",
+    );
+
+    await my.deleteFields([User.field.displayName]);
+
+    final displayNameUpdate = await User.getField(uid: uid1, field: User.field.displayName, cache: false);
+    debugPrint("displayNameUpdate: $displayNameUpdate");
+    final nameUpdate = await User.getField(uid: uid1, field: User.field.name, cache: false);
+
+    assert(
+      displayNameUpdate == null,
+      "deleteFieldTest: Display name SHOULD be deleted",
+    );
+
+    assert(
+      nameUpdate == testNameVal,
+      "deleteFieldTest: Name field should NOT be deleted",
+    );
   }
 
   anonymousSignInTest() async {
