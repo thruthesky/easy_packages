@@ -9,11 +9,11 @@ environment:
   sdk: ">=3.4.3 <4.0.0"
 
 dependencies:
-  cloud_firestore: ^5.0.2
+  cloud_firestore: ^5.4.2
   easy_storage:
     path: ..
-  firebase_auth: 5.1.2
-  firebase_core: 3.2.0
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.5.0
   flutter:
     sdk: flutter
 
