@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 DatabaseReference postRef(String id) => PostService.instance.postsRef.child(id);
 
-DatabaseReference postFieldRef(String category, String path) => postRef(category).child(path);
+DatabaseReference postFieldRef(String category, String field) => postRef(category).child(field);
 
 ///
 Future<Map<String, dynamic>?> getYoutubeSnippet(String? youtubeUrl) async {
