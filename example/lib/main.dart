@@ -317,33 +317,34 @@ class MyAppState extends State<MyApp> {
   }
 
   commentInit() {
-    CommentService.instance.init(
-      onCreate: (Comment comment) async {
-        /// get ancestor uid
-        List<String> ancestorUids = await CommentService.instance.getAncestorsUid(comment.id);
+    // TODO: refactor: refactoring-database
+    // CommentService.instance.init(
+    //   onCreate: (Comment comment) async {
+    //     /// get ancestor uid
+    //     List<String> ancestorUids = await CommentService.instance.getAncestorsUid(comment.id);
 
-        /// get post information
-        Post post = await Post.get(comment.documentReference.id);
-        if (myUid != null && post.uid != myUid) {
-          ancestorUids.add(post.uid);
-        }
+    //     /// get post information
+    //     Post post = await Post.get(comment.documentReference.id);
+    //     if (myUid != null && post.uid != myUid) {
+    //       ancestorUids.add(post.uid);
+    //     }
 
-        if (ancestorUids.isEmpty) return;
+    //     if (ancestorUids.isEmpty) return;
 
-        /// set push notification to remaining uids
-        /// can get comment or post to send more informative push notification
-        MessagingService.instance.sendMessageToUids(
-          uids: ancestorUids,
-          title: 'title ${DateTime.now()}',
-          body: 'ancestorComment test ${comment.content}',
-          data: {
-            "action": 'comment',
-            'commentId': comment.id,
-            'postId': comment.documentReference.id,
-          },
-        );
-      },
-    );
+    //     /// set push notification to remaining uids
+    //     /// can get comment or post to send more informative push notification
+    //     MessagingService.instance.sendMessageToUids(
+    //       uids: ancestorUids,
+    //       title: 'title ${DateTime.now()}',
+    //       body: 'ancestorComment test ${comment.content}',
+    //       data: {
+    //         "action": 'comment',
+    //         'commentId': comment.id,
+    //         'postId': comment.documentReference.id,
+    //       },
+    //     );
+    //   },
+    // );
   }
 
   /// (Trick) When user disable the notification, then, subscribe !!.
@@ -417,36 +418,37 @@ class MyAppState extends State<MyApp> {
   }
 
   likeInit() {
-    LikeService.instance.init(
-      onLiked: ({required Like like, required bool isLiked}) async {
-        /// only send notification if it is liked
-        if (isLiked == false) return;
+    // TODO: refactor: refactoring-database
+    // LikeService.instance.init(
+    //   onLiked: ({required Like like, required bool isLiked}) async {
+    //     /// only send notification if it is liked
+    //     if (isLiked == false) return;
 
-        /// get the like document reference for more information
-        /// then base from the document reference you can swich or decide where the notificaiton should go
-        /// set push notification. e.g. send push notification to post like
-        if (like.documentReference.toString().contains('posts/')) {
-          Post post = await Post.get(like.documentReference.id);
+    //     /// get the like document reference for more information
+    //     /// then base from the document reference you can swich or decide where the notificaiton should go
+    //     /// set push notification. e.g. send push notification to post like
+    //     if (like.documentReference.toString().contains('posts/')) {
+    //       Post post = await Post.get(like.documentReference.id);
 
-          /// dont send push notification if the owner of the post is the loggin user.
-          if (post.uid == myUid) return;
+    //       /// dont send push notification if the owner of the post is the loggin user.
+    //       if (post.uid == myUid) return;
 
-          /// can get more information base from the documentReference
-          /// can give more details on the push notification
-          MessagingService.instance.sendMessageToUids(
-            uids: [post.uid],
-            title: 'Your post got liked',
-            body: '${my.displayName} liked ${post.title}',
-            data: {
-              "action": 'like',
-              "source": 'post',
-              'postId': post.id,
-              'documentReference': like.documentReference.toString(),
-            },
-          );
-        }
-      },
-    );
+    //       /// can get more information base from the documentReference
+    //       /// can give more details on the push notification
+    //       MessagingService.instance.sendMessageToUids(
+    //         uids: [post.uid],
+    //         title: 'Your post got liked',
+    //         body: '${my.displayName} liked ${post.title}',
+    //         data: {
+    //           "action": 'like',
+    //           "source": 'post',
+    //           'postId': post.id,
+    //           'documentReference': like.documentReference.toString(),
+    //         },
+    //       );
+    //     }
+    //   },
+    // );
   }
 
   @override
