@@ -4,40 +4,47 @@ import 'package:flutter/material.dart';
 
 /// PostDoc is a widget that displays a post document.
 ///
-/// [post] is the post document to display.
+/// [category] is the category of the post
 ///
-/// [sync] if it is passed as true, it will rebuild the widget when the post is
-/// updated. If it is false, it will use FutureBuilder to get the post only one
-/// time. If it is true, it will use StreamBuilder to get the post and rebuild
-/// the widget when the post is updated.
+/// [id] is the id of the post
+///
+/// [field] is the node where the data will come from.
+///
+/// [sync] default value is false. If it is true, it will rebuild the widget
+/// whenever the [field] is updated. And if it is false, it will get
+/// the data once and will just return it.
 class PostDoc<T> extends StatelessWidget {
   const PostDoc({
     super.key,
     required this.category,
-    required this.field,
+    required this.id,
     required this.builder,
+    this.field,
     this.initialData,
     this.sync = false,
   });
 
   final String category;
-  final String field;
+  final String id;
+  final String? field;
   final T? initialData;
   final Widget Function(T) builder;
   final bool sync;
 
   @override
   Widget build(BuildContext context) {
+    final fieldToGet = field != null && field!.isNotEmpty ? '$id/$field' : id;
+
     if (sync) {
       return Value(
-          ref: postFieldRef(category, field),
+          ref: postFieldRef(category, fieldToGet),
           builder: (v, _) {
             return builder(v);
           });
     }
 
     return Value.once(
-        ref: postFieldRef(category, field),
+        ref: postFieldRef(category, fieldToGet),
         initialData: initialData,
         builder: (v, _) {
           return builder(v);

@@ -180,12 +180,9 @@ class Post {
       throw 'post-create/sign-in-required You must login firt to create a post';
     }
     final order = DateTime.now().millisecondsSinceEpoch * -1;
-    // if (category.isEmpty) {
-    //   throw 'post-create/category-is-required Category is required';
-    // }
 
     final youtube = await getYoutubeSnippet(youtubeUrl);
-    DatabaseReference documentReference = PostService.instance.postsRef.push();
+    DatabaseReference documentReference = PostService.instance.postsRef.child(category).push();
 
     final data = {
       Post.field.category: category,
