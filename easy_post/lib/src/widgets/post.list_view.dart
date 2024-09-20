@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -62,39 +62,41 @@ class PostListView extends StatelessWidget {
   final Widget Function()? emptyBuilder;
   @override
   Widget build(BuildContext context) {
-    Query query = PostService.instance.col;
-    if (category != null) {
-      query = query.where('category', isEqualTo: category);
-    }
-    if (uid != null) {
-      query = query.where('uid', isEqualTo: uid);
-    }
-    query = query.orderBy('createdAt', descending: true);
+    Query query = PostService.instance.postsRef;
 
-    return FirestoreQueryBuilder(
+    if (category != null) {
+      query = query.orderByChild('category').equalTo(category);
+    }
+
+    // TODO : Ask Sir Song how to handle this one
+    // if (category != null) {
+    //   query = query.where('category', isEqualTo: category);
+    // }
+    // if (uid != null) {
+    //   query = query.where('uid', isEqualTo: uid);
+    // }
+    // query = query.orderBy('createdAt', descending: true);
+
+    return FirebaseDatabaseQueryBuilder(
       query: query,
       pageSize: pageSize,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
-          return loadingBuilder?.call() ??
-              const Center(child: CircularProgressIndicator.adaptive());
+          return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
         }
 
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');
-          return errorBuilder?.call(snapshot.error.toString()) ??
-              Text('Something went wrong! ${snapshot.error}');
+          return errorBuilder?.call(snapshot.error.toString()) ?? Text('Something went wrong! ${snapshot.error}');
         }
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
-          return emptyBuilder?.call() ??
-              Center(child: Text('post list is empty'.t));
+          return emptyBuilder?.call() ?? Center(child: Text('post list is empty'.t));
         }
 
         return ListView.separated(
           itemCount: snapshot.docs.length,
-          separatorBuilder: (context, index) =>
-              separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
+          separatorBuilder: (context, index) => separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
           scrollDirection: scrollDirection,
           reverse: reverse,
           controller: controller,
