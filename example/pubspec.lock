@@ -281,7 +281,7 @@ packages:
       path: "../easy_messaging"
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   easy_post_v2:
     dependency: "direct main"
     description:
@@ -316,7 +316,7 @@ packages:
       path: "../easy_storage"
       relative: true
     source: path
-    version: "0.0.18"
+    version: "0.0.19"
   easy_task:
     dependency: "direct main"
     description:
