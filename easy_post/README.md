@@ -12,11 +12,15 @@ A post management library for Firebase and Fltuter.
   - This is for reducing the cost.
   - The Firestore will hold data for keeping original data and filtering purpose.
 
-
-
 # Database Structure
 
 - `youtubeUrl` has the youtube url. If there is no youtubeUrl, it must be an empty string. The `youtubeUrl` field must always exsit. To get posts that has youtube url, filter the post document using the firestore's `graterThan` filter.
+
+- 'posts'
+  - category
+  - id
+  - uid
+  - ........ so on
 
 # Custom Data
 
@@ -210,8 +214,10 @@ PostService.instance.init(
 
 `PostDoc` is a widget that displays a post document.
 
-- `post`: The post document to display. It will be also used for initialData for the StreamBuilder of FutureBuilder to reduce the flickering.
-- `sync`: If true, it will use `StreamBuilder` to fetch the post and rebuild the widget whenever the post is updated. If false, it will use `FutureBuilder` to fetch the post only once. The default is false.
+- `category`: The category of the post.
+- `id`: The id of the post.
+- `field`: This is optional. If you want to display a specific field of the post, you can specify it here.
+- `sync`: If true, the widget will be rebuilt whenever the post is updated. If false, the widget will be built only once. The default is false.
 
 Example:
 
