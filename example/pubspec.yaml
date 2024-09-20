@@ -1,7 +1,7 @@
 name: example
 description: "A new Flutter project."
 
-# publish_to: "none"
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -10,14 +10,12 @@ environment:
 
 dependencies:
   cached_network_image: ^3.3.1
-  cloud_firestore: 5.0.2
   cloud_functions: 5.0.2
   cupertino_icons: ^1.0.6
   dio: ^5.4.3+1
   easy_category: ^0.0.2
   easy_comment:
   easy_engine:
-  easy_firestore:
   easy_helpers:
   easy_like:
   easy_locale:
@@ -27,8 +25,6 @@ dependencies:
   easy_report:
   easy_setting_v2:
   easy_storage:
-  easy_task:
-  easy_user_group:
   easy_youtube:
   easychat:
   easyuser:
@@ -37,7 +33,6 @@ dependencies:
   # firebase_database: 11.0.2
   # firebase_messaging: 15.0.2
   # firebase_storage: 12.1.0
-  firebase_ui_firestore: ^1.6.4
   firebase_vertexai: ^0.2.2+1
   flutter:
     sdk: flutter
@@ -65,8 +60,6 @@ dependency_overrides:
     path: ../easy_comment
   easy_engine:
     path: ../easy_engine
-  easy_firestore:
-    path: ../easy_firestore
   easy_helpers:
     path: ../easy_helpers
   easy_like:
@@ -85,10 +78,6 @@ dependency_overrides:
     path: ../easy_setting
   easy_storage:
     path: ../easy_storage
-  easy_task:
-    path: ../easy_task
-  easy_user_group:
-    path: ../easy_user_group
   easy_youtube:
     path: ../easy_youtube
   easychat:

@@ -8,9 +8,10 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  easy_firestore: ^0.0.4
   flutter:
     sdk: flutter
+  easy_realtime_database: ^0.0.7
+  firebase_database: ^11.1.3
 
 dev_dependencies:
   flutter_test:
