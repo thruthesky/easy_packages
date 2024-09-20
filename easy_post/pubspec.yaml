@@ -17,7 +17,7 @@ dependencies:
   easy_realtime_database: ^0.0.7
   easy_storage: ^0.0.14
   easy_youtube: ^0.0.3
-  # easyuser: ^0.0.26
+  easyuser: ^0.0.26
   firebase_auth: ^5.1.1
   firebase_database: ^11.1.3
   firebase_ui_database: ^1.4.4
@@ -31,10 +31,10 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
 
-# TODO: during development only, will delete before push
-dependency_overrides:
-  easyuser:
-    path: ../easyuser
+# # TODO: during development only, will delete before push
+# dependency_overrides:
+#   easyuser:
+#     path: ../easyuser
 
 repository: https://github.com/thruthesky/easy_packages/tree/main/easy_post
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
