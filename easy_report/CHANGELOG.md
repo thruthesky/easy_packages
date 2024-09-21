@@ -1,3 +1,6 @@
+## 0.0.8
+* Update. user package
+
 ## 0.0.7
 * Refactor. Move from Firestore to Realtime database.
 

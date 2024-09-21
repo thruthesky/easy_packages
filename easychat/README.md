@@ -43,6 +43,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [How to get server timestamp](#how-to-get-server-timestamp)
 - [Developer's Tip](#developers-tip)
   - [Create a random user](#create-a-random-user)
+- [Example of creating a chat app](#example-of-creating-a-chat-app)
 - [Tests](#tests)
   - [Invitation not sent protocol test](#invitation-not-sent-protocol-test)
 - [Known Issues](#known-issues)
@@ -486,6 +487,8 @@ print('ts: ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
 ```
 
 
+
+
 # Developer's Tip
 
 
@@ -496,6 +499,11 @@ Simply call `randomLogin()` function which calls `loginOrRegister()` wiht random
 ```dart
 randomLogin()
 ```
+
+
+# Example of creating a chat app
+
+- Refer to the EXAMPLE.md
 
 
 # Tests

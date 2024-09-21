@@ -20,6 +20,7 @@ class UserBuildAvatar extends StatelessWidget {
     this.size = 48,
     this.radius = 20,
     this.border,
+    this.onTap,
   });
 
   final String? photoUrl;
@@ -27,29 +28,43 @@ class UserBuildAvatar extends StatelessWidget {
   final double size;
   final double radius;
   final Border? border;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return photoUrl == null
-        ? Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(radius),
-              border: border,
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            child: Center(
-              child: Text(
-                initials[0].toUpperCase(),
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
-                      fontSize: size / 1.5,
-                    ),
-              ),
-            ),
-          )
+    final child = photoUrl == null
+        ? initials.isEmpty
+            // No photo url and no initials
+            ? UserCircleAvatar(
+                size: size,
+                radius: radius,
+                border: border,
+                child: Icon(
+                  Icons.person,
+                  size: size / 1.5,
+                ),
+              )
+            :
+            // No photo url but initials
+            Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(radius),
+                  border: border,
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                ),
+                child: Center(
+                  child: Text(
+                    initials[0].toUpperCase(),
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontWeight: FontWeight.bold,
+                          fontSize: size / 1.5,
+                        ),
+                  ),
+                ),
+              )
         : UserCircleAvatar(
             size: size,
             radius: radius,
@@ -59,5 +74,14 @@ class UserBuildAvatar extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           );
+
+    if (onTap == null) {
+      return child;
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: child,
+    );
   }
 }

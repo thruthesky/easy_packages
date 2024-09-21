@@ -42,75 +42,54 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = UserBuildAvatar(
+    return UserBuildAvatar(
       photoUrl: photoUrl,
       initials: initials,
       size: size,
       radius: radius,
       border: border,
-    );
-    if (onTap == null) {
-      return child;
-    }
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: child,
     );
   }
 
   /// Display user's avatar from the user's uid.
   ///
+  /// [uid] is the user's uid. It can be a null value. If it is null, an
+  /// anonymous avatar will be displayed.
+  ///
   /// [sync] is supported to support realtime update when the user's data is
   /// updated.
   static Widget fromUid({
     Key? key,
-    required String uid,
+    required String? uid,
     double size = 48,
     double radius = 20,
     Border? border,
     bool sync = false,
     final Function()? onTap,
   }) {
-    return UserField<String?>(
-        uid: uid,
-        field: User.field.photoUrl,
-        sync: sync,
-        builder: (url) {
-          if (url == null) {
-            return buildAnonymouseAvatar(size: size, radius: radius, border: border);
-          }
-          final child = UserBuildAvatar(
-            photoUrl: url,
-            initials: uid,
-            size: size,
-            radius: radius,
-            border: border,
-          );
-          if (onTap == null) {
-            return child;
-          }
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onTap,
-            child: child,
-          );
-        });
-  }
-
-  static buildAnonymouseAvatar({
-    required double size,
-    double radius = 20,
-    Border? border,
-  }) {
-    return UserCircleAvatar(
-      size: size,
-      radius: radius,
-      border: border,
-      child: Icon(
-        Icons.person,
-        size: size / 1.5,
-      ),
-    );
+    return uid == null
+        ? const UserBuildAvatar(photoUrl: null, initials: 'X')
+        : UserField<String?>(
+            uid: uid,
+            field: User.field.photoUrl,
+            sync: sync,
+            builder: (url) {
+              final child = UserBuildAvatar(
+                photoUrl: url,
+                initials: uid,
+                size: size,
+                radius: radius,
+                border: border,
+              );
+              if (onTap == null) {
+                return child;
+              }
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onTap,
+                child: child,
+              );
+            });
   }
 }

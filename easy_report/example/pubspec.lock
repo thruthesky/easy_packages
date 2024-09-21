@@ -175,7 +175,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.7"
+    version: "0.0.8"
   easy_storage:
     dependency: transitive
     description:
@@ -190,7 +190,7 @@ packages:
       path: "../../easyuser"
       relative: true
     source: path
-    version: "0.0.26"
+    version: "0.0.33"
   fake_async:
     dependency: transitive
     description:

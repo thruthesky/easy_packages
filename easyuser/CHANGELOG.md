@@ -1,3 +1,10 @@
+## 0.0.34
+* Update. The uid can be null in `UserAvatar.fromUid(uid: ...)`.
+* Update. Remove `buildAnonymouos` from `UserAvatar`.
+
+## 0.0.33
+* Fix. User model is nullable on the callback of `UserModel`.
+
 ## 0.0.32
 * Fix. User model is nullable on the callback of `UserModel`.
 
