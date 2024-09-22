@@ -23,10 +23,12 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Ordering](#ordering)
   - [Counting the invitation](#counting-the-invitation)
   - [Number of New Messages Counting](#number-of-new-messages-counting)
+  - [Chat join](#chat-join)
+  - [Displaying chat messages and sending a message](#displaying-chat-messages-and-sending-a-message)
 - [Database Strucutre](#database-strucutre)
   - [Chat room](#chat-room)
   - [Chat message](#chat-message)
-  - [Chat join](#chat-join)
+  - [Chat join](#chat-join-1)
   - [Chat setting](#chat-setting)
     - [Saving unread number of messages.](#saving-unread-number-of-messages)
     - [Changing the chat room name](#changing-the-chat-room-name)
@@ -39,6 +41,8 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Displaying chat room information](#displaying-chat-room-information)
   - [ChatInvitationCounter](#chatinvitationcounter)
   - [ChatInvitationListView](#chatinvitationlistview)
+  - [ChatRoomListView](#chatroomlistview)
+  - [Displaying open chat room list](#displaying-open-chat-room-list)
 - [Coding Guideline](#coding-guideline)
   - [How to get server timestamp](#how-to-get-server-timestamp)
 - [Developer's Tip](#developers-tip)
@@ -128,47 +132,54 @@ For your information on `easychat` history:
 
 
 ```json
-// easychat package security rules.
-"chat": {
-  "-info": {
-    "timestamp": {
-      ".read": true,
-      ".write": true,
-    }
-  },
-  "invited-users": {
-    ".read": true,
-    ".write": true
-  },
-  "rejected-users": {
-    ".read": true,
-    ".write": true
-  },
-  "joins": {
-    ".read": true,
-    ".write": true
-  },
-  "messages": {
-    "$room_id": {
-      ".read": true,
-      ".write": true,
-      ".indexOn": ["protocol"]
-    }
-  },
-  "rooms": {
-    ".read": true,
-    ".write": true
-  },
-  "settings": {
-    ".read": true,
-    ".write": true
-  }
-}
+    // easychat package security rules: 2024. 09. 21.
+    "chat": {
+      "-info": {
+        "timestamp": {
+          ".read": true,
+          ".write": true,
+        }
+      },
+      "invited-users": {
+        ".read": true,
+        ".write": true
+      },
+      "rejected-users": {
+        ".read": true,
+        ".write": true
+      },
+      "joins": {
+        ".read": true,
+        ".write": true,
+        "$uid": {
+          "$room_id": {
+            ".indexOn": ["order"]
+          }
+        }
+      },
+      "messages": {
+        "$room_id": {
+          ".read": true,
+          ".write": true,
+          ".indexOn": ["protocol"]
+        }
+      },
+      "rooms": {
+        ".read": true,
+        ".write": true
+      },
+      "settings": {
+        ".read": true,
+        ".write": true
+      }
+    },
 ```
 
 
 
 ### Storage Rules
+
+
 
 ### Firestore Rules
 
@@ -330,6 +341,144 @@ The new message is maintained in:
 Therefore, when there is new message, there fields will increment.
 Moreover, when user reads the new message, it will become `null`.
 
+
+## Chat join
+
+- `ChatRoomScreen` will let user join automatically when the user enters the chat room. In case the app does not use `ChatRoomScreen`, the app must call `ChatService.instance.join` to join the chat room.
+
+```dart
+UserService.instance.changes.listen((user) async {
+  // if not logged in, return.
+  if (user == null) return;
+  // Check if the user has already joined the chat room.
+  final snapshot = await room.ref.child('users').child(user.uid).get();
+  // If the user has already joined the chat room, return.
+  if (snapshot.exists) return;
+  // Or join the chat room.
+  ChatService.instance.join(room);
+});
+roomUserSubscription?.cancel();
+// Listen the chat room user list and update if neccessary
+roomUserSubscription = room.ref.child("users").onValue.listen((e) {
+  room.users = Map<String, bool>.from(e.snapshot.value as Map);
+});
+```
+
+With the code above, you can let the user join the room when the user opens the chat room screen or chat message list.
+
+
+- There is other way to let the user join the room if the user has not joined, yet.
+  - The `ChatRoomInputBox` widget has `beforeSend` parameter. It is a function that is called before the message is sent.
+    - This callback function can be used to
+      - let the user join the chat room,
+      - send a message to sign-in before sending message,
+      - and more.
+
+```dart
+ChatRoomInputBox(
+  room: room,
+  beforeSend: (input) async => await ChatService.instance.join(room),
+);
+```
+
+With the code above, you can let the user join when the user send the first message.
+
+
+
+## Displaying chat messages and sending a message
+
+- There might be a case that the app needs to display chat messages of a chat room with an chat input box. But without the default chat room UI like `ChatRoomScreen`. In this case, the app can use `ChatMessagesListView` and `ChatRoomInputBox` widgets.
+
+```dart
+class ChatScreen extends StatefulWidget {
+  static const String routeName = '/ChatScreen';
+  const ChatScreen({super.key});
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  /// Chat room
+  /// The chat room data can be loaded from backend or can be given from
+  /// JSON object like below for speed performance or for testing.
+  ChatRoom room = ChatRoom.fromJson(
+    {
+      "name": "All",
+      "description": "Default Chat Room",
+      "iconUrl": null,
+      "open": true,
+      "single": false,
+      "group": true,
+      "users": {"23TE0SWd8Mejv0Icv6vhSDRHe183": true},
+      "masterUsers": ["23TE0SWd8Mejv0Icv6vhSDRHe183"],
+      "blockedUsers": {},
+      "createdAt": 1726932318769,
+      "updatedAt": 1726932318769,
+      "lastMessageAt": 1726932319006,
+      "allMembersCanInvite": false,
+      "gender": "",
+      "domain": ""
+    },
+    '-O7KAzacoSjtaPkCVvCH',
+  );
+
+  /// Room user subscription
+  StreamSubscription? roomUserSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// Update user list in realtime.
+    roomUserSubscription = room.ref.child("users").onValue.listen((e) {
+      room.users = Map<String, bool>.from(e.snapshot.value as Map);
+    });
+  }
+
+  @override
+  void dispose() {
+    roomUserSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: ChatMessagesListView(
+            padding: const EdgeInsets.all(0),
+            room: room,
+          ),
+        ),
+        SafeArea(
+          top: false,
+          child: Row(
+            children: [
+              spaceSm,
+              Expanded(
+                child: AuthStateChanges(builder: (user) {
+                  return user == null
+                      ? const FakeChatRoomInputBox()
+                      : ChatRoomInputBox(
+                          room: room,
+                          beforeSend: (input) async => await ChatService.instance.join(room),
+                        );
+                }),
+              ),
+              spaceSm,
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+
+
 # Database Strucutre
 
 
@@ -474,6 +623,53 @@ ChatRoomDoc(
 ChatInvitationListView(),
 ```
 
+
+## ChatRoomListView
+
+- Displays the login user's chat rooms.
+
+```dart
+ChatRoomListView(
+  separatorBuilder: (p0, p1) => const SizedBox(
+    height: 8,
+  ),
+  invitationTextPadding: const EdgeInsets.fromLTRB(0, 8, 8, 16),
+  invitationSeparatorBuilder: (p0, p1) => const SizedBox(
+    height: 8,
+  ),
+  invitationBottomWidget: const Padding(
+    padding: EdgeInsets.only(top: xs),
+    child: Divider(),
+  ),
+  itemBuilder: (context, chatRoom, index) {
+    return ChatRoomListTile(
+      join: chatRoom,
+    );
+  },
+),
+```
+
+## Displaying open chat room list
+
+- You can initialize the open chat room list with `ChatOpenRoomList` like below.
+
+```dart
+ChatService.instance.init();
+```
+
+- Or, you can directly display the open chat room list with `ChatOpenRoomListScreen` like below.
+
+```dart
+showGeneralDialog(
+  context: globalContext,
+  pageBuilder: (_, __, ___) {
+    return ChatOpenRoomListScreen(
+      padding: const EdgeInsets.all(8),
+      separatorBuilder: (p0, p1) => const SizedBox(height: 8),
+    );
+  },
+);
+```
 
 
 # Coding Guideline

@@ -57,7 +57,7 @@ class ThumbnailImage extends StatelessWidget {
         );
       },
       errorListener: (value) => debugPrint(
-        'Thumbnail not found: $thumbnaileUrl, Displaying original image: $url',
+        'Thumbnail not found -> Displaying original image.',
       ),
     );
   }

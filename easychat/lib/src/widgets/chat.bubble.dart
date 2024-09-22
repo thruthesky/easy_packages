@@ -135,9 +135,8 @@ class ChatBubble extends StatelessWidget {
             if (message.uid != myUid) ...[
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
-                child: UserAvatar(
-                    photoUrl: photoUrl,
-                    initials: message.uid,
+                child: UserAvatar.fromUid(
+                    uid: message.uid,
                     onTap: () async {
                       final user = await User.get(message.uid);
                       if (context.mounted) {

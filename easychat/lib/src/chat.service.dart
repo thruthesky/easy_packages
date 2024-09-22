@@ -457,6 +457,12 @@ class ChatService {
   /// call-by-reference. So, the parent can use the updated room.users which
   /// includes the current user's uid.
   Future<void> join(ChatRoom room, {String? protocol}) async {
+    // If the user is already joined, return.
+    if (room.joined) {
+      dog('--> already joined');
+      return;
+    }
+
     // int timestamp = await getServerTimestamp();
     // final order = timestamp * -1; // int.parse("-1$timestamp");
     final joinValues = {

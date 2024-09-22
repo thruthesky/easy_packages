@@ -29,6 +29,7 @@ class ChatMessagesListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return FirebaseDatabaseQueryBuilder(
       query: ref.orderByChild(ChatMessage.field.order),
+      pageSize: 20,
       builder: (context, snapshot, _) {
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');

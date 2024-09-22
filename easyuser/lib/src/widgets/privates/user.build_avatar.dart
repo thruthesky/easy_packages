@@ -12,6 +12,11 @@ import 'package:easy_storage/easy_storage.dart';
 /// [initials] is a String of user's display name or uid. Or even, you can pass
 /// any stirng. The first letter of the [initials] will be displayed if there is
 /// no photo url.
+///
+/// if [photoUrl] and [initials] are both null, an anonymous avatar will be
+/// displayed.
+///
+/// [size] is the size of the avatar.
 class UserBuildAvatar extends StatelessWidget {
   const UserBuildAvatar({
     super.key,
@@ -24,7 +29,7 @@ class UserBuildAvatar extends StatelessWidget {
   });
 
   final String? photoUrl;
-  final String initials;
+  final String? initials;
   final double size;
   final double radius;
   final Border? border;
@@ -33,7 +38,7 @@ class UserBuildAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = photoUrl == null
-        ? initials.isEmpty
+        ? initials == null || initials!.isEmpty
             // No photo url and no initials
             ? UserCircleAvatar(
                 size: size,
@@ -56,7 +61,7 @@ class UserBuildAvatar extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    initials[0].toUpperCase(),
+                    initials![0].toUpperCase(),
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimaryContainer,
                           fontWeight: FontWeight.bold,

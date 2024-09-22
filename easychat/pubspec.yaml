@@ -15,7 +15,7 @@ dependencies:
   easy_report: ^0.0.8
   easy_storage: ^0.0.13
   easy_url_preview: ^0.0.4
-  easyuser: ^0.0.33
+  easyuser: ^0.0.35
   firebase_auth: ^5.3.0
   firebase_core: ^3.5.0
   firebase_database: ^11.1.3

@@ -67,7 +67,11 @@ class User {
   ///
   DatabaseReference usersRef = UserService.instance.usersRef;
 
-  DatabaseReference metaRef = UserService.instance.metaRef;
+  /// Get the ref of the login user.
+  ///
+  /// This is for login user only!
+  /// This must be a getter, Or it will throw an exception of user not logged in.
+  DatabaseReference get metaRef => UserService.instance.metaRef;
 
   /// [doc] is the document reference of this user model.
   DatabaseReference get doc => usersRef.child(uid);
@@ -152,10 +156,10 @@ class User {
       displayName: json['displayName'] ?? '',
       name: json['name'] ?? '',
       gender: json['gender'],
-      createdAt: json['createdAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
-      updatedAt: json['updatedAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
+      createdAt: json['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
       lastLoginAt:
-          json['lastLoginAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['lastLoginAt']) : DateTime.now(),
+          json['lastLoginAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['lastLoginAt']) : DateTime.now(),
       birthYear: json['birthYear'],
       birthMonth: json['birthMonth'],
       birthDay: json['birthDay'],

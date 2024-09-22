@@ -1,3 +1,6 @@
+## 0.0.35
+* Fix. UserAvatar.
+
 ## 0.0.34
 * Update. The uid can be null in `UserAvatar.fromUid(uid: ...)`.
 * Update. Remove `buildAnonymouos` from `UserAvatar`.

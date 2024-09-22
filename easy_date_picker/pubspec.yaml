@@ -1,0 +1,19 @@
+name: date_picker_v2
+description: "A simple and easy to use date-picker widget"
+version: 0.0.4
+homepage: https://github.com/thruthesky/date_picker
+
+environment:
+  sdk: ">=3.4.3 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:

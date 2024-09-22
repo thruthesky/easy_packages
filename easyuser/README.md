@@ -71,6 +71,12 @@ This wdiget passes the User model object on the builder method. Meaning, this wi
 - `cache`: is the cache option. If it's true, then it will use cached data only. If there is no cached data, then it will get data from the server.
 
 
+## UserAvtar
+
+```dart
+UserBuildAvatar(photoUrl: null, initials: null)
+```
+
 
 
 

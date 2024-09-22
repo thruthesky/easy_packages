@@ -1,6 +1,5 @@
 import 'package:easyuser/easyuser.dart';
 import 'package:easyuser/src/widgets/privates/user.build_avatar.dart';
-import 'package:easyuser/src/widgets/privates/user.circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 /// UserAvatar
@@ -34,7 +33,7 @@ class UserAvatar extends StatelessWidget {
     this.onTap,
   });
   final String? photoUrl;
-  final String initials;
+  final String? initials;
   final double size;
   final double radius;
   final Border? border;
@@ -58,7 +57,7 @@ class UserAvatar extends StatelessWidget {
   /// anonymous avatar will be displayed.
   ///
   /// [sync] is supported to support realtime update when the user's data is
-  /// updated.
+  /// updated. If the [uid] is null, sync will be ignored.
   static Widget fromUid({
     Key? key,
     required String? uid,
@@ -69,27 +68,13 @@ class UserAvatar extends StatelessWidget {
     final Function()? onTap,
   }) {
     return uid == null
-        ? const UserBuildAvatar(photoUrl: null, initials: 'X')
+        ? UserBuildAvatar(photoUrl: null, initials: null, onTap: onTap, size: size, radius: radius, border: border)
         : UserField<String?>(
             uid: uid,
             field: User.field.photoUrl,
             sync: sync,
-            builder: (url) {
-              final child = UserBuildAvatar(
-                photoUrl: url,
-                initials: uid,
-                size: size,
-                radius: radius,
-                border: border,
-              );
-              if (onTap == null) {
-                return child;
-              }
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: onTap,
-                child: child,
-              );
-            });
+            builder: (url) =>
+                UserBuildAvatar(photoUrl: url, initials: uid, onTap: onTap, size: size, radius: radius, border: border),
+          );
   }
 }
