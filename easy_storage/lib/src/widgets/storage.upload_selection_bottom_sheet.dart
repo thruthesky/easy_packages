@@ -25,14 +25,10 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
   final double? spacing;
 
   /// if padding and uploadBottmSheetPadding is not set return `EdgeInsets.zero`
-  EdgeInsetsGeometry get getPadding =>
-      padding ??
-      StorageService.instance.uploadBottomSheetPadding ??
-      EdgeInsets.zero;
+  EdgeInsetsGeometry get getPadding => padding ?? StorageService.instance.uploadBottomSheetPadding ?? EdgeInsets.zero;
 
   /// if spacing and uploadBottomSheetSpacing is not set return `null`
-  double? get getSpacing =>
-      spacing ?? StorageService.instance.uploadBottomSheetSpacing;
+  double? get getSpacing => spacing ?? StorageService.instance.uploadBottomSheetSpacing;
 
   @override
   Widget build(BuildContext context) {
@@ -43,30 +39,22 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
           shrinkWrap: true,
           children: <Widget>[
             const SizedBox(height: 8),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: padding != null ? 0 : 16),
-              child: SizedBox(
-                height: 48,
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Text(
-                        'Upload from'.t,
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
+            Row(
+              children: [
+                const SizedBox(width: 48),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Upload from'.t,
+                      style: Theme.of(context).textTheme.labelLarge,
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.cancel),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.cancel),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             if (photoGallery == true) ...[
@@ -137,8 +125,7 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
             ],
             SizedBox(height: getSpacing != null && getSpacing! >= 8 ? 8 : 16),
             TextButton(
-              child: Text('Close'.t,
-                  style: TextStyle(color: Theme.of(context).primaryColor)),
+              child: Text('Close'.t, style: TextStyle(color: Theme.of(context).primaryColor)),
               onPressed: () {
                 Navigator.pop(context);
               },
