@@ -20,6 +20,8 @@ class UserPublicProfileScreen extends StatelessWidget {
         leading: const BackButton(
           color: Colors.white,
         ),
+        shape: const LinearBorder(),
+        elevation: 0,
         backgroundColor: Colors.transparent,
         actions: [
           if (user.uid == myUid)

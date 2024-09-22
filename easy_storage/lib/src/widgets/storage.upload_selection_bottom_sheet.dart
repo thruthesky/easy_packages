@@ -43,11 +43,10 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
               children: [
                 const SizedBox(width: 48),
                 Expanded(
-                  child: Center(
-                    child: Text(
-                      'Upload from'.t,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
+                  child: Text(
+                    'Upload from'.t,
+                    style: Theme.of(context).textTheme.labelLarge,
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 IconButton(

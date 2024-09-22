@@ -185,7 +185,11 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                         fromGallery: false,
                         fromFile: false,
                         icon: Row(
-                          children: [const Icon(Icons.camera_alt), Text('Upload State Photo'.t)],
+                          children: [
+                            const Icon(Icons.camera_alt),
+                            const SizedBox(width: 8),
+                            Text('Upload State Photo'.t),
+                          ],
                         ),
                         onUpload: (url) async {
                           /// TODO: delete existing photo.
