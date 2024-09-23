@@ -1,4 +1,3 @@
-import 'package:easy_like/easy_like.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 

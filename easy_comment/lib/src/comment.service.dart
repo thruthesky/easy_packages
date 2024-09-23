@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 
 class CommentService {
   static CommentService? _instance;

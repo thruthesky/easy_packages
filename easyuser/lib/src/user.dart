@@ -133,20 +133,6 @@ class User {
     return User.fromJson(data, snapshot.key!);
   }
 
-  // TODO REVIEW
-  // TODO cleanup if we will no longer use Firestore
-  // factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
-  //   if (snapshot.exists == false) {
-  //     throw Exception('User.fromSnapshot: Document does not exist.');
-  //   }
-  //   final Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
-  //   if (data == null) {
-  //     throw Exception('User.fromSnapshot: Document data is null.');
-  //   }
-
-  //   return User.fromJson(data, snapshot.id);
-  // }
-
   /// Serialize the user data to the json format.
   ///
   factory User.fromJson(Map<String, dynamic> json, String uid) {
@@ -176,9 +162,9 @@ class User {
     data['uid'] = uid;
     data['admin'] = admin;
     data['displayName'] = displayName;
-    data['caseInsensitiveDisplayName'] = caseInsensitiveDisplayName;
     data['name'] = name;
     data['caseInsensitiveName'] = caseInsensitiveName;
+    data['caseInsensitiveDisplayName'] = caseInsensitiveDisplayName;
     data['gender'] = gender;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
@@ -221,6 +207,7 @@ class User {
     debugPrint("userFieldRef(uid, field).path: ${userFieldRef(uid, field).path}");
     // TODO using get is getting all the fields. Need to review.
     final snapshot = await userFieldRef(uid, field).once();
+    // final snapshot = await userFieldRef(uid, field).get();
 
     debugPrint("Snapshot Value: ${snapshot.snapshot.value}");
 
@@ -258,8 +245,6 @@ class User {
 
     DataSnapshot snapshot;
     final ref = UserService.instance.usersRef.child(uid);
-
-    ///
     try {
       snapshot = await ref.get();
     } catch (e) {
@@ -268,8 +253,6 @@ class User {
         e.toString(),
       );
     }
-
-    ///
     if (snapshot.exists) {
       user = User.fromDatabaseSnapshot(snapshot);
     }
@@ -329,8 +312,8 @@ class User {
   ///
   /// Why: Using the update method wont work in deletion in RTDB.
   ///
-  /// Reason: If we set "null" in the update, it won't do anything
-  ///         since de check it like (fieldName != null).
+  /// Reason: If we set "null" in the User.update method, it won't do anything
+  ///         since we check it like (fieldName != null).
   Future<void> deleteFields(List<String> fieldNames) async {
     final data = <String, dynamic>{};
     for (final fieldName in fieldNames) {
