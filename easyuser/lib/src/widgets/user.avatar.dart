@@ -68,13 +68,26 @@ class UserAvatar extends StatelessWidget {
     final Function()? onTap,
   }) {
     return uid == null
-        ? UserBuildAvatar(photoUrl: null, initials: null, onTap: onTap, size: size, radius: radius, border: border)
+        ? UserBuildAvatar(
+            photoUrl: null,
+            initials: null,
+            onTap: onTap,
+            size: size,
+            radius: radius,
+            border: border,
+          )
         : UserField<String?>(
             uid: uid,
             field: User.field.photoUrl,
             sync: sync,
-            builder: (url) =>
-                UserBuildAvatar(photoUrl: url, initials: uid, onTap: onTap, size: size, radius: radius, border: border),
+            builder: (url) => UserBuildAvatar(
+              photoUrl: url,
+              initials: uid,
+              onTap: onTap,
+              size: size,
+              radius: radius,
+              border: border,
+            ),
           );
   }
 }

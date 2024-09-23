@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_like/easy_like.dart';
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';

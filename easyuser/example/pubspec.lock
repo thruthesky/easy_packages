@@ -190,7 +190,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.33"
+    version: "0.0.35"
   fake_async:
     dependency: transitive
     description:
@@ -304,7 +304,7 @@ packages:
     source: hosted
     version: "2.18.1"
   firebase_database:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_database
       sha256: cb938384ee71e06eb403e98810ec0183f2b980234ff6b5c35eeb167393c466da
@@ -352,7 +352,7 @@ packages:
     source: hosted
     version: "3.10.1"
   firebase_ui_database:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_ui_database
       sha256: bbe6a6b03ecb89aed9ccd182c0258935e2d26440e3bfab1bb48e0bb404e91282

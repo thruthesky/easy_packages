@@ -7,27 +7,37 @@
 
 # Database Structure
 
-
 - `users`: is the root node of the database.
   - `users/<uid>`: is the user node.
     - `users/<uid>/name`: is the name of the user.
     - `users/<uid>/photoUrl`: is the photo url of the user.
     - `users/<uid>/role`: is the role of the user.
     - `users/<uid>/status`: is the status of the user.
-    - `users/<uid>/createdAt`: is the created date of the user.
-    - `users/<uid>/updatedAt`: is the updated date of the user.
-    - `users/<uid>/deletedAt`: is the deleted date of the user.
-    - `users/<uid>/deleted`: is the deleted status of the user.
+    - `users/<uid>/createdAt`: is the creation date of the user.
+    - `users/<uid>/updatedAt`: is the last update date of the user.
+    - `users/<uid>/deletedAt`: is the deletion date of the user.
+    - `users/<uid>/deleted`: is the delete status of the user.
     - `users/<uid>/password`: is the password of the user.
     - `users/<uid>/phone`: is the phone of the user.
     - `users/<uid>/address`: is the address of the user.
-    - `users/<uid>/gender`: is the
+    - `users/<uid>/gender`: is the gender of the user. "M" or "F".
+    - `users/<uid>/birthYear`: is the birth year of the user.
+    - `users/<uid>/birthMonth`: is the birth month of the user.
+    - `users/<uid>/birthDay`: is the birth day of the user.
 
 - `users-private`: is the root node of the database.
   - `users-private/<uid>`: is the user node.
     - `users-private/<uid>/email`: is the email of the user.
     - `users-private/<uid>/phoneNumber`: is the phone number of the user.
 
+- `user-meta`: is the other data that the user needs.
+  -`user-meta/<uid>`: is the user's node.
+    -`user-meta/<uid>/blocks`: is the list of blocked users
+      -`user-meta/<uid>/blocks/<blockedUid>`: is a blocked user node.
+
+- `user-phone-sign-in-numbers`: is the list for the phone numbers that users used to sign in.
+  - `user-phone-sign-in-numbers/<phoneNumber>`: is a phone number that a user used to sign in.
+    - `user-phone-sign-in-numbers/<phoneNumber>/lastSignedInAt`: is the milliseconds when the user used the phone number.
 
 
 

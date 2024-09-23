@@ -1,4 +1,3 @@
-import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +11,7 @@ class PostDetailCommentInputBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Text('TODO: implement PostDetailCommentInputBox');
     // TODO: Since we changed to DatabaseReference, the CommentListTreeView is still using Firestore.
     // return SafeArea(
     //   minimum: const EdgeInsets.only(bottom: 16),

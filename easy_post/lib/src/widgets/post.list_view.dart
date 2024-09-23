@@ -13,7 +13,6 @@ class PostListView extends StatelessWidget {
   const PostListView({
     super.key,
     this.category,
-    this.uid,
     this.pageSize = 20,
     this.loadingBuilder,
     this.errorBuilder,
@@ -37,7 +36,6 @@ class PostListView extends StatelessWidget {
     this.emptyBuilder,
   });
   final String? category;
-  final String? uid;
 
   final int pageSize;
   final Widget Function()? loadingBuilder;
@@ -62,12 +60,6 @@ class PostListView extends StatelessWidget {
   final Widget Function()? emptyBuilder;
   @override
   Widget build(BuildContext context) {
-    Query query = PostService.instance.postsRef;
-
-    if (category != null) {
-      query = query.orderByChild('category').equalTo(category);
-    }
-
     // TODO : Ask Sir Song how to handle this one
     // if (category != null) {
     //   query = query.where('category', isEqualTo: category);
@@ -76,6 +68,14 @@ class PostListView extends StatelessWidget {
     //   query = query.where('uid', isEqualTo: uid);
     // }
     // query = query.orderBy('createdAt', descending: true);
+    DatabaseReference reference = Post.col;
+    Query query = reference;
+
+    if (category != null) {
+      // reference = reference.child(category);
+    }
+
+    // query = reference.child(category).orderByChild(Post.field.order);
 
     return FirebaseDatabaseQueryBuilder(
       query: query,
@@ -92,6 +92,14 @@ class PostListView extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
           return emptyBuilder?.call() ?? Center(child: Text('post list is empty'.t));
+        }
+        print('docs ${snapshot.docs.length}, category: $category');
+        for (var element in snapshot.docs) {
+          print('doc: ${element.value}');
+        }
+        if (snapshot.docs.isEmpty == false) {
+          // return emptyBuilder?.call() ?? Center(child: Text('post list is empty'.t));
+          return emptyBuilder != null ? emptyBuilder!.call() : Center(child: Text('post list is empty'.t));
         }
 
         return ListView.separated(

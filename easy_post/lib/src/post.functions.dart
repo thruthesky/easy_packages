@@ -2,11 +2,17 @@ import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_youtube/easy_youtube.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-DatabaseReference postRef(String id) => PostService.instance.postsRef.child(id);
+/// The document reference of current post
+DatabaseReference categoryRef(String category) => Post.col.child(category);
+DatabaseReference postRef(String category, String id) => categoryRef(category).child(id);
 
-DatabaseReference postFieldRef(String category, String field) => postRef(category).child(field);
+DatabaseReference postFieldRef(
+  String category,
+  String id,
+  String field,
+) =>
+    postRef(category, id).child(field);
 
-///
 Future<Map<String, dynamic>?> getYoutubeSnippet(String? youtubeUrl) async {
   if (youtubeUrl == null || youtubeUrl.isEmpty) return null;
   final youtube = Youtube(url: youtubeUrl);

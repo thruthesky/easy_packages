@@ -71,8 +71,8 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
         children: [
           MyDoc(
             builder: (user) => UserAvatar(
-              photoUrl: user!.photoUrl,
-              initials: user.displayName.or(user.name.or(user.uid)),
+              photoUrl: user?.photoUrl,
+              initials: (user?.displayName).or((user?.name).or(user?.uid ?? "")),
               size: widget.size,
               radius: widget.radius,
             ),

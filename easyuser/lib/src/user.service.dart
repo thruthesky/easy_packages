@@ -31,9 +31,9 @@ class UserService {
 
   DatabaseReference get usersRef => database.ref().child('users');
 
-  DatabaseReference get metaRef => usersRef.child(myUid ?? my.uid).child('user-meta');
+  DatabaseReference get metaRef => database.ref().child('user-meta');
 
-  DatabaseReference get blockDoc => metaRef.child('blocks');
+  DatabaseReference get blockDoc => metaRef.child(myUid!).child('blocks');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -125,12 +125,9 @@ class UserService {
 
   listenDocumentChanges() {
     firebaseAuthSubscription?.cancel();
-    firebaseAuthSubscription =
-        // .distinct((p, n) => p?.user?.uid == n?.user?.uid)
-        fa.FirebaseAuth.instance.authStateChanges().listen((faUser) async {
+    // .distinct((p, n) => p?.user?.uid == n?.user?.uid)
+    firebaseAuthSubscription = fa.FirebaseAuth.instance.authStateChanges().listen((faUser) async {
       /// User state changed
-      ///
-      ///
 
       /// User signed out
       if (faUser == null) {
