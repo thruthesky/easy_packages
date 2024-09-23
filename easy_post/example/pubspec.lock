@@ -320,7 +320,7 @@ packages:
     source: hosted
     version: "0.9.3+2"
   firebase_auth:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_auth
       sha256: "16b0b70e837539b27d4cec059b5169eaf116af9deca896b923e9f84d83af9cc6"
@@ -344,7 +344,7 @@ packages:
     source: hosted
     version: "5.13.1"
   firebase_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core
       sha256: c7de9354eb2cd8bfe8059e1112174c9a58beda7051807207306bc48283277cfb
@@ -368,7 +368,7 @@ packages:
     source: hosted
     version: "2.18.1"
   firebase_database:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_database
       sha256: cb938384ee71e06eb403e98810ec0183f2b980234ff6b5c35eeb167393c466da
@@ -392,7 +392,7 @@ packages:
     source: hosted
     version: "0.2.6+1"
   firebase_storage:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_storage
       sha256: "81a111623da3af66c90f8aae2dabc35d8fc78a497c14c66b6ac89be3b6dda264"
