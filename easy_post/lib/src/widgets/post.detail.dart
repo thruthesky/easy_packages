@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/post.detail.youtube_meta.dart';
@@ -27,16 +29,17 @@ class _PostDetailState extends State<PostDetail> {
   Post get post => widget.post;
   @override
   Widget build(BuildContext context) {
+    log('post detail screen: line 33');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        UserField<String>(
+        UserField<String?>(
           field: User.field.displayName,
           uid: post.uid,
           builder: (displayName) {
             return Row(
               children: [
-                UserField<String>(
+                UserField<String?>(
                     field: User.field.photoUrl,
                     uid: post.uid,
                     builder: (photoUrl) {
@@ -52,7 +55,7 @@ class _PostDetailState extends State<PostDetail> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(displayName),
+                      Text(displayName ?? ''),
                       Text(post.createdAt.yMd),
                     ],
                   ),
@@ -86,14 +89,49 @@ class _PostDetailState extends State<PostDetail> {
                     ),
                   ),
                 } else ...{
-                  PostDetailPhotos(post: widget.post),
+                  PostField<List<Object?>?>(
+                    category: post.category,
+                    id: post.id,
+                    initialData: post.urls,
+                    field: Post.field.urls,
+                    sync: true,
+                    builder: (urls) {
+                      if (urls == null) return const SizedBox.shrink();
+                      final res = urls.map((v) => v as String).toList();
+                      return PostDetailPhotos(urls: res);
+                    },
+                  ),
                   if (post.hasYoutube && widget.youtubePlayer != null) widget.youtubePlayer!,
                   PostDetailYoutubeMeta(post: widget.post),
                   const SizedBox(
                     height: 16,
                   ),
-                  if (widget.post.title.isNotEmpty) Text(post.title),
-                  if (widget.post.content.isNotEmpty) Text(post.content),
+                  PostField<String?>(
+                    category: post.category,
+                    id: post.id,
+                    initialData: post.title,
+                    field: Post.field.title,
+                    sync: true,
+                    builder: (title) {
+                      return Visibility(
+                        visible: !title.isEmpty,
+                        child: Text(title!),
+                      );
+                    },
+                  ),
+                  PostField<String?>(
+                    category: post.category,
+                    id: post.id,
+                    initialData: post.content,
+                    field: Post.field.content,
+                    sync: true,
+                    builder: (content) {
+                      return Visibility(
+                        visible: !content.isEmpty,
+                        child: Text(content!),
+                      );
+                    },
+                  ),
                 },
               ],
             );

@@ -6,7 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
 ///
-/// `id` is the postid and it also the document id of the post
+/// `id` is the postid and it also the database id of the post
 ///
 /// `title` is the title of the post
 ///
@@ -54,11 +54,8 @@ class Post {
 
   static DatabaseReference col = PostService.instance.postsRef;
 
-  /// The document reference of current post
-  DatabaseReference doc(String id) => col.child(id);
-
-  /// The document reference of current post
-  DatabaseReference get ref => doc(id);
+  /// The database reference of current post
+  DatabaseReference get ref => postRef(category, id);
 
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
@@ -99,7 +96,7 @@ class Post {
     required this.order,
   });
 
-  factory Post.fromJson(Map<String, dynamic> json, String id) {
+  factory Post.fromJson(Map<dynamic, dynamic> json, String id) {
     return Post(
       id: id,
       category: json['category'],
@@ -107,14 +104,14 @@ class Post {
       subtitle: json['subtitle'] ?? '',
       content: json['content'] ?? '',
       uid: json['uid'],
-      createdAt: json['createdAt'] ?? DateTime.now(),
-      updateAt: json['updateAt'] ?? DateTime.now(),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt'] ?? 0),
+      updateAt: DateTime.fromMillisecondsSinceEpoch(json['updateAt'] ?? 0),
 
       /// youtubeUrl never be null. But just in case, it put empty string as default.
       youtubeUrl: json['youtubeUrl'] ?? '',
       urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
       commentCount: json['commentCount'] ?? 0,
-      data: json,
+      data: json is Map<String, dynamic> ? json : {},
       youtube: json['youtube'] ?? {},
       deleted: json['deleted'],
       likeCount: json['likeCount'] ?? 0,
@@ -149,21 +146,30 @@ class Post {
       throw Exception('Post.fromSnapshot: Post does not exist');
     }
 
-    final docSnapshot = snapshot as Map<String, dynamic>;
-    return Post.fromJson(docSnapshot, snapshot.child('id') as String);
+    final value = snapshot.value as Map<dynamic, dynamic>;
+    return Post.fromJson(value, snapshot.key!);
   }
 
 // get a post
-  static Future<Post> get(String? id) async {
+  static Future<Post> get(String category, String? id) async {
     if (id == null) {
       throw 'post-get/post-id-null Post id is null';
     }
-    final documentSnapshot = await postRef(id).get();
+    print('category: $category, id: $id');
+    final documentSnapshot = await postRef(category, id).get();
     if (documentSnapshot.exists == false) {
       throw 'post-get/post-not-found Post not found';
     }
 
     return Post.fromSnapshot(documentSnapshot);
+  }
+
+  static Future<T> getField<T>(String category, String id, String field) async {
+    final documentSnapshot = await postFieldRef(category, id, field).get();
+    if (documentSnapshot.exists == false) {
+      throw 'post-get/post-not-found Post not found';
+    }
+    return documentSnapshot as T;
   }
 
   // create a new post
@@ -229,7 +235,7 @@ class Post {
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
     };
 
-    await doc(id).update(
+    await ref.update(
       {
         ...data,
         if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
@@ -239,8 +245,8 @@ class Post {
     );
   }
 
-  /// delete post, this will not delete the document but instead mark the the
-  /// document as deleted
+  /// delete post, this will not delete the post but instead mark the post in
+  /// database as deleted
   ///
   /// TODO: display loader while deleting
   Future<void> delete() async {

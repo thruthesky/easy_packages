@@ -16,11 +16,19 @@ A post management library for Firebase and Fltuter.
 
 - `youtubeUrl` has the youtube url. If there is no youtubeUrl, it must be an empty string. The `youtubeUrl` field must always exsit. To get posts that has youtube url, filter the post document using the firestore's `graterThan` filter.
 
+From
+
 - 'posts'
   - category
   - id
   - uid
   - ........ so on
+    To
+- 'posts'
+  - category
+    - id
+    - uid
+    - ........ so on
 
 # Custom Data
 
@@ -210,13 +218,13 @@ PostService.instance.init(
 
 # Widgets
 
-## PostDoc
+## PostField
 
-`PostDoc` is a widget that displays a post document.
+`PostField` is a widget that gets the specific field of the post.
 
 - `category`: The category of the post.
 - `id`: The id of the post.
-- `field`: This is optional. If you want to display a specific field of the post, you can specify it here.
+- `field`: The field of the post that you want to get.
 - `sync`: If true, the widget will be rebuilt whenever the post is updated. If false, the widget will be built only once. The default is false.
 
 Example:
@@ -224,7 +232,7 @@ Example:
 ```dart
 @override
 Widget build(BuildContext context) {
-  return PostDoc(
+  return PostField(
       post: post,
       sync: true,
       builder: (post) {
@@ -396,10 +404,7 @@ In the example below, users can use `PushNotificationToggleIcon` to subscribe to
     );
 ```
 
-
-
 # Known Issues
-
 
 ## flutter_inappwebview_ios issue - Method does not override any mehtod from its superclass
 
@@ -415,9 +420,7 @@ dependency_overrides:
       ref: cbc214c7b2cf5fd7996ff2e9e25d203946b74bc3
 ```
 
-
 Error messages
-
 
 ```txt
 Swift Compiler Error (Xcode): Method does not override any method from its superclass

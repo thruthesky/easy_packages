@@ -3,12 +3,11 @@ import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/unit_test/post_test.helper.dart';
 
 const url = 'https://www.pexels.com/photo/person-in-spider-man-costume-13246954/';
+const category = 'temp';
 void createPost() async {
   testStart('Create Post Test');
-  final ref = await Post.create(category: 'temp', title: 'hellp', content: 'hellp', urls: [url]);
-  dog('$ref');
-  // TODO: TEST THE RESULT ref.path.split('/').last
-  final post = await Post.get(ref.path.split('/').last);
+  final ref = await Post.create(category: category, title: 'hellp', content: 'hellp', urls: [url]);
+  final post = await Post.get(category, ref.key);
   isTrue(post.title == 'hellp' && post.content == 'hellp', 'Created Successfully');
   testReport();
 }
@@ -17,7 +16,7 @@ void updatePost() async {
   testStart('Update Post Test');
 
   final ref = await Post.create(category: 'temp', title: 'Post title', content: 'this my post tile');
-  final post = await Post.get(ref.path.split('/').last);
+  final post = await Post.get(category, ref.key);
   isTrue(post.content == 'this my post tile' && post.title == 'Post title', 'Creating Post');
 
   dog('post ${post.id}');
@@ -51,7 +50,7 @@ void createYouyubePost() async {
     youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
   );
 
-  final post = await Post.get(ref.path.split('/').last);
+  final post = await Post.get('youtube', ref.key);
   isTrue(post.youtubeUrl == 'https://www.youtube.com/watch?v=nM0xDI5R50E', "Posting url");
 
   await isException(() async {
@@ -69,19 +68,20 @@ void createYouyubePost() async {
 }
 
 void deletePost() async {
+  const category = 'temp';
   testStart('Delete post');
   final ref = await Post.create(
-    category: 'temp',
+    category: category,
     title: 'deleting post',
     content: 'deleting post ',
     youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
   );
 
-  final post = await Post.get(ref.path.split('/').last);
+  final post = await Post.get(category, ref.key);
 
   await post.delete();
 
-  final deletedPost = await Post.get(ref.path.split('/').last);
+  final deletedPost = await Post.get(category, ref.key);
   isTrue(deletedPost.deleted == true, "Deleting post");
 
   await isException(() async {
