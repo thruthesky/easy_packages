@@ -190,7 +190,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.33"
+    version: "0.0.35"
   fake_async:
     dependency: transitive
     description:
