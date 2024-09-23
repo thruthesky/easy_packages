@@ -192,8 +192,10 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                           ],
                         ),
                         onUpload: (url) async {
-                          /// TODO: delete existing photo.
+                          final oldUrl = my.photoUrl;
+
                           await my.update(statePhotoUrl: url);
+                          await StorageService.instance.delete(oldUrl);
                         },
                       ),
                       const SizedBox(height: 48),
