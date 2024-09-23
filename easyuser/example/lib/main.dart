@@ -94,16 +94,26 @@ class _MyHomePageState extends State<MyHomePage> {
                               );
                             },
                           ),
+                          const UserUpdateAvatar(),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await UserService.instance.showBlockListScreen(context);
+                            },
+                            child: const Text("Show Block list"),
+                          ),
                         ],
                       );
               },
             ),
             ElevatedButton(
-              onPressed: () {
-                UserService.instance.showSearchDialog(
+              onPressed: () async {
+                final user = await UserService.instance.showSearchDialog(
                   context,
                   exactSearch: true,
                 );
+                if (user == null) return;
+                if (!context.mounted) return;
+                UserService.instance.showPublicProfileScreen(context, user: user);
               },
               child: const Text('User Search Dialog'),
             ),

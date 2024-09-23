@@ -33,7 +33,7 @@ class UserService {
 
   DatabaseReference get metaRef => database.ref().child('user-meta');
 
-  DatabaseReference get blockDoc => metaRef.child('blocks');
+  DatabaseReference get blockDoc => metaRef.child(myUid!).child('blocks');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();

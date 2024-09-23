@@ -87,7 +87,7 @@ class BlockListView extends StatelessWidget {
             return ListTile(
               leading: UserAvatar.fromUid(uid: uid),
               title: DisplayName(uid: uid),
-              subtitle: Text('Blocked at: ${(blocks[uid]['blockedAt'].toDate() as DateTime).short}'),
+              subtitle: Text('Blocked at: ${(DateTime.fromMillisecondsSinceEpoch(blocks[uid]['blockedAt'])).short}'),
               trailing: IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {

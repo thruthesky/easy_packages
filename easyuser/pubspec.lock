@@ -156,10 +156,9 @@ packages:
   easy_realtime_database:
     dependency: "direct main"
     description:
-      name: easy_realtime_database
-      sha256: "775e1bdd2306ad8689d823b8885169b39e7402dd89a8f96d7eabb1be19582315"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../easy_realtime_database"
+      relative: true
+    source: path
     version: "0.0.7"
   easy_report:
     dependency: "direct main"
@@ -803,5 +802,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.5.0 <4.0.0"
+  dart: ">=3.4.4 <4.0.0"
   flutter: ">=3.22.0"
