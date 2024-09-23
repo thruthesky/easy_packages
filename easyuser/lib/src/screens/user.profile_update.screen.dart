@@ -24,17 +24,16 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
   final displayNameController = TextEditingController();
   final nameController = TextEditingController();
   final stateMessageController = TextEditingController();
-
   final statePhotoUploadProgress = ValueNotifier<double?>(null);
 
   String? gender;
   int? birthYear;
   int? birthMonth;
   int? birthDay;
+
   @override
   void initState() {
     super.initState();
-
     if (UserService.instance.registered) {
       displayNameController.text = my.displayName;
       nameController.text = my.name;
