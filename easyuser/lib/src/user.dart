@@ -1,5 +1,4 @@
 import 'package:easyuser/easyuser.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:memory_cache/memory_cache.dart';
@@ -157,15 +156,10 @@ class User {
       displayName: json['displayName'] ?? '',
       name: json['name'] ?? '',
       gender: json['gender'],
-      createdAt: json['createdAt'] is int
-          ? DateTime.fromMillisecondsSinceEpoch(json['createdAt'])
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] is int
-          ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt'])
-          : DateTime.now(),
-      lastLoginAt: json['lastLoginAt'] is int
-          ? DateTime.fromMillisecondsSinceEpoch(json['lastLoginAt'])
-          : DateTime.now(),
+      createdAt: json['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
+      lastLoginAt:
+          json['lastLoginAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['lastLoginAt']) : DateTime.now(),
       birthYear: json['birthYear'],
       birthMonth: json['birthMonth'],
       birthDay: json['birthDay'],
