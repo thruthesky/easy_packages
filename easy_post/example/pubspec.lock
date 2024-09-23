@@ -138,7 +138,7 @@ packages:
     source: hosted
     version: "0.7.1"
   easy_category:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: easy_category
       sha256: "168a5c63611a3e55a66d06498a95b545bde2be0e1343ed2a0c2cca3cd2e5157b"

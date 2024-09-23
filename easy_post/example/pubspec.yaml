@@ -18,6 +18,7 @@ dependencies:
   firebase_auth: 5.3.0
   firebase_storage: 12.3.1
   firebase_core: 3.5.0
+  easy_category: ^0.0.3
 
 dev_dependencies:
   flutter_test:

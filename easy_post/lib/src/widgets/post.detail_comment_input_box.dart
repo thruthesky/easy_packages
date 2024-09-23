@@ -12,7 +12,7 @@ class PostDetailCommentInputBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Text('TODO: implement PostDetailCommentInputBox');
     // TODO: Since we changed to DatabaseReference, the CommentListTreeView is still using Firestore.
     // return SafeArea(
     //   minimum: const EdgeInsets.only(bottom: 16),
