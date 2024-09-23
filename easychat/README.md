@@ -45,12 +45,34 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Displaying open chat room list](#displaying-open-chat-room-list)
 - [Coding Guideline](#coding-guideline)
   - [How to get server timestamp](#how-to-get-server-timestamp)
-- [Developer's Tip](#developers-tip)
+- [Developer Coding Guideline](#developer-coding-guideline)
   - [Create a random user](#create-a-random-user)
+  - [Invitation not sent protocol test](#invitation-not-sent-protocol-test)
+  - [Development Guideline](#development-guideline)
+    - [Init the chat service](#init-the-chat-service)
+    - [Opening chat room create in main.dart](#opening-chat-room-create-in-maindart)
+    - [Chat to admin](#chat-to-admin)
+      - [1:1 chat with Admin](#11-chat-with-admin)
+      - [Group chat with multiple admins](#group-chat-with-multiple-admins)
+  - [chatRoomActionButton](#chatroomactionbutton)
+  - [Push Notification](#push-notification)
+  - [onSendMessage CallBack](#onsendmessage-callback)
+  - [onInvite Callback](#oninvite-callback)
+  - [newMessageBuilder](#newmessagebuilder)
+  - [Chat Room Blocking](#chat-room-blocking)
+  - [Single chat room invitation](#single-chat-room-invitation)
+    - [Group Chats with blocked users](#group-chats-with-blocked-users)
+  - [Chat Room Logic Diagrams](#chat-room-logic-diagrams)
+    - [Logic for Creating Group Chat](#logic-for-creating-group-chat)
+    - [Logic for Creating/Opening Single Chat](#logic-for-creatingopening-single-chat)
+    - [Logic for Opening Chat Room](#logic-for-opening-chat-room)
+    - [Logic for Inviting User in Group Chat](#logic-for-inviting-user-in-group-chat)
+    - [Process for Accepting/Rejecting Chat Request/Invitation](#process-for-acceptingrejecting-chat-requestinvitation)
+    - [Logic for Blocking User in Group Chat](#logic-for-blocking-user-in-group-chat)
+    - [Listing chat roooms](#listing-chat-roooms)
 - [Example of creating a chat app](#example-of-creating-a-chat-app)
 - [Tests](#tests)
-  - [Invitation not sent protocol test](#invitation-not-sent-protocol-test)
-- [Known Issues](#known-issues)
+  - [Known issues and Common problems](#known-issues-and-common-problems)
 
 # Terms
 
@@ -661,7 +683,7 @@ ChatService.instance.init();
 
 ```dart
 showGeneralDialog(
-  context: globalContext,
+  context: context,
   pageBuilder: (_, __, ___) {
     return ChatOpenRoomListScreen(
       padding: const EdgeInsets.all(8),
@@ -685,7 +707,7 @@ print('ts: ${DateTime.fromMillisecondsSinceEpoch(ts).toIso8601String()}');
 
 
 
-# Developer's Tip
+# Developer Coding Guideline
 
 
 ## Create a random user
@@ -696,13 +718,6 @@ Simply call `randomLogin()` function which calls `loginOrRegister()` wiht random
 randomLogin()
 ```
 
-
-# Example of creating a chat app
-
-- Refer to the EXAMPLE.md
-
-
-# Tests
 
 
 ## Invitation not sent protocol test
@@ -720,10 +735,382 @@ ElevatedButton(
 ```
 
 
-# Known Issues
+
+
+
+## Development Guideline
+
+
+
+### Init the chat service
+
+- You need to initialize the chat service as early as the app boots.
+
+```dart
+ChatService.instance.init(
+  //
+)
+```
+
+### Opening chat room create in main.dart
+
+```dart
+class MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      ChatService.instance.showChatRoomEditScreen(globalContext);
+    });
+    // ...
+  }
+  // ...
+}
+```
+
+### Chat to admin
+
+#### 1:1 chat with Admin
+
+- To chat with the admin or the developer, you can open a 1:1 chat room.
+
+- This is good for an app that has only one admin(or representitive) to entertain the customers(clients) inquery.
+
+- It is a simple trick to `chat with admin`.
+  - Simply add `Chat to admin` menu button in the app, then when the button is being pressed, simply open a chat room with user model of the admin.
+    - You can pass the user model to `ChatService.instance.showChatRoomScreen(user: ...)`.
+
+```dart
+UserDoc(
+  uid: 'h1JVPqCO4mNroGLAklc8AV45XB82',
+  builder: (admin) => ListTile(
+    title: Text('Inquiry to Admin'.t),
+    onTap: () =>
+        ChatService.instance.showChatRoomScreen(
+      context,
+      user: admin,
+    ),
+  ),
+),
+```
+
+#### Group chat with multiple admins
+
+This feature is not supported, yet.
+
+- ~~If there are many admins who want to participate in the customer care chat, list all the uid of admins.~~
+- ~~then, create a group chat room with the list of admins and the login user.~~
 
 
 
 
+
+
+
+## chatRoomActionButton
+
+- You can add extra button on the header in chat room.
+  - This is a good for adding extra functionality like push notification toggle button, or whatever action buttons you like.
+
+- The `chatRoomActionButton` contains the chat room information and accepts a Function that return a widget. The return widget will be display in the action button.
+
+Usage: (e.g. adding extra icon on the chat room header)
+
+```dart
+    ChatService.instance.init(
+      chatRoomActionButton: (room) => IconButton(
+        onPressed: () {
+          /// do some state
+        },
+        icon: const Icon(Icons.notifications),
+      ),
+    );
+```
+
+## Push Notification
+
+- To use push notifications, refer to the [Easy Messaging README](https://github.com/thruthesky/easy_packages/tree/main/easy_messaging).
+  - Or the example: [Example app](https://github.com/thruthesky/easy_packages/tree/main/example)
+
+## onSendMessage CallBack
+
+- `onSendMessage` is a callback function that is called after the message is sent. It contains the `ChatMessage` information and the `ChatRoom` information.
+
+- You can use it as a hook function after the chat message is being sent.
+  - You may use this callback to send push notification.
+  - Or you can use it for whatever functionality you want.
+
+- You may display `PushNotificationToggleIcon` on the chat room header using `chatRoomActionButton` that comes from `easy_messaging` package. It display a toggle push notification icon.
+  - This let user subscribe the push notification resulting to save true or false at the node(path) : `fcm-subscriptions/$subscriptionName/$userId`.
+  - By default, `PushNotificationToggleIcon` displays as enabled when it is set to true, otherwise false.
+    - But in the case of chat subscription, you need to display it as
+      - enabled when it is set to null (or false), 
+      - disabled when it is true.
+    - This is because the user is considered as subscribed by default, when he enters the chat room. Meaning, the user will automatically get push notification when he enters the chat room.
+      - Oh, see! the data is null (not existing) when the user enters the chat room. But the push notification icon should be displayed as enabled even the user did not actually subscribe. This is why we need to reverse the logic of the `PushNotificationToggleIcon`.
+    - To reverse the state of `PushNotificationIcon`, you can set `reverse: true`. Which displays enabled when the data (of subscription) is null, and disabled when the data is true.
+    - There is a special option on the `MessagingService` to send the push notification to the users who are not subscribed.
+
+
+- To send push notification to the users who are not subscribed (since it is reversed), you can use `MessagingService.instance.sendMessageToUids` with `excludeSubscribers` set to `true`.
+  - `uids`: This is a list of uids of the whole users in the chat room.
+  - `excludeSubscribers`: If it is set to true, the push-notification will be delivers to the users except who subscribed. Meaning, it sends notifications to unsubscribed users.
+  - So, for the case of chat-room-push-notification, if user subscribed, the push-notification-icon appears as disabled(un-subscribed). Hence, the user who unsubscribed are actually subscribed and they (who unsubscribed) are excempted and will not get push-notification.
+
+
+```dart
+    ChatService.instance.init(
+      /// push notification toggle icon in reverse
+      chatRoomActionButton: (room) => PushNotificationToggleIcon(
+        subscriptionName: room.id,
+        reverse: true,
+      ),
+      onSendMessage: (
+          {required ChatMessage message, required ChatRoom room}) async {
+        /// remove current user uid
+        final uids = room.userUids.where((uid) => uid != myUid).toList();
+        if (uids.isEmpty) return;
+        /// send push notification to remaining uid
+        /// using sendMessageToUid along with subscriptionName and
+        /// excludeSubscribers set to `true` will exclude the uids if
+        /// their subscription to room id is set to true.
+        MessagingService.instance.sendMessageToUids(
+          uids: uids,
+          subscriptionName: room.id,
+          excludeSubscribers: true,
+          title: '{name} sent you a message'.tr(args: {'name': my.displayName}),
+          body: '${message.text}',
+          data: {"action": 'chat', 'roomId': room.id},
+        );
+      },
+    );
+```
+
+## onInvite Callback
+
+The `onInvite` callback is triggered after a user was invited to the chat room.
+This is called from `ChatRoom` -> `inviteUser` method.
+
+Usage: (e.g. push notification to inform the other user of invitation)
+
+```dart
+ChatService.instance.init(
+      onInvite: ({required ChatRoom room, required String uid}) async {
+        MessagingService.instance.sendMessageToUids(
+          uids: [uid],
+          title: '{name} invited you to join a chat room'.tr(args: {
+            'name': my.displayName,
+          }),
+          body: 'You got chat room invite'.t,
+          data: {
+            "action": 'chatInvite',
+          },
+        );
+      },
+    );
+```
+
+## newMessageBuilder
+
+The `ChatNewMessageCounter` is for displaying the number of new message of the whole chat rooms.
+
+If you want to display the number of new messages of each chat room, you can use `newMessageBuilder` builder.
+
+
+## Chat Room Blocking
+
+Master(s) can block a user. Then the user is kicked out and cannot enter the chat room again.
+
+This is only applicable to group chats, for open or not open, since the user can block another user directly.
+
+## Single chat room invitation
+
+In chat single chat room, User A (master and member) may invite other user (User B). It will be put in `invitedUsers`. User B may accept the invitation and put uid in `users`, else User B may put uid in reheced users.
+
+User can still leave the room. If User A left then User B want to chat, User B may invite user A upon chat. Same as User B leave the room, User A must send an invitation again.
+
+If both of users are not in room, User A may join in the user if she wants to chat User B.
+
+If both of user views and joins that group, then can chat.
+
+### Group Chats with blocked users
+
+User can be blocked as itself or blocked in a chat room.
+
+When user blocks other user (the account itself), the rooms should cover/hide the chat messages of the blocked user.
+
+## Chat Room Logic Diagrams
+
+### Logic for Creating Group Chat
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser must be logged in])
+  --> createChatRoom[/User Open Chat Room\nCreate Screen/]
+  --> userEnter[/User enter details of the chat room\nincluding name, description or if the room is open chat/]
+  --> saveChatRoom[Save]
+  --> saveToDb[(System saves the\nchatroom into\nFirestore)]
+  --> showChatRoom[/System shows chat room to user\nwith input box, menu etc/]
+  --> final([End\nUser can do anything in Chat Room])
+
+```
+### Logic for Creating/Opening Single Chat
+
+```mermaid
+
+flowchart TD
+  start([Start])
+  --> userLook[User looks for a\n user to chat]
+  --> userChatOpen[/User open single chat\nor tapped `CHAT` /]
+  --> openChatRoom[[Open Chat Room Dialog\nshowChatRoomDialog]]
+  --> userClosed[/User closed group chat/]
+  --> final([End\n])
+```
+
+### Logic for Opening Chat Room
+
+- `ChatService.instance.showChatRoomScreen` can open `ChatRoomScreen`.
+  - You may call `ChatRoomScreen` directly from your app.
+
+
+```mermaid
+
+flowchart TD
+  start([Start\nChatRoomScreen])
+    --> LOAD{Load Chat Room}
+      LOAD--success--> SET_CHAT_ROOM[Set Current Chat Room]
+      LOAD--fail(permission-denied)--> isSingleChatRoom{1:1 chat?}
+      
+  isSingleChatRoom --false--> dontShowAboutChatRoom([ERROR: No Permission])
+    isSingleChatRoom --true--> CREATE_SING_CHAT[Attempt to create\n1:1 chat room]
+  CREATE_SING_CHAT --> SET_CHAT_ROOM
+  SET_CHAT_ROOM --> SEND_MESSAGE[/User entered text and url\nand pressed `SEND`/]
+  --> isSingle{single\nchat?}
+  isSingle--false--> userCanDoOther[User may now do other things\nSend another message\nView Menu\netc.]
+  isSingle--true--> otherUserInMembers{otherUserUid is\nin members?}
+  otherUserInMembers --true--> userCanDoOther
+  otherUserInMembers --false--> inviteOtherUser[System invites\nOther User]
+  inviteOtherUser --> userCanDoOther
+  --> SEND_MESSAGE
+
+```
+
+### Logic for Inviting User in Group Chat
+
+User A wants to invite User B in a group chat.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser A must be logged in])
+  --> userOpenChatRoom[/User A opened the group chat room/]
+  --> openChatRoom[[Open the chat room\nshowChatRoomDialog]]
+  --> userOpenMenu[/User A pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System shows chat room menu drawer/]
+  --> userTapInvite[/User tapped `Invite More User`/]
+  --> systemShowSearch[/System shows search bar/]
+  --> userEnterName[/User A enter User B's name/]
+  --> systemGetData[(Get and search user)]
+  --> hasMatches{has matches?}
+  hasMatches --true--> userTap[/User Taps User B/]
+  hasMatches --false--> systemShowsEmpty[/System shows empty search result/]
+  --> systemShowSearch
+  userTap --> systemUpdates[(Add User B's uid in invitedUsers)]
+  --> systemMessageInvited[/System displays\n`User B has been invited`/]
+  --> final([End])
+```
+
+### Process for Accepting/Rejecting Chat Request/Invitation
+
+User B wants to accept an invitation.
+
+```mermaid
+
+flowchart TD
+  start([Start\nUser B must be logged in\nAssuming User B has invitations])
+  --> userOpenChatRoom[/User B opened the\nchat room list screen/]
+  --> loadInvitations{{Load Chat Room Invitations}}
+  --> systemShowsInvitaions[/System shows chat room invitations\nwith accept or reject buttons/]
+  --> userAcceptOrReject{Will user\naccept or reject?}
+ userAcceptOrReject --User don't want to do anything yet--> systemDoesNothing[system does nothing]
+ --> final
+  userAcceptOrReject --User wants to reject--> userRejectInvitation[/User Taps `Reject`/]
+  --> systemRemoveMember[(Update Room\nRemove uid in invitedUsers\nAdd uid in rejectedUsers)]
+  --> final
+  userAcceptOrReject--User wants to accept--> userAcceptInvitation[/User Taps `Accept`/]
+  --> blockInRoom{User B uid\nin blockedUsers?}
+  blockInRoom --false--> systemAddMember[(Update Room\nRemove uid in invitedUsers\nAdd user in chat room users or members)]
+  --> final([End])
+blockInRoom --true--> systemShowsError[/System shows `Error`/]
+  --> systemShowsInvitaions
+```
+
+
+### Logic for Blocking User in Group Chat
+
+```mermaid
+flowchart TD
+  start([Start\nUser A and User B belongs to a same group\nwhere User A is the master\nUser A logged in])
+  --> openChatRoom[/User A opened the chat Room/]
+  --> openMenu[[showChatRoomDialog]]
+  --> userOpenMenu[/User Pressed Chat Room Menu Button/]
+  --> systemShowMenu[/System show chat room menu drawer/]
+  --> userTapsMemberList[/User A taps member list/]
+  --> systemShowsMemberList[/System shows member list/]
+  --> masterTapsUser[/User A taps User B from the list/]
+  --> isBlocked{user B is blocked?}
+  --false--> systemShowsKickAndBlock[/System shows Kick and Block buttons/]
+  --> masterTapsBlock[/User A taps Block/]
+  --> systemKickMember[System kicks out User B]
+  --> systemAddsInBlock[(Update\nRemove User B in Users\nAdd User B in BlockedUsers)]
+  --> final
+
+  isBlocked--true--> systemShowsUnblock[/System shows Unblock button/]
+  --> masterTapsUnblock[/User A taps Unblock/]
+  --> systemRemoveUserBInBlock[(Update\nRemove User B in BlockUids)]
+  --> final([End])
+
+```
+
+
+### Listing chat roooms
+
+
+- Use `ChatJoinListView` to display the chat rooms.
+- The `ChatJoinListView` uses `CustomScrollView` inside which is a sliver list. It is recommended to set the `ChatJoinListView` widget directly to the body property of a scaffold. 
+  - You can customize the look, of course. But you need to understand how the sliver list view works.
+    - One way you can easily customize is to wrap the `ChatJoinListView` with `Expanded` in Cl]olumn.
+
+
+
+Example:
+```dart
+```
+
+
+
+```mermaid
+flowchart TD
+```
+
+
+
+
+
+
+# Example of creating a chat app
+
+- Refer to the EXAMPLE.md
+
+
+# Tests
+
+
+
+## Known issues and Common problems
+
+
+- If you see a loader (circular progress) in a list (realtime database list view), check if the `databaseURL` is properly set in the firebase initialization configuration.
+  - See the README of `easyusr` for more details of realtime database setup error.
 
 
