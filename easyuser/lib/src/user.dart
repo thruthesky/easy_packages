@@ -228,10 +228,10 @@ class User {
     // TODO using get is getting all the fields. Need to review.
     final snapshot = await userFieldRef(uid, field).once();
 
-    debugPrint("Snapshot Value: ${snapshot.value}");
+    debugPrint("Snapshot Value: ${snapshot.snapshot.value}");
 
-    if (snapshot.exists) {
-      final value = snapshot.value;
+    if (snapshot.snapshot.exists) {
+      final value = snapshot.snapshot.value;
       MemoryCache.instance.create(key, value);
       return value;
     }

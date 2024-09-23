@@ -14,7 +14,7 @@ dependencies:
 
   cupertino_icons: ^1.0.6
 
-  date_picker_v2:
+  easy_date_picker:
     path: ..
 
 dev_dependencies:
