@@ -31,6 +31,7 @@ class UserService {
 
   DatabaseReference get usersRef => database.ref().child('users');
 
+  /// TODO: move user-meta to settings of easy_settings.
   DatabaseReference get metaRef => database.ref().child('user-meta');
 
   DatabaseReference get blockDoc => metaRef.child(myUid!).child('blocks');

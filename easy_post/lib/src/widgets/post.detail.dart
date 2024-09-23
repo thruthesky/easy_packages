@@ -45,7 +45,7 @@ class _PostDetailState extends State<PostDetail> {
                     builder: (photoUrl) {
                       return UserAvatar(
                         photoUrl: photoUrl,
-                        initials: displayName,
+                        initials: displayName ?? '',
                       );
                     }),
                 const SizedBox(

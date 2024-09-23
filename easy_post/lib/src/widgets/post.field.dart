@@ -18,14 +18,12 @@ class PostField<T> extends StatelessWidget {
   const PostField({
     super.key,
     required this.id,
-    required this.category,
     required this.field,
     required this.builder,
     this.initialData,
     this.sync = false,
   });
 
-  final String category;
   final String id;
   final String field;
   final T? initialData;
@@ -36,7 +34,7 @@ class PostField<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     if (sync) {
       return Value(
-          ref: postFieldRef(category, id, field),
+          ref: postFieldRef(id, field),
           initialData: initialData,
           builder: (v, _) {
             return builder(v);
@@ -44,7 +42,7 @@ class PostField<T> extends StatelessWidget {
     }
 
     return Value.once(
-        ref: postFieldRef(category, id, field),
+        ref: postFieldRef(id, field),
         initialData: initialData,
         builder: (v, _) {
           return builder(v);

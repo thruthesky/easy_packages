@@ -52,10 +52,10 @@ class Post {
   final bool deleted;
   final int order;
 
-  static DatabaseReference col = PostService.instance.postsRef;
+  // static DatabaseReference col = PostService.instance.postsRef;
 
   /// The database reference of current post
-  DatabaseReference get ref => postRef(category, id);
+  DatabaseReference get ref => postRef(id);
 
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
@@ -143,7 +143,7 @@ class Post {
 
   factory Post.fromSnapshot(DataSnapshot snapshot) {
     if (snapshot.exists == false) {
-      throw Exception('Post.fromSnapshot: Post does not exist');
+      throw PostException('post/fromSanpshot', 'Post.fromSnapshot: Post does not exist');
     }
 
     final value = snapshot.value as Map<dynamic, dynamic>;
@@ -151,25 +151,21 @@ class Post {
   }
 
 // get a post
-  static Future<Post> get(String category, String? id) async {
-    if (id == null) {
-      throw 'post-get/post-id-null Post id is null';
-    }
-    print('category: $category, id: $id');
-    final documentSnapshot = await postRef(category, id).get();
-    if (documentSnapshot.exists == false) {
+  static Future<Post> get(String postKey) async {
+    final snapshot = await postRef(postKey).get();
+    if (snapshot.exists == false) {
       throw 'post-get/post-not-found Post not found';
     }
 
-    return Post.fromSnapshot(documentSnapshot);
+    return Post.fromSnapshot(snapshot);
   }
 
-  static Future<T> getField<T>(String category, String id, String field) async {
-    final documentSnapshot = await postFieldRef(category, id, field).get();
-    if (documentSnapshot.exists == false) {
+  static Future<T> getField<T>(String id, String field) async {
+    final snapshot = await postFieldRef(id, field).get();
+    if (snapshot.exists == false) {
       throw 'post-get/post-not-found Post not found';
     }
-    return documentSnapshot as T;
+    return snapshot as T;
   }
 
   // create a new post
