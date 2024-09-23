@@ -210,6 +210,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Get data'),
             ),
             ElevatedButton(
+              onPressed: getFieldTest,
+              child: const Text('Get field'),
+            ),
+            ElevatedButton(
               onPressed: displayNameUpdateTest,
               child: const Text('Update display name'),
             ),
@@ -488,6 +492,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await UserTestService.instance.createTestUser();
     await waitUntil(() async => UserService.instance.user != null);
     if (!context.mounted || !mounted) return;
+
     // Block user 1
     await UserService.instance.block(context: context, otherUid: uid1);
 
@@ -507,6 +512,28 @@ class _MyHomePageState extends State<MyHomePage> {
       getMy != null,
       "getDataTest: User.get failed to get my User",
     );
+  }
+
+  getFieldTest() async {
+    await UserService.instance.signOut();
+    await UserTestService.instance.createTestUser();
+    await waitUntil(() async => UserService.instance.user != null);
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    await UserService.instance.usersRef.child(myUid!).child("testField").set("testing");
+
+    final testField = await User.getField(uid: myUid!, field: "testField");
+
+    debugPrint("testField: $testField");
+
+    final testfield2Once = await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").once();
+
+    debugPrint("testField2: ${testfield2Once.snapshot.value}");
+
+    final testfield2Get = await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").get();
+
+    debugPrint("testField2: ${testfield2Get.value}");
   }
 
   displayNameUpdateTest() async {
