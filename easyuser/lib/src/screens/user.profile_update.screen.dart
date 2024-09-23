@@ -7,7 +7,7 @@ import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 /// ! Warning: The user must sign in before accessing this screen. Or it will
-/// throw an error.
+///            throw an error.
 ///
 /// there might some scenario that the user want to Use a unique name to display
 /// but still we want to keep the user real name for example in github they using
@@ -24,6 +24,9 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
   final displayNameController = TextEditingController();
   final nameController = TextEditingController();
   final stateMessageController = TextEditingController();
+
+  final statePhotoUploadProgress = ValueNotifier<double?>(null);
+
   String? gender;
   int? birthYear;
   int? birthMonth;
@@ -45,9 +48,11 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     nameController.dispose();
     displayNameController.dispose();
+    stateMessageController.dispose();
+    statePhotoUploadProgress.dispose();
+    super.dispose();
   }
 
   @override
@@ -142,41 +147,50 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                         controller: stateMessageController,
                       ),
                       const SizedBox(height: 24),
-
-                      /// TODO: Display photo upload progress bar.
                       Text('State Photo'.t),
-                      MyDoc(builder: (my) {
-                        return my?.statePhotoUrl == null
-                            ? const SizedBox.shrink()
-                            : Stack(
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: my!.statePhotoUrl!,
-                                    width: double.infinity,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    top: 0,
-                                    child: IconButton(
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: Colors.white.withOpacity(0.5),
-                                      ),
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () async {
-                                        await StorageService.instance.delete(
-                                          my.statePhotoUrl!,
-                                          ref: my.ref.child(User.field.statePhotoUrl),
-                                        );
-                                      },
-                                      color: Colors.red,
+                      ValueListenableBuilder(
+                        valueListenable: statePhotoUploadProgress,
+                        builder: (context, v, child) {
+                          if (v == null) return const SizedBox.shrink();
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: LinearProgressIndicator(value: v == 1 ? null : v),
+                          );
+                        },
+                      ),
+                      MyDoc(
+                        builder: (my) {
+                          return my?.statePhotoUrl == null
+                              ? const SizedBox.shrink()
+                              : Stack(
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl: my!.statePhotoUrl!,
+                                      width: double.infinity,
+                                      height: 100,
+                                      fit: BoxFit.cover,
                                     ),
-                                  ),
-                                ],
-                              );
-                      }),
-
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: IconButton(
+                                        style: IconButton.styleFrom(
+                                          backgroundColor: Colors.white.withOpacity(0.5),
+                                        ),
+                                        icon: const Icon(Icons.delete),
+                                        onPressed: () async {
+                                          await StorageService.instance.delete(
+                                            my.statePhotoUrl!,
+                                            ref: my.ref.child(User.field.statePhotoUrl),
+                                          );
+                                        },
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                        },
+                      ),
                       UploadIconButton(
                         photoCamera: true,
                         photoGallery: true,
@@ -191,9 +205,10 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                             Text('Upload State Photo'.t),
                           ],
                         ),
+                        progress: (v) => statePhotoUploadProgress.value = v,
                         onUpload: (url) async {
+                          statePhotoUploadProgress.value = null;
                           final oldUrl = my.photoUrl;
-
                           await my.update(statePhotoUrl: url);
                           await StorageService.instance.delete(oldUrl);
                         },
