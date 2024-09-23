@@ -236,6 +236,15 @@
             "deviceId": "iPhone 15 Pro Max",
             "program": "lib/main.dart"
         },
+
+        {
+            "name": "EasyPost Example - iPhone 16 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "easy_post/example",
+            "program": "lib/main.dart",
+        },
         
     ]
 }

@@ -196,10 +196,10 @@ packages:
     dependency: transitive
     description:
       name: easy_realtime_database
-      sha256: "775e1bdd2306ad8689d823b8885169b39e7402dd89a8f96d7eabb1be19582315"
+      sha256: "55ba84aecb647b0feb0c00e134a4489f3535310b9b9cba34c28fe44346d94c16"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7"
+    version: "0.0.8"
   easy_report:
     dependency: transitive
     description:
@@ -453,12 +453,13 @@ packages:
     source: hosted
     version: "1.1.1"
   flutter_inappwebview_ios:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: flutter_inappwebview_ios
-      sha256: f363577208b97b10b319cd0c428555cd8493e88b468019a8c5635a0e4312bd0f
-      url: "https://pub.dev"
-    source: hosted
+      path: flutter_inappwebview_ios
+      ref: cbc214c7b2cf5fd7996ff2e9e25d203946b74bc3
+      resolved-ref: cbc214c7b2cf5fd7996ff2e9e25d203946b74bc3
+      url: "https://github.com/IncM/flutter_inappwebview"
+    source: git
     version: "1.0.13"
   flutter_inappwebview_macos:
     dependency: transitive

@@ -299,7 +299,7 @@ class MyAppState extends State<MyApp> {
       postListActionButton: (category) => PushNotificationToggleIcon(
         subscriptionName: category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-$category",
       ),
-      onCreate: (Post post) async {
+      afterCreate: (Post post) async {
         /// send push notification to subscriber
         MessagingService.instance.sendMessageToSubscription(
           subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",

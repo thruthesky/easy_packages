@@ -68,14 +68,21 @@ class PostListView extends StatelessWidget {
     //   query = query.where('uid', isEqualTo: uid);
     // }
     // query = query.orderBy('createdAt', descending: true);
-    DatabaseReference reference = Post.col;
-    Query query = reference;
+    // DatabaseReference reference = Post.col;
+    // Query query = PostService.instance.postsRef;
 
     if (category != null) {
       // reference = reference.child(category);
     }
 
     // query = reference.child(category).orderByChild(Post.field.order);
+
+    final query = PostService.instance.postsRef
+        .orderByChild('category')
+        .startAt('$category-')
+        .endAt('$category-9999999999999999999999');
+
+    print('category: $category');
 
     return FirebaseDatabaseQueryBuilder(
       query: query,
@@ -96,10 +103,6 @@ class PostListView extends StatelessWidget {
         print('docs ${snapshot.docs.length}, category: $category');
         for (var element in snapshot.docs) {
           print('doc: ${element.value}');
-        }
-        if (snapshot.docs.isEmpty == false) {
-          // return emptyBuilder?.call() ?? Center(child: Text('post list is empty'.t));
-          return emptyBuilder != null ? emptyBuilder!.call() : Center(child: Text('post list is empty'.t));
         }
 
         return ListView.separated(

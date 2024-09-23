@@ -38,6 +38,7 @@ class Post {
     youtubeUrl: 'youtubeUrl',
     youtube: 'youtube',
     order: 'order',
+    commentCount: 'commentCount',
   );
 
   final String id;
@@ -99,8 +100,8 @@ class Post {
   factory Post.fromJson(Map<dynamic, dynamic> json, String id) {
     return Post(
       id: id,
-      category: json['category'],
-      title: json['title'] ?? '',
+      category: json[field.category],
+      title: json[field.title] ?? '',
       subtitle: json['subtitle'] ?? '',
       content: json['content'] ?? '',
       uid: json['uid'],
@@ -120,8 +121,8 @@ class Post {
   }
   Map<String, dynamic> toJson() => {
         'id': id,
-        'category': category,
-        'title': title,
+        field.category: category,
+        field.title: title,
         'subtitle': subtitle,
         'content': content,
         'uid': uid,
@@ -179,36 +180,54 @@ class Post {
     Map<String, dynamic>? extra,
   }) async {
     if (currentUser == null) {
-      throw 'post-create/sign-in-required You must login firt to create a post';
+      throw PostException('post-create/sign-in-required', 'You must login firt to create a post');
     }
+
+    /// This millisecond is the date and time of 2054-09-23 4:10:53.512
+    /// This is used to set the order of category.
+    const int baseMilliseconds = 2673158953512;
+
     final order = DateTime.now().millisecondsSinceEpoch * -1;
 
     final youtube = await getYoutubeSnippet(youtubeUrl);
-    DatabaseReference documentReference = PostService.instance.postsRef.child(category).push();
 
     final data = {
-      Post.field.category: category,
-      if (title != null) 'title': title,
-      if (subtitle != null) 'subtitle': subtitle,
-      if (content != null) 'content': content,
-      'uid': currentUser!.uid,
-      'urls': urls,
-      'youtubeUrl': youtubeUrl,
-      'commentCount': 0,
-      'createdAt': ServerValue.timestamp,
-      'updateAt': ServerValue.timestamp,
-      'deleted': false,
-      if (youtube != null) 'youtube': youtube,
-      'order': order,
+      field.category: '$category-${baseMilliseconds - order}',
+      field.order: order,
+      if (title != null) field.title: title,
+      if (subtitle != null) field.subtitle: subtitle,
+      // if (content != null) 'content': content,
+      field.uid: currentUser!.uid,
+      field.urls: urls,
+      field.youtubeUrl: youtubeUrl,
+      field.commentCount: 0,
+      field.createdAt: ServerValue.timestamp,
+      field.updateAt: ServerValue.timestamp,
+      field.deleted: false,
+      if (youtube != null) field.youtube: youtube,
       ...?extra,
     };
 
-    await documentReference.set(data);
+    DatabaseReference newRef = PostService.instance.postsRef.push();
+
+    /// Callback before post is created
+    PostService.instance.beforeCreate?.call(Post.fromJson(data, newRef.key!));
+
+    await newRef.set(data);
 
     /// Callback after post is created
-    PostService.instance.onCreate?.call(Post.fromJson(data, documentReference.path.split('/').last));
+    PostService.instance.afterCreate?.call(Post.fromJson(data, newRef.key!));
 
-    return documentReference;
+    /// Update the category and order of the post
+    postFieldRef(newRef.key!, field.createdAt).get().then((snapshot) async {
+      int createdAt = snapshot.value as int;
+      await newRef.update({
+        field.category: '$category-${baseMilliseconds - createdAt}',
+        field.order: createdAt * -1,
+      });
+    });
+
+    return newRef;
   }
 
   /// update a post
@@ -224,7 +243,7 @@ class Post {
     Map<String, dynamic>? extra,
   }) async {
     final data = {
-      if (title != null) 'title': title,
+      if (title != null) field.title: title,
       if (subtitle != null) 'subtitle': subtitle,
       if (content != null) 'content': content,
       if (urls != null) 'urls': urls,

@@ -60,7 +60,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
   prepareData() {
     if (isCreate) return;
     if (widget.post == null) return;
-    Post.get(widget.post!.category, widget.post!.id).then((v) {
+    Post.get(widget.post!.id).then((v) {
       post = v;
 
       titleController.text = post!.title;

@@ -90,7 +90,6 @@ class _PostDetailState extends State<PostDetail> {
                   ),
                 } else ...{
                   PostField<List<Object?>?>(
-                    category: post.category,
                     id: post.id,
                     initialData: post.urls,
                     field: Post.field.urls,
@@ -107,7 +106,6 @@ class _PostDetailState extends State<PostDetail> {
                     height: 16,
                   ),
                   PostField<String?>(
-                    category: post.category,
                     id: post.id,
                     initialData: post.title,
                     field: Post.field.title,
@@ -120,7 +118,6 @@ class _PostDetailState extends State<PostDetail> {
                     },
                   ),
                   PostField<String?>(
-                    category: post.category,
                     id: post.id,
                     initialData: post.content,
                     field: Post.field.content,

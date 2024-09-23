@@ -32,20 +32,13 @@ class PostField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (sync) {
-      return Value(
-          ref: postFieldRef(id, field),
-          initialData: initialData,
-          builder: (v, _) {
-            return builder(v);
-          });
-    }
-
-    return Value.once(
-        ref: postFieldRef(id, field),
-        initialData: initialData,
-        builder: (v, _) {
-          return builder(v);
-        });
+    return Value(
+      ref: postFieldRef(id, field),
+      initialData: initialData,
+      builder: (v, _) {
+        return builder(v);
+      },
+      sync: sync,
+    );
   }
 }

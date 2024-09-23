@@ -26,7 +26,8 @@ class PostService {
   /// Callback on post create, use this if you want to do task after post is created.,
   /// Usage: e.g. send push notification to category subscribers after post is created.
   /// Callback will have the [Post] of the newly created `post` information.
-  Function(Post)? onCreate;
+  Function(Post)? afterCreate;
+  Function(Post)? beforeCreate;
 
   /// Add custom widget on chatroom header,.
   /// e.g. push notification toggle button
@@ -38,7 +39,8 @@ class PostService {
     Future<DatabaseReference?> Function(BuildContext, String?)? showPostCreateScreen,
     Future<DatabaseReference?> Function(BuildContext, Post)? showPostUpdateScreen,
     String? youtubeDataApi,
-    Function(Post)? onCreate,
+    Function(Post)? beforeCreate,
+    Function(Post)? afterCreate,
     Widget Function(String? category)? postListActionButton,
   }) {
     if (initialized) {
@@ -50,7 +52,8 @@ class PostService {
     $showPostCreateScreen = showPostCreateScreen;
     $showPostUpdateScreen = showPostUpdateScreen;
     this.youtubeDataApi = youtubeDataApi;
-    this.onCreate = onCreate;
+    this.beforeCreate = beforeCreate;
+    this.afterCreate = afterCreate;
     this.postListActionButton = postListActionButton;
     addPostTranslations();
   }
