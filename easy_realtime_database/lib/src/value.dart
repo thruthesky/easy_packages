@@ -97,36 +97,4 @@ class Value extends StatelessWidget {
       );
     }
   }
-
-  // TODO cleanup
-  /// Fetches data only once. However, if the widget is recreated, it fetches the data again.
-  ///
-  /// Using [initialData] can significantly reduce screen flickering.
-  ///
-  /// You can use [onLoading] to specify a widget to display while waiting for the data.
-  ///
-  /// Either [path] or [ref] must be provided.
-  // @Deprecated('Use Value( sync: false ) instead')
-  // static Widget once({
-  //   required DatabaseReference ref,
-  //   required Widget Function(dynamic value, DatabaseReference ref) builder,
-  //   dynamic initialData,
-  //   Widget? onLoading,
-  // }) {
-  //   return FutureBuilder<dynamic>(
-  //     initialData: initialData,
-  //     future: ref.once().then((event) => event.snapshot.value),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == false) {
-  //         return onLoading ?? const SizedBox.shrink();
-  //       }
-  //       if (snapshot.hasError) {
-  //         log('---> Value.once() -> Error; path: ${ref.path}, message: ${snapshot.error}');
-  //         return Text('Error; ${snapshot.error}');
-  //       }
-
-  //       return builder(snapshot.data, ref);
-  //     },
-  //   );
-  // }
 }
