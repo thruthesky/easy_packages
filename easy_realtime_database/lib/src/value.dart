@@ -36,7 +36,6 @@ class Value extends StatelessWidget {
     this.sync = true,
   });
 
-  // Check if this is okay
   const Value.once({
     super.key,
     required this.ref,
