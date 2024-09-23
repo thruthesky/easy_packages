@@ -133,20 +133,6 @@ class User {
     return User.fromJson(data, snapshot.key!);
   }
 
-  // TODO REVIEW
-  // TODO cleanup if we will no longer use Firestore
-  // factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
-  //   if (snapshot.exists == false) {
-  //     throw Exception('User.fromSnapshot: Document does not exist.');
-  //   }
-  //   final Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
-  //   if (data == null) {
-  //     throw Exception('User.fromSnapshot: Document data is null.');
-  //   }
-
-  //   return User.fromJson(data, snapshot.id);
-  // }
-
   /// Serialize the user data to the json format.
   ///
   factory User.fromJson(Map<String, dynamic> json, String uid) {
