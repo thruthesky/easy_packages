@@ -30,11 +30,6 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
 
-# TODO remove
-dependency_overrides:
-  easy_realtime_database:
-    path: ../easy_realtime_database
-
 repository: https://github.com/thruthesky/easy_packages/tree/main/easyuser
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
 topics:
