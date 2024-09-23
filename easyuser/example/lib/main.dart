@@ -3,6 +3,7 @@ import 'dart:math' hide log;
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:example/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -147,6 +148,34 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
                 child: const Text('TEST ALL')),
+            const Divider(),
+            ElevatedButton(
+              onPressed: () async {
+                final refTest = FirebaseDatabase.instance.ref().child("test").child(myUid!);
+                await refTest.set({
+                  "field1": "val1",
+                  "field2": "val2",
+                  "field3": "val3",
+                });
+
+                debugPrint("==============");
+                debugPrint("==============");
+                debugPrint("Getting using Get: ");
+                final getValue = await refTest.child("field1").get();
+                debugPrint("Get Value: ${getValue.value}");
+                debugPrint("Getting using Once: ");
+                final onceValue = await refTest.child("field1").once();
+                debugPrint("Once Value: ${onceValue.snapshot.value}");
+                debugPrint("==============");
+                debugPrint("Getting null using Get: ");
+                final getNullValue = await refTest.child("nullField").get();
+                debugPrint("Get Null Value: ${getNullValue.value}");
+                debugPrint("Getting null using Once: ");
+                final onceNullValue = await refTest.child("nullField").once();
+                debugPrint("Once Null Value: ${onceNullValue.snapshot.value}");
+              },
+              child: const Text("Firebase Get vs Once"),
+            ),
             const Divider(),
             ElevatedButton(
               onPressed: recordPhoneSignInNumberTest,
@@ -410,6 +439,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     await my.deleteFields([User.field.displayName]);
+
+    await Future.delayed(const Duration(milliseconds: 500));
 
     final displayNameUpdate = await User.getField(uid: uid1, field: User.field.displayName, cache: false);
     debugPrint("displayNameUpdate: $displayNameUpdate");

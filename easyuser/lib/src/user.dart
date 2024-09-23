@@ -1,4 +1,5 @@
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:memory_cache/memory_cache.dart';
@@ -213,12 +214,12 @@ class User {
     // final snapshot = await userFieldRef(uid, field).get();
     debugPrint("userFieldRef(uid, field).path: ${userFieldRef(uid, field).path}");
     // TODO using get is getting all the fields. Need to review.
-    final snapshot = await UserService.instance.database.ref().child(userFieldRef(uid, field).path).once();
+    final snapshot = await FirebaseDatabase.instance.ref().child("users").child(uid).child(field).get();
 
-    debugPrint("Snapshot Value: ${snapshot.snapshot.value}");
+    debugPrint("Snapshot Value: ${snapshot.value}");
 
-    if (snapshot.snapshot.exists) {
-      final value = snapshot.snapshot.value;
+    if (snapshot.exists) {
+      final value = snapshot.value;
       MemoryCache.instance.create(key, value);
       return value;
     }
