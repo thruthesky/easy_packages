@@ -1,6 +1,6 @@
 name: easy_post_v2
 description: "An easy to use post(forum) package for Flutter and Firebase."
-version: 0.0.4
+version: 0.0.6
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:
@@ -10,31 +10,25 @@ environment:
 dependencies:
   cached_network_image: ^3.3.1
   easy_category: ^0.0.2
-  easy_comment: ^0.0.5
+  easy_comment: ^0.0.7
   easy_helpers: ^0.0.11
-  easy_like: ^0.0.7
+  easy_like: ^0.0.8
   easy_locale: ^0.0.11
   easy_realtime_database: ^0.0.7
   easy_storage: ^0.0.14
   easy_youtube: ^0.0.3
-  easyuser: ^0.0.26
-  firebase_auth: ^5.1.1
+  easyuser: ^0.0.34
+  firebase_auth: ^5.3.0
   firebase_database: ^11.1.3
   firebase_ui_database: ^1.4.4
-  firebase_ui_firestore: ^1.6.4
   flutter:
     sdk: flutter
-  youtube_player_flutter: ^9.0.3
+  youtube_player_flutter: ^9.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-
-# # TODO: during development only, will delete before push
-# dependency_overrides:
-#   easyuser:
-#     path: ../easyuser
 
 repository: https://github.com/thruthesky/easy_packages/tree/main/easy_post
 issue_tracker: https://github.com/thruthesky/easy_packages/issues

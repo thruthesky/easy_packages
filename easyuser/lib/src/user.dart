@@ -1,5 +1,6 @@
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:memory_cache/memory_cache.dart';
 
 /// User model
@@ -14,8 +15,8 @@ class User {
     updatedAt: 'updatedAt',
     name: 'name',
     displayName: 'displayName',
-    caseIncensitiveName: 'caseIncensitiveName',
-    caseIncensitiveDisplayName: 'caseIncensitiveDisplayName',
+    caseInsensitiveName: 'caseInsensitiveName',
+    caseInsensitiveDisplayName: 'caseInsensitiveDisplayName',
     birthYear: 'birthYear',
     birthMonth: 'birthMonth',
     birthDay: 'birthDay',
@@ -36,16 +37,16 @@ class User {
 
   String displayName;
 
-  /// [caseIncensitiveDisplayName] is the display name that is case insensitive.
+  /// [caseInsensitiveDisplayName] is the display name that is case insensitive.
   /// It is saved in the database and used to search user name.
   /// Note that this is not needed for serialization.
-  String caseIncensitiveDisplayName;
+  String caseInsensitiveDisplayName;
   String name;
 
-  /// [caseIncensitiveName] is the name that is case insensitive.
+  /// [caseInsensitiveName] is the name that is case insensitive.
   /// It is saved in the database and used to search user name.
   /// Note that this is not needed for serialization.
-  String caseIncensitveName;
+  String caseInsensitiveName;
 
   String? gender;
 
@@ -66,7 +67,11 @@ class User {
   ///
   DatabaseReference usersRef = UserService.instance.usersRef;
 
-  DatabaseReference metaRef = UserService.instance.metaRef;
+  /// Get the ref of the login user.
+  ///
+  /// This is for login user only!
+  /// This must be a getter, Or it will throw an exception of user not logged in.
+  DatabaseReference get metaRef => UserService.instance.metaRef;
 
   /// [doc] is the document reference of this user model.
   DatabaseReference get doc => usersRef.child(uid);
@@ -78,9 +83,9 @@ class User {
     required this.uid,
     this.admin = false,
     this.displayName = '',
-    this.caseIncensitiveDisplayName = '',
+    this.caseInsensitiveDisplayName = '',
     this.name = '',
-    this.caseIncensitveName = '',
+    this.caseInsensitiveName = '',
     this.gender,
     this.createdAt,
     this.updatedAt,
@@ -151,10 +156,10 @@ class User {
       displayName: json['displayName'] ?? '',
       name: json['name'] ?? '',
       gender: json['gender'],
-      createdAt: json['createdAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
-      updatedAt: json['updatedAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
+      createdAt: json['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
       lastLoginAt:
-          json['lastLoginAt'] != null ? DateTime.fromMillisecondsSinceEpoch(json['lastLoginAt']) : DateTime.now(),
+          json['lastLoginAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['lastLoginAt']) : DateTime.now(),
       birthYear: json['birthYear'],
       birthMonth: json['birthMonth'],
       birthDay: json['birthDay'],
@@ -165,12 +170,15 @@ class User {
     );
   }
 
+  /// Serialize the user data to the json format.
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['uid'] = uid;
     data['admin'] = admin;
     data['displayName'] = displayName;
+    data['caseInsensitiveDisplayName'] = caseInsensitiveDisplayName;
     data['name'] = name;
+    data['caseInsensitiveName'] = caseInsensitiveName;
     data['gender'] = gender;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
@@ -209,10 +217,15 @@ class User {
     }
 
     ///
-    final snapshot = await userFieldRef(uid, field).get();
+    // final snapshot = await userFieldRef(uid, field).get();
+    debugPrint("userFieldRef(uid, field).path: ${userFieldRef(uid, field).path}");
+    // TODO using get is getting all the fields. Need to review.
+    final snapshot = await userFieldRef(uid, field).once();
 
-    if (snapshot.exists) {
-      final value = snapshot.value;
+    debugPrint("Snapshot Value: ${snapshot.snapshot.value}");
+
+    if (snapshot.snapshot.exists) {
+      final value = snapshot.snapshot.value;
       MemoryCache.instance.create(key, value);
       return value;
     }
@@ -281,9 +294,6 @@ class User {
   /// User `update` method is used to update the user data.
   ///
   /// [photoUrl] is dynamic since it can be a string of url or FieldValue.delete().
-  ///
-  /// It mirros the data to the RTDB and it does not use transaction because
-  /// mirroring is not for transaction.
   Future<void> update({
     String? displayName,
     String? name,
@@ -291,7 +301,6 @@ class User {
     int? birthMonth,
     int? birthDay,
     String? gender,
-    // TODO reivew because we can no longer delete by passing FieldValue.delete()
     String? photoUrl,
     String? stateMessage,
     String? statePhotoUrl,
@@ -299,9 +308,9 @@ class User {
     final data = <String, dynamic>{
       field.updatedAt: ServerValue.timestamp,
       if (displayName != null) field.displayName: displayName.trim(),
-      if (displayName != null) field.caseIncensitiveDisplayName: displayName.toLowerCase().trim(),
+      if (displayName != null) field.caseInsensitiveDisplayName: displayName.toLowerCase().trim(),
       if (name != null) field.name: name.trim(),
-      if (name != null) 'caseIncensitveName': name.toLowerCase().trim(),
+      if (name != null) field.caseInsensitiveName: name.toLowerCase().trim(),
       if (birthYear != null) field.birthYear: birthYear,
       if (birthMonth != null) field.birthMonth: birthMonth,
       if (birthDay != null) field.birthDay: birthDay,
@@ -314,10 +323,21 @@ class User {
     await ref.update(data);
   }
 
-  // TODO should we add deleteFields Function?
-  // deleteFields() {
-  //  delete fields
-  // }
+  /// Delete the specified fields of user doc.
+  ///
+  /// Purpose: To delete the values of the fields.
+  ///
+  /// Why: Using the update method wont work in deletion in RTDB.
+  ///
+  /// Reason: If we set "null" in the update, it won't do anything
+  ///         since de check it like (fieldName != null).
+  Future<void> deleteFields(List<String> fieldNames) async {
+    final data = <String, dynamic>{};
+    for (final fieldName in fieldNames) {
+      data[fieldName] = null;
+    }
+    await ref.update(data);
+  }
 
   /// delete user
   ///
@@ -326,8 +346,6 @@ class User {
     if (uid != my.uid) {
       throw 'user-delete/not-your-document You dont have permission to delete other user';
     }
-    // TODO Need to review the delete here
-    // await doc.delete();
     await ref.set(null);
   }
 }

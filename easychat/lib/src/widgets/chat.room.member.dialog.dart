@@ -72,33 +72,7 @@ class ChatRoomMemberDialog extends StatelessWidget {
                         const SizedBox(height: 12),
                         Text("you have blocked this user. to check, tap this user or here".t)
                       ] else ...[
-                        // REVIEW UserAvatar
-                        // User Avater needs to reload every time.
-                        // It may be because of ThumbnailImage.
-                        // Upon checking it is calling the thumbnail image first.
-                        // When it errors, it shows the original image.
-                        //
-                        // UserAvatar(user: user),
-                        //
-                        // For now, using this:
-                        user.photoUrl != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primaryContainer,
-                                    borderRadius: BorderRadius.circular(20),
-                                    // border: border,
-                                  ),
-                                  child: CachedNetworkImage(
-                                    imageUrl: user.photoUrl!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : UserAvatar.buildAnonymouseAvatar(size: 48),
+                        UserAvatar(photoUrl: user.photoUrl, initials: user.uid),
                         const SizedBox(height: 8),
                         if (user.displayName.isNotEmpty)
                           Text(

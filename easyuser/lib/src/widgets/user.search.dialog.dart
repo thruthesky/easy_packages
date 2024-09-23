@@ -134,6 +134,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                     //         onTap: () => Navigator.of(context).pop(user),
                     //       ),
                     // ),
+
                     // TODO add List View
                     child: const Text("@TODO: Add list view"),
                   )

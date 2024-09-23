@@ -5,10 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Example - iPhone 15 Pro Max",
+            "name": "PhiLov - iPhone 16 Pro Max",
             "request": "launch",
             "type": "dart",
-            "deviceId": "iPhone 15 Pro Max",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "apps/philov",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "Example - iPhone 16 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro Max",
             "cwd": "example",
             "program": "lib/main.dart",
         },

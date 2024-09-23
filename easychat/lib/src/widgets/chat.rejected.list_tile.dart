@@ -66,24 +66,16 @@ class ChatRejectedListTile extends StatelessWidget {
           }
           return ListTile(
             minTileHeight: 72,
-            leading: UserDoc(
+            leading: UserAvatar.fromUid(
               uid: otherUid,
-              builder: (user) {
-                return user?.photoUrl.isNullOrEmpty == false
-                    ? UserAvatar(
-                        user: user!,
-                        size: 48,
-                        radius: 24,
-                      )
-                    : CircleAvatar(
-                        child: Text(otherUid.characters.first.toUpperCase()),
-                      );
-              },
+              size: 48,
+              radius: 24,
             ),
-            title: UserDoc(
+            title: UserField<String?>(
               uid: otherUid,
-              builder: (user) {
-                return Text(roomTitle(room, user, null));
+              field: 'displayName',
+              builder: (displayName) {
+                return Text(roomTitle(room, displayName ?? '', null));
               },
             ),
             onTap: () => onTap(context),

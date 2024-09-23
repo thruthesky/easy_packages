@@ -1,8 +1,6 @@
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
-import 'package:easy_task/easy_task.dart';
-import 'package:easy_user_group/easy_user_group.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/locale/locale.screen.dart';
@@ -233,14 +231,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Report list',
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () => TaskService.instance.showTaskCreateScreen(context),
-                    child: const Text('Task Crate'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => TaskService.instance.showTaskListScreen(context),
-                    child: const Text('Task List of my creation'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () => TaskService.instance.showTaskCreateScreen(context),
+                  //   child: const Text('Task Crate'),
+                  // ),
+                  // ElevatedButton(
+                  //   onPressed: () => TaskService.instance.showTaskListScreen(context),
+                  //   child: const Text('Task List of my creation'),
+                  // ),
                   ElevatedButton(
                       onPressed: () {
                         showGeneralDialog(
@@ -260,12 +258,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     child: const Text('Messaging'),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      UserGroupService.instance.showUserGroupListScreen(context);
-                    },
-                    child: const Text('User Group'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     UserGroupService.instance.showUserGroupListScreen(context);
+                  //   },
+                  //   child: const Text('User Group'),
+                  // ),
                 ],
               ),
             ),

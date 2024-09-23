@@ -157,6 +157,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                         });
                         ChatRoom? chatRoom;
                         try {
+                          /// TODO: make this a transaction
                           final newRoomRef = await ChatRoom.create(
                             name: nameController.text,
                             description: descriptionController.text,
@@ -172,7 +173,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             protocol: ChatProtocol.create,
                           );
                         } catch (e) {
-                          dog("Error ${e.toString()}");
+                          dog("Failed on chat room creation: ${e.toString()}");
                           setState(() {
                             isLoading = false;
                           });
@@ -182,8 +183,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                         iconUrl = null;
                         if (!context.mounted) return;
                         Navigator.of(context).pop(chatRoom.ref);
-                        ChatService.instance
-                            .showChatRoomScreen(context, room: chatRoom);
+                        ChatService.instance.showChatRoomScreen(context, room: chatRoom);
                       },
                       child: Text('create'.t.toUpperCase()),
                     )
