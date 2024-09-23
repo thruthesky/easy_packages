@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' hide log;
 
 import 'package:easyuser/easyuser.dart';
 
@@ -26,7 +27,7 @@ class UserTestService {
     );
 
     final String uid = UserService.instance.currentUser!.uid;
-    print('uid: $uid');
+    log('uid: $uid');
 
     return uid;
   }

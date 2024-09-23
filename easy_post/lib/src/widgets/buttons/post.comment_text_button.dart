@@ -41,11 +41,13 @@ class PostCommentTextButton extends StatelessWidget {
       statesController: statesController,
       isSemanticButton: isSemanticButton,
       onPressed: () async {
-        final re = await CommentService.instance.showCommentEditDialog(
-          context: context,
-          documentReference: post.ref,
-          focusOnContent: false,
-        );
+        // TODO : DocumentReference in CommentService
+        // final re = await CommentService.instance.showCommentEditDialog(
+        //   context: context,
+        //   documentReference: post.ref,
+        //   focusOnContent: false,
+        // );
+        const re = false;
         onCreated?.call(re);
       },
       child: child,

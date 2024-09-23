@@ -48,17 +48,14 @@ class ChatService {
   /// Reference: the chat room list that the login user invited to.
   DatabaseReference get myInvitationsRef => invitedUserRef(myUid!);
 
-  final DatabaseReference rejectedUsersRef =
-      FirebaseDatabase.instance.ref().child('chat').child('rejected-users');
+  final DatabaseReference rejectedUsersRef = FirebaseDatabase.instance.ref().child('chat').child('rejected-users');
 
   DatabaseReference rejectedUserRef(String uid) => rejectedUsersRef.child(uid);
 
-  DatabaseReference get mySettingRef =>
-      FirebaseDatabase.instance.ref().child('chat').child('settings').child(myUid!);
+  DatabaseReference get mySettingRef => FirebaseDatabase.instance.ref().child('chat').child('settings').child(myUid!);
 
   /// Reference: the login user's unread message count of the chat room
-  DatabaseReference unreadMessageCountRef(String roomId) =>
-      mySettingRef.child('unread-message-count').child(roomId);
+  DatabaseReference unreadMessageCountRef(String roomId) => mySettingRef.child('unread-message-count').child(roomId);
 
   /// Callback function
   Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})? $showChatRoomListScreen;
@@ -165,8 +162,7 @@ class ChatService {
     return await showGeneralDialog<T>(
       context: context,
       pageBuilder: (_, __, ___) =>
-          chatRoomReceivedInviteListScreenBuilder?.call(context) ??
-          const ChatRoomReceivedInviteListScreen(),
+          chatRoomReceivedInviteListScreenBuilder?.call(context) ?? const ChatRoomReceivedInviteListScreen(),
     );
   }
 
@@ -206,6 +202,11 @@ class ChatService {
         );
   }
 
+  /// Wrapper of showChatRoomEditScreen
+  Future<T?> showChatRoomCreateScreen<T>(BuildContext context, {ChatRoom? room, bool defaultOpen = false}) async {
+    return await showChatRoomEditScreen(context, defaultOpen: defaultOpen);
+  }
+
   /// Display the chat room screen.
   ///
   /// [join] is the chat join data.
@@ -234,8 +235,7 @@ class ChatService {
     return showGeneralDialog<T>(
       context: context,
       pageBuilder: (_, __, ___) =>
-          chatRoomRejectedInviteListScreenBuilder?.call(context) ??
-          const ChatRoomRejectedInviteListScreen(),
+          chatRoomRejectedInviteListScreenBuilder?.call(context) ?? const ChatRoomRejectedInviteListScreen(),
     );
   }
 
@@ -290,11 +290,9 @@ class ChatService {
   ) async {
     final Map<String, Object?> updates = {};
     for (String uid in room.userUids) {
-      updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] =
-          updatedMessage.deleted == true ? true : null;
+      updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] = updatedMessage.deleted == true ? true : null;
       updates['chat/joins/$uid/${room.id}/$lastMessageUid'] = updatedMessage.uid;
-      updates['chat/joins/$uid/${room.id}/$lastText'] =
-          updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
+      updates['chat/joins/$uid/${room.id}/$lastText'] = updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
       updates['chat/joins/$uid/${room.id}/$lastUrl'] =
           (updatedMessage.url?.trim()).isNullOrEmpty ? null : updatedMessage.url;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] = updatedMessage.protocol;
@@ -423,8 +421,7 @@ class ChatService {
     };
 
     /// Re-order
-    final lastMessageAt =
-        room.lastMessageAt?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch;
+    final lastMessageAt = room.lastMessageAt?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch;
 
     int updatedOrder = lastMessageAt * -1;
     if (openOrderType == OpenOrderType.lastMessage) {
@@ -460,6 +457,12 @@ class ChatService {
   /// call-by-reference. So, the parent can use the updated room.users which
   /// includes the current user's uid.
   Future<void> join(ChatRoom room, {String? protocol}) async {
+    // If the user is already joined, return.
+    if (room.joined) {
+      dog('--> already joined');
+      return;
+    }
+
     // int timestamp = await getServerTimestamp();
     // final order = timestamp * -1; // int.parse("-1$timestamp");
     final joinValues = {
@@ -571,10 +574,7 @@ class ChatService {
     /// So, if there is only one message, it means, the invitation-not-sent message is not sent.
     /// And if there are more than 7 messages, it means, the invitation-not-sent message is
     /// probably deleted.
-    if (length >= 2 &&
-        length <= 7 &&
-        message.protocol == ChatProtocol.invitationNotSent &&
-        message.uid == myUid) {
+    if (length >= 2 && length <= 7 && message.protocol == ChatProtocol.invitationNotSent && message.uid == myUid) {
       await message.ref.remove();
     }
   }

@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
-                          UserDoc<int?>(
+                          UserField<int?>(
                             uid: user.uid,
                             field: 'birthDay',
                             builder: (v) {

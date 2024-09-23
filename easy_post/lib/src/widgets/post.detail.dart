@@ -30,30 +30,35 @@ class _PostDetailState extends State<PostDetail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        UserDoc(
+        UserField<String>(
+          field: User.field.displayName,
           uid: post.uid,
-          builder: (user) {
-            return user == null
-                ? const SizedBox.shrink()
-                : Row(
+          builder: (displayName) {
+            return Row(
+              children: [
+                UserField<String>(
+                    field: User.field.photoUrl,
+                    uid: post.uid,
+                    builder: (photoUrl) {
+                      return UserAvatar(
+                        photoUrl: photoUrl,
+                        initials: displayName,
+                      );
+                    }),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      UserAvatar(
-                        user: user,
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(user.displayName),
-                            Text(post.createdAt.yMd),
-                          ],
-                        ),
-                      )
+                      Text(displayName),
+                      Text(post.createdAt.yMd),
                     ],
-                  );
+                  ),
+                )
+              ],
+            );
           },
         ),
         const SizedBox(height: 16),
@@ -82,8 +87,7 @@ class _PostDetailState extends State<PostDetail> {
                   ),
                 } else ...{
                   PostDetailPhotos(post: widget.post),
-                  if (post.hasYoutube && widget.youtubePlayer != null)
-                    widget.youtubePlayer!,
+                  if (post.hasYoutube && widget.youtubePlayer != null) widget.youtubePlayer!,
                   PostDetailYoutubeMeta(post: widget.post),
                   const SizedBox(
                     height: 16,

@@ -14,8 +14,9 @@ class PostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// The post must be in realtime to update the post in realtime
-    return PostDoc(
-        post: post,
+    return PostDoc<Post>(
+        category: post.category,
+        id: post.id,
         sync: true,
         builder: (post) {
           /// If the post has no youtube video, return the normal scallfold.

@@ -2,27 +2,23 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/unit_test/post_test.helper.dart';
 
-const url =
-    'https://www.pexels.com/photo/person-in-spider-man-costume-13246954/';
+const url = 'https://www.pexels.com/photo/person-in-spider-man-costume-13246954/';
 void createPost() async {
   testStart('Create Post Test');
-  final ref = await Post.create(
-      category: 'temp', title: 'hellp', content: 'hellp', urls: [url]);
+  final ref = await Post.create(category: 'temp', title: 'hellp', content: 'hellp', urls: [url]);
   dog('$ref');
-  final post = await Post.get(ref.id);
-  isTrue(
-      post.title == 'hellp' && post.content == 'hellp', 'Created Successfully');
+  // TODO: TEST THE RESULT ref.path.split('/').last
+  final post = await Post.get(ref.path.split('/').last);
+  isTrue(post.title == 'hellp' && post.content == 'hellp', 'Created Successfully');
   testReport();
 }
 
 void updatePost() async {
   testStart('Update Post Test');
 
-  final ref = await Post.create(
-      category: 'temp', title: 'Post title', content: 'this my post tile');
-  final post = await Post.get(ref.id);
-  isTrue(post.content == 'this my post tile' && post.title == 'Post title',
-      'Creating Post');
+  final ref = await Post.create(category: 'temp', title: 'Post title', content: 'this my post tile');
+  final post = await Post.get(ref.path.split('/').last);
+  isTrue(post.content == 'this my post tile' && post.title == 'Post title', 'Creating Post');
 
   dog('post ${post.id}');
   // final updatePost = await post.update(content: 'Updaing post content');
@@ -55,9 +51,8 @@ void createYouyubePost() async {
     youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
   );
 
-  final post = await Post.get(ref.id);
-  isTrue(post.youtubeUrl == 'https://www.youtube.com/watch?v=nM0xDI5R50E',
-      "Posting url");
+  final post = await Post.get(ref.path.split('/').last);
+  isTrue(post.youtubeUrl == 'https://www.youtube.com/watch?v=nM0xDI5R50E', "Posting url");
 
   await isException(() async {
     await Post.create(
@@ -82,11 +77,11 @@ void deletePost() async {
     youtubeUrl: 'https://www.youtube.com/watch?v=nM0xDI5R50E',
   );
 
-  final post = await Post.get(ref.id);
+  final post = await Post.get(ref.path.split('/').last);
 
   await post.delete();
 
-  final deletedPost = await Post.get(ref.id);
+  final deletedPost = await Post.get(ref.path.split('/').last);
   isTrue(deletedPost.deleted == true, "Deleting post");
 
   await isException(() async {

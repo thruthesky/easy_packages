@@ -135,8 +135,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///  then, reset it.
   /// - Since the user is inside the room, the unread message count should be reset.
   void listenToUnreadMessageCountUpdate() {
-    resetMessageCountSubscription =
-        ChatService.instance.unreadMessageCountRef(room!.id).onValue.listen((e) async {
+    resetMessageCountSubscription = ChatService.instance.unreadMessageCountRef(room!.id).onValue.listen((e) async {
       final newMessageCount = (e.snapshot.value ?? 0) as int;
       if (newMessageCount == 0) return;
       await ChatService.instance.resetUnreadMessage(room!);
@@ -187,7 +186,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           children: [
             appBarIcon(),
             Expanded(
-              child: Text(roomTitle(room, user, widget.join)),
+              child: Text(roomTitle(room, user?.displayName, widget.join)),
             ),
           ],
         ),
@@ -246,8 +245,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ),
                   SafeArea(
                     top: false,
-                    child: ChatRoomInputBox(
-                      room: room!,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: ChatRoomInputBox(
+                        room: room!,
+                      ),
                     ),
                   ),
                 ],
@@ -267,7 +269,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     } else if (user != null) {
       child = GestureDetector(
         child: UserAvatar(
-          user: user!,
+          photoUrl: user!.photoUrl,
+          initials: user!.displayName.or(user!.uid),
           size: 36,
           radius: 15,
         ),

@@ -7,15 +7,23 @@ import 'package:easychat/easychat.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+/// Chat room input box
+///
+/// Note, that the [room] must be updated in realtime from the parent.
+/// [ChatRoomInputBox] is not listening the changes of the room.
 class ChatRoomInputBox extends StatefulWidget {
   const ChatRoomInputBox({
     super.key,
     required this.room,
-    this.onSend,
+    this.beforeSend,
+    this.afterSend,
+    this.inputBoxRadius = 12,
   });
 
   final ChatRoom room;
-  final Function(String? text, String? photoUrl, ChatMessage? replyTo)? onSend;
+  final Future Function(ChatInput send)? beforeSend;
+  final Future Function(ChatInput send)? afterSend;
+  final double inputBoxRadius;
 
   @override
   State<ChatRoomInputBox> createState() => _ChatRoomInputBoxState();
@@ -118,9 +126,11 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                       style: enabledBorderSide(context)?.style ?? BorderStyle.solid,
                     )
                   : Border.all(),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(widget.inputBoxRadius),
             ),
-            margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            // * Note: don't design here. Let the app design it. Because this widget can be
+            // * used in different places with different designs.
+            // margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -175,9 +185,8 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                     Expanded(
                       child: Theme(
                         data: Theme.of(context).copyWith(
-                          inputDecorationTheme: InputDecorationTheme(
+                          inputDecorationTheme: const InputDecorationTheme(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -216,9 +225,8 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
                                 builder: (_, v, __) {
                                   return Icon(
                                     Icons.send,
-                                    color: v
-                                        ? Theme.of(context).colorScheme.onSurface
-                                        : Theme.of(context).disabledColor,
+                                    color:
+                                        v ? Theme.of(context).colorScheme.onSurface : Theme.of(context).disabledColor,
                                   );
                                 },
                               ),
@@ -254,6 +262,14 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
     final url = this.url;
     ChatMessage? reply = ChatService.instance.reply.value;
 
+    await widget.beforeSend?.call(
+      ChatInput(
+        text: text,
+        uploadUrl: url,
+        replyTo: reply,
+      ),
+    );
+
     // Clear to make the input box empty.
     textController.clear();
     this.url = null;
@@ -269,10 +285,12 @@ class _ChatRoomInputBoxState extends State<ChatRoomInputBox> {
       replyTo: reply,
     );
 
-    widget.onSend?.call(
-      text,
-      url,
-      reply,
+    await widget.afterSend?.call(
+      ChatInput(
+        text: text,
+        uploadUrl: url,
+        replyTo: reply,
+      ),
     );
 
     await ChatService.instance.inviteOtherUserIfSingleChat(room!);

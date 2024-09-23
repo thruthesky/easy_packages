@@ -1,38 +1,35 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_like/easy_like.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 /// Support like only. Not dislike.
 /// See README.md for more information.
 class Like {
-  static CollectionReference get col =>
-      FirebaseFirestore.instance.collection('likes');
-
   /// original document reference. It is called 'target document reference'.
-  final DocumentReference documentReference;
+  final DatabaseReference parentReference;
 
   /// Like document reference. The document ID is the same as the target document ID.
-  DocumentReference get likeRef => col.doc(documentReference.id);
-  DocumentReference get ref => likeRef;
+  DatabaseReference get likeRef => LikeService.instance.likeRef(parentReference.key!);
+  DatabaseReference get ref => likeRef;
 
   String? id;
   List<String> likedBy = [];
 
   Like({
-    required this.documentReference,
+    required this.parentReference,
     this.likedBy = const [],
     this.id,
   });
 
-  factory Like.fromSnapshot(DocumentSnapshot snapshot) {
+  factory Like.fromSnapshot(DataSnapshot snapshot) {
     return Like.fromJson(
-      snapshot.data() as Map<String, dynamic>,
-      snapshot.id,
+      snapshot.value as Map<String, dynamic>,
+      snapshot.key!,
     );
   }
 
   factory Like.fromJson(Map<String, dynamic> json, String id) {
     return Like(
-      documentReference: json['documentReference'],
+      parentReference: json['parentReference'],
       likedBy: List<String>.from(json['likedBy'] ?? []),
     );
   }
@@ -55,63 +52,63 @@ class Like {
 
     final uid = currentUser.uid;
 
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      FieldValue $likedBy;
+// TODO: Implement like() method: refactoring from firestore to database
+    // await FirebaseFirestore.instance.runTransaction((transaction) async {
+    //   FieldValue $likedBy;
 
-      List<String> likedBy = [];
-      final snapshot = await likeRef.get();
-      if (snapshot.exists) {
-        final Map<String, dynamic> data =
-            snapshot.data() as Map<String, dynamic>;
-        likedBy = List<String>.from(data['likedBy'] ?? []);
-      }
+    //   List<String> likedBy = [];
+    //   final snapshot = await likeRef.get();
+    //   if (snapshot.exists) {
+    //     final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    //     likedBy = List<String>.from(data['likedBy'] ?? []);
+    //   }
 
-      int $likeCount = likedBy.length;
+    //   int $likeCount = likedBy.length;
 
-      /// Check if to like or to unlike.
-      ///
-      /// If likedBy contains the uid, the uid liked it already. So, it should unlike it.
-      /// If likedBy does not contain the uid, then like it.
-      bool hasLiked = likedBy.contains(uid);
+    //   /// Check if to like or to unlike.
+    //   ///
+    //   /// If likedBy contains the uid, the uid liked it already. So, it should unlike it.
+    //   /// If likedBy does not contain the uid, then like it.
+    //   bool hasLiked = likedBy.contains(uid);
 
-      /// If the user has liked it, then unlike it.
-      if (hasLiked) {
-        $likedBy = FieldValue.arrayRemove([uid]);
-        $likeCount--;
-      } else {
-        /// If the user has not liked it, then like it.
-        $likedBy = FieldValue.arrayUnion([uid]);
-        $likeCount++;
-      }
+    //   /// If the user has liked it, then unlike it.
+    //   if (hasLiked) {
+    //     $likedBy = FieldValue.arrayRemove([uid]);
+    //     $likeCount--;
+    //   } else {
+    //     /// If the user has not liked it, then like it.
+    //     $likedBy = FieldValue.arrayUnion([uid]);
+    //     $likeCount++;
+    //   }
 
-      ///
-      transaction.set(
-          documentReference,
-          {
-            'likeCount': $likeCount,
-          },
-          SetOptions(
-            merge: true,
-          ));
+    //   ///
+    //   transaction.set(
+    //       parentReference,
+    //       {
+    //         'likeCount': $likeCount,
+    //       },
+    //       SetOptions(
+    //         merge: true,
+    //       ));
 
-      transaction.set(
-        likeRef,
-        {
-          'documentReference': documentReference,
-          'likedBy': $likedBy,
-        },
-        SetOptions(
-          merge: true,
-        ),
-      );
+    //   transaction.set(
+    //     likeRef,
+    //     {
+    //       'parentReference': parentReference,
+    //       'likedBy': $likedBy,
+    //     },
+    //     SetOptions(
+    //       merge: true,
+    //     ),
+    //   );
 
-      LikeService.instance.onLiked?.call(
-        like: Like.fromJson({
-          'documentReference': documentReference,
-          'likedBy': likedBy,
-        }, likeRef.id),
-        isLiked: !hasLiked,
-      );
-    });
+    //   LikeService.instance.onLiked?.call(
+    //     like: Like.fromJson({
+    //       'parentReference': parentReference,
+    //       'likedBy': likedBy,
+    //     }, likeRef.id),
+    //     isLiked: !hasLiked,
+    //   );
+    // });
   }
 }

@@ -1,65 +1,53 @@
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:flutter/material.dart';
 
 /// PostDoc is a widget that displays a post document.
 ///
-/// [post] is the post document to display.
+/// [category] is the category of the post
 ///
-/// [sync] if it is passed as true, it will rebuild the widget when the post is
-/// updated. If it is false, it will use FutureBuilder to get the post only one
-/// time. If it is true, it will use StreamBuilder to get the post and rebuild
-/// the widget when the post is updated.
-class PostDoc extends StatelessWidget {
+/// [id] is the id of the post
+///
+/// [field] is the node where the data will come from.
+///
+/// [sync] default value is false. If it is true, it will rebuild the widget
+/// whenever the [field] is updated. And if it is false, it will get
+/// the data once and will just return it.
+class PostDoc<T> extends StatelessWidget {
   const PostDoc({
     super.key,
-    required this.post,
+    required this.category,
+    required this.id,
     required this.builder,
+    this.field,
+    this.initialData,
     this.sync = false,
   });
 
-  final Post post;
-  final Widget Function(Post) builder;
+  final String category;
+  final String id;
+  final String? field;
+  final T? initialData;
+  final Widget Function(T) builder;
   final bool sync;
 
   @override
   Widget build(BuildContext context) {
+    final fieldToGet = field != null && field!.isNotEmpty ? '$id/$field' : id;
+
     if (sync) {
-      return StreamBuilder<Post>(
-        initialData: post,
-        stream: PostService.instance.col
-            .doc(post.id)
-            .snapshots()
-            .map((snapshot) => Post.fromSnapshot(snapshot)),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              snapshot.hasData == false) {
-            return const SizedBox.shrink();
-          }
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-
-          /// Got data from database
-          Post? post = snapshot.data;
-
-          return builder(post!);
-        },
-      );
+      return Value(
+          ref: postFieldRef(category, fieldToGet),
+          builder: (v, _) {
+            return builder(v);
+          });
     }
 
-    return FutureBuilder<Post>(
-      initialData: post,
-      future: Post.get(post.id),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.hasData == false) {
-          return const SizedBox.shrink();
-        }
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        return builder(snapshot.data!);
-      },
-    );
+    return Value.once(
+        ref: postFieldRef(category, fieldToGet),
+        initialData: initialData,
+        builder: (v, _) {
+          return builder(v);
+        });
   }
 }

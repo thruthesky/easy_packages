@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/defines.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 /// Post mostly contains a `title` and `content` there might be also a image when
 /// the user post image
@@ -24,6 +24,22 @@ import 'package:easy_storage/easy_storage.dart';
 class Post {
   // collectionReference post's collection
 
+  static const field = (
+    id: 'id',
+    category: 'category',
+    title: 'title',
+    subtitle: 'subtitle',
+    content: 'content',
+    uid: 'uid',
+    createdAt: 'createdAt',
+    updateAt: 'updateAt',
+    urls: 'urls',
+    deleted: 'deleted',
+    youtubeUrl: 'youtubeUrl',
+    youtube: 'youtube',
+    order: 'order',
+  );
+
   final String id;
   final String category;
   final String title;
@@ -34,14 +50,15 @@ class Post {
   final DateTime updateAt;
   final List<String> urls;
   final bool deleted;
+  final int order;
 
-  static CollectionReference col = PostService.instance.col;
-
-  /// The document reference of current post
-  DocumentReference doc(String id) => col.doc(id);
+  static DatabaseReference col = PostService.instance.postsRef;
 
   /// The document reference of current post
-  DocumentReference get ref => doc(id);
+  DatabaseReference doc(String id) => col.child(id);
+
+  /// The document reference of current post
+  DatabaseReference get ref => doc(id);
 
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
@@ -51,8 +68,7 @@ class Post {
   final Map<String, dynamic> youtube;
 
   /// Returns true if the current post has youtube.
-  bool get hasYoutube =>
-      (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
+  bool get hasYoutube => (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
 
   final int likeCount;
   final int commentCount;
@@ -80,6 +96,7 @@ class Post {
     required this.youtube,
     required this.deleted,
     required this.likeCount,
+    required this.order,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -90,12 +107,8 @@ class Post {
       subtitle: json['subtitle'] ?? '',
       content: json['content'] ?? '',
       uid: json['uid'],
-      createdAt: json['createdAt'] is Timestamp
-          ? (json['createdAt'] as Timestamp).toDate()
-          : DateTime.now(),
-      updateAt: json['updateAt'] is Timestamp
-          ? (json['updateAt'] as Timestamp).toDate()
-          : DateTime.now(),
+      createdAt: json['createdAt'] ?? DateTime.now(),
+      updateAt: json['updateAt'] ?? DateTime.now(),
 
       /// youtubeUrl never be null. But just in case, it put empty string as default.
       youtubeUrl: json['youtubeUrl'] ?? '',
@@ -105,6 +118,7 @@ class Post {
       youtube: json['youtube'] ?? {},
       deleted: json['deleted'],
       likeCount: json['likeCount'] ?? 0,
+      order: json['order'],
     );
   }
   Map<String, dynamic> toJson() => {
@@ -122,6 +136,7 @@ class Post {
         'youtube': youtube,
         'deleted': deleted,
         'likeCount': likeCount,
+        'order': order,
       };
 
   @override
@@ -129,13 +144,13 @@ class Post {
     return 'Post(${toJson()})';
   }
 
-  factory Post.fromSnapshot(DocumentSnapshot snapshot) {
+  factory Post.fromSnapshot(DataSnapshot snapshot) {
     if (snapshot.exists == false) {
       throw Exception('Post.fromSnapshot: Post does not exist');
     }
 
-    final docSnapshot = snapshot.data() as Map<String, dynamic>;
-    return Post.fromJson(docSnapshot, snapshot.id);
+    final docSnapshot = snapshot as Map<String, dynamic>;
+    return Post.fromJson(docSnapshot, snapshot.child('id') as String);
   }
 
 // get a post
@@ -143,7 +158,7 @@ class Post {
     if (id == null) {
       throw 'post-get/post-id-null Post id is null';
     }
-    final documentSnapshot = await PostService.instance.col.doc(id).get();
+    final documentSnapshot = await postRef(id).get();
     if (documentSnapshot.exists == false) {
       throw 'post-get/post-not-found Post not found';
     }
@@ -152,7 +167,7 @@ class Post {
   }
 
   // create a new post
-  static Future<DocumentReference> create({
+  static Future<DatabaseReference> create({
     required String category,
     String? title,
     String? subtitle,
@@ -164,14 +179,13 @@ class Post {
     if (currentUser == null) {
       throw 'post-create/sign-in-required You must login firt to create a post';
     }
-    // if (category.isEmpty) {
-    //   throw 'post-create/category-is-required Category is required';
-    // }
+    final order = DateTime.now().millisecondsSinceEpoch * -1;
 
     final youtube = await getYoutubeSnippet(youtubeUrl);
+    DatabaseReference documentReference = PostService.instance.postsRef.child(category).push();
 
     final data = {
-      'category': category,
+      Post.field.category: category,
       if (title != null) 'title': title,
       if (subtitle != null) 'subtitle': subtitle,
       if (content != null) 'content': content,
@@ -179,19 +193,18 @@ class Post {
       'urls': urls,
       'youtubeUrl': youtubeUrl,
       'commentCount': 0,
-      'createdAt': FieldValue.serverTimestamp(),
-      'updateAt': FieldValue.serverTimestamp(),
+      'createdAt': ServerValue.timestamp,
+      'updateAt': ServerValue.timestamp,
       'deleted': false,
       if (youtube != null) 'youtube': youtube,
+      'order': order,
       ...?extra,
     };
 
-    DocumentReference documentReference =
-        await PostService.instance.col.add(data);
+    await documentReference.set(data);
 
     /// Callback after post is created
-    PostService.instance.onCreate
-        ?.call(Post.fromJson(data, documentReference.id));
+    PostService.instance.onCreate?.call(Post.fromJson(data, documentReference.path.split('/').last));
 
     return documentReference;
   }
@@ -219,9 +232,8 @@ class Post {
     await doc(id).update(
       {
         ...data,
-        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
-          'youtube': await getYoutubeSnippet(youtubeUrl),
-        'updateAt': FieldValue.serverTimestamp(),
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
+        'updateAt': ServerValue.timestamp,
         ...?extra,
       },
     );

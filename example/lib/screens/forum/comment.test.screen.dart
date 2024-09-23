@@ -22,7 +22,7 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
     // final ref = Post.col.doc('0-b');
     // final ref = Post.col.doc('0-c');
     // final ref = Post.col.doc('0-5');
-    final ref = Post.col.doc('0-e');
+    final ref = Post.col.child('0-e');
     return Scaffold(
       appBar: AppBar(
         title: const Text('CommentTest'),
@@ -45,17 +45,17 @@ class _CommentTestScreenState extends State<CommentTestScreen> {
         child: ListView(
           children: [
             Text('Reference: ${ref.path}'),
-            CommentInputBox(documentReference: ref),
-            CommentListView(
-              documentReference: ref,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (comment, index) {
-                // return CommentListDetail(comment: comment);
-                // return CommentListArrowDetail(comment: comment);
-                return CommentListVerticalLineDetail(comment: comment);
-              },
-            ),
+            // CommentInputBox(documentReference: ref),
+            // CommentListView(
+            //   // documentReference: ref,
+            //   shrinkWrap: true,
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   itemBuilder: (comment, index) {
+            //     // return CommentListDetail(comment: comment);
+            //     // return CommentListArrowDetail(comment: comment);
+            //     return CommentListVerticalLineDetail(comment: comment);
+            //   },
+            // ),
           ],
         ),
       ),

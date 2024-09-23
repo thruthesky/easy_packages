@@ -133,7 +133,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemExtent: 72,
                   itemBuilder: (context, index) {
-                    return UserDoc(
+                    return UserModel(
                       uid: room!.userUids[index],
                       builder: (user) => user == null
                           ? const SizedBox.shrink()
@@ -277,7 +277,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemExtent: 72,
                     itemBuilder: (context, index) {
-                      return UserDoc(
+                      return UserModel(
                         uid: room!.blockedUids[index],
                         builder: (user) => user == null
                             ? const SizedBox.shrink()
