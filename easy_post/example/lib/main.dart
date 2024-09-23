@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
                     focusNode: titleFocus,
                     onSubmitted: (v) {
                       titleController.clear();
-                      Post.create(category: category, title: v);
+                      Post.create(category: category, title: v, content: 'content + $v');
                       titleFocus.requestFocus();
                     },
                   ),

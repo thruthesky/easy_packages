@@ -213,7 +213,12 @@ class Post {
     /// Callback before post is created
     PostService.instance.beforeCreate?.call(Post.fromJson(data, newRef.key!));
 
-    await newRef.set(data);
+    final updates = {
+      'posts/${newRef.key}': data,
+      'posts-content/${newRef.key}': content,
+    };
+
+    await PostService.instance.database.ref().update(updates);
 
     /// Callback after post is created
     PostService.instance.afterCreate?.call(Post.fromJson(data, newRef.key!));
