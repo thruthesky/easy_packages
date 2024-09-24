@@ -53,8 +53,6 @@ class Post {
   final bool deleted;
   final int order;
 
-  // static DatabaseReference col = PostService.instance.postsRef;
-
   /// The database reference of current post
   DatabaseReference get ref => postRef(id);
 
@@ -250,19 +248,19 @@ class Post {
     final data = {
       if (title != null) field.title: title,
       if (subtitle != null) 'subtitle': subtitle,
-      if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
+      if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
+      'updateAt': ServerValue.timestamp,
+      ...?extra
     };
 
-    await ref.update(
-      {
-        ...data,
-        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
-        'updateAt': ServerValue.timestamp,
-        ...?extra,
-      },
-    );
+    final updates = {
+      'posts/${ref.key}': data,
+      'posts-content/${ref.key}': content,
+    };
+
+    await PostService.instance.database.ref().update(updates);
   }
 
   /// delete post, this will not delete the post but instead mark the post in

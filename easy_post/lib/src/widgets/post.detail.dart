@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/post.detail.youtube_meta.dart';
@@ -29,7 +27,6 @@ class _PostDetailState extends State<PostDetail> {
   Post get post => widget.post;
   @override
   Widget build(BuildContext context) {
-    log('post detail screen: line 33');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -117,18 +114,18 @@ class _PostDetailState extends State<PostDetail> {
                       );
                     },
                   ),
-                  PostField<String?>(
-                    id: post.id,
-                    initialData: post.content,
-                    field: Post.field.content,
-                    sync: true,
-                    builder: (content) {
-                      return Visibility(
-                        visible: !content.isEmpty,
-                        child: Text(content!),
-                      );
-                    },
-                  ),
+                  // PostField<String?>(
+                  //   id: post.id,
+                  //   initialData: post.content,
+                  //   field: Post.field.content,
+                  //   sync: true,
+                  //   builder: (content) {
+                  //     return Visibility(
+                  //       visible: !content.isEmpty,
+                  //       child: Text(content!),
+                  //     );
+                  //   },
+                  // ),
                 },
               ],
             );

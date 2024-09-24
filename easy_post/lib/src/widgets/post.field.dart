@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 /// PostField is a widget that displays a post document or an specific field from database.
 /// If the field is not provided, it will get the whole post.
 ///
-/// [category] is the category of the post
-///
 /// [id] is the id of the post
 ///
 /// [field] is the node where the data will come from.

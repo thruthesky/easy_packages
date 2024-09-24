@@ -16,6 +16,7 @@ class PostService {
   FirebaseDatabase get database => FirebaseDatabase.instance;
 
   DatabaseReference get postsRef => database.ref().child('posts');
+  DatabaseReference get contentRef => database.ref().child('posts-content');
 
   Future Function(BuildContext, Post)? $showPostDetailScreen;
   Future<DatabaseReference?> Function(BuildContext, String?)? $showPostCreateScreen;
