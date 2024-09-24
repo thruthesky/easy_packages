@@ -277,6 +277,7 @@ class Post {
     }
 
     await ref.update({
+      // TODO it should delete contents as well
       field.deleted: true,
     });
   }
