@@ -133,10 +133,12 @@ class _PostDetailState extends State<PostDetail> {
         ),
         PostModel(
           id: post.id,
-          initialData: post,
-          builder: (p) => PostDetailBottomAction(
-            post: post,
-          ),
+          builder: (p) {
+            if (p == null) return const SizedBox.shrink();
+            return PostDetailBottomAction(
+              post: post,
+            );
+          },
         ),
       ],
     );

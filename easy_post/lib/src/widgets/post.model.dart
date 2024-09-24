@@ -1,4 +1,3 @@
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:flutter/material.dart';
