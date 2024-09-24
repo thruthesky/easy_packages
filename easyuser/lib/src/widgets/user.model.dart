@@ -61,7 +61,7 @@ class UserModel extends StatelessWidget {
         ref: userRef(uid),
         initialData: json,
         builder: (v, _) {
-          final user = User.fromJson(Map<String, dynamic>.from(v as Map), uid);
+          final user = User.fromJson(Map<String, dynamic>.from(v ?? {}), uid);
           MemoryCache.instance.create(uid, user);
           return builder(user);
         },
