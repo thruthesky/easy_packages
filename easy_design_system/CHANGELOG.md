@@ -1,3 +1,6 @@
+## 0.0.27
+* Refactor. move the code base to `easy_packages`.
+
 ## 0.0.26
 * Update. add `comicBorderWidth`.
 
