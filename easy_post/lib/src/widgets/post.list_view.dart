@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
@@ -60,29 +59,10 @@ class PostListView extends StatelessWidget {
   final Widget Function()? emptyBuilder;
   @override
   Widget build(BuildContext context) {
-    // TODO : Ask Sir Song how to handle this one
-    // if (category != null) {
-    //   query = query.where('category', isEqualTo: category);
-    // }
-    // if (uid != null) {
-    //   query = query.where('uid', isEqualTo: uid);
-    // }
-    // query = query.orderBy('createdAt', descending: true);
-    // DatabaseReference reference = Post.col;
-    // Query query = PostService.instance.postsRef;
-
-    if (category != null) {
-      // reference = reference.child(category);
-    }
-
-    // query = reference.child(category).orderByChild(Post.field.order);
-
     final query = PostService.instance.postsRef
         .orderByChild('category')
         .startAt('$category-')
         .endAt('$category-9999999999999999999999');
-
-    print('category: $category');
 
     return FirebaseDatabaseQueryBuilder(
       query: query,
@@ -99,10 +79,6 @@ class PostListView extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
           return emptyBuilder?.call() ?? Center(child: Text('post list is empty'.t));
-        }
-        print('docs ${snapshot.docs.length}, category: $category');
-        for (var element in snapshot.docs) {
-          print('doc: ${element.value}');
         }
 
         return ListView.separated(

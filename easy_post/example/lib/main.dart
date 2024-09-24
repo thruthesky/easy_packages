@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:easy_post_v2/unit_test/post_test.dart';
 import 'package:example/categories/categories.dart';
 import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
