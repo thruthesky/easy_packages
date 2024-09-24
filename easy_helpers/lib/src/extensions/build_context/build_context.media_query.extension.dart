@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:flutter/material.dart';
 
 extension EasyHelperMediaQueryExtension on BuildContext {
@@ -41,4 +44,11 @@ extension EasyHelperMediaQueryExtension on BuildContext {
 
   /// Check if the device is in landscape mode.
   bool get isLandscape => orientation == Orientation.landscape;
+
+  /// Return true if the device is a phone. Not a tablet, iPad, or desktop, etc.
+  /// Return true if the narrowest side of the device is less than or equal to 480 points.
+  bool get isPhone => min(screenWidth, screenHeight) <= 480;
+
+  /// Returns true if the device is an iPad.
+  bool get isIpadScreen => isIos && (min(screenWidth, screenHeight) > 480);
 }
