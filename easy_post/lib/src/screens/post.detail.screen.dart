@@ -57,8 +57,7 @@ class PostDetailScaffold extends StatelessWidget {
               ),
             ),
           ),
-          // TODO: Fix the comment list tree view
-          // PostDetailCommentListTreeView(post: post),
+          PostDetailCommentListTreeView(post: post),
         ],
       ),
       bottomNavigationBar: PostDetailCommentInputBox(post: post),
