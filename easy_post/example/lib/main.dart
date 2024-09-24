@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:example/keys.dart';
+// import 'package:example/keys.dart';
 import 'package:example/categories/categories.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,8 +40,9 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     PostService.instance.init(
-      youtubeDataApi: primaryYoutubeKey,
-    );
+        // TO test youtube, must add this YouTubeKey
+        // youtubeDataApi: primaryYoutubeKey,
+        );
 
     test();
   }
