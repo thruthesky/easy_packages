@@ -9,7 +9,6 @@ environment:
   sdk: ">=3.4.3 <4.0.0"
 
 dependencies:
-  cloud_firestore: ^5.0.2
   cupertino_icons: ^1.0.6
   easy_storage:
     path: ..

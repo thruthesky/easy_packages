@@ -65,6 +65,10 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': 'All members can invite others to join',
     'ko': '모든 멤버가 다른 사용자를 초대할 수 있습니다',
   },
+  'in an open chat, all members can invite others by default': {
+    'en': 'In an open chat, by default, all members can invite others',
+    'ko': '오픈 채팅에서는 기본적으로 모든 멤버가 다른 사람을 초대할 수 있습니다',
+  },
   'create': {
     'en': 'Create',
     'ko': '생성',

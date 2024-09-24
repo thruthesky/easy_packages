@@ -1079,7 +1079,7 @@ flowchart TD
 - Use `ChatJoinListView` to display the chat rooms.
 - The `ChatJoinListView` uses `CustomScrollView` inside which is a sliver list. It is recommended to set the `ChatJoinListView` widget directly to the body property of a scaffold. 
   - You can customize the look, of course. But you need to understand how the sliver list view works.
-    - One way you can easily customize is to wrap the `ChatJoinListView` with `Expanded` in Cl]olumn.
+    - One way you can easily customize is to wrap the `ChatJoinListView` with `Expanded` in Column.
 
 
 
@@ -1112,5 +1112,7 @@ flowchart TD
 
 - If you see a loader (circular progress) in a list (realtime database list view), check if the `databaseURL` is properly set in the firebase initialization configuration.
   - See the README of `easyusr` for more details of realtime database setup error.
-
+- When a user and a blocked user is in the same group chat, the blocked user can still update all users number of unreads when the blocked user sent a message
+  - To explain, When there are A, B, C in a group chat and A blocked B. B sent message. The new message count should not appear in the group chat room since B is blocked by A, but it still appears. This will be fixed in the future.
+  - This is also applicable in number of invitations. Blocked users can send an invitation. This will be fixed in the future.
 

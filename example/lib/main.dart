@@ -11,7 +11,7 @@ import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
-// import 'package:example/firebase_options.dart';
+import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,8 +29,8 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
       lo.init();
       await Firebase.initializeApp(
-          // options: DefaultFirebaseOptions.currentPlatform,
-          );
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
       runApp(const MyApp());
 
@@ -62,6 +62,18 @@ class MyAppState extends State<MyApp> {
             child: const Text('Chat')),
       ];
     });
+
+    MessagingService.instance.init(
+      sendMessageToTokensApi: "https://sendmessagetotokens-aykj77d72a-uc.a.run.app",
+      sendMessageToUidsApi: "https://sendmessagetouids-aykj77d72a-uc.a.run.app",
+      sendMessageToSubscriptionApi: "https://sendmessagetosubscription-aykj77d72a-uc.a.run.app",
+      onMessageOpenedFromTerminated: (remoteMessage) {
+        // Do something when notificaiton was tapped
+      },
+      onMessageOpenedFromBackground: (remoteMessage) {
+        // Do something when notificaiton was tapped
+      },
+    );
 
     StorageService.instance.init(
       uploadBottomSheetPadding: const EdgeInsets.all(16),
@@ -301,15 +313,24 @@ class MyAppState extends State<MyApp> {
       ),
       afterCreate: (Post post) async {
         /// send push notification to subscriber
-        MessagingService.instance.sendMessageToSubscription(
-          subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
-          title: 'post title ${post.title}  ${DateTime.now()}',
-          body: 'post body ${post.content}',
-          data: {
-            "action": 'post',
-            'postId': post.id,
-          },
-        );
+        try {
+          await MessagingService.instance.sendMessageToSubscription(
+            subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
+            title: 'post title ${post.title}  ${DateTime.now()}',
+            body: 'post body ${post.content}',
+            data: {
+              "action": 'post',
+              'postId': post.id,
+            },
+          );
+        } catch (e) {
+          dog(e.toString());
+          if (e.toString().contains("subscription-not-found")) {
+            // DO nothing, it means nobody subscribed.
+          } else {
+            rethrow;
+          }
+        }
       },
     );
   }

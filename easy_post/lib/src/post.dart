@@ -104,8 +104,10 @@ class Post {
       subtitle: json[field.subtitle] ?? '',
       content: json[field.content] ?? '',
       uid: json[field.uid],
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json[field.createdAt] ?? 0),
-      updateAt: DateTime.fromMillisecondsSinceEpoch(json[field.updateAt] ?? 0),
+      createdAt:
+          json[field.createdAt] is int ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt]) : DateTime.now(),
+      updateAt:
+          json[field.updateAt] is int ? DateTime.fromMillisecondsSinceEpoch(json[field.updateAt]) : DateTime.now(),
 
       /// youtubeUrl never be null. But just in case, it put empty string as default.
       youtubeUrl: json[field.youtubeUrl] ?? '',
@@ -275,6 +277,7 @@ class Post {
     }
 
     await ref.update({
+      // TODO it should delete contents as well
       field.deleted: true,
     });
   }

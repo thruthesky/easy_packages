@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:easy_post_v2/easy_post_v2.dart';
 // import 'package:example/keys.dart';
+// import 'package:example/keys.dart';
 import 'package:example/categories/categories.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,6 +41,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     PostService.instance.init(
+        // TO test youtube, must add this YouTubeKey
         // youtubeDataApi: primaryYoutubeKey,
         );
 
@@ -78,16 +80,31 @@ class _MyAppState extends State<MyApp> {
               )
             : Column(
                 children: [
+                  const Divider(),
+                  const Text("Manual Tests"),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final postRef = await PostService.instance.showPostCreateScreen(context: context);
+
+                      if (postRef == null) return;
+                      final post = await Post.get(postRef.key!);
+                      if (!context.mounted) return;
+                      await PostService.instance.showPostDetailScreen(context: context, post: post);
+                    },
+                    child: const Text('Create Post'),
+                  ),
+                  const Divider(),
+                  const Text("Tests"),
                   Wrap(
-                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(user.uid),
-                      btn(
-                          onPressed: () {
-                            UserService.instance.signOut();
-                          },
-                          text: 'Sign Out'),
-                      btn(
+                      ElevatedButton(
+                        onPressed: () {
+                          UserService.instance.signOut();
+                        },
+                        child: const Text('Sign Out'),
+                      ),
+                      ElevatedButton(
                         onPressed: () async {
                           final ref = await Post.create(category: 'yo', title: 'title', content: 'content');
                           log('ref: $ref, key: ${ref.key}');
@@ -95,28 +112,28 @@ class _MyAppState extends State<MyApp> {
                           if (!context.mounted) return;
                           PostService.instance.showPostDetailScreen(context: context, post: post);
                         },
-                        text: 'Create Post',
+                        child: const Text('Create Post'),
                       ),
-                      btn(
+                      ElevatedButton(
                         onPressed: () async {
                           final post = await Post.get(postId);
                           if (!context.mounted) return;
                           PostService.instance.showPostDetailScreen(context: context, post: post);
                         },
-                        text: 'Show Post',
+                        child: const Text('Show Post'),
                       ),
-                      btn(
+                      ElevatedButton(
                         onPressed: () {
                           PostService.instance.showPostListScreen(context: context, categories: categories);
                         },
-                        text: 'View Categories',
+                        child: const Text('View Categories'),
                       ),
-                      btn(
+                      ElevatedButton(
                         onPressed: () {
-                          PostService.instance.showPostCreateScreen(
-                              context: context, enableYoutubeUrl: true, category: category);
+                          PostService.instance
+                              .showPostCreateScreen(context: context, enableYoutubeUrl: true, category: category);
                         },
-                        text: 'Create Youtube Post',
+                        child: const Text('Create Youtube Post'),
                       ),
                     ],
                   ),
@@ -134,13 +151,6 @@ class _MyAppState extends State<MyApp> {
                 ],
               ),
       ),
-    );
-  }
-
-  btn({required VoidCallback onPressed, required String text}) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Text(text),
     );
   }
 }

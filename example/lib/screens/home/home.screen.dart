@@ -111,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Value.once(
+            Value(
+              sync: false,
               ref: FirebaseDatabase.instance.ref('tmp/a'),
               builder: (v, r) => TextButton(
                 child: Text('Value: $v'),

@@ -71,7 +71,7 @@ class User {
   ///
   /// This is for login user only!
   /// This must be a getter, Or it will throw an exception of user not logged in.
-  DatabaseReference get metaRef => UserService.instance.metaRef;
+  DatabaseReference get settingsRef => UserService.instance.settingsRef;
 
   /// [doc] is the document reference of this user model.
   DatabaseReference get doc => usersRef.child(uid);
@@ -229,8 +229,6 @@ class User {
   /// If [firestore] is true, it will get the data from Firestore.
   ///
   /// if [database] is true, it will get the data from the RTDB.
-  ///
-  /// TODO: unit test is needed.
   static Future<User?> getData(
     String uid, {
     bool cache = true,

@@ -31,10 +31,10 @@ class UserService {
 
   DatabaseReference get usersRef => database.ref().child('users');
 
-  /// TODO: move user-meta to settings of easy_settings.
-  DatabaseReference get metaRef => database.ref().child('user-meta');
+  // Should we simple set it into setting? Or should we get it from easy_settings as dependency?
+  DatabaseReference get settingsRef => database.ref().child('settings');
 
-  DatabaseReference get blockDoc => metaRef.child(myUid!).child('blocks');
+  DatabaseReference get blockDoc => settingsRef.child(myUid!).child('blocks');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -269,12 +269,12 @@ class UserService {
 
     // update the phone number in `/user-phone-sign-in-numbers`.
     final phoneNumber = currentUser?.phoneNumber;
-    if (phoneNumber != null) {
-      final ref = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber);
-      await ref.set({
-        'lastSignedInAt': ServerValue.timestamp,
-      });
-    }
+    if (phoneNumber == null) return;
+
+    final ref = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber);
+    await ref.set({
+      'lastSignedInAt': ServerValue.timestamp,
+    });
   }
 
   /// Check if the phone number is registered.

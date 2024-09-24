@@ -21,8 +21,8 @@ class ChatRoomInputBox extends StatefulWidget {
   });
 
   final ChatRoom room;
-  final Future Function(ChatInput send)? beforeSend;
-  final Future Function(ChatInput send)? afterSend;
+  final FutureOr<void> Function(ChatInput send)? beforeSend;
+  final FutureOr<void> Function(ChatInput send)? afterSend;
   final double inputBoxRadius;
 
   @override

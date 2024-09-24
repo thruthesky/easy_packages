@@ -74,6 +74,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
 
     // Current user automatically joins upon viewing open rooms.
+    // NOTE: room.joined is only based on `/chat/room/` user
+    //       might not be joined yet based on `/chat/join/`
     if (room!.joined == false && room!.open) {
       await join();
     }
@@ -163,6 +165,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     ChatService.instance.join(
       room!,
       protocol: ChatProtocol.invitationNotSent,
+      force: true,
     );
   }
 

@@ -29,6 +29,22 @@
             "program": "lib/main.dart",
         },
         {
+            "name": "Example - iPhone 16 Pro",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro",
+            "cwd": "example",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "Example - iPhone 15 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro Max",
+            "cwd": "example",
+            "program": "lib/main.dart",
+        },
+        {
             "name": "Example - iPhone (2) - small iPhone external",
             "request": "launch",
             "type": "dart",
