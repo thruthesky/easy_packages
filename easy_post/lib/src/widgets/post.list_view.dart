@@ -74,7 +74,8 @@ class PostListView extends StatelessWidget {
 
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');
-          return errorBuilder?.call(snapshot.error.toString()) ?? Text('Something went wrong! ${snapshot.error}');
+          return errorBuilder?.call(snapshot.error.toString()) ??
+              Text('Something went wrong! ${snapshot.error}');
         }
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
@@ -83,7 +84,8 @@ class PostListView extends StatelessWidget {
 
         return ListView.separated(
           itemCount: snapshot.docs.length,
-          separatorBuilder: (context, index) => separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
+          separatorBuilder: (context, index) =>
+              separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
           scrollDirection: scrollDirection,
           reverse: reverse,
           controller: controller,
