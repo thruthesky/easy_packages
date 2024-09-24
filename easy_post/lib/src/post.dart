@@ -103,8 +103,8 @@ class Post {
       subtitle: json['subtitle'] ?? '',
       content: json['content'] ?? '',
       uid: json['uid'],
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt'] ?? 0),
-      updateAt: DateTime.fromMillisecondsSinceEpoch(json['updateAt'] ?? 0),
+      createdAt: json['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
+      updateAt: json['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
 
       /// youtubeUrl never be null. But just in case, it put empty string as default.
       youtubeUrl: json['youtubeUrl'] ?? '',
