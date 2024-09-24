@@ -1114,4 +1114,5 @@ flowchart TD
   - See the README of `easyusr` for more details of realtime database setup error.
 - When a user and a blocked user is in the same group chat, the blocked user can still update all users number of unreads when the blocked user sent a message
   - To explain, When there are A, B, C in a group chat and A blocked B. B sent message. The new message count should not appear in the group chat room since B is blocked by A, but it still appears. This will be fixed in the future.
+  - This is also applicable in number of invitations. Blocked users can send an invitation. This will be fixed in the future.
 
