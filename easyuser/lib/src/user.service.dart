@@ -31,8 +31,6 @@ class UserService {
 
   DatabaseReference get usersRef => database.ref().child('users');
 
-  /// TODO: move user-meta to settings of easy_settings.
-  // DatabaseReference get metaRef => database.ref().child('user-meta');
   // Should we simple set it into setting? Or should we get it from easy_settings as dependency?
   DatabaseReference get settingsRef => database.ref().child('settings');
 

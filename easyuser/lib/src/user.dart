@@ -71,8 +71,6 @@ class User {
   ///
   /// This is for login user only!
   /// This must be a getter, Or it will throw an exception of user not logged in.
-  // TODO cleanup
-  // DatabaseReference get metaRef => UserService.instance.metaRef;
   DatabaseReference get settingsRef => UserService.instance.settingsRef;
 
   /// [doc] is the document reference of this user model.
