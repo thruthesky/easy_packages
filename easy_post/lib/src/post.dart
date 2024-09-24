@@ -254,8 +254,7 @@ class Post {
     await ref.update(
       {
         ...data,
-        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
-          field.youtube: await getYoutubeSnippet(youtubeUrl),
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) field.youtube: await getYoutubeSnippet(youtubeUrl),
         field.updateAt: ServerValue.timestamp,
         ...?extra,
       },
