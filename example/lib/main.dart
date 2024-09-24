@@ -313,15 +313,24 @@ class MyAppState extends State<MyApp> {
       ),
       afterCreate: (Post post) async {
         /// send push notification to subscriber
-        MessagingService.instance.sendMessageToSubscription(
-          subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
-          title: 'post title ${post.title}  ${DateTime.now()}',
-          body: 'post body ${post.content}',
-          data: {
-            "action": 'post',
-            'postId': post.id,
-          },
-        );
+        try {
+          await MessagingService.instance.sendMessageToSubscription(
+            subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
+            title: 'post title ${post.title}  ${DateTime.now()}',
+            body: 'post body ${post.content}',
+            data: {
+              "action": 'post',
+              'postId': post.id,
+            },
+          );
+        } catch (e) {
+          dog(e.toString());
+          if (e.toString().contains("subscription-not-found")) {
+            // DO nothing, it means nobody subscribed.
+          } else {
+            rethrow;
+          }
+        }
       },
     );
   }
