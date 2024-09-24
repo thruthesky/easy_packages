@@ -61,7 +61,7 @@ class Post {
 
   /// Youtube URL. Refer README.md for more information
   final String youtubeUrl;
-  final Map<String, dynamic> youtube;
+  final Map<dynamic, dynamic> youtube;
 
   /// Returns true if the current post has youtube.
   bool get hasYoutube => (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
@@ -194,7 +194,7 @@ class Post {
       field.order: order,
       if (title != null) field.title: title,
       if (subtitle != null) field.subtitle: subtitle,
-      // if (content != null) 'content': content,
+      if (content != null) 'content': content,
       field.uid: currentUser!.uid,
       field.urls: urls,
       field.youtubeUrl: youtubeUrl,
@@ -211,12 +211,9 @@ class Post {
     /// Callback before post is created
     PostService.instance.beforeCreate?.call(Post.fromJson(data, newRef.key!));
 
-    final updates = {
-      'posts/${newRef.key}': data,
-      'posts-content/${newRef.key}': content,
-    };
+    await newRef.set(data);
 
-    await PostService.instance.database.ref().update(updates);
+    // await PostService.instance.database.ref().update(postRef(id));
 
     /// Callback after post is created
     PostService.instance.afterCreate?.call(Post.fromJson(data, newRef.key!));
@@ -248,19 +245,19 @@ class Post {
     final data = {
       if (title != null) field.title: title,
       if (subtitle != null) 'subtitle': subtitle,
+      if (content != null) 'content': content,
       if (urls != null) 'urls': urls,
       if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
-      if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
-      'updateAt': ServerValue.timestamp,
-      ...?extra
     };
 
-    final updates = {
-      'posts/${ref.key}': data,
-      'posts-content/${ref.key}': content,
-    };
-
-    await PostService.instance.database.ref().update(updates);
+    await ref.update(
+      {
+        ...data,
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
+        'updateAt': ServerValue.timestamp,
+        ...?extra,
+      },
+    );
   }
 
   /// delete post, this will not delete the post but instead mark the post in

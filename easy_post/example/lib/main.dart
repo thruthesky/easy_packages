@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_post_v2/easy_post_v2.dart';
+import 'package:example/keys.dart';
 import 'package:example/categories/categories.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,15 +32,19 @@ class _MyAppState extends State<MyApp> {
   final titleController = TextEditingController();
   final titleFocus = FocusNode();
 
+  final category = 'temp';
+  final postId = '-O7RYUgbwalTmb8-YSbD';
+
   @override
   initState() {
     super.initState();
 
+    PostService.instance.init(
+      youtubeDataApi: primaryYoutubeKey,
+    );
+
     test();
   }
-
-  final category = 'temp';
-  final postId = '-O7RYUgbwalTmb8-YSbD';
 
   test() async {
     // final category = randomString(length: 3);
@@ -105,6 +110,13 @@ class _MyAppState extends State<MyApp> {
                           PostService.instance.showPostListScreen(context: context, categories: categories);
                         },
                         text: 'View Categories',
+                      ),
+                      btn(
+                        onPressed: () {
+                          PostService.instance
+                              .showPostCreateScreen(context: context, enableYoutubeUrl: true, category: category);
+                        },
+                        text: 'Create Youtube Post',
                       ),
                     ],
                   ),
