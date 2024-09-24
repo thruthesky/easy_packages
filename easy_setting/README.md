@@ -12,16 +12,20 @@
 ## TODO
 
 - `sync` option.
-- Security rules
+- Separate user settings and app settings.
 - Option for using realtime database over firestore. For instance, there might be some value that is often changes and readable. The easyuser package supports firebsae and rtdb at the same time, mirror the settings data into realtime database and let it use rtdb.
 
 ## Security Rules
 
-- For now, it does not provide any security rules. it's upto you how you define it.
-  - Recommed: secure by id.
-  - For instance,
-    - if the document id begins with `app-` is read only.
-    - if the document id begins with `<uid>-xxx` then, it is readable for everyone and writable for the user only.
+
+```json
+"settings": {
+    "$uid": {
+      ".read": true,
+      ".write": "$uid === auth.uid"
+    },
+}
+```
 
 ## How to use
 

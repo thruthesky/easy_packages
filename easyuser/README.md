@@ -88,6 +88,15 @@ UserBuildAvatar(photoUrl: null, initials: null)
 ```
 
 
+# UI and UX Customization
+
+
+## prefixActionBuilderOnPublicProfileScreen
+
+
+
+
+
 
 
 # Logics
@@ -114,3 +123,5 @@ flowchart TB
   node_1 --> node_2
   node_2 --"Yes"--> node_3
 ```
+
+
