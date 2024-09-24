@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:example/categories/categories.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easyuser/easyuser.dart';
@@ -10,8 +10,8 @@ import 'package:easyuser/easyuser.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
 
   runApp(
     const MaterialApp(

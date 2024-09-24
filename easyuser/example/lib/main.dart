@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:math' hide log;
 
 import 'package:easy_locale/easy_locale.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 // import 'package:example/firebase_options.dart';
@@ -14,8 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   lo.init();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   runApp(const MyApp());
 }
 
@@ -537,11 +537,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     debugPrint("testField: $testField");
 
-    final testfield2Once = await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").once();
+    final testfield2Once =
+        await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").once();
 
     debugPrint("testField2: ${testfield2Once.snapshot.value}");
 
-    final testfield2Get = await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").get();
+    final testfield2Get =
+        await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").get();
 
     debugPrint("testField2: ${testfield2Get.value}");
   }
