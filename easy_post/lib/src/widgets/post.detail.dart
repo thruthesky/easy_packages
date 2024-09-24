@@ -77,7 +77,7 @@ class _PostDetailState extends State<PostDetail> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (post.deleted) ...{
+                if (post.deleted) ...[
                   const SizedBox(
                     width: double.infinity,
                     height: 200,
@@ -85,7 +85,33 @@ class _PostDetailState extends State<PostDetail> {
                       child: Text('This Post has been deleted.'),
                     ),
                   ),
-                } else ...{
+                ] else ...[
+                  const SizedBox(height: 8),
+                  PostField<String?>(
+                    id: post.id,
+                    initialData: post.title,
+                    field: Post.field.title,
+                    sync: true,
+                    builder: (title) {
+                      if (title.isEmpty) return const SizedBox.shrink();
+                      return Text(
+                        title!,
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  PostField<String?>(
+                    id: post.id,
+                    initialData: post.content,
+                    field: Post.field.content,
+                    sync: true,
+                    builder: (content) {
+                      if (content.isEmpty) return const SizedBox.shrink();
+                      return Text(content!);
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   PostField<List<Object?>?>(
                     id: post.id,
                     initialData: post.urls,
@@ -97,42 +123,20 @@ class _PostDetailState extends State<PostDetail> {
                       return PostDetailPhotos(urls: res);
                     },
                   ),
+                  const SizedBox(height: 16),
                   if (post.hasYoutube && widget.youtubePlayer != null) widget.youtubePlayer!,
                   PostDetailYoutubeMeta(post: widget.post),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  PostField<String?>(
-                    id: post.id,
-                    initialData: post.title,
-                    field: Post.field.title,
-                    sync: true,
-                    builder: (title) {
-                      return Visibility(
-                        visible: !title.isEmpty,
-                        child: Text(title!),
-                      );
-                    },
-                  ),
-                  // PostField<String?>(
-                  //   id: post.id,
-                  //   initialData: post.content,
-                  //   field: Post.field.content,
-                  //   sync: true,
-                  //   builder: (content) {
-                  //     return Visibility(
-                  //       visible: !content.isEmpty,
-                  //       child: Text(content!),
-                  //     );
-                  //   },
-                  // ),
-                },
+                ],
               ],
             );
           },
         ),
-        PostDetailBottomAction(
-          post: post,
+        PostModel(
+          id: post.id,
+          initialData: post,
+          builder: (p) => PostDetailBottomAction(
+            post: post,
+          ),
         ),
       ],
     );

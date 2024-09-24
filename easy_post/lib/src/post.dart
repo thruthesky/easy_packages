@@ -39,6 +39,7 @@ class Post {
     youtube: 'youtube',
     order: 'order',
     commentCount: 'commentCount',
+    likeCount: 'likeCount',
   );
 
   final String id;
@@ -61,7 +62,7 @@ class Post {
 
   /// Youtube URL. Refer README.md for more information
   final String youtubeUrl;
-  final Map<String, dynamic> youtube;
+  final Map<dynamic, dynamic> youtube;
 
   /// Returns true if the current post has youtube.
   bool get hasYoutube => (youtubeUrl.isNotEmpty && youtube.isNotEmpty) || youtube['id'] != null;
@@ -100,39 +101,39 @@ class Post {
       id: id,
       category: json[field.category],
       title: json[field.title] ?? '',
-      subtitle: json['subtitle'] ?? '',
-      content: json['content'] ?? '',
-      uid: json['uid'],
-      createdAt: json['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
+      subtitle: json[field.subtitle] ?? '',
+      content: json[field.content] ?? '',
+      uid: json[field.uid],
+      createdAt: json['createdAt] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
       updateAt: json['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
 
       /// youtubeUrl never be null. But just in case, it put empty string as default.
-      youtubeUrl: json['youtubeUrl'] ?? '',
-      urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
-      commentCount: json['commentCount'] ?? 0,
+      youtubeUrl: json[field.youtubeUrl] ?? '',
+      urls: json[field.urls] != null ? List<String>.from(json[field.urls]) : [],
+      commentCount: json[field.commentCount] ?? 0,
       data: json is Map<String, dynamic> ? json : {},
-      youtube: json['youtube'] ?? {},
-      deleted: json['deleted'],
-      likeCount: json['likeCount'] ?? 0,
-      order: json['order'],
+      youtube: json[field.youtube] ?? {},
+      deleted: json[field.deleted],
+      likeCount: json[field.likeCount] ?? 0,
+      order: json[field.order],
     );
   }
   Map<String, dynamic> toJson() => {
         'id': id,
         field.category: category,
         field.title: title,
-        'subtitle': subtitle,
-        'content': content,
-        'uid': uid,
-        'createdAt': createdAt,
-        'updateAt': updateAt,
-        'urls': urls,
-        'youtubeUrl': youtubeUrl,
-        'commentCount': commentCount,
-        'youtube': youtube,
-        'deleted': deleted,
-        'likeCount': likeCount,
-        'order': order,
+        field.subtitle: subtitle,
+        field.content: content,
+        field.uid: uid,
+        field.createdAt: createdAt,
+        field.updateAt: updateAt,
+        field.urls: urls,
+        field.youtubeUrl: youtubeUrl,
+        field.commentCount: commentCount,
+        field.youtube: youtube,
+        field.deleted: deleted,
+        field.likeCount: likeCount,
+        field.order: order,
       };
 
   @override
@@ -194,7 +195,7 @@ class Post {
       field.order: order,
       if (title != null) field.title: title,
       if (subtitle != null) field.subtitle: subtitle,
-      // if (content != null) 'content': content,
+      if (content != null) field.content: content,
       field.uid: currentUser!.uid,
       field.urls: urls,
       field.youtubeUrl: youtubeUrl,
@@ -211,12 +212,9 @@ class Post {
     /// Callback before post is created
     PostService.instance.beforeCreate?.call(Post.fromJson(data, newRef.key!));
 
-    final updates = {
-      'posts/${newRef.key}': data,
-      'posts-content/${newRef.key}': content,
-    };
+    await newRef.set(data);
 
-    await PostService.instance.database.ref().update(updates);
+    // await PostService.instance.database.ref().update(postRef(id));
 
     /// Callback after post is created
     PostService.instance.afterCreate?.call(Post.fromJson(data, newRef.key!));
@@ -247,20 +245,21 @@ class Post {
   }) async {
     final data = {
       if (title != null) field.title: title,
-      if (subtitle != null) 'subtitle': subtitle,
-      if (urls != null) 'urls': urls,
-      if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
-      if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
-      'updateAt': ServerValue.timestamp,
-      ...?extra
+      if (subtitle != null) field.subtitle: subtitle,
+      if (content != null) field.content: content,
+      if (urls != null) field.urls: urls,
+      if (youtubeUrl != null) field.youtubeUrl: youtubeUrl,
     };
 
-    final updates = {
-      'posts/${ref.key}': data,
-      'posts-content/${ref.key}': content,
-    };
-
-    await PostService.instance.database.ref().update(updates);
+    await ref.update(
+      {
+        ...data,
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
+          field.youtube: await getYoutubeSnippet(youtubeUrl),
+        field.updateAt: ServerValue.timestamp,
+        ...?extra,
+      },
+    );
   }
 
   /// delete post, this will not delete the post but instead mark the post in
@@ -277,7 +276,7 @@ class Post {
     }
 
     await ref.update({
-      'deleted': true,
+      field.deleted: true,
     });
   }
 }
