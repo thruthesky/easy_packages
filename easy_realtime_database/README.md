@@ -54,3 +54,21 @@ Value.once(
 
 
 - See the example
+
+
+## ValueListView
+
+- Use this widget to list the values of a node in Realtime database.
+
+```dart
+ValueListView(
+  ref: FirebaseDatabase.instance.ref('tmp'),
+  builder: (v, r) => ListTile(
+    title: Text(v),
+    trailing: IconButton(
+      icon: Icon(Icons.delete),
+      onPressed: () => r.remove(),
+    ),
+  ),
+),
+```
