@@ -11,8 +11,6 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Secuirty rules](#secuirty-rules)
     - [Realtime Database Security Rules](#realtime-database-security-rules)
     - [Storage Rules](#storage-rules)
-    - [Firestore Rules](#firestore-rules)
-    - [Firestore Indexes](#firestore-indexes)
   - [Initialization](#initialization)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
@@ -155,48 +153,49 @@ For your information on `easychat` history:
 
 
 ```json
-    // easychat package security rules: 2024. 09. 21.
 "chat": {
-  "-info": {
-    "timestamp": {
-      ".read": true,
-      ".write": true,
-    }
-  },
-  "invited-users": {
-    ".read": true,
-    ".write": true,
-    ".indexOn": ["order"]
-  },
-  "rejected-users": {
-    ".read": true,
-    ".write": true
-  },
-  "joins": {
-    ".read": true,
-    ".write": true,
-    "$uid": {
-      "$room_id": {
-        ".indexOn": ["order"]
+      "-info": {
+        "timestamp": {
+          ".read": true,
+          ".write": true,
+        }
+      },
+      "invited-users": {
+        ".read": true,
+        ".write": true,
+        "$uid": {
+          ".indexOn": [".value"]
+        }
+      },
+      "rejected-users": {
+        ".read": true,
+        ".write": true
+      },
+      "joins": {
+        ".read": true,
+        ".write": true,
+        "$uid": {
+          "$room_id": {
+          },
+          ".indexOn": ["order", "singleOrder", "groupOrder", "openOrder"]
+        }
+      },
+      "messages": {
+        "$room_id": {
+          ".read": true,
+          ".write": true,
+          ".indexOn": ["order", "protocol"]
+        }
+      },
+      "rooms": {
+        ".read": true,
+        ".write": true
+      },
+      "settings": {
+        ".read": true,
+        ".write": true
       }
-    }
-  },
-  "messages": {
-    "$room_id": {
-      ".read": true,
-      ".write": true,
-      ".indexOn": ["protocol"]
-    }
-  },
-  "rooms": {
-    ".read": true,
-    ".write": true
-  },
-  "settings": {
-    ".read": true,
-    ".write": true
-  }
-},
+    },
 ```
 
 
@@ -204,12 +203,6 @@ For your information on `easychat` history:
 ### Storage Rules
 
 
-
-### Firestore Rules
-
-`easychat` uses the firestore for some functionalities like reporting the user or chat rooms.
-
-### Firestore Indexes
 
 ## Initialization
 
