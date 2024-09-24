@@ -18,7 +18,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
 
-repository: https://github.com/thruthesky/easy_packages/tree/main/easy_engine
+repository: https://github.com/thruthesky/easy_packages/tree/main/easy_design_system
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
 topics:
   - design-system
