@@ -11,7 +11,7 @@ import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
-// import 'package:example/firebase_options.dart';
+import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,8 +29,8 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
       lo.init();
       await Firebase.initializeApp(
-          // options: DefaultFirebaseOptions.currentPlatform,
-          );
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
       runApp(const MyApp());
 

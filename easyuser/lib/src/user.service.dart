@@ -269,12 +269,12 @@ class UserService {
 
     // update the phone number in `/user-phone-sign-in-numbers`.
     final phoneNumber = currentUser?.phoneNumber;
-    if (phoneNumber != null) {
-      final ref = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber);
-      await ref.set({
-        'lastSignedInAt': ServerValue.timestamp,
-      });
-    }
+    if (phoneNumber == null) return;
+
+    final ref = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber);
+    await ref.set({
+      'lastSignedInAt': ServerValue.timestamp,
+    });
   }
 
   /// Check if the phone number is registered.
