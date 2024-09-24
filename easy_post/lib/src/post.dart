@@ -39,6 +39,7 @@ class Post {
     youtube: 'youtube',
     order: 'order',
     commentCount: 'commentCount',
+    likeCount: 'likeCount',
   );
 
   final String id;
@@ -100,39 +101,39 @@ class Post {
       id: id,
       category: json[field.category],
       title: json[field.title] ?? '',
-      subtitle: json['subtitle'] ?? '',
-      content: json['content'] ?? '',
-      uid: json['uid'],
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt'] ?? 0),
-      updateAt: DateTime.fromMillisecondsSinceEpoch(json['updateAt'] ?? 0),
+      subtitle: json[field.subtitle] ?? '',
+      content: json[field.content] ?? '',
+      uid: json[field.uid],
+      createdAt: DateTime.fromMillisecondsSinceEpoch(json[field.createdAt] ?? 0),
+      updateAt: DateTime.fromMillisecondsSinceEpoch(json[field.updateAt] ?? 0),
 
       /// youtubeUrl never be null. But just in case, it put empty string as default.
-      youtubeUrl: json['youtubeUrl'] ?? '',
-      urls: json['urls'] != null ? List<String>.from(json['urls']) : [],
-      commentCount: json['commentCount'] ?? 0,
+      youtubeUrl: json[field.youtubeUrl] ?? '',
+      urls: json[field.urls] != null ? List<String>.from(json[field.urls]) : [],
+      commentCount: json[field.commentCount] ?? 0,
       data: json is Map<String, dynamic> ? json : {},
-      youtube: json['youtube'] ?? {},
-      deleted: json['deleted'],
-      likeCount: json['likeCount'] ?? 0,
-      order: json['order'],
+      youtube: json[field.youtube] ?? {},
+      deleted: json[field.deleted],
+      likeCount: json[field.likeCount] ?? 0,
+      order: json[field.order],
     );
   }
   Map<String, dynamic> toJson() => {
         'id': id,
         field.category: category,
         field.title: title,
-        'subtitle': subtitle,
-        'content': content,
-        'uid': uid,
-        'createdAt': createdAt,
-        'updateAt': updateAt,
-        'urls': urls,
-        'youtubeUrl': youtubeUrl,
-        'commentCount': commentCount,
-        'youtube': youtube,
-        'deleted': deleted,
-        'likeCount': likeCount,
-        'order': order,
+        field.subtitle: subtitle,
+        field.content: content,
+        field.uid: uid,
+        field.createdAt: createdAt,
+        field.updateAt: updateAt,
+        field.urls: urls,
+        field.youtubeUrl: youtubeUrl,
+        field.commentCount: commentCount,
+        field.youtube: youtube,
+        field.deleted: deleted,
+        field.likeCount: likeCount,
+        field.order: order,
       };
 
   @override
@@ -194,7 +195,7 @@ class Post {
       field.order: order,
       if (title != null) field.title: title,
       if (subtitle != null) field.subtitle: subtitle,
-      if (content != null) 'content': content,
+      if (content != null) field.content: content,
       field.uid: currentUser!.uid,
       field.urls: urls,
       field.youtubeUrl: youtubeUrl,
@@ -244,17 +245,18 @@ class Post {
   }) async {
     final data = {
       if (title != null) field.title: title,
-      if (subtitle != null) 'subtitle': subtitle,
-      if (content != null) 'content': content,
-      if (urls != null) 'urls': urls,
-      if (youtubeUrl != null) 'youtubeUrl': youtubeUrl,
+      if (subtitle != null) field.subtitle: subtitle,
+      if (content != null) field.content: content,
+      if (urls != null) field.urls: urls,
+      if (youtubeUrl != null) field.youtubeUrl: youtubeUrl,
     };
 
     await ref.update(
       {
         ...data,
-        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) 'youtube': await getYoutubeSnippet(youtubeUrl),
-        'updateAt': ServerValue.timestamp,
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
+          field.youtube: await getYoutubeSnippet(youtubeUrl),
+        field.updateAt: ServerValue.timestamp,
         ...?extra,
       },
     );
@@ -274,7 +276,7 @@ class Post {
     }
 
     await ref.update({
-      'deleted': true,
+      field.deleted: true,
     });
   }
 }
