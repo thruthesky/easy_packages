@@ -76,7 +76,7 @@ class UserModel extends StatelessWidget {
 
     /// When [sync] is false, and [cache] is false of there is no cached data,
     ///
-    return Value.once(
+    return Value(
       ref: userRef(uid),
       initialData: json,
       builder: (v, _) {
@@ -85,6 +85,7 @@ class UserModel extends StatelessWidget {
         return builder(user);
       },
       onLoading: onLoading,
+      sync: false,
     );
   }
 }
