@@ -1,14 +1,14 @@
 // import 'package:firebase_core/firebase_core.dart';
+import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
-import 'package:memory_cache/memory_cache.dart';
 
-/// UserModel
+/// PostModel
 ///
-/// Gets user data from Realtime Database and keep it in memory cache.
+/// Gets post data from Realtime Database and keep it in memory cache.
 ///
-/// [uid] User's uid.
+/// [id] Post's id.
 ///
 /// There are three different modes.
 ///
@@ -34,58 +34,35 @@ import 'package:memory_cache/memory_cache.dart';
 /// [initialData] is the initial data that is used on very first time. The data
 /// may be cached. If the data is not cached, then it will be used as initial
 /// data.
-class UserModel extends StatelessWidget {
-  const UserModel({
-    required this.uid,
+class PostModel extends StatelessWidget {
+  const PostModel({
+    required this.id,
     this.initialData,
-    this.cache = true,
     required this.builder,
     this.onLoading,
     this.sync = true,
     super.key,
   });
-  final String uid;
-  final User? initialData;
-  final bool cache;
-  final Widget Function(User? user) builder;
+  final String id;
+  final Post? initialData;
+  final Widget Function(Post? post) builder;
   final bool sync;
   final Widget? onLoading;
 
   @override
   Widget build(BuildContext context) {
-    final cachedUser = MemoryCache.instance.read<User?>(uid);
-    final json = cachedUser?.toJson() ?? initialData?.toJson();
-
-    if (sync) {
-      return Value(
-        ref: userRef(uid),
-        initialData: json,
-        builder: (v, _) {
-          final user = User.fromJson(Map<String, dynamic>.from(v as Map), uid);
-          MemoryCache.instance.create(uid, user);
-          return builder(user);
-        },
-        onLoading: onLoading,
-      );
-    }
-
-    /// If [sync] is false and [cache] is true, and there is a cached data,
-    if (cache && cachedUser != null) {
-      return builder(cachedUser);
-    }
-
-    /// When [sync] is false, and [cache] is false of there is no cached data,
-    ///
     return Value(
-      ref: userRef(uid),
-      initialData: json,
+      ref: postRef(id),
+      initialData: initialData?.toJson(),
       builder: (v, _) {
-        final user = User.fromJson(v, uid);
-        MemoryCache.instance.create(uid, user);
-        return builder(user);
+        if (v == null) {
+          return builder(null);
+        }
+        final post = Post.fromJson(Map<String, dynamic>.from(v as Map), id);
+        return builder(post);
       },
       onLoading: onLoading,
-      sync: false,
+      sync: sync,
     );
   }
 }

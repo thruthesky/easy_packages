@@ -4,7 +4,8 @@ A post management library for Firebase and Fltuter.
 
 # Database structure
 
-- To acheive the concept of `single source of truth (SSOT)`, we came up and idea of `posts` and `posts-content` structure.
+- To acheive the concept of `single source of truth (SSOT)`, we came up an idea of saving all the data in `posts` node.
+  - If there is an attack of writing too much data in the `posts` node like saving too long data into title or content, then you can add a security rules to validate that the size of title and content to be lower than 1K or something.
 
 
 - `posts` is a list of posts with only meta data. Especially excluding big content like `content` field.
@@ -17,14 +18,13 @@ A post management library for Firebase and Fltuter.
     "order": -1630000000000,
     "uid": "uid",
     "title": "title",
+    "content": "content",
     "urls": ["url1", "url2"],
     "youtubeUrl": "youtubeUrl",
     "createdAt": 1630000000000,
     "updatedAt": 1630000000000
   }
 ```
-
-- `posts-content` is a list of posts with only content.
 
 
 ```dart

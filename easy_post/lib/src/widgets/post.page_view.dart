@@ -5,58 +5,55 @@ import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-/// PostListView
+/// PostPageView
 ///
 ///
-class PostListView extends StatelessWidget {
-  const PostListView({
+class PostPageView extends StatelessWidget {
+  const PostPageView({
     super.key,
     this.category,
     this.pageSize = 20,
     this.loadingBuilder,
-    this.errorBuilder,
-    this.separatorBuilder,
-    this.scrollDirection = Axis.vertical,
+    this.scrollDirection = Axis.horizontal,
     this.reverse = false,
     this.controller,
-    this.primary,
     this.physics,
-    this.shrinkWrap = false,
-    this.padding,
-    this.addAutomaticKeepAlives = true,
-    this.addRepaintBoundaries = true,
-    this.addSemanticIndexes = true,
-    this.cacheExtent,
+    this.pageSnapping = true,
+    this.onPageChanged,
+    required this.itemBuilder,
+    this.emptyBuilder,
+    this.errorBuilder,
+    ChildIndexGetter? findChildIndexCallback,
+    int? itemCount,
     this.dragStartBehavior = DragStartBehavior.start,
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.onDrag,
+    this.allowImplicitScrolling = false,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
-    this.itemBuilder,
-    this.emptyBuilder,
+    this.hitTestBehavior = HitTestBehavior.opaque,
+    this.scrollBehavior,
+    this.padEnds = true,
   });
   final String? category;
 
   final int pageSize;
   final Widget Function()? loadingBuilder;
   final Widget Function(String)? errorBuilder;
-  final Widget Function(BuildContext, int)? separatorBuilder;
-  final Axis scrollDirection;
+  final Widget Function()? emptyBuilder;
+
   final bool reverse;
-  final ScrollController? controller;
-  final bool? primary;
+  final PageController? controller;
   final ScrollPhysics? physics;
-  final bool shrinkWrap;
-  final EdgeInsetsGeometry? padding;
-  final bool addAutomaticKeepAlives;
-  final bool addRepaintBoundaries;
-  final bool addSemanticIndexes;
-  final double? cacheExtent;
   final DragStartBehavior dragStartBehavior;
-  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
   final Widget Function(Post, int)? itemBuilder;
-  final Widget Function()? emptyBuilder;
+  final Axis scrollDirection;
+  final bool pageSnapping;
+  final ValueChanged<int>? onPageChanged;
+  final bool allowImplicitScrolling;
+  final HitTestBehavior hitTestBehavior;
+  final ScrollBehavior? scrollBehavior;
+  final bool padEnds;
   @override
   Widget build(BuildContext context) {
     final query = PostService.instance.postsRef
@@ -82,25 +79,21 @@ class PostListView extends StatelessWidget {
           return emptyBuilder?.call() ?? Center(child: Text('post list is empty'.t));
         }
 
-        return ListView.separated(
+        return PageView.builder(
           itemCount: snapshot.docs.length,
-          separatorBuilder: (context, index) =>
-              separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
           scrollDirection: scrollDirection,
           reverse: reverse,
           controller: controller,
-          primary: primary,
           physics: physics,
-          shrinkWrap: shrinkWrap,
-          padding: padding,
-          addAutomaticKeepAlives: addAutomaticKeepAlives,
-          addRepaintBoundaries: addRepaintBoundaries,
-          addSemanticIndexes: addSemanticIndexes,
-          cacheExtent: cacheExtent,
           dragStartBehavior: dragStartBehavior,
-          keyboardDismissBehavior: keyboardDismissBehavior,
           restorationId: restorationId,
           clipBehavior: clipBehavior,
+          onPageChanged: onPageChanged,
+          pageSnapping: pageSnapping,
+          allowImplicitScrolling: allowImplicitScrolling,
+          hitTestBehavior: hitTestBehavior,
+          scrollBehavior: scrollBehavior,
+          padEnds: padEnds,
           itemBuilder: (context, index) {
             // if we reached the end of the currently obtained items, we try to
             // obtain more items

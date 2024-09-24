@@ -17,6 +17,7 @@ export './src/screens/post.detail.screen.dart';
 export './src/screens/post.edit.screen.dart';
 export './src/widgets/post.list_tile.dart';
 export './src/widgets/post.list_view.dart';
+export './src/widgets/post.page_view.dart';
 
 export './src/widgets/youtube_fullscreen.builder.dart';
 export 'src/widgets/easy_youtube_player.dart';
@@ -27,3 +28,4 @@ export './src/post.functions.dart';
 export 'package:youtube_player_flutter/src/enums/player_state.dart';
 
 export './src/post.exception.dart';
+export './src/widgets/post.model.dart';
