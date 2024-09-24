@@ -18,7 +18,7 @@ class DisplayName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UserDoc<String?>(
+    return UserField<String?>(
       uid: uid,
       field: User.field.displayName,
       builder: (displayName) {

@@ -2,7 +2,8 @@ import 'dart:developer';
 import 'dart:math' hide log;
 
 import 'package:easy_locale/easy_locale.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,8 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   lo.init();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   runApp(const MyApp());
 }
 
@@ -49,8 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     UserService.instance.init();
-
-    displayNameUpdateTest();
   }
 
   @override
@@ -79,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () => i.signOut(),
                             child: const Text('Sign out'),
                           ),
-                          UserDoc<int?>(
+                          UserField<int?>(
                             uid: user.uid,
                             field: 'birthDay',
                             builder: (v) {
@@ -95,18 +94,35 @@ class _MyHomePageState extends State<MyHomePage> {
                               );
                             },
                           ),
+                          const UserUpdateAvatar(),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await UserService.instance.showBlockListScreen(context);
+                            },
+                            child: const Text("Show Block list"),
+                          ),
                         ],
                       );
               },
             ),
             ElevatedButton(
-              onPressed: () {
-                UserService.instance.showSearchDialog(
+              onPressed: () async {
+                final user = await UserService.instance.showSearchDialog(
                   context,
                   exactSearch: true,
                 );
+                if (user == null) return;
+                if (!context.mounted) return;
+                UserService.instance.showPublicProfileScreen(context, user: user);
               },
               child: const Text('User Search Dialog'),
+            ),
+            const Divider(),
+            ElevatedButton(
+              onPressed: () async {
+                await UserService.instance.showProfileUpdaeScreen(context);
+              },
+              child: const Text("Update Profile"),
             ),
             const Divider(),
             const Text('TESTS'),
@@ -144,6 +160,34 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: const Text('TEST ALL')),
             const Divider(),
             ElevatedButton(
+              onPressed: () async {
+                final refTest = FirebaseDatabase.instance.ref().child("test").child(myUid!);
+                await refTest.set({
+                  "field1": "val1",
+                  "field2": "val2",
+                  "field3": "val3",
+                });
+
+                debugPrint("==============");
+                debugPrint("==============");
+                debugPrint("Getting using Get: ");
+                final getValue = await refTest.child("field1").get();
+                debugPrint("Get Value: ${getValue.value}");
+                debugPrint("Getting using Once: ");
+                final onceValue = await refTest.child("field1").once();
+                debugPrint("Once Value: ${onceValue.snapshot.value}");
+                debugPrint("==============");
+                debugPrint("Getting null using Get: ");
+                final getNullValue = await refTest.child("nullField").get();
+                debugPrint("Get Null Value: ${getNullValue.value}");
+                debugPrint("Getting null using Once: ");
+                final onceNullValue = await refTest.child("nullField").once();
+                debugPrint("Once Null Value: ${onceNullValue.snapshot.value}");
+              },
+              child: const Text("Firebase Get vs Once"),
+            ),
+            const Divider(),
+            ElevatedButton(
               onPressed: recordPhoneSignInNumberTest,
               child: const Text("Record Phone Number Test"),
             ),
@@ -160,6 +204,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Create a user'),
             ),
             ElevatedButton(
+              onPressed: deleteFieldTest,
+              child: const Text('Delete Field Test'),
+            ),
+            ElevatedButton(
               onPressed: anonymousSignInTest,
               child: const Text('Anonymous sign in test'),
             ),
@@ -170,6 +218,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: getDataTest,
               child: const Text('Get data'),
+            ),
+            ElevatedButton(
+              onPressed: getFieldTest,
+              child: const Text('Get field'),
             ),
             ElevatedButton(
               onPressed: displayNameUpdateTest,
@@ -318,6 +370,9 @@ class _MyHomePageState extends State<MyHomePage> {
         .child(phoneNumber)
         .child("lastSignedInAt")
         .get();
+
+    debugPrint("Last Signed in at: ${checkRecord.value}");
+
     assert(checkRecord.value != null, "recordPhoneSignInNumberTest: The phone sign in was not recorded.");
 
     final lastSignedInAt = checkRecord.value as int;
@@ -372,6 +427,50 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  deleteFieldTest() async {
+    await UserService.instance.signOut();
+    final uid1 = await UserTestService.instance.createTestUser();
+    await waitUntil(() async => UserService.instance.user != null);
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    const testDisplayNameVal = "Test Display Name";
+    const testNameVal = "Test Name";
+
+    await my.update(
+      displayName: testDisplayNameVal,
+      name: testNameVal,
+    );
+
+    final myDataUpdate = await User.get(uid1, cache: false);
+
+    assert(
+      myDataUpdate?.displayName == testDisplayNameVal,
+      "deleteFieldTest: Something went wrong in the middle of testing",
+    );
+    assert(
+      myDataUpdate?.name == testNameVal,
+      "deleteFieldTest: Something went wrong in the middle of testing",
+    );
+
+    await my.deleteFields([User.field.displayName]);
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    final displayNameUpdate = await User.getField(uid: uid1, field: User.field.displayName, cache: false);
+    debugPrint("displayNameUpdate: $displayNameUpdate");
+    final nameUpdate = await User.getField(uid: uid1, field: User.field.name, cache: false);
+
+    assert(
+      displayNameUpdate == null,
+      "deleteFieldTest: Display name SHOULD be deleted",
+    );
+
+    assert(
+      nameUpdate == testNameVal,
+      "deleteFieldTest: Name field should NOT be deleted",
+    );
+  }
+
   anonymousSignInTest() async {
     await UserService.instance.signOut();
     final originalSetup = UserService.instance.enableAnonymousSignIn;
@@ -403,6 +502,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await UserTestService.instance.createTestUser();
     await waitUntil(() async => UserService.instance.user != null);
     if (!context.mounted || !mounted) return;
+
     // Block user 1
     await UserService.instance.block(context: context, otherUid: uid1);
 
@@ -422,6 +522,30 @@ class _MyHomePageState extends State<MyHomePage> {
       getMy != null,
       "getDataTest: User.get failed to get my User",
     );
+  }
+
+  getFieldTest() async {
+    await UserService.instance.signOut();
+    await UserTestService.instance.createTestUser();
+    await waitUntil(() async => UserService.instance.user != null);
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    await UserService.instance.usersRef.child(myUid!).child("testField").set("testing");
+
+    final testField = await User.getField(uid: myUid!, field: "testField");
+
+    debugPrint("testField: $testField");
+
+    final testfield2Once =
+        await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").once();
+
+    debugPrint("testField2: ${testfield2Once.snapshot.value}");
+
+    final testfield2Get =
+        await FirebaseDatabase.instance.ref("users").child(myUid!).child("testField").get();
+
+    debugPrint("testField2: ${testfield2Get.value}");
   }
 
   displayNameUpdateTest() async {
@@ -572,8 +696,7 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint("Check if Updated: ${checkUpdate?.name ?? 'null'}");
     await UserService.instance.user!.delete();
     final deleted = await User.get(myUid, cache: false);
-    debugPrint("Check if nulled: ${checkUpdate?.name ?? 'null'}");
-
+    debugPrint("Check if nulled: ${deleted?.name ?? 'null'}");
     assert(
       deleted == null,
       "userDeletetest: uid: $myUid, deleted from Database: $deleted",

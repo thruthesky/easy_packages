@@ -109,6 +109,23 @@ dependency_overrides:
 # Packages
 
 
+## Firebase SDK
+
+- We use the following firebase SDK in the easy packages. The versions of the packages are the most recent versions at the time of writing this work: September 20, 2024. 
+
+```yaml
+  cloud_firestore: ^5.4.2
+  cloud_functions: ^5.1.2
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.5.0
+  firebase_crashlytics: ^4.1.2
+  firebase_database: ^11.1.3
+  firebase_messaging: ^15.1.2
+  firebase_storage: ^12.3.1
+  firebase_ui_database: ^1.4.4
+  firebase_ui_firestore: ^1.6.4
+  firebase_vertexai: ^0.2.3+3
+```
 
 
 ## Storage

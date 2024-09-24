@@ -1,3 +1,6 @@
+## 0.0.7
+* Refactor. Move from Firestore to Realtime database.
+
 ## 0.0.6
 * Update. Document update.
 

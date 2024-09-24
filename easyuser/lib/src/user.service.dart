@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
@@ -30,26 +29,12 @@ class UserService {
 
   FirebaseDatabase get database => FirebaseDatabase.instance;
 
-  // TODO cleanup
-  // @Deprecated('Do not use firestore.')
-  // CollectionReference get col => FirebaseFirestore.instance.collection('users');
   DatabaseReference get usersRef => database.ref().child('users');
 
-  // TODO cleanup
-  // @Deprecated('Do not use firestore.')
-  // CollectionReference get metaCol => col.doc(myUid).collection('user-meta');
-  DatabaseReference get metaRef => usersRef.child(myUid!).child('user-meta');
+  /// TODO: move user-meta to settings of easy_settings.
+  DatabaseReference get metaRef => database.ref().child('user-meta');
 
-  /// Reference of the block document.
-  // @Deprecated('Do not use firestore.')
-  // DocumentReference get blockDoc => metaCol.doc('blocks');
-  DatabaseReference get blockDoc => metaRef.child('blocks');
-
-  // TODO cleanup
-  // No need to mirror
-  /// RTDB /mirror-users reference
-  // @Deprecated('Do not use firestore.')
-  // DatabaseReference get mirrorUsersRef => FirebaseDatabase.instance.ref('users');
+  DatabaseReference get blockDoc => metaRef.child(myUid!).child('blocks');
 
   User? user;
   BehaviorSubject<User?> changes = BehaviorSubject();
@@ -132,20 +117,18 @@ class UserService {
 
   /// Listen to my document
   StreamSubscription<fa.User?>? firebaseAuthSubscription;
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? firestoreMyDocSubscription;
+
+  StreamSubscription<DatabaseEvent>? firebaseMyDocSubscription;
 
   /// StreamSubscription from "blocks" in RTDB
-  StreamSubscription<DatabaseEvent>? blockingSubscription;
+  StreamSubscription<DatabaseEvent>? firebaseBlockingSubscription;
   // StreamSubscription<DocumentSnapshot>? firestoreBlockingSubscription;
 
   listenDocumentChanges() {
     firebaseAuthSubscription?.cancel();
-    firebaseAuthSubscription =
-        // .distinct((p, n) => p?.user?.uid == n?.user?.uid)
-        fa.FirebaseAuth.instance.authStateChanges().listen((faUser) async {
+    // .distinct((p, n) => p?.user?.uid == n?.user?.uid)
+    firebaseAuthSubscription = fa.FirebaseAuth.instance.authStateChanges().listen((faUser) async {
       /// User state changed
-      ///
-      ///
 
       /// User signed out
       if (faUser == null) {
@@ -161,7 +144,7 @@ class UserService {
         /// User signed in (or changed)
 
         /// The signed user's ref.
-        final signedInUserRef = FirebaseFirestore.instance.collection('users').doc(faUser.uid);
+        final signedInUserRef = usersRef.child(faUser.uid);
 
         /// * Fire user document update immediately *
         /// This is required for the case where the app(or device) has no
@@ -171,10 +154,9 @@ class UserService {
         /// Refer README.md for more details.
         try {
           // If there is cache, use it.
-          final snapshot = await signedInUserRef.get(
-            const GetOptions(source: Source.cache),
-          );
-          user = User.fromSnapshot(snapshot);
+          final databaseEvent = await signedInUserRef.once();
+          if (!databaseEvent.snapshot.exists) throw "User not cached!";
+          user = User.fromDatabaseSnapshot(databaseEvent.snapshot);
           changes.add(user);
         } catch (e) {
           // If there is no cache, use the uid.
@@ -183,50 +165,24 @@ class UserService {
         }
 
         /// User is anonymous
-        if (faUser.isAnonymous) {
-          dog('User signed in. The Firebase User is anonymous');
-        } else {
-          dog('User signed in. The Firebase User is NOT anonymous');
-        }
+        dog('User signed in. The Firebase User is${faUser.isAnonymous ? ' ' : " NOT "}anonymous');
 
         /// User signed in. Listen to the user's document changes.
-        firestoreMyDocSubscription?.cancel();
+        firebaseMyDocSubscription?.cancel();
 
         /// 사용자 문서 초기화
         await initUserLogin(faUser.uid);
 
-        firestoreMyDocSubscription = signedInUserRef.snapshots().listen((snapshot) {
+        firebaseMyDocSubscription = signedInUserRef.onValue.listen((event) {
           // 주의: 여기서는 어떤 경우에도 사용자 문서를 업데이트해서는 안된다.
-          if (snapshot.exists) {
-            user = User.fromSnapshot(snapshot);
-          } else {
-            user = null;
-          }
+          user = event.snapshot.exists ? User.fromDatabaseSnapshot(event.snapshot) : null;
           changes.add(user);
         });
 
-        // TODO cleanup
-        // firestoreBlockingSubscription?.cancel();
-        blockingSubscription?.cancel();
+        firebaseBlockingSubscription?.cancel();
 
-        // TODO cleanup
-        // firestoreBlockingSubscription = blockDoc.snapshots().listen(
-        //   (snapshot) {
-        //     if (snapshot.exists) {
-        //       blocks = snapshot.data() as Map<String, dynamic>;
-        //     } else {
-        //       blocks = {};
-        //     }
-        //     // dog('updated blocks: $blocks');
-        //     blockChanges.add(blocks);
-        //   },
-        // );
-        blockingSubscription = blockDoc.onValue.listen((event) {
-          if (event.snapshot.exists) {
-            blocks = event.snapshot.value as Map<String, dynamic>;
-          } else {
-            blocks = {};
-          }
+        firebaseBlockingSubscription = blockDoc.onValue.listen((event) {
+          blocks = Map<String, dynamic>.from((event.snapshot.value ?? {}) as Map);
           // dog('updated blocks: $blocks');
           blockChanges.add(blocks);
         });
@@ -236,13 +192,11 @@ class UserService {
 
   /// Initialize anonymous sign in if the app is configured to do so.
   initAnonymousSignIn() async {
-    if (enableAnonymousSignIn) {
-      final user = currentUser;
-      if (user == null) {
-        dog('initAnonymousSignIn: sign in anonymously');
-        await auth.signInAnonymously();
-      }
-    }
+    if (enableAnonymousSignIn != true) return;
+    final user = currentUser;
+    if (user != null) return;
+    dog('initAnonymousSignIn: sign in anonymously');
+    await auth.signInAnonymously();
   }
 
   /// Get my user document
@@ -267,8 +221,6 @@ class UserService {
   /// - create `createdAt` if it is not exists.
   /// - update `lastLoginAt` on every login.
   ///
-  ///
-  ///
   /// Firebase 로그인을 하고, 사용자 문서가 존재 할 수 있고, 존재하지 않을 수 있다.
   /// 사용자 문서가 존재하지 않거나, createdAt 이 null 이면, createdAt 을 생성한다.
   /// 즉, createdAt 은 최초 1회만 생성되므로, 사용자 문서 생성 시, 최초 1회 동작이 필요하다면,
@@ -284,44 +236,22 @@ class UserService {
     _recordPhoneSignInNumber(uid);
 
     /// 나의 정보를 가져온다.
-    // TODO cleanup
-    // final got = await User.getFromFirestore(uid, cache: false);
     final got = await User.get(uid, cache: false);
 
     final Map<String, dynamic> data = {
-      // TODO cleanup
-      // 'lastLoginAt': FieldValue.serverTimestamp(),
       'lastLoginAt': ServerValue.timestamp,
     };
 
     if (got == null || got.createdAt == null) {
-      // TODO cleanup
-      // dog('최초 1회 문서를 생성하고, 코드를 실행.');
-      // data['createdAt'] = FieldValue.serverTimestamp();
       data['createdAt'] = ServerValue.timestamp;
     }
 
     final u = User.fromUid(uid);
 
     /// Create or update the user data
-    // TODO cleanup
-    // await u.ref.set(
-    //   data,
-    //   SetOptions(merge: true),
-    // );
     await u.ref.update(
       data,
     );
-
-    // TODO clean up
-    /// Mirror to RTDB
-    // if (data['createdAt'] != null) {
-    //   data['createdAt'] = ServerValue.timestamp;
-    // }
-    // data['lastLoginAt'] = ServerValue.timestamp;
-
-    // dog('Mirror to RTDB at: ${u.mirrorRef.path}');
-    // await u.mirrorRef.update(data);
   }
 
   /// Record the phone number if the user signed in as Phone sign-in auth.
@@ -356,12 +286,6 @@ class UserService {
   /// do this, it needs to know if the phone number is already in use.
   ///
   /// See README.md for details
-  // TODO cleanup
-  // Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
-  //   final doc = FirebaseFirestore.instance.collection('user-phone-sign-in-numbers').doc(phoneNumber);
-  //   final snapshot = await doc.get();
-  //   return snapshot.exists;
-  // }
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
     final doc = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber).child("lastSignedInAt");
     final snapshot = await doc.get();
@@ -493,8 +417,6 @@ class UserService {
       if (re != true) return null;
 
       await blockDoc.update({
-        // TODO clean up
-        // otherUid: FieldValue.delete(),
         otherUid: null,
       });
       if (context.mounted) {
@@ -512,16 +434,11 @@ class UserService {
         ));
     if (re != true) return null;
 
-    await blockDoc.set(
-      {
-        otherUid: {
-          // TODO clean up
-          // 'blockedAt': FieldValue.serverTimestamp(),
-          'blockedAt': ServerValue.timestamp,
-        },
+    await blockDoc.update({
+      otherUid: {
+        'blockedAt': ServerValue.timestamp,
       },
-      // SetOptions(merge: true),
-    );
+    });
 
     if (context.mounted) {
       toast(context: context, message: Text('user is blocked'.t));

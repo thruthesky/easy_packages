@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_storage/easy_storage.dart';
@@ -72,8 +71,8 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
         children: [
           MyDoc(
             builder: (user) => UserAvatar(
-              photoUrl: user!.photoUrl,
-              initials: user.displayName.or(user.name.or(user.uid)),
+              photoUrl: user?.photoUrl,
+              initials: (user?.displayName).or((user?.name).or(user?.uid ?? "")),
               size: widget.size,
               radius: widget.radius,
             ),
@@ -121,8 +120,8 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                           title: Text('Delete Avatar?'.t),
                           message: Text('Are you sure you wanted to delete this avatar?'.t));
                       if (re == false) return;
-                      StorageService.instance.delete(my.photoUrl);
-                      my.update(photoUrl: FieldValue.delete());
+                      await StorageService.instance.delete(my.photoUrl);
+                      await my.deleteFields([User.field.photoUrl]);
                     },
                     padding: EdgeInsets.zero,
                     visualDensity: VisualDensity.compact,

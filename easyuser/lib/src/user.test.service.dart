@@ -1,7 +1,9 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' hide log;
 
 import 'package:easyuser/easyuser.dart';
+import 'package:flutter/material.dart';
 
 class UserTestService {
   static UserTestService? _instance;
@@ -26,7 +28,7 @@ class UserTestService {
     );
 
     final String uid = UserService.instance.currentUser!.uid;
-    print('uid: $uid');
+    log('uid: $uid');
 
     return uid;
   }
@@ -55,13 +57,13 @@ waitUntil(Future<bool> Function() condition, {int timeout = 10000, int interval 
   final int start = DateTime.now().millisecondsSinceEpoch;
   try {
     while (!(await condition())) {
-      print('---> waitUntil() return false;');
+      debugPrint('---> waitUntil() return false;');
       if (DateTime.now().millisecondsSinceEpoch - start > timeout) {
         throw TimeoutException('Test failed due to timeout. waitUntil()');
       }
       await Future.delayed(Duration(milliseconds: interval));
     }
   } catch (e) {
-    print('---> try/catch error on waitUntil: $e');
+    debugPrint('---> try/catch error on waitUntil: $e');
   }
 }

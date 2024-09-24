@@ -20,6 +20,8 @@ class UserPublicProfileScreen extends StatelessWidget {
         leading: const BackButton(
           color: Colors.white,
         ),
+        shape: const LinearBorder(),
+        elevation: 0,
         backgroundColor: Colors.transparent,
         actions: [
           if (user.uid == myUid)
@@ -100,7 +102,7 @@ class UserPublicProfileScreen extends StatelessWidget {
               child: Column(
                 children: [
                   const Spacer(),
-                  UserDoc<String>(
+                  UserField<String>(
                     uid: user.uid,
                     field: User.field.photoUrl,
                     builder: (photoUrl) {

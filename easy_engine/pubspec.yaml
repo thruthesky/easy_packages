@@ -1,6 +1,6 @@
 name: easy_engine
 description: "The counter part of the easy_engine project."
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/thruthesky/easy_packages/
 
 environment:
@@ -8,10 +8,10 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  cloud_functions: ^5.0.2
-  firebase_auth: ^5.1.1
   flutter:
     sdk: flutter
+  cloud_functions: ^5.1.2
+  firebase_auth: ^5.3.0
 
 dev_dependencies:
   flutter_test:

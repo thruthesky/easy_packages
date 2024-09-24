@@ -36,7 +36,7 @@ class ChatRoomMemberListDialog extends StatelessWidget {
         child: ListView.builder(
           itemCount: room.userUids.length,
           itemBuilder: (context, index) {
-            return UserDoc(
+            return UserModel(
               uid: room.userUids[index],
               builder: (user) {
                 if (user == null) {

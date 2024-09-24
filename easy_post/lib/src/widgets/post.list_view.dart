@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +12,6 @@ class PostListView extends StatelessWidget {
   const PostListView({
     super.key,
     this.category,
-    this.uid,
     this.pageSize = 20,
     this.loadingBuilder,
     this.errorBuilder,
@@ -37,7 +35,6 @@ class PostListView extends StatelessWidget {
     this.emptyBuilder,
   });
   final String? category;
-  final String? uid;
 
   final int pageSize;
   final Widget Function()? loadingBuilder;
@@ -62,22 +59,17 @@ class PostListView extends StatelessWidget {
   final Widget Function()? emptyBuilder;
   @override
   Widget build(BuildContext context) {
-    Query query = PostService.instance.col;
-    if (category != null) {
-      query = query.where('category', isEqualTo: category);
-    }
-    if (uid != null) {
-      query = query.where('uid', isEqualTo: uid);
-    }
-    query = query.orderBy('createdAt', descending: true);
+    final query = PostService.instance.postsRef
+        .orderByChild('category')
+        .startAt('$category-')
+        .endAt('$category-9999999999999999999999');
 
-    return FirestoreQueryBuilder(
+    return FirebaseDatabaseQueryBuilder(
       query: query,
       pageSize: pageSize,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
-          return loadingBuilder?.call() ??
-              const Center(child: CircularProgressIndicator.adaptive());
+          return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
         }
 
         if (snapshot.hasError) {
@@ -87,8 +79,7 @@ class PostListView extends StatelessWidget {
         }
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
-          return emptyBuilder?.call() ??
-              Center(child: Text('post list is empty'.t));
+          return emptyBuilder?.call() ?? Center(child: Text('post list is empty'.t));
         }
 
         return ListView.separated(

@@ -30,30 +30,35 @@ class _PostDetailState extends State<PostDetail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        UserDoc(
+        UserField<String?>(
+          field: User.field.displayName,
           uid: post.uid,
-          builder: (user) {
-            return user == null
-                ? const SizedBox.shrink()
-                : Row(
+          builder: (displayName) {
+            return Row(
+              children: [
+                UserField<String?>(
+                    field: User.field.photoUrl,
+                    uid: post.uid,
+                    builder: (photoUrl) {
+                      return UserAvatar(
+                        photoUrl: photoUrl,
+                        initials: displayName ?? '',
+                      );
+                    }),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      UserAvatar(
-                        user: user,
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(user.displayName),
-                            Text(post.createdAt.yMd),
-                          ],
-                        ),
-                      )
+                      Text(displayName ?? ''),
+                      Text(post.createdAt.yMd),
                     ],
-                  );
+                  ),
+                )
+              ],
+            );
           },
         ),
         const SizedBox(height: 16),
@@ -72,7 +77,7 @@ class _PostDetailState extends State<PostDetail> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (post.deleted) ...{
+                if (post.deleted) ...[
                   const SizedBox(
                     width: double.infinity,
                     height: 200,
@@ -80,23 +85,58 @@ class _PostDetailState extends State<PostDetail> {
                       child: Text('This Post has been deleted.'),
                     ),
                   ),
-                } else ...{
-                  PostDetailPhotos(post: widget.post),
-                  if (post.hasYoutube && widget.youtubePlayer != null)
-                    widget.youtubePlayer!,
-                  PostDetailYoutubeMeta(post: widget.post),
-                  const SizedBox(
-                    height: 16,
+                ] else ...[
+                  const SizedBox(height: 8),
+                  PostField<String?>(
+                    id: post.id,
+                    initialData: post.title,
+                    field: Post.field.title,
+                    sync: true,
+                    builder: (title) {
+                      if (title.isEmpty) return const SizedBox.shrink();
+                      return Text(
+                        title!,
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
+                      );
+                    },
                   ),
-                  if (widget.post.title.isNotEmpty) Text(post.title),
-                  if (widget.post.content.isNotEmpty) Text(post.content),
-                },
+                  const SizedBox(height: 8),
+                  PostField<String?>(
+                    id: post.id,
+                    initialData: post.content,
+                    field: Post.field.content,
+                    sync: true,
+                    builder: (content) {
+                      if (content.isEmpty) return const SizedBox.shrink();
+                      return Text(content!);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  PostField<List<Object?>?>(
+                    id: post.id,
+                    initialData: post.urls,
+                    field: Post.field.urls,
+                    sync: true,
+                    builder: (urls) {
+                      if (urls == null) return const SizedBox.shrink();
+                      final res = urls.map((v) => v as String).toList();
+                      return PostDetailPhotos(urls: res);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  if (post.hasYoutube && widget.youtubePlayer != null) widget.youtubePlayer!,
+                  PostDetailYoutubeMeta(post: widget.post),
+                ],
               ],
             );
           },
         ),
-        PostDetailBottomAction(
-          post: post,
+        PostModel(
+          id: post.id,
+          initialData: post,
+          builder: (p) => PostDetailBottomAction(
+            post: post,
+          ),
         ),
       ],
     );

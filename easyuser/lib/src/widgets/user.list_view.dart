@@ -77,8 +77,6 @@ class UserListView extends StatelessWidget {
     return FirebaseDatabaseQueryBuilder(
       pageSize: pageSize,
       query: query ?? UserService.instance.usersRef,
-      // TODO cleanup
-      // query: query ?? UserService.instance.mirrorUsersRef,
       builder: (context, snapshot, _) {
         if (snapshot.isFetching) {
           return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
