@@ -66,6 +66,8 @@ class Like {
       ref.path: hasLiked ? {uid: null} : {uid: true},
     };
 
+    await FirebaseDatabase.instance.ref().update(updates);
+
     LikeService.instance.onLiked?.call(
       like: Like.fromJson({
         'parentReference': parentReference,
