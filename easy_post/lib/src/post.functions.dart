@@ -6,8 +6,6 @@ import 'package:firebase_database/firebase_database.dart';
 // DatabaseReference categoryRef(String category) => Post.col.child(category);
 DatabaseReference postRef(String id) => PostService.instance.postsRef.child(id);
 
-DatabaseReference postContentRef(String id) => PostService.instance.contentRef.child(id);
-
 DatabaseReference postFieldRef(
   String id,
   String field,

@@ -1,7 +1,6 @@
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
 /// PostModel
@@ -10,7 +9,7 @@ import 'package:flutter/material.dart';
 ///
 /// [id] Post's id.
 ///
-/// There are three different modes.
+/// There are two different modes.
 ///
 ///
 ///
@@ -18,16 +17,6 @@ import 'package:flutter/material.dart';
 /// data first, then it gets data from server in realtime and updates the
 /// widget again. Whenever the data changes in the server, it will update the
 /// widget.
-///
-/// If [cache] is set to true, then it uses cached memory data only. It does
-/// not get data from server. But if there is no cached data, then it gets data
-/// from the server.
-///
-/// If [cache] is set to false, it will display the widget with the memory data
-/// and gets the data from server and update the widget again.
-///
-/// If [sync] and [cache] are set to true at the same time, then [cache] is
-/// ignored.
 ///
 /// [sync] option helps to reduce the blinking(flickering) on the UI.
 ///
