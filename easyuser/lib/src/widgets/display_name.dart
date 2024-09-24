@@ -10,11 +10,13 @@ class DisplayName extends StatelessWidget {
     required this.uid,
     this.maxLines = 1,
     this.overflow,
+    this.style,
   });
 
   final String uid;
   final int maxLines;
   final TextOverflow? overflow;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,15 @@ class DisplayName extends StatelessWidget {
           displayName ?? '',
           maxLines: maxLines,
           overflow: overflow,
-          style: Theme.of(context).textTheme.labelMedium,
+          // Originally, we have put here `Theme.of(context).textTheme.labelMedium`.
+          // Sometimes, it is better to let the widget set the sizing.
+          // For example in ListTile, we can let it decide the size of texts for title,
+          // subtitle.
+          // It already shows some leveling/hierarchy. Title and subtitle has different
+          // font size, and they also have different color strength (title is stronger,
+          // subtitle is a little gray/subtle). As well as the text used in leading and
+          // trailing is different.
+          style: style,
         );
       },
     );

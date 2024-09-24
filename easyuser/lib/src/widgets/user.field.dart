@@ -77,7 +77,8 @@ class UserField<T> extends StatelessWidget {
 
     /// When [sync] is false, and [cache] is false of there is no cached data,
     ///
-    return Value.once(
+    return Value(
+      sync: false,
       ref: userFieldRef(uid, field),
       initialData: value,
       builder: (v, _) {
@@ -119,7 +120,8 @@ class UserField<T> extends StatelessWidget {
 
     /// When [sync] is false, and [cache] is false of there is no cached data,
     ///
-    return Value.once(
+    return Value(
+      sync: false,
       ref: userRef(uid),
       initialData: json,
       builder: (v, _) {

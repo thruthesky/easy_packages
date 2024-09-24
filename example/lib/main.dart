@@ -63,6 +63,18 @@ class MyAppState extends State<MyApp> {
       ];
     });
 
+    MessagingService.instance.init(
+      sendMessageToTokensApi: "https://sendmessagetotokens-aykj77d72a-uc.a.run.app",
+      sendMessageToUidsApi: "https://sendmessagetouids-aykj77d72a-uc.a.run.app",
+      sendMessageToSubscriptionApi: "https://sendmessagetosubscription-aykj77d72a-uc.a.run.app",
+      onMessageOpenedFromTerminated: (remoteMessage) {
+        // Do something when notificaiton was tapped
+      },
+      onMessageOpenedFromBackground: (remoteMessage) {
+        // Do something when notificaiton was tapped
+      },
+    );
+
     StorageService.instance.init(
       uploadBottomSheetPadding: const EdgeInsets.all(16),
       uploadBottomSheetSpacing: 16,

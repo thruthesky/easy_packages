@@ -456,9 +456,16 @@ class ChatService {
   /// - It update the room.users with current user's uid. It's called as
   /// call-by-reference. So, the parent can use the updated room.users which
   /// includes the current user's uid.
-  Future<void> join(ChatRoom room, {String? protocol}) async {
+  Future<void> join(
+    ChatRoom room, {
+    String? protocol,
+    bool force = false,
+  }) async {
     // If the user is already joined, return.
-    if (room.joined) {
+    if (room.joined && force == false) {
+      // NOTE: room.joined is only based on `/chat/room/` user
+      //       might not be joined yet based on `/chat/join/`
+      //       That is the reason why we have to add force
       dog('--> already joined');
       return;
     }
@@ -479,9 +486,7 @@ class ChatService {
     /// Add your uid into the user list of the chat room instead of reading from database.
     /// * This must be here before await. So it can return fast.
     room.users[myUid!] = true;
-
     await FirebaseDatabase.instance.ref().update(joinValues);
-
     await sendMessage(room, protocol: protocol ?? ChatProtocol.join);
   }
 
