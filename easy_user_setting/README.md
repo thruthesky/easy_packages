@@ -1,12 +1,10 @@
-# Easy settings
+# Easy user settings
 
-- `easy_setting` package provides an easy and nice UI/UX with the logic to manage the settings in Firestore.
+- `easy_user_setting` package provides an easy and nice UI/UX with the logic to manage the settings in realtime database.
 
-- It can handle any kinds of settings including but not limited to app settings, user settings.
+- It is a simple container for the user's extra data. The user data is used in many places and it's public. If is' too large, it will cost more. And it cannot save private data like password, email, etc.
 
-- Each setting is a Firestore document.
-
-- The document id of the setting's document must be unique for the setting.
+- It can have any kinds of settings.
 
 
 ## TODO
@@ -18,22 +16,26 @@
 ## Security Rules
 
 
-```json
-"settings": {
-    "$uid": {
-      ".read": true,
-      ".write": "$uid === auth.uid"
-    },
-}
-```
+- Install the [database security rules](../docs/database_security_rules.json) file.
+
+
+## Database Structure
+
+
+- `/user-settings`: is the node of each user's settings.
+  - `/user-settings/<uid>`: is the user's settings node.
+    - `/user-settings/<uid>/<key>`: is the key of the setting.
+    - `/user-settings/<uid>/<key>: value`: is the value of the setting.
+
+- The data is private and only the user can read and write.
+
 
 ## How to use
 
 - To display and update a value, see the code below.
 
 ```dart
-Setting(
-  id: 'system',
+UserSettingModel(
   builder: (sm) {
     return ListTile(
       title: Text('System count: ${sm.value<int>('count') ?? 0}'),

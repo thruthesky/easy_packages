@@ -6,23 +6,8 @@
 
 # Security rules
 
-```json
-{
-  "rules": {
-    "users": {
-      "$uid": {
-        ".read": true,
-        ".write": "$uid === auth.uid"
-      }
-    },
-    "user-phone-sign-in-numbers": {
-      ".read": true,
-      ".write": "auth != null"
-    }
-  }
-}
-```
 
+- Install the security rules from the [database security rules](../docs/database_security_rules.json) file.
 
 # Database Structure
 

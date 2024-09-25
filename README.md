@@ -98,74 +98,9 @@ dependency_overrides:
 # Security rules
 
 - This is the security rules for all the packages of easy packages.
-  - Since each package has its own security rules, it's not easy to find where the security rules are. So, all the security rules are here.
+  - Since each package has its own security rules, it's not easy to find where the security rules are. So, all the security rules are here for your convinience. You can copy and paste this to your Firebase database security rules.
+- Install the security rules from [database security rules](./docs/database_security_rules.json) file.
 
-
-```json
-{
-  "rules": {
-    "test": {
-      ".read": true,
-      ".write": true
-    },
-    "user-phone-sign-in-numbers": {
-      ".read": true,
-      ".write": "auth != null"
-    },
-    "chat": {
-      "-info": {
-        "timestamp": {
-          ".read": true,
-          ".write": true,
-        }
-      },
-      "invited-users": {
-        ".read": true,
-        ".write": true,
-        "$uid": {
-          ".indexOn": [".value"]
-        }
-      },
-      "rejected-users": {
-        ".read": true,
-        ".write": true
-      },
-      "joins": {
-        ".read": true,
-        ".write": true,
-        "$uid": {
-          "$room_id": {
-          },
-          ".indexOn": ["order", "singleOrder", "groupOrder", "openOrder"]
-        }
-      },
-      "messages": {
-        "$room_id": {
-          ".read": true,
-          ".write": true,
-          ".indexOn": ["order", "protocol"]
-        }
-      },
-      "rooms": {
-        ".read": true,
-        ".write": true
-      },
-      "settings": {
-        ".read": true,
-        ".write": true
-      }
-    },
-      
-    
-    
-    // Settings
-    "settings": {
-        "$uid": {
-          ".read": true,
-          ".write": "$uid === auth.uid"
-        },
-    },
-```
 
 
 # Firebase SDK

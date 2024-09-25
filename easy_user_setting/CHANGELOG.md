@@ -1,3 +1,6 @@
+## 0.0.5
+* Refactor. Package name change from `easy_settings` to `easy_user_setting`.
+
 ## 0.0.4
 * Refactor. Move from Firestore to Realtime database.
 
