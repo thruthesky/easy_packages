@@ -9,6 +9,10 @@ final localeTexts = <String, Map<String, dynamic>>{
     'en': 'Send',
     'ko': '보내기',
   },
+  'input a message': {
+    'en': 'Type a message',
+    'ko': '메시지를 입력하세요',
+  },
 
   // chat.room.dart
   'failed joining. something went wrong. the room may be private or deleted.': {
@@ -35,7 +39,7 @@ final localeTexts = <String, Map<String, dynamic>>{
   },
   'you can change this chat room name later': {
     'en': 'This is the chat room name. You can change it later.',
-    'ko': '이것이 채팅방 이름입니다. 나중에 변경할 수 있습니다.',
+    'ko': '채팅방 이름을 입력해주세요',
   },
   'description': {
     'en': 'Description',
@@ -47,7 +51,7 @@ final localeTexts = <String, Map<String, dynamic>>{
   },
   'this is chat room description': {
     'en': 'This is the chat room description.',
-    'ko': '이것이 채팅방 설명입니다.',
+    'ko': '채팅방 설명을 입력해주세요',
   },
   'open chat': {
     'en': 'Open Chat',
@@ -496,7 +500,7 @@ final localeTexts = <String, Map<String, dynamic>>{
   'protocol.create': {
     'en': '{displayName} created the chat room',
     'ko': '{displayName}님이 채팅방을 생성하였습니다',
-  }
+  },
 };
 
 applyChatLocales() async {
