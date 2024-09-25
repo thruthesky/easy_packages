@@ -26,13 +26,17 @@
 
 - The data is public, the users can only read the data. The admin is the only one who can write.
 
+
+
 ## How to use
 
 - To display and update a value, see the code below.
+- You can use `field` to get the value from the app settings. It can have a path like `puzzle/defaultBoardImageUrls` or `puzzle/defaultBoardImageUrls/0`.
 
 ```dart
 AppSettings(
-  builder: (sm) {
+  field: 'puzzle/defaultBoardImageUrls',
+  builder: (sm, r) {
     return ListTile(
       title: Text('System count: ${sm.value<int>('count') ?? 0}'),
       onTap: () {

@@ -11,7 +11,7 @@ import 'package:easy_storage/easy_storage.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
-import 'package:example/firebase_options.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:example/router.dart';
 import 'package:example/screens/user/sign_in.screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,8 +29,8 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
       lo.init();
       await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+          // options: DefaultFirebaseOptions.currentPlatform,
+          );
 
       runApp(const MyApp());
 
@@ -298,7 +298,8 @@ class MyAppState extends State<MyApp> {
 
       /// Register the channel with the system.
       /// If there is already a registed channel (with same id), then it will be re-registered.
-      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
 
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
@@ -315,7 +316,8 @@ class MyAppState extends State<MyApp> {
         /// send push notification to subscriber
         try {
           await MessagingService.instance.sendMessageToSubscription(
-            subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
+            subscription:
+                post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
             title: 'post title ${post.title}  ${DateTime.now()}',
             body: 'post body ${post.content}',
             data: {
