@@ -25,22 +25,24 @@ class ChatService {
   /// Note that, chat service can be initialized multiple times.
   bool initialized = false;
 
+  FirebaseDatabase get database => FirebaseDatabase.instance;
+
   /// Database path for chat room and message
   /// Database of chat room and message
-  final DatabaseReference roomsRef = FirebaseDatabase.instance.ref().child('chat/rooms');
+  DatabaseReference get roomsRef => database.ref().child('chat/rooms');
 
   DatabaseReference roomRef(String roomId) => roomsRef.child(roomId);
 
-  final DatabaseReference messagesRef = FirebaseDatabase.instance.ref().child('chat/messages');
+  DatabaseReference get messagesRef => database.ref().child('chat/messages');
 
   DatabaseReference messageRef(String roomId) => messagesRef.child(roomId);
 
-  final DatabaseReference joinsRef = FirebaseDatabase.instance.ref().child('chat/joins');
+  DatabaseReference get joinsRef => database.ref().child('chat/joins');
 
   DatabaseReference joinRef(String roomId) => joinsRef.child(myUid!).child(roomId);
 
   /// Reference: the list of user and the room list that the user invited to.
-  final DatabaseReference invitedUsersRef = FirebaseDatabase.instance.ref().child('chat/invited-users');
+  DatabaseReference get invitedUsersRef => database.ref().child('chat/invited-users');
 
   /// Reference: the chat room list that the user invited to.
   DatabaseReference invitedUserRef(String uid) => invitedUsersRef.child(uid);
@@ -48,14 +50,17 @@ class ChatService {
   /// Reference: the chat room list that the login user invited to.
   DatabaseReference get myInvitationsRef => invitedUserRef(myUid!);
 
-  final DatabaseReference rejectedUsersRef = FirebaseDatabase.instance.ref().child('chat').child('rejected-users');
+  final DatabaseReference rejectedUsersRef =
+      FirebaseDatabase.instance.ref().child('chat').child('rejected-users');
 
   DatabaseReference rejectedUserRef(String uid) => rejectedUsersRef.child(uid);
 
-  DatabaseReference get mySettingRef => FirebaseDatabase.instance.ref().child('chat').child('settings').child(myUid!);
+  DatabaseReference get mySettingRef =>
+      FirebaseDatabase.instance.ref().child('chat').child('settings').child(myUid!);
 
   /// Reference: the login user's unread message count of the chat room
-  DatabaseReference unreadMessageCountRef(String roomId) => mySettingRef.child('unread-message-count').child(roomId);
+  DatabaseReference unreadMessageCountRef(String roomId) =>
+      mySettingRef.child('unread-message-count').child(roomId);
 
   /// Callback function
   Future<T?> Function<T>({BuildContext context, bool openGroupChatsOnly})? $showChatRoomListScreen;
@@ -162,7 +167,8 @@ class ChatService {
     return await showGeneralDialog<T>(
       context: context,
       pageBuilder: (_, __, ___) =>
-          chatRoomReceivedInviteListScreenBuilder?.call(context) ?? const ChatRoomReceivedInviteListScreen(),
+          chatRoomReceivedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomReceivedInviteListScreen(),
     );
   }
 
@@ -203,7 +209,8 @@ class ChatService {
   }
 
   /// Wrapper of showChatRoomEditScreen
-  Future<T?> showChatRoomCreateScreen<T>(BuildContext context, {ChatRoom? room, bool defaultOpen = false}) async {
+  Future<T?> showChatRoomCreateScreen<T>(BuildContext context,
+      {ChatRoom? room, bool defaultOpen = false}) async {
     return await showChatRoomEditScreen(context, defaultOpen: defaultOpen);
   }
 
@@ -235,7 +242,8 @@ class ChatService {
     return showGeneralDialog<T>(
       context: context,
       pageBuilder: (_, __, ___) =>
-          chatRoomRejectedInviteListScreenBuilder?.call(context) ?? const ChatRoomRejectedInviteListScreen(),
+          chatRoomRejectedInviteListScreenBuilder?.call(context) ??
+          const ChatRoomRejectedInviteListScreen(),
     );
   }
 
@@ -290,9 +298,11 @@ class ChatService {
   ) async {
     final Map<String, Object?> updates = {};
     for (String uid in room.userUids) {
-      updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] = updatedMessage.deleted == true ? true : null;
+      updates['chat/joins/$uid/${room.id}/$lastMessageDeleted'] =
+          updatedMessage.deleted == true ? true : null;
       updates['chat/joins/$uid/${room.id}/$lastMessageUid'] = updatedMessage.uid;
-      updates['chat/joins/$uid/${room.id}/$lastText'] = updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
+      updates['chat/joins/$uid/${room.id}/$lastText'] =
+          updatedMessage.text.isNullOrEmpty ? null : updatedMessage.text;
       updates['chat/joins/$uid/${room.id}/$lastUrl'] =
           (updatedMessage.url?.trim()).isNullOrEmpty ? null : updatedMessage.url;
       updates['chat/joins/$uid/${room.id}/$lastProtocol'] = updatedMessage.protocol;
@@ -421,7 +431,8 @@ class ChatService {
     };
 
     /// Re-order
-    final lastMessageAt = room.lastMessageAt?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch;
+    final lastMessageAt =
+        room.lastMessageAt?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch;
 
     int updatedOrder = lastMessageAt * -1;
     if (openOrderType == OpenOrderType.lastMessage) {
@@ -459,16 +470,27 @@ class ChatService {
   Future<void> join(
     ChatRoom room, {
     String? protocol,
-    bool force = false,
   }) async {
+    // DATA CONSISTENCY PROBLEM
+    // when we add `if (room.joined)`,  it only checks the value in
+    // `/chat/room/`
     // If the user is already joined, return.
-    if (room.joined && force == false) {
+    if (room.joined) {
       // NOTE: room.joined is only based on `/chat/room/` user
       //       might not be joined yet based on `/chat/join/`
-      //       That is the reason why we have to add force
-      dog('--> already joined');
-      return;
+      //       That is the reason why we have to add this
+      final checkInJoins = await joinRef(myUid!).child(joinedAt).get();
+      dog("Already joined?: ${checkInJoins.exists}:::: ${checkInJoins.value}");
+      if (checkInJoins.exists) {
+        dog('--> already joined');
+        return;
+      }
     }
+
+    dog("Joining");
+
+    final timestamp = await getServerTimestamp();
+    final negativeTimestamp = -1 * timestamp;
 
     // int timestamp = await getServerTimestamp();
     // final order = timestamp * -1; // int.parse("-1$timestamp");
@@ -481,6 +503,12 @@ class ChatService {
       room.ref.child('users').child(myUid!).path: true,
       // Add in chat joins
       'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
+      // Should be in top in order
+      // This will make the newly joined room at top.
+      'chat/joins/${myUid!}/${room.id}/$order': negativeTimestamp,
+      if (room.single) 'chat/joins/${myUid!}/${room.id}/$singleOrder': negativeTimestamp,
+      if (room.group) 'chat/joins/${myUid!}/${room.id}/$groupOrder': negativeTimestamp,
+      if (room.open) 'chat/joins/${myUid!}/${room.id}/$openOrder': negativeTimestamp,
     };
 
     /// Add your uid into the user list of the chat room instead of reading from database.
@@ -579,7 +607,10 @@ class ChatService {
     /// So, if there is only one message, it means, the invitation-not-sent message is not sent.
     /// And if there are more than 7 messages, it means, the invitation-not-sent message is
     /// probably deleted.
-    if (length >= 2 && length <= 7 && message.protocol == ChatProtocol.invitationNotSent && message.uid == myUid) {
+    if (length >= 2 &&
+        length <= 7 &&
+        message.protocol == ChatProtocol.invitationNotSent &&
+        message.uid == myUid) {
       await message.ref.remove();
     }
   }

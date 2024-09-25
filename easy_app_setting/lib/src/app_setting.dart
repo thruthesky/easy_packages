@@ -1,3 +1,4 @@
+import 'package:easy_app_setting/src/app_setting.service.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class AppSetting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DatabaseReference ref = FirebaseDatabase.instance.ref().child('app_settings');
+    DatabaseReference ref = AppSettingService.instance.ref;
     if (field != null) {
       ref = ref.child(field!);
     }

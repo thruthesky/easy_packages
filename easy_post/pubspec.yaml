@@ -1,6 +1,6 @@
 name: easy_post_v2
 description: "An easy to use post(forum) package for Flutter and Firebase."
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:
@@ -23,7 +23,7 @@ dependencies:
   firebase_ui_database: ^1.4.4
   flutter:
     sdk: flutter
-  youtube_player_flutter: ^9.0.4
+  youtube_player_flutter: ^9.1.0
 
 dev_dependencies:
   flutter_test:

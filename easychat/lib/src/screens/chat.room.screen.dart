@@ -137,7 +137,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   ///  then, reset it.
   /// - Since the user is inside the room, the unread message count should be reset.
   void listenToUnreadMessageCountUpdate() {
-    resetMessageCountSubscription = ChatService.instance.unreadMessageCountRef(room!.id).onValue.listen((e) async {
+    resetMessageCountSubscription =
+        ChatService.instance.unreadMessageCountRef(room!.id).onValue.listen((e) async {
       final newMessageCount = (e.snapshot.value ?? 0) as int;
       if (newMessageCount == 0) return;
       await ChatService.instance.resetUnreadMessage(room!);
@@ -165,7 +166,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     ChatService.instance.join(
       room!,
       protocol: ChatProtocol.invitationNotSent,
-      force: true,
     );
   }
 
