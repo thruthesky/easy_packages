@@ -17,6 +17,24 @@ class UserPublicProfileScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
+        // To add gradient
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter, // Start direction
+              end: Alignment.bottomCenter, // End direction
+              colors: [
+                Colors.black, // Start Color
+                // Slowly transition
+                Color.fromARGB(225, 0, 0, 0),
+                Color.fromARGB(200, 0, 0, 0),
+                Color.fromARGB(156, 0, 0, 0),
+                Color.fromARGB(99, 0, 0, 0),
+                Colors.transparent, // End Color
+              ],
+            ),
+          ),
+        ),
         leading: const BackButton(
           color: Colors.white,
         ),
