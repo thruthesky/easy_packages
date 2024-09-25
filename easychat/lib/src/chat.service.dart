@@ -468,7 +468,6 @@ class ChatService {
 
     if (room.joined) return;
 
-    /// TODO: remove this. use `reverseQuery` instead.
     final timestamp = await getServerTimestamp();
     final negativeTimestamp = -1 * timestamp;
 
