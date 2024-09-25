@@ -54,14 +54,13 @@ class ChatJoin {
   factory ChatJoin.fromJson(Map<dynamic, dynamic> json, String roomId) {
     return ChatJoin(
       roomId: roomId,
-      joinedAt: json[f.joinedAt],
+      joinedAt: json[f.joinedAt] ?? DateTime.now().millisecondsSinceEpoch,
       singleOrder: json[f.singleOrder],
       groupOrder: json[f.groupOrder],
       openOrder: json[f.openOrder],
       order: json[f.order] ?? DateTime.now().millisecondsSinceEpoch,
       lastMessageUid: json[f.lastMessageUid],
-      lastMessageAt:
-          DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
+      lastMessageAt: DateTime.fromMillisecondsSinceEpoch(json[f.lastMessageAt] ?? 0),
       lastMessageDeleted: json[f.lastMessageDeleted],
       lastUrl: json[f.lastUrl],
       lastText: json[f.lastText],
