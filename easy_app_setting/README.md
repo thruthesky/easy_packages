@@ -84,3 +84,26 @@ Setting(
 ```
 
 
+
+
+
+
+### Save app setting
+
+- Use `AppSettingService.instance.update` to update the user settings. It will create if it does not exist.
+
+```dart
+AppSettingService.instance.update(
+  key: 'fruit',
+  value: 'Apple',
+);
+```
+
+
+### Get app setting
+
+- Use `AppSettingService.instance.get` to get the user settings.
+
+```dart
+final fruit = await AppSettingService.instance.get('fruit');
+```
