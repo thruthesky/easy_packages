@@ -1,1 +1,1 @@
-export './src/setting.dart';
+export 'src/user_setting.dart';
