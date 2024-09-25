@@ -49,27 +49,28 @@ class _ChatInvitationListTileState extends State<ChatInvitationListTile> {
           if (blocked) {
             return const SizedBox.shrink();
           }
-          return ListTile(
-            minTileHeight: ChatInvitationListTile._minTileHeight,
-            leading: UserAvatar.fromUid(
-              uid: otherUid,
-              onTap: () => UserService.instance.showPublicProfileScreen(
-                context,
-                user: user!,
-              ),
-            ),
-            title: DisplayName(uid: otherUid),
-            subtitle: UserField<String?>(
-                uid: otherUid,
-                field: User.field.stateMessage,
-                builder: (stateMessage) {
-                  return Text(stateMessage ?? '');
-                }),
-            trailing: ChatInvitationListTileActions(
-              onTapAccept: () => onTapAccept(user),
-              onTapReject: () => onTapReject(user),
-            ),
-            contentPadding: ChatInvitationListTile._contentPadding,
+          return UserField<String?>(
+            uid: otherUid,
+            field: User.field.stateMessage,
+            builder: (stateMessage) {
+              return ListTile(
+                minTileHeight: ChatInvitationListTile._minTileHeight,
+                leading: UserAvatar.fromUid(
+                  uid: otherUid,
+                  onTap: () => UserService.instance.showPublicProfileScreen(
+                    context,
+                    user: user!,
+                  ),
+                ),
+                title: DisplayName(uid: otherUid),
+                subtitle: stateMessage.isNullOrEmpty ? null : Text(stateMessage ?? ''),
+                trailing: ChatInvitationListTileActions(
+                  onTapAccept: () => onTapAccept(user),
+                  onTapReject: () => onTapReject(user),
+                ),
+                contentPadding: ChatInvitationListTile._contentPadding,
+              );
+            },
           );
         },
       );
