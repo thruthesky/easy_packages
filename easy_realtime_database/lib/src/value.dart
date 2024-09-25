@@ -26,7 +26,7 @@ import 'package:firebase_database/firebase_database.dart';
 ///  return Text(value);
 /// });
 ///
-class Value extends StatelessWidget {
+class Value<T> extends StatelessWidget {
   const Value({
     super.key,
     required this.ref,
@@ -76,7 +76,7 @@ class Value extends StatelessWidget {
           }
 
           // value may be null.
-          return builder(snapshot.data, ref);
+          return builder(snapshot.data as T, ref);
         },
       );
     } else {
@@ -92,7 +92,7 @@ class Value extends StatelessWidget {
             return Text('Error; ${snapshot.error}');
           }
 
-          return builder(snapshot.data, ref);
+          return builder(snapshot.data as T, ref);
         },
       );
     }

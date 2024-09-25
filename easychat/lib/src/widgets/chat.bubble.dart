@@ -135,16 +135,20 @@ class ChatBubble extends StatelessWidget {
             if (message.uid != myUid) ...[
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
-                child: UserAvatar.fromUid(
-                    uid: message.uid,
-                    onTap: () async {
-                      final user = await User.get(message.uid);
-                      if (context.mounted) {
-                        UserService.instance.showPublicProfileScreen(context, user: user!);
-                      }
-                    }),
+                child:
+                    // TODO: It's blinking. Rewrite the whole UserAvatar widget.
+                    // TODO: Somehow, UserAvatar photoUrl, initials are duplicated. It does not need these two value.
+                    // TODO: Make it very simple. And make it not flickering. By improve the ThumbnailImage.
+                    UserAvatar.fromUid(
+                        uid: message.uid,
+                        onTap: () async {
+                          final user = await User.get(message.uid);
+                          if (context.mounted) {
+                            UserService.instance.showPublicProfileScreen(context, user: user!);
+                          }
+                        }),
 
-                // UserDoc(
+                //     UserModel(
                 //   key: ValueKey("ChatAvatarDoc_${message.id}"),
                 //   uid: message.uid,
                 //   builder: (user) => user == null
@@ -178,12 +182,13 @@ class ChatBubble extends StatelessWidget {
                 //                       // border: border,
                 //                     ),
                 //                     child: CachedNetworkImage(
+                //                       placeholder: (context, url) => const ChatAvatarLoader(),
                 //                       imageUrl: user.photoUrl!,
                 //                       fit: BoxFit.cover,
                 //                     ),
                 //                   ),
                 //                 )
-                //               : UserAvatar.buildAnonymouseAvatar(size: 48),
+                //               : const AnonymousAvatar(size: 48),
                 //         ),
                 // ),
               ),
@@ -198,7 +203,7 @@ class ChatBubble extends StatelessWidget {
                 crossAxisAlignment: message.uid != myUid ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   if (message.uid != myUid) ...[
-                    UserField(
+                    UserField<String?>(
                       uid: message.uid,
                       initialData: message.displayName.or('...'),
                       field: 'displayName',
