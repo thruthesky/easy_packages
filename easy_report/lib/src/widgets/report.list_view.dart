@@ -68,7 +68,8 @@ class ReportListView extends StatelessWidget {
       itemBuilder: (context, snapshot) {
         final report = Report.fromSnapshot(snapshot);
         return ListTile(
-          leading: Value.once(
+          leading: Value(
+            sync: false,
             ref: FirebaseDatabase.instance
                 .ref(ReportService.instance.userNamePath.replaceFirst('{uid}', report.reportee)),
             builder: (v, r) {
@@ -78,7 +79,8 @@ class ReportListView extends StatelessWidget {
               return CircleAvatar(child: CachedNetworkImage(imageUrl: (v as String).thumbnail));
             },
           ),
-          title: Value.once(
+          title: Value(
+            sync: false,
             ref: FirebaseDatabase.instance
                 .ref(ReportService.instance.userNamePath.replaceFirst('{uid}', report.reportee)),
             builder: (v, r) {

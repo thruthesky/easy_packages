@@ -1,3 +1,9 @@
+## 0.0.9
+* Add. `ValueListView`.
+
+## 0.0.8
+* Update. add `sync` to `Value`.
+
 ## 0.0.7
 * Fix. data check in `Value`.
 

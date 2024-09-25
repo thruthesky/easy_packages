@@ -33,6 +33,7 @@ class PostEditScreen extends StatefulWidget {
 }
 
 class _PostEditScreenState extends State<PostEditScreen> {
+  Post? post;
   String? category;
   final titleController = TextEditingController();
   final contentController = TextEditingController();
@@ -49,7 +50,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
   @override
   void initState() {
     super.initState();
-
     prepareData();
     if (widget.category != null) {
       category = widget.category!;
@@ -60,11 +60,15 @@ class _PostEditScreenState extends State<PostEditScreen> {
   prepareData() {
     if (isCreate) return;
     if (widget.post == null) return;
-    titleController.text = widget.post!.title;
-    contentController.text = widget.post!.content;
-    youtubeController.text = widget.post!.youtubeUrl;
-    urls = widget.post!.urls;
-    setState(() {});
+    Post.get(widget.post!.id).then((v) {
+      post = v;
+
+      titleController.text = post!.title;
+      contentController.text = post!.content;
+      youtubeController.text = post!.youtubeUrl;
+      urls = widget.post!.urls;
+      setState(() {});
+    });
   }
 
   @override
@@ -119,8 +123,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                   ),
                 },
                 const SizedBox(height: 24),
-                if (uploadingPhotoProgress != null &&
-                    !uploadingPhotoProgress!.isNaN)
+                if (uploadingPhotoProgress != null && !uploadingPhotoProgress!.isNaN)
                   LinearProgressIndicator(
                     value: uploadingPhotoProgress,
                   ),
@@ -182,8 +185,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                                 }
                               }
                             },
-                            child:
-                                Text(isCreate ? 'post Create'.t : 'Update'.t),
+                            child: Text(isCreate ? 'post Create'.t : 'Update'.t),
                           ),
                   ],
                 )

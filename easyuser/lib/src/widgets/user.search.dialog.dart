@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// [emptyBuilder] will be called with a boolean when the list is empty.
@@ -50,7 +51,7 @@ class UserSearchDialog extends StatefulWidget {
 
 class _UserSearchDialogState extends State<UserSearchDialog> {
   final searchController = TextEditingController();
-  final userCol = UserService.instance.col;
+  final usersRef = UserService.instance.usersRef;
   String searchText = '';
 
   @override
@@ -62,18 +63,16 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
   Query get query {
     String field;
     if (widget.searchName) {
-      field = 'caseIncensitveName';
+      field = User.field.caseInsensitiveName;
     } else if (widget.searchNickname) {
-      field = 'caseIncensitiveDisplayName';
+      field = User.field.caseInsensitiveDisplayName;
     } else {
-      field = 'caseIncensitveName';
+      field = User.field.caseInsensitiveName;
     }
 
     return widget.exactSearch
-        ? userCol.where(field, isEqualTo: searchText)
-        : userCol
-            .where(field, isGreaterThanOrEqualTo: searchText)
-            .where(field, isLessThanOrEqualTo: '$searchText\uf8ff');
+        ? usersRef.orderByChild(field).equalTo(searchText)
+        : usersRef.orderByChild(field).startAt(searchText).endAt('$searchText\uf8ff');
   }
 
   @override
@@ -109,10 +108,10 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                       maxHeight: 224,
                       minHeight: 224,
                     ),
-                    child: FirestoreUserListView(
+                    child: UserListView(
+                      query: query,
                       shrinkWrap: true,
                       padding: const EdgeInsets.only(top: 8),
-                      query: query.limit(4),
                       emptyBuilder: () =>
                           widget.emptyBuilder?.call(true) ??
                           SizedBox(

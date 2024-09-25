@@ -1,6 +1,5 @@
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
-import 'package:easyuser/easyuser.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -57,11 +56,11 @@ String singleChatRoomId(String otherUserUid) {
 }
 
 /// Returns the chat room title for single and group chat.
-String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
-  assert(room != null || user != null || join != null);
+String roomTitle(ChatRoom? room, String? displayName, ChatJoin? join) {
+  assert(room != null || displayName != null || join != null);
 
-  if (user != null) {
-    return user.displayName.trim().isNotEmpty ? user.displayName : 'no name'.t;
+  if (displayName != null) {
+    return displayName.or('no name'.t);
   }
 
   // Single chat or group chat can have name.
@@ -107,16 +106,11 @@ String roomTitle(ChatRoom? room, User? user, ChatJoin? join) {
 /// - If the time is used for the login user only, simple user [DateTime].
 /// - If the time is used for multiple users, use this function to the server time.
 Future<int> getServerTimestamp() async {
-  final ref = FirebaseDatabase.instance
-      .ref()
-      .child('chat')
-      .child('-info')
-      .child('timestamp');
+  final ref = FirebaseDatabase.instance.ref().child('chat').child('-info').child('timestamp');
   await ref.set(ServerValue.timestamp);
   final snapshot = await ref.get();
   return snapshot.value as int;
 }
 
 /// Returns the chat room reference. Shotcut for the ChatService.instance.roomRef(roomId).
-DatabaseReference roomRef(String roomId) =>
-    ChatService.instance.roomsRef.child(roomId);
+DatabaseReference roomRef(String roomId) => ChatService.instance.roomsRef.child(roomId);

@@ -1,3 +1,6 @@
+## 0.0.8
+* Refactor: Move from Firestore to Realtime database.
+
 ## 0.0.7 **Breaking Change**
 * Add. `LikeDoc`.
 * Refactor. **Breaking Change** No more uid.

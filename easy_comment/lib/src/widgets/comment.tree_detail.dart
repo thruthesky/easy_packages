@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
 
@@ -16,14 +16,14 @@ import 'package:flutter/material.dart';
 class CommentTreeDetail extends StatefulWidget {
   const CommentTreeDetail({
     super.key,
-    required this.documentReference,
+    required this.parentReference,
     required this.comment,
     required this.comments,
     required this.index,
     this.onCreate,
   });
 
-  final DocumentReference documentReference;
+  final DatabaseReference parentReference;
   final Comment comment;
   final List<Comment> comments;
   final int index;
@@ -37,8 +37,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   int? previousNoOfLikes;
 
   double lineWidth = 2;
-  Color get verticalLineColor =>
-      Theme.of(context).colorScheme.outline.withAlpha(100);
+  Color get verticalLineColor => Theme.of(context).colorScheme.outline.withAlpha(100);
   bool get isFirstParent => widget.comment.depth == 0;
   bool get isChild => !isFirstParent;
   bool get hasChild => widget.comment.hasChild;
@@ -69,8 +68,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (int i = 0; i < widget.comment.depth; i++)
-              indentedVerticalLine(i),
+            for (int i = 0; i < widget.comment.depth; i++) indentedVerticalLine(i),
 
             /// curved line
             if (isChild)
@@ -178,8 +176,7 @@ class _CommentTreeDetailState extends State<CommentTreeDetail> {
   ///   - 나의 단계 3. 루프 단계 2. 3 단계에 하위 자식이 있으면, 2 단계에 긋는다.
   bool maybeDrawVerticalLine(int depth) {
     final currComment = widget.comment;
-    final parents =
-        CommentService.instance.getParents(currComment, widget.comments);
+    final parents = CommentService.instance.getParents(currComment, widget.comments);
     if (parents.isEmpty) return false;
     final depthComment = parents[depth];
 

@@ -1,4 +1,3 @@
-import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
@@ -41,11 +40,13 @@ class PostCommentTextButton extends StatelessWidget {
       statesController: statesController,
       isSemanticButton: isSemanticButton,
       onPressed: () async {
-        final re = await CommentService.instance.showCommentEditDialog(
-          context: context,
-          documentReference: post.ref,
-          focusOnContent: false,
-        );
+        // TODO : DocumentReference in CommentService
+        // final re = await CommentService.instance.showCommentEditDialog(
+        //   context: context,
+        //   documentReference: post.ref,
+        //   focusOnContent: false,
+        // );
+        const re = false;
         onCreated?.call(re);
       },
       child: child,

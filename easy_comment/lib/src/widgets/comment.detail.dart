@@ -51,23 +51,24 @@ class CommentDetail extends StatelessWidget {
         DisplayPhotos(urls: comment.urls),
         Row(
           children: [
-            if (displayReplyButton)
-              TextButton(
-                onPressed: () => CommentService.instance.showCommentEditDialog(
-                  context: context,
-                  parent: comment,
-                  focusOnContent: true,
-                ),
-                child: Text('Reply'.t),
-              ),
-            TextButton(
-              onPressed: () => CommentService.instance.showCommentEditDialog(
-                context: context,
-                parent: comment,
-                focusOnContent: true,
-              ),
-              child: Text('Like'.tr(args: {'n': 3}, form: 3)),
-            ),
+            // TODO: show comment edit dialog: refactoring-database
+            // if (displayReplyButton)
+            //   TextButton(
+            //     onPressed: () => CommentService.instance.showCommentEditDialog(
+            //       context: context,
+            //       parent: comment,
+            //       focusOnContent: true,
+            //     ),
+            //     child: Text('Reply'.t),
+            //   ),
+            // TextButton(
+            //   onPressed: () => CommentService.instance.showCommentEditDialog(
+            //     context: context,
+            //     parent: comment,
+            //     focusOnContent: true,
+            //   ),
+            //   child: Text('Like'.tr(args: {'n': 3}, form: 3)),
+            // ),
             const Spacer(),
             PopupMenuButton<String>(
               itemBuilder: (_) => [
@@ -93,11 +94,12 @@ class CommentDetail extends StatelessWidget {
               child: const Icon(Icons.more_vert),
               onSelected: (value) async {
                 if (value == 'edit') {
-                  CommentService.instance.showCommentEditDialog(
-                    context: context,
-                    comment: comment,
-                    focusOnContent: true,
-                  );
+                  // TODO: show comment edit dialog: refactoring-database
+                  // CommentService.instance.showCommentEditDialog(
+                  //   context: context,
+                  //   comment: comment,
+                  //   focusOnContent: true,
+                  // );
                 } else if (value == 'delete') {
                   final re = await confirm(
                     context: context,

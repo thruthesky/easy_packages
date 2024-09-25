@@ -65,8 +65,7 @@ class BlockListView extends StatelessWidget {
 
         return ListView.separated(
           itemCount: blocks.length,
-          separatorBuilder: (context, index) =>
-              separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
+          separatorBuilder: (context, index) => separatorBuilder?.call(context, index) ?? const SizedBox.shrink(),
           scrollDirection: scrollDirection,
           reverse: reverse,
           controller: controller,
@@ -85,25 +84,16 @@ class BlockListView extends StatelessWidget {
           itemBuilder: (context, index) {
             final uid = blocks.keys.elementAt(index);
 
-            return UserDoc(
-              uid: uid,
-              builder: (user) {
-                if (user == null) {
-                  return const SizedBox.shrink();
-                }
-                return ListTile(
-                  leading: UserAvatar(user: user),
-                  title: DisplayName(user: user),
-                  subtitle: Text(
-                      'Blocked at: ${(blocks[uid]['blockedAt'].toDate() as DateTime).short}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      i.block(context: context, otherUid: uid);
-                    },
-                  ),
-                );
-              },
+            return ListTile(
+              leading: UserAvatar.fromUid(uid: uid),
+              title: DisplayName(uid: uid),
+              subtitle: Text('Blocked at: ${(DateTime.fromMillisecondsSinceEpoch(blocks[uid]['blockedAt'])).short}'),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  i.block(context: context, otherUid: uid);
+                },
+              ),
             );
           },
         );

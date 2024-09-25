@@ -5,6 +5,46 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "PhiLov - iPhone 16 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "apps/philov",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "PhiLov - Emulator",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554",
+            "cwd": "apps/philov",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "Example - iPhone 16 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "example",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "Example - iPhone 16 Pro",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro",
+            "cwd": "example",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "AppSetting - Example - iPhone 15 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro Max",
+            "cwd": "easy_app_setting/example",
+            "program": "lib/main.dart",
+        },
+        {
             "name": "Example - iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",
@@ -34,6 +74,14 @@
             "type": "dart",
             "deviceId": "iPhone 15 Pro",
             "cwd": "example",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "(EasyReport)Example - iPhone 15 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro Max",
+            "cwd": "easy_post/example",
             "program": "lib/main.dart",
         },
         {
@@ -149,10 +197,34 @@
             "program": "lib/main.dart"
         },
         {
-            "name": "EasyUser Example - iPhone 15 Pro Max",
+            "name": "EasyUser Example - iPhone 16 Pro Max",
             "request": "launch",
             "type": "dart",
-            "deviceId": "iPhone 15 Pro Max",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "easyuser/example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "EasyUser Example - iPhone 16 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "easyuser/example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "EasyUser Example - emulator-5554",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554",
+            "cwd": "easyuser/example",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "EasyUser Example - SM A045F",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "SM A045F",
             "cwd": "easyuser/example",
             "program": "lib/main.dart"
         },
@@ -187,6 +259,15 @@
             "type": "dart",
             "deviceId": "iPhone 15 Pro Max",
             "program": "lib/main.dart"
+        },
+
+        {
+            "name": "EasyPost Example - iPhone 16 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 16 Pro Max",
+            "cwd": "easy_post/example",
+            "program": "lib/main.dart",
         },
         
     ]

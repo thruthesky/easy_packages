@@ -94,6 +94,15 @@ dependency_overrides:
 ```
 
 
+
+# Security rules
+
+- This is the security rules for all the packages of easy packages.
+  - Since each package has its own security rules, it's not easy to find where the security rules are. So, all the security rules are here for your convinience. You can copy and paste this to your Firebase database security rules.
+- Install the security rules from [database security rules](./docs/database_security_rules.json) file.
+
+
+
 # Firebase SDK
 
 - The fultter uses a specific version of Firebase SDK. So, you need to use the same version of Firebase SDK in your app.
@@ -109,6 +118,23 @@ dependency_overrides:
 # Packages
 
 
+## Firebase SDK
+
+- We use the following firebase SDK in the easy packages. The versions of the packages are the most recent versions at the time of writing this work: September 20, 2024. 
+
+```yaml
+  cloud_firestore: ^5.4.2
+  cloud_functions: ^5.1.2
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.5.0
+  firebase_crashlytics: ^4.1.2
+  firebase_database: ^11.1.3
+  firebase_messaging: ^15.1.2
+  firebase_storage: ^12.3.1
+  firebase_ui_database: ^1.4.4
+  firebase_ui_firestore: ^1.6.4
+  firebase_vertexai: ^0.2.3+3
+```
 
 
 ## Storage
@@ -209,6 +235,39 @@ Although not directly related to FireFlutter, these packages are used internally
 This is the style guide of the development easy packages.
 
 - The code must be readable and short. If the code is complicated, then that code will be deleted. If the code is long, then that code will be deleted, also.
+
+
+## Best practices
+
+- Get only the necessary data
+  - Unlike the Firestore document, you can get only one field of the data in Database. If you get data more than necessary, it's no good for everyone.
+    - The developer is not the only one who has to pay more,
+    - but also the user must pay more for their data usage.
+    - And the worse is that, the phone loses battery causing to charge more frequently, costing more electricity bill
+    - It may ruins the battery life of the device.
+
+
+## All the package must run on web
+
+- To support better for other flutter related framework like FlutterFlow, all the packages in easy_packages must run on web.
+
+
+
+
+
+
+
+
+## Comments and Documentation Rules
+
+
+- `required`:
+  - If it is used with field description, it means the field must exists in the data always.
+  - If it is used with a parameter, it means the parameter must be provided always.
+
+- `optional`:
+  - If it is used with field description, it means the field may or may not exists in the data.
+  - If it is used with a parameter, it means the parameter may or may not be provided.
 
 
 
@@ -573,4 +632,3 @@ The easy packages have a rule for this work.
 
 
 Run `./pubget.sh` under the `easy_packages` folder. This will run `flutter pub get` under each packages.
-

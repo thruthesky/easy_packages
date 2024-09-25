@@ -3,6 +3,7 @@ import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_helpers/easy_helpers.dart';
 
 class ChatRoomReplyingTo extends StatelessWidget {
   const ChatRoomReplyingTo({
@@ -29,8 +30,7 @@ class ChatRoomReplyingTo extends StatelessWidget {
       decoration: BoxDecoration(
         border: Theme.of(context).inputDecorationTheme.enabledBorder != null
             ? Border.all(
-                color: enabledBorderSide(context)?.color ??
-                    const Color(0xFF000000),
+                color: enabledBorderSide(context)?.color ?? const Color(0xFF000000),
                 width: enabledBorderSide(context)?.width ?? 1.0,
                 style: enabledBorderSide(context)?.style ?? BorderStyle.solid,
               )
@@ -53,14 +53,15 @@ class ChatRoomReplyingTo extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(width: 8),
-                    UserDoc(
+                    UserModel(
                       uid: replyTo.uid,
                       builder: (user) {
                         if (user == null) return const SizedBox.shrink();
                         return Row(
                           children: [
                             UserAvatar(
-                              user: user,
+                              photoUrl: user.photoUrl,
+                              initials: user.displayName.or(user.uid),
                               size: 24,
                               radius: 10,
                             ),
@@ -75,8 +76,9 @@ class ChatRoomReplyingTo extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                UserDoc(
+                UserField(
                   uid: replyTo.uid,
+                  field: 'creatdAt',
                   builder: (user) {
                     if (user == null) return const SizedBox.shrink();
                     return Row(
@@ -86,14 +88,9 @@ class ChatRoomReplyingTo extends StatelessWidget {
                           Container(
                             decoration: BoxDecoration(
                               color: replyTo.uid == my.uid
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .tertiaryContainer,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(12)),
+                                  ? Theme.of(context).colorScheme.primaryContainer
+                                  : Theme.of(context).colorScheme.tertiaryContainer,
+                              borderRadius: const BorderRadius.all(Radius.circular(12)),
                             ),
                             height: 42,
                             width: 42,
@@ -107,18 +104,14 @@ class ChatRoomReplyingTo extends StatelessWidget {
                         if (replyTo.text != null && replyTo.url != null) ...[
                           const SizedBox(width: 8),
                         ],
-                        if (replyTo.text != null &&
-                            replyTo.text!.isNotEmpty) ...[
+                        if (replyTo.text != null && replyTo.text!.isNotEmpty) ...[
                           Flexible(
                             child: Container(
                               decoration: BoxDecoration(
                                 color: replyTo.uid == my.uid
                                     ? Colors.amber.shade200
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainerHigh,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(12)),
+                                    : Theme.of(context).colorScheme.surfaceContainerHigh,
+                                borderRadius: const BorderRadius.all(Radius.circular(12)),
                               ),
                               clipBehavior: Clip.hardEdge,
                               child: Padding(
@@ -146,8 +139,7 @@ class ChatRoomReplyingTo extends StatelessWidget {
               child: IconButton(
                 icon: Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.error,
-                      borderRadius: BorderRadius.circular(16)),
+                      color: Theme.of(context).colorScheme.error, borderRadius: BorderRadius.circular(16)),
                   padding: const EdgeInsets.all(4),
                   child: Icon(
                     Icons.close,

@@ -1,4 +1,3 @@
-import 'package:easy_like/easy_like.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:flutter/material.dart';
 
@@ -39,8 +38,9 @@ class PostLikeTextButton extends StatelessWidget {
       statesController: statesController,
       isSemanticButton: isSemanticButton,
       onPressed: () async {
-        final like = Like(documentReference: post.ref);
-        await like.like();
+        // TODO : DocumentReference in Like is in Firestore
+        // final like = Like(documentReference: post.ref);
+        // await like.like();
       },
       child: child,
     );

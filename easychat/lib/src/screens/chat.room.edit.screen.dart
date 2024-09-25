@@ -133,7 +133,11 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                 // When it is open group, basically all members can invite
                 enabled: !open,
                 title: Text('members can invite'.t),
-                subtitle: Text('all members can invite others to join'.t),
+                subtitle: Text(
+                  open
+                      ? 'in an open chat, all members can invite others by default'.t
+                      : 'all members can invite others to join'.t,
+                ),
                 value: open ? true : allMembersCanInvite,
                 onChanged: (value) {
                   if (value == null) return;
@@ -155,8 +159,10 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                         setState(() {
                           isLoading = true;
                         });
-                        ChatRoom? chatRoom;
                         try {
+                          ChatRoom? chatRoom;
+
+                          /// Create a new chat room
                           final newRoomRef = await ChatRoom.create(
                             name: nameController.text,
                             description: descriptionController.text,
@@ -166,24 +172,26 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             single: false,
                             users: {myUid!: false},
                           );
+
+                          /// Get the chat room
                           chatRoom = await ChatRoom.get(newRoomRef.key!);
-                          await ChatService.instance.join(
-                            chatRoom!,
-                            protocol: ChatProtocol.create,
-                          );
+                          // await ChatService.instance.join(
+                          //   chatRoom!,
+                          //   protocol: ChatProtocol.create,
+                          // );
+
+                          // This will prevent the newly Uploaded photo to be deleted
+                          iconUrl = null;
+                          if (!context.mounted) return;
+                          Navigator.of(context).pop(chatRoom!.ref);
+                          ChatService.instance.showChatRoomScreen(context, room: chatRoom);
                         } catch (e) {
-                          dog("Error ${e.toString()}");
+                          dog("Failed on chat room creation: ${e.toString()}");
                           setState(() {
                             isLoading = false;
                           });
                           rethrow;
                         }
-                        // This will prevent the newly Uploaded photo to be deleted
-                        iconUrl = null;
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop(chatRoom.ref);
-                        ChatService.instance
-                            .showChatRoomScreen(context, room: chatRoom);
                       },
                       child: Text('create'.t.toUpperCase()),
                     )

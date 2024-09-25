@@ -13,7 +13,7 @@ class PostDetailCommentListTreeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CommentListTreeView(
-      documentReference: post.ref,
+      parentReference: post.ref,
     );
   }
 }

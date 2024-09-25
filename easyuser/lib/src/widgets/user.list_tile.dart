@@ -21,7 +21,7 @@ class UserListTile extends StatelessWidget {
     return ListTile(
       contentPadding: contentPadding,
       trailing: trailing,
-      leading: UserAvatar(user: user),
+      leading: UserAvatar.fromUid(uid: user.uid),
       title: Text(
         user.displayName,
       ),

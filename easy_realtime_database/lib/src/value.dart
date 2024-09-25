@@ -33,7 +33,17 @@ class Value extends StatelessWidget {
     required this.builder,
     this.initialData,
     this.onLoading,
+    this.sync = true,
   });
+
+  // TODO deprecate
+  // const Value.once({
+  //   super.key,
+  //   required this.ref,
+  //   required this.builder,
+  //   this.initialData,
+  //   this.onLoading,
+  // }) : sync = false;
 
   final DatabaseReference ref;
 
@@ -44,59 +54,47 @@ class Value extends StatelessWidget {
   final Widget Function(dynamic value, DatabaseReference ref) builder;
   final Widget? onLoading;
 
+  final bool sync;
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<dynamic>(
-      initialData: initialData,
-      stream: ref.onValue.map((event) {
-        return event.snapshot.value;
-      }),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          log('Error; path: ${ref.path}, message: ${snapshot.error}');
-          return Text('Error; path: ${ref.path}, message: ${snapshot.error}');
-        }
+    if (sync) {
+      return StreamBuilder<dynamic>(
+        initialData: initialData,
+        stream: ref.onValue.map((event) {
+          return event.snapshot.value;
+        }),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            log('Error; path: ${ref.path}, message: ${snapshot.error}');
+            return Text('Error; path: ${ref.path}, message: ${snapshot.error}');
+          }
 
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.hasData == false) {
-          // log('--> Value() -> Waiting; path: ${ref.path} connectionState: ${snapshot.connectionState}, hasData: ${snapshot.hasData}');
-          return onLoading ?? const SizedBox.shrink();
-        }
+          if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
+            // log('--> Value() -> Waiting; path: ${ref.path} connectionState: ${snapshot.connectionState}, hasData: ${snapshot.hasData}');
+            return onLoading ?? const SizedBox.shrink();
+          }
 
-        // value may be null.
-        return builder(snapshot.data, ref);
-      },
-    );
-  }
+          // value may be null.
+          return builder(snapshot.data, ref);
+        },
+      );
+    } else {
+      return FutureBuilder<dynamic>(
+        initialData: initialData,
+        future: ref.once().then((event) => event.snapshot.value),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == false) {
+            return onLoading ?? const SizedBox.shrink();
+          }
+          if (snapshot.hasError) {
+            log('---> Value.once() -> Error; path: ${ref.path}, message: ${snapshot.error}');
+            return Text('Error; ${snapshot.error}');
+          }
 
-  /// Fetches data only once. However, if the widget is recreated, it fetches the data again.
-  ///
-  /// Using [initialData] can significantly reduce screen flickering.
-  ///
-  /// You can use [onLoading] to specify a widget to display while waiting for the data.
-  ///
-  /// Either [path] or [ref] must be provided.
-  static Widget once({
-    required DatabaseReference ref,
-    required Widget Function(dynamic value, DatabaseReference ref) builder,
-    dynamic initialData,
-    Widget? onLoading,
-  }) {
-    return FutureBuilder<dynamic>(
-      initialData: initialData,
-      future: ref.once().then((event) => event.snapshot.value),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting ||
-            snapshot.hasData == false) {
-          return onLoading ?? const SizedBox.shrink();
-        }
-        if (snapshot.hasError) {
-          log('---> Value.once() -> Error; path: ${ref.path}, message: ${snapshot.error}');
-          return Text('Error; ${snapshot.error}');
-        }
-
-        return builder(snapshot.data, ref);
-      },
-    );
+          return builder(snapshot.data, ref);
+        },
+      );
+    }
   }
 }

@@ -17,22 +17,17 @@ class UserPhotoListView extends StatelessWidget {
     return SizedBox(
       height: 64, // Sets the height of the widget to 64 logical pixels.
       child: UserListView(
-        scrollDirection:
-            Axis.horizontal, // Makes the list scrollable horizontally.
+        scrollDirection: Axis.horizontal, // Makes the list scrollable horizontally.
         itemBuilder: (user, index) => Padding(
           // Applies horizontal padding differently for the first item for visual alignment.
           padding: EdgeInsets.fromLTRB(index == 0 ? 24 : 4, 0, 4, 0),
           child: SizedBox(
-            width:
-                72 - 16, // Sets the width of each item, accounting for padding.
+            width: 72 - 16, // Sets the width of each item, accounting for padding.
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment
-                  .center, // Centers the children horizontally.
+              crossAxisAlignment: CrossAxisAlignment.center, // Centers the children horizontally.
               children: [
-                UserAvatar(user: user), // Displays the user's avatar.
-                DisplayName(
-                    user: user,
-                    maxLines: 1), // Displays the user's name, truncated to fit.
+                UserAvatar.fromUid(uid: user.uid), // Displays the user's avatar.
+                DisplayName(uid: user.uid, maxLines: 1), // Displays the user's name, truncated to fit.
               ],
             ),
           ),

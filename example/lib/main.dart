@@ -1,16 +1,13 @@
 import 'dart:async';
 
-import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_helpers/easy_helpers.dart';
-import 'package:easy_like/easy_like.dart';
 
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_messaging/easy_messaging.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:easy_storage/easy_storage.dart';
-import 'package:easy_task/easy_task.dart';
-import 'package:easy_user_group/easy_user_group.dart';
+
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/etc/zone_error_handler.dart';
@@ -66,15 +63,21 @@ class MyAppState extends State<MyApp> {
       ];
     });
 
+    MessagingService.instance.init(
+      sendMessageToTokensApi: "https://sendmessagetotokens-aykj77d72a-uc.a.run.app",
+      sendMessageToUidsApi: "https://sendmessagetouids-aykj77d72a-uc.a.run.app",
+      sendMessageToSubscriptionApi: "https://sendmessagetosubscription-aykj77d72a-uc.a.run.app",
+      onMessageOpenedFromTerminated: (remoteMessage) {
+        // Do something when notificaiton was tapped
+      },
+      onMessageOpenedFromBackground: (remoteMessage) {
+        // Do something when notificaiton was tapped
+      },
+    );
+
     StorageService.instance.init(
       uploadBottomSheetPadding: const EdgeInsets.all(16),
       uploadBottomSheetSpacing: 16,
-    );
-
-    TaskService.instance.init(
-      taskListActionButton: () {
-        return const UserGroupOpenListScreenButton();
-      },
     );
 
     messagingInit();
@@ -295,7 +298,8 @@ class MyAppState extends State<MyApp> {
 
       /// Register the channel with the system.
       /// If there is already a registed channel (with same id), then it will be re-registered.
-      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
 
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
@@ -308,49 +312,60 @@ class MyAppState extends State<MyApp> {
       postListActionButton: (category) => PushNotificationToggleIcon(
         subscriptionName: category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-$category",
       ),
-      onCreate: (Post post) async {
+      afterCreate: (Post post) async {
         /// send push notification to subscriber
-        MessagingService.instance.sendMessageToSubscription(
-          subscription: post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
-          title: 'post title ${post.title}  ${DateTime.now()}',
-          body: 'post body ${post.content}',
-          data: {
-            "action": 'post',
-            'postId': post.id,
-          },
-        );
+        try {
+          await MessagingService.instance.sendMessageToSubscription(
+            subscription:
+                post.category.isNullOrEmpty ? 'post-sub-no-category' : "post-sub-${post.category}",
+            title: 'post title ${post.title}  ${DateTime.now()}',
+            body: 'post body ${post.content}',
+            data: {
+              "action": 'post',
+              'postId': post.id,
+            },
+          );
+        } catch (e) {
+          dog(e.toString());
+          if (e.toString().contains("subscription-not-found")) {
+            // DO nothing, it means nobody subscribed.
+          } else {
+            rethrow;
+          }
+        }
       },
     );
   }
 
   commentInit() {
-    CommentService.instance.init(
-      onCreate: (Comment comment) async {
-        /// get ancestor uid
-        List<String> ancestorUids = await CommentService.instance.getAncestorsUid(comment.id);
+    // TODO: refactor: refactoring-database
+    // CommentService.instance.init(
+    //   onCreate: (Comment comment) async {
+    //     /// get ancestor uid
+    //     List<String> ancestorUids = await CommentService.instance.getAncestorsUid(comment.id);
 
-        /// get post information
-        Post post = await Post.get(comment.documentReference.id);
-        if (myUid != null && post.uid != myUid) {
-          ancestorUids.add(post.uid);
-        }
+    //     /// get post information
+    //     Post post = await Post.get(comment.documentReference.id);
+    //     if (myUid != null && post.uid != myUid) {
+    //       ancestorUids.add(post.uid);
+    //     }
 
-        if (ancestorUids.isEmpty) return;
+    //     if (ancestorUids.isEmpty) return;
 
-        /// set push notification to remaining uids
-        /// can get comment or post to send more informative push notification
-        MessagingService.instance.sendMessageToUids(
-          uids: ancestorUids,
-          title: 'title ${DateTime.now()}',
-          body: 'ancestorComment test ${comment.content}',
-          data: {
-            "action": 'comment',
-            'commentId': comment.id,
-            'postId': comment.documentReference.id,
-          },
-        );
-      },
-    );
+    //     /// set push notification to remaining uids
+    //     /// can get comment or post to send more informative push notification
+    //     MessagingService.instance.sendMessageToUids(
+    //       uids: ancestorUids,
+    //       title: 'title ${DateTime.now()}',
+    //       body: 'ancestorComment test ${comment.content}',
+    //       data: {
+    //         "action": 'comment',
+    //         'commentId': comment.id,
+    //         'postId': comment.documentReference.id,
+    //       },
+    //     );
+    //   },
+    // );
   }
 
   /// (Trick) When user disable the notification, then, subscribe !!.
@@ -424,36 +439,37 @@ class MyAppState extends State<MyApp> {
   }
 
   likeInit() {
-    LikeService.instance.init(
-      onLiked: ({required Like like, required bool isLiked}) async {
-        /// only send notification if it is liked
-        if (isLiked == false) return;
+    // TODO: refactor: refactoring-database
+    // LikeService.instance.init(
+    //   onLiked: ({required Like like, required bool isLiked}) async {
+    //     /// only send notification if it is liked
+    //     if (isLiked == false) return;
 
-        /// get the like document reference for more information
-        /// then base from the document reference you can swich or decide where the notificaiton should go
-        /// set push notification. e.g. send push notification to post like
-        if (like.documentReference.toString().contains('posts/')) {
-          Post post = await Post.get(like.documentReference.id);
+    //     /// get the like document reference for more information
+    //     /// then base from the document reference you can swich or decide where the notificaiton should go
+    //     /// set push notification. e.g. send push notification to post like
+    //     if (like.documentReference.toString().contains('posts/')) {
+    //       Post post = await Post.get(like.documentReference.id);
 
-          /// dont send push notification if the owner of the post is the loggin user.
-          if (post.uid == myUid) return;
+    //       /// dont send push notification if the owner of the post is the loggin user.
+    //       if (post.uid == myUid) return;
 
-          /// can get more information base from the documentReference
-          /// can give more details on the push notification
-          MessagingService.instance.sendMessageToUids(
-            uids: [post.uid],
-            title: 'Your post got liked',
-            body: '${my.displayName} liked ${post.title}',
-            data: {
-              "action": 'like',
-              "source": 'post',
-              'postId': post.id,
-              'documentReference': like.documentReference.toString(),
-            },
-          );
-        }
-      },
-    );
+    //       /// can get more information base from the documentReference
+    //       /// can give more details on the push notification
+    //       MessagingService.instance.sendMessageToUids(
+    //         uids: [post.uid],
+    //         title: 'Your post got liked',
+    //         body: '${my.displayName} liked ${post.title}',
+    //         data: {
+    //           "action": 'like',
+    //           "source": 'post',
+    //           'postId': post.id,
+    //           'documentReference': like.documentReference.toString(),
+    //         },
+    //       );
+    //     }
+    //   },
+    // );
   }
 
   @override

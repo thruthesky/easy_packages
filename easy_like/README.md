@@ -1,39 +1,35 @@
 # Easy Like and Dislike
 
-The `like` unctionality can be applied to various entities in the app, such as user profiles, uploaded photos, posts, and comments.
-
-A simple way to handle this is by saving a list of user IDs who liked or disliked an item. However, if the document becomes too large, it can slow down the app and increase costs for network usage on Firebase. Additionally, Firestore documents have a 1MB size limit, which can cause issues when there are too many like.
-
 The `easy_like` package provides an easy and efficient way to manage the `like` functionality.
 
-It does not support `dislike` since most of the community don't provide `dislike` button. It discourages usres to participate the community.
+The `like` functionality can be applied to various entities in the app, such as user profiles, uploaded photos, posts, and comments.
+
+A simple way to handle this is by saving a list of user IDs who liked or disliked an item.
+
+It does not support `dislike` since most of the community don't provide `dislike` button. It discourages users to participate the community.
 
 ## Installation
 
 ### Security rules
 
-- On the document, the `likes` should be open to be written by any one.
+@thruthesky: Please add the security rules here.
 
 ## Terms
 
 - `vote` is the action of voting(doing) like or unlike.
-- `like document` is the document under `/likes` collection.
-- `target document` is the original document that hte like is refering. It can be a user document, post document, commnet document, chat room document, or what ever.
+- `id` is the name of the node at `/likes/{id}` in database.
+  - The id is actually the path of the parent node with dash(-) replace with slash(/). For example, if the parent node is `/posts/1234`, then the id is `posts-1234`.
 
 ## Database structure for Like and Dislike
 
-- `/likes/{documentId}`: This is where like information saved. And the id of the document is the target document.
-- `documentReference`: This field is reference of the target document. It's a reference. So it can access the target document regardless of any collection.
-- `likedBy`: This field is the list of user uid who did like. If the user unlikes, then the uid will be removed from this field.
-- `likeCount`: This field is the no of the likes. It can be used for search purpose.
-
-- Note that, the `like document ID` is the same as the target document ID.
+- `/likes/{id}`: This is where like information saved. It must be formed as `type-id` where `type` is the type of the data like `post`, `comment`, `chat` and `id` is the id of the data node. By using this format, it can be easily searched and managed.
+- The value of the node is Map type. The key is the uid of the user and the value is always `true`. If a user unlike, the key of uid will be deleted.
 
 ## Logic
 
-- It uses transaction to increase and decrease.
-- Whenever there is a changes on `vote`, the number of `likeCount` must be updated in the original document.
-- When the user unlike(or the like again), then the no of like will be decrease.
+- Whenever there is a changes on `vote`, the number of `likeCount` must be updated in the original (parent) node.
+
+- When the user unlike, then the number of like will be decrease.
 
 ## Displaying the no of likes
 

@@ -1,0 +1,126 @@
+{
+    "rules": {
+        "test": {
+            ".read": true
+        },
+        "admins": {
+            ".read": true,
+            ".write": "root.child('admins').hasChild(auth.uid)"
+        },
+        "app-settings": {
+            ".read": true,
+            ".write": "root.child('admins').hasChild(auth.uid)"
+        },
+        "users": {
+            ".read": true,
+            "$uid": {
+                ".write": "$uid === auth.uid || root.child('admins').hasChild(auth.uid)",
+                "isDisabled": {
+                    ".validate": "root.child('admins').hasChild(auth.uid)"
+                }
+            },
+            ".indexOn": [
+                "gender",
+                "nationality",
+                "region",
+                "birthYear"
+            ]
+        },
+        "user-settings": {
+            "$uid": {
+                ".read": "$uid === auth.uid",
+                ".write": "$uid === auth.uid"
+            }
+        },
+        "user-phone-sign-in-numbers": {
+            ".read": true,
+            ".write": "auth != null"
+        },
+        "chat": {
+            "-info": {
+                "timestamp": {
+                    ".read": true,
+                    ".write": true
+                }
+            },
+            "invited-users": {
+                ".read": true,
+                ".write": true,
+                "$uid": {
+                    ".indexOn": [
+                        ".value"
+                    ]
+                }
+            },
+            "rejected-users": {
+                ".read": true,
+                ".write": true
+            },
+            "joins": {
+                ".read": true,
+                ".write": true,
+                "$uid": {
+                    "$room_id": {},
+                    ".indexOn": [
+                        "order",
+                        "singleOrder",
+                        "groupOrder",
+                        "openOrder"
+                    ]
+                }
+            },
+            "messages": {
+                "$room_id": {
+                    ".read": true,
+                    ".write": true,
+                    ".indexOn": [
+                        "order",
+                        "protocol"
+                    ]
+                }
+            },
+            "rooms": {
+                ".read": true,
+                ".write": true
+            },
+            "settings": {
+                ".read": true,
+                ".write": true
+            }
+        },
+        "reports": {
+            "---key-list": {
+                ".read": true,
+                "$reportKey": {
+                    ".write": "newData.val() === auth.uid"
+                }
+            },
+            "$uid": {
+                ".read": "$uid === auth.uid",
+                "$reportKey": {
+                    ".write": "newData.child('reporter').val() === auth.uid"
+                },
+                ".indexOn": [
+                    "path"
+                ]
+            }
+        },
+        "fcm-tokens": {
+            ".read": true,
+            "$token": {
+                ".write": "newData.val() === auth.uid"
+            },
+            ".indexOn": [
+                ".value"
+            ]
+        },
+        "fcm-subscriptions": {
+            ".read": true,
+            "$subscriptionId": {
+                "$uid": {
+                    ".write": "$uid === auth.uid"
+                }
+            }
+        }
+    }
+}
