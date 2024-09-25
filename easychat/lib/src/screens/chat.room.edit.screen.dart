@@ -159,9 +159,10 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                         setState(() {
                           isLoading = true;
                         });
-                        ChatRoom? chatRoom;
                         try {
-                          /// TODO: make this a transaction
+                          ChatRoom? chatRoom;
+
+                          /// Create a new chat room
                           final newRoomRef = await ChatRoom.create(
                             name: nameController.text,
                             description: descriptionController.text,
@@ -171,11 +172,19 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                             single: false,
                             users: {myUid!: false},
                           );
+
+                          /// Get the chat room
                           chatRoom = await ChatRoom.get(newRoomRef.key!);
-                          await ChatService.instance.join(
-                            chatRoom!,
-                            protocol: ChatProtocol.create,
-                          );
+                          // await ChatService.instance.join(
+                          //   chatRoom!,
+                          //   protocol: ChatProtocol.create,
+                          // );
+
+                          // This will prevent the newly Uploaded photo to be deleted
+                          iconUrl = null;
+                          if (!context.mounted) return;
+                          Navigator.of(context).pop(chatRoom!.ref);
+                          ChatService.instance.showChatRoomScreen(context, room: chatRoom);
                         } catch (e) {
                           dog("Failed on chat room creation: ${e.toString()}");
                           setState(() {
@@ -183,11 +192,6 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
                           });
                           rethrow;
                         }
-                        // This will prevent the newly Uploaded photo to be deleted
-                        iconUrl = null;
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop(chatRoom.ref);
-                        ChatService.instance.showChatRoomScreen(context, room: chatRoom);
                       },
                       child: Text('create'.t.toUpperCase()),
                     )

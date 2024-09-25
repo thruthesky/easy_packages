@@ -132,12 +132,10 @@ class ChatRoom {
       users: json[field.users] is Map ? Map<String, bool>.from(json[field.users]) : {},
       masterUsers: List<String>.from(json[field.masterUsers]),
       blockedUsers: Map<String, bool>.from(json[field.blockedUsers] ?? {}),
-      createdAt: json[field.createdAt] is num
-          ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt])
-          : DateTime.now(),
-      updatedAt: json[field.updatedAt] is num
-          ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt])
-          : DateTime.now(),
+      createdAt:
+          json[field.createdAt] is num ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt]) : DateTime.now(),
+      updatedAt:
+          json[field.updatedAt] is num ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt]) : DateTime.now(),
       lastMessageAt: json[field.lastMessageAt] == null
           ? DateTime.now()
           : DateTime.fromMillisecondsSinceEpoch(json[field.lastMessageAt]),
@@ -239,7 +237,7 @@ class ChatRoom {
       field.single: single,
       field.group: group,
       // if (invitedUsers != null) field.invitedUsers: invitedUsers,
-      field.users: users,
+      field.users: [],
       field.masterUsers: [myUid],
       field.allMembersCanInvite: allMembersCanInvite,
       field.gender: gender,
@@ -254,6 +252,8 @@ class ChatRoom {
     } else {
       newChatRoomRef = ChatService.instance.roomsRef.child(id);
     }
+
+    /// Create the chat room. It's update method but it's creating a new chat room.
     await newChatRoomRef.update(newRoom);
     return newChatRoomRef;
   }
