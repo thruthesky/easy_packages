@@ -3,6 +3,7 @@ import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
+import 'package:example/screens/firebase_database_list_view/firebase_database_list_view.screen.dart';
 import 'package:example/screens/locale/locale.screen.dart';
 import 'package:example/screens/forum/forum.screen.dart';
 import 'package:example/screens/menu/menu.screen.dart';
@@ -265,6 +266,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   //   },
                   //   child: const Text('User Group'),
                   // ),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (_, __, ___) {
+                          return const FirebaseDatabaseListViewScreen();
+                        },
+                      );
+                    },
+                    child: const Text('FirebaseDatabaseListView'),
+                  ),
                 ],
               ),
             ),

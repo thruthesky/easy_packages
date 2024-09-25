@@ -4,6 +4,10 @@
 - User management package based on Firebase Realtime Database.
 
 
+# Security rules
+
+
+- Install the security rules from the [database security rules](../docs/database_security_rules.json) file.
 
 # Database Structure
 
@@ -25,19 +29,11 @@
     - `users/<uid>/birthMonth`: is the birth month of the user.
     - `users/<uid>/birthDay`: is the birth day of the user.
 
-- `users-private`: is the root node of the database.
-  - `users-private/<uid>`: is the user node.
-    - `users-private/<uid>/email`: is the email of the user.
-    - `users-private/<uid>/phoneNumber`: is the phone number of the user.
-
-- `user-meta`: is the other data that the user needs.
-  -`user-meta/<uid>`: is the user's node.
-    -`user-meta/<uid>/blocks`: is the list of blocked users
-      -`user-meta/<uid>/blocks/<blockedUid>`: is a blocked user node.
 
 - `user-phone-sign-in-numbers`: is the list for the phone numbers that users used to sign in.
   - `user-phone-sign-in-numbers/<phoneNumber>`: is a phone number that a user used to sign in.
     - `user-phone-sign-in-numbers/<phoneNumber>/lastSignedInAt`: is the milliseconds when the user used the phone number.
+
 
 
 
@@ -88,6 +84,15 @@ UserBuildAvatar(photoUrl: null, initials: null)
 ```
 
 
+# UI and UX Customization
+
+
+## prefixActionBuilderOnPublicProfileScreen
+
+
+
+
+
 
 
 # Logics
@@ -114,3 +119,5 @@ flowchart TB
   node_1 --> node_2
   node_2 --"Yes"--> node_3
 ```
+
+

@@ -94,6 +94,15 @@ dependency_overrides:
 ```
 
 
+
+# Security rules
+
+- This is the security rules for all the packages of easy packages.
+  - Since each package has its own security rules, it's not easy to find where the security rules are. So, all the security rules are here for your convinience. You can copy and paste this to your Firebase database security rules.
+- Install the security rules from [database security rules](./docs/database_security_rules.json) file.
+
+
+
 # Firebase SDK
 
 - The fultter uses a specific version of Firebase SDK. So, you need to use the same version of Firebase SDK in your app.

@@ -11,8 +11,6 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Secuirty rules](#secuirty-rules)
     - [Realtime Database Security Rules](#realtime-database-security-rules)
     - [Storage Rules](#storage-rules)
-    - [Firestore Rules](#firestore-rules)
-    - [Firestore Indexes](#firestore-indexes)
   - [Initialization](#initialization)
 - [Dependencies](#dependencies)
 - [Logics](#logics)
@@ -38,6 +36,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [Chat Blocking](#chat-blocking)
   - [Server timestamp](#server-timestamp)
 - [Widgets](#widgets)
+  - [ChatRoomBody](#chatroombody)
   - [Displaying chat room information](#displaying-chat-room-information)
   - [ChatInvitationCounter](#chatinvitationcounter)
   - [ChatInvitationListView](#chatinvitationlistview)
@@ -154,8 +153,7 @@ For your information on `easychat` history:
 
 
 ```json
-    // easychat package security rules: 2024. 09. 21.
-    "chat": {
+"chat": {
       "-info": {
         "timestamp": {
           ".read": true,
@@ -164,7 +162,10 @@ For your information on `easychat` history:
       },
       "invited-users": {
         ".read": true,
-        ".write": true
+        ".write": true,
+        "$uid": {
+          ".indexOn": [".value"]
+        }
       },
       "rejected-users": {
         ".read": true,
@@ -175,15 +176,15 @@ For your information on `easychat` history:
         ".write": true,
         "$uid": {
           "$room_id": {
-            ".indexOn": ["order"]
-          }
+          },
+          ".indexOn": ["order", "singleOrder", "groupOrder", "openOrder"]
         }
       },
       "messages": {
         "$room_id": {
           ".read": true,
           ".write": true,
-          ".indexOn": ["protocol"]
+          ".indexOn": ["order", "protocol"]
         }
       },
       "rooms": {
@@ -202,12 +203,6 @@ For your information on `easychat` history:
 ### Storage Rules
 
 
-
-### Firestore Rules
-
-`easychat` uses the firestore for some functionalities like reporting the user or chat rooms.
-
-### Firestore Indexes
 
 ## Initialization
 
@@ -615,6 +610,24 @@ When the user is blocked, the user is also removed from the room. The blocker (w
 
 # Widgets
 
+
+## ChatRoomBody
+
+- The `ChatRoomBody` is a widget that displays the chat messages and the `chat send input box` of the chat room.
+  - If you want to custom the chat room screen, you can use this widget.
+
+```dart
+hatRoomBody(
+  room: Config.buyAndSellChatRoom,
+  inputBoxPadding: EdgeInsets.fromLTRB(
+    10,
+    0,
+    10,
+    MediaQuery.of(context).viewPadding.bottom > 0 ? 0 : 10,
+  ),
+  onTapFakeInputBox: () => context.push(LoginScreen.routeName),
+),
+```
 
 ## Displaying chat room information
 
