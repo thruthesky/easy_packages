@@ -18,23 +18,14 @@
 
 ### Security rules Realtime Database
 
-```json
-    "fcm-tokens": {
-      ".read": true,
-      "$token": {
-        ".write": "newData.val() === auth.uid",
-      },
-      ".indexOn": [".value"],
-    },
-    "fcm-subscriptions": {
-      ".read": true,
-      "$subscriptionId": {
-        "$uid": {
-          ".write": "$uid === auth.uid"
-        }
-      }
-    },
-```
+- Install the database security rules at [database security rules](../docs/database_security_rules.json)
+
+## Install the cloud functions
+
+- To install the `easy-engine` cloud functions, refer to the [cloud functions install at easy-engine](https://github.com/thruthesky/easy-engine?tab=readme-ov-file#cloud-functions-install) project.
+
+
+
 
 ## Logic
 
