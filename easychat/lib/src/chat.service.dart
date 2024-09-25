@@ -478,7 +478,7 @@ class ChatService {
     if (room.joined) {
       // NOTE: room.joined is only based on `/chat/room/` user
       //       might not be joined yet based on `/chat/join/`
-      //       That is the reason why we have to add force
+      //       That is the reason why we have to add this
       final checkInJoins = await joinRef(myUid!).child(joinedAt).get();
       dog("Already joined?: ${checkInJoins.exists}:::: ${checkInJoins.value}");
       if (checkInJoins.exists) {
@@ -486,6 +486,11 @@ class ChatService {
         return;
       }
     }
+
+    dog("Joining");
+
+    final timestamp = await getServerTimestamp();
+    final negativeTimestamp = -1 * timestamp;
 
     // int timestamp = await getServerTimestamp();
     // final order = timestamp * -1; // int.parse("-1$timestamp");
@@ -498,6 +503,11 @@ class ChatService {
       room.ref.child('users').child(myUid!).path: true,
       // Add in chat joins
       'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
+      // Should be in top in order
+      'chat/joins/${myUid!}/${room.id}/$order': negativeTimestamp,
+      if (room.single) 'chat/joins/${myUid!}/${room.id}/$singleOrder': negativeTimestamp,
+      if (room.group) 'chat/joins/${myUid!}/${room.id}/$groupOrder': negativeTimestamp,
+      if (room.open) 'chat/joins/${myUid!}/${room.id}/$openOrder': negativeTimestamp,
     };
 
     /// Add your uid into the user list of the chat room instead of reading from database.
