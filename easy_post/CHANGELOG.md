@@ -1,3 +1,6 @@
+## 0.0.7
+* Fix. Dependency update.
+
 ## 0.0.6
 * Update. bump to the latest version of youtube player.
 

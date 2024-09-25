@@ -1,6 +1,6 @@
 name: easy_post_v2
 description: "An easy to use post(forum) package for Flutter and Firebase."
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:
