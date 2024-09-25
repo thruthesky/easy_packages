@@ -35,6 +35,7 @@ class _ChatInvitationListTileState extends State<ChatInvitationListTile> {
   @override
   void initState() {
     super.initState();
+    if (widget.room.single != true) return;
     otherUid = getOtherUserUidFromRoomId(widget.room.id)!;
     User.get(otherUid).then((u) => user = u);
   }
