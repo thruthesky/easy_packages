@@ -632,4 +632,3 @@ The easy packages have a rule for this work.
 
 
 Run `./pubget.sh` under the `easy_packages` folder. This will run `flutter pub get` under each packages.
-
