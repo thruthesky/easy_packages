@@ -1,11 +1,10 @@
-# Easy user settings
+# Easy app settings
 
-- `easy_user_setting` package provides an easy and nice UI/UX with the logic to manage the settings in realtime database.
+- `easy_app_setting` package provides an easy and nice UI/UX with the logic to manage the settings in realtime database.
 
-- It is a simple container for the user's extra data. The user data is used in many places and it's public. If is' too large, it will cost more. And it cannot save private data like password, email, etc.
+- It is a simple container that can provide an extra data that can be used by all users.
 
 - It can have any kinds of settings.
-
 
 ## TODO
 
@@ -15,28 +14,29 @@
 
 ## Security Rules
 
-
 - Install the [database security rules](../docs/database_security_rules.json) file.
-
 
 ## Database Structure
 
+- `/app-settings`: is the node of each app's settings.
 
-- `/user-settings`: is the node of each user's settings.
-  - `/user-settings/<uid>`: is the user's settings node.
-    - `/user-settings/<uid>/<key>`: is the key of the setting.
-    - `/user-settings/<uid>/<key>: value`: is the value of the setting.
+  - `/app-settings/<uid>`: is the app's settings node.
+    - `/app-settings/<uid>/<key>`: is the key of the setting.
+    - `/app-settings/<uid>/<key>: value`: is the value of the setting.
 
-- The data is private and only the user can read and write.
+- The data is public, the users can only read the data. The admin is the only one who can write.
+
 
 
 ## How to use
 
 - To display and update a value, see the code below.
+- You can use `field` to get the value from the app settings. It can have a path like `puzzle/defaultBoardImageUrls` or `puzzle/defaultBoardImageUrls/0`.
 
 ```dart
-UserSettingModel(
-  builder: (sm) {
+AppSettings(
+  field: 'puzzle/defaultBoardImageUrls',
+  builder: (sm, r) {
     return ListTile(
       title: Text('System count: ${sm.value<int>('count') ?? 0}'),
       onTap: () {
@@ -49,10 +49,10 @@ UserSettingModel(
 ```
 
 - For incrementing or decremeting an integer value, you can use below
+
 ```dart
 sm.increment('count');
 ```
-
 
 - For user settings, you can use the user's firebase auth uid like below.
 
@@ -83,24 +83,21 @@ Setting(
 ),
 ```
 
+### Save app setting
 
-
-### Save user setting
-
-- Use `UserSettingService.instance.update` to update the user settings. It will create if it does not exist.
+- Use `AppSettingService.instance.update` to update the user settings. It will create if it does not exist.
 
 ```dart
-UserSettingService.instance.update(
+AppSettingService.instance.update(
   key: 'fruit',
   value: 'Apple',
 );
 ```
 
+### Get app setting
 
-### Get user setting
-
-- Use `UserSettingService.instance.get` to get the user settings.
+- Use `AppSettingService.instance.get` to get the user settings.
 
 ```dart
-final fruit = await UserSettingService.instance.get('fruit');
+final fruit = await AppSettingService.instance.get('fruit');
 ```
