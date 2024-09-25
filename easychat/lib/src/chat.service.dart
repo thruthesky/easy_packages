@@ -504,6 +504,7 @@ class ChatService {
       // Add in chat joins
       'chat/joins/${myUid!}/${room.id}/$joinedAt': ServerValue.timestamp,
       // Should be in top in order
+      // This will make the newly joined room at top.
       'chat/joins/${myUid!}/${room.id}/$order': negativeTimestamp,
       if (room.single) 'chat/joins/${myUid!}/${room.id}/$singleOrder': negativeTimestamp,
       if (room.group) 'chat/joins/${myUid!}/${room.id}/$groupOrder': negativeTimestamp,
