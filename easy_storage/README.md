@@ -61,6 +61,26 @@ Add these entitlements for allowing the app to use Camera and Gallery.
 <string>This app requires access to the camera to share the photo on profile, chat, forum.</string>
 ```
 
+## Install Firebase Extension for Thumbnail support
+
+The package will work even if you do not install the extension but there might be a flickering.
+
+To add thumbnail support in `easy_storage`, follow these steps:
+
+1. Install the [Image Resize Extension](https://extensions.dev/extensions/firebase/storage-resize-images) three times(instances) with the following configurations;
+
+2. Install three instances of the image resize extension.
+
+- Each size of the instance must be 200x200 (small), 600x600 (medium), 1200x1200 (large)
+- And with the same settings below
+  - Deletion of original file: false (No)
+  - Make resize images public: true (Yes)
+  - Cache-control header: max-age=86400
+  - Convert images to prefered type: webp
+  - Backfil: Yes
+  - Assign new access token: false (No)
+- 
+
 # TODO
 
 - Give an option to `init` that if the thumbnails are being used.
@@ -314,18 +334,8 @@ UploadForm(
 
 # Thumbnails
 
-To add thumbnail support in `easy_storage`, follow these steps:
+To add thumbnail support in `easy_storage`, follow the installation steps.
 
-1. Install the [Image Resize Extension](https://extensions.dev/extensions/firebase/storage-resize-images) three times(instances) with the following configurations;
-
-2. Install three instances of the image resize extension.
-
-- Each size of the instance must be 200x200 (small), 600x600 (medium), 1200x1200 (large)
-- And with the same settings below
-  - Deletion of original file: false (No)
-  - Make resize images public: true (Yes)
-  - Convert images to prefered type: webp
-  - Assign new access token: false (No)
 
 Keep in mind that the easy packages(like easy user, easy post, etc) should not use thumbnails directly. Thumbnails are for app developers to enhance their apps, not for the packages themselves.
 

@@ -136,10 +136,10 @@
 
 
         {
-            "name": "EasyChat - iPhone 15 Pro Max - Example",
+            "name": "EasyChat - iPhone 16 Pro Max - Example",
             "request": "launch",
             "type": "dart",
-            "deviceId": "iPhone 15 Pro Max",
+            "deviceId": "iPhone 16 Pro Max",
             "cwd": "easychat/example",
             "program": "lib/main.dart",
             "args": [

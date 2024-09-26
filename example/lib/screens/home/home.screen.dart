@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
+import 'package:easy_storage/easy_storage.dart';
+import 'package:easy_youtube/easy_youtube.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/firebase_database_list_view/firebase_database_list_view.screen.dart';
@@ -25,9 +28,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool add = false;
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      test();
+    });
+  }
+
+  test() async {
+    final room = await ChatRoom.get('-O7fycrHFwAQsR4bJuRa');
+    ChatService.instance.showChatRoomScreen(
+      context,
+      room: room,
+    );
   }
 
   @override
@@ -63,6 +79,100 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(
+                height: 150,
+                child: ListView(
+                  children: [
+                    if (add)
+                      Row(
+                        children: [
+                          UserAvatar.fromUid(uid: 'L4iIrNu5SoWmvLXqFpCxSvwjQvq1'),
+                          const SizedBox(width: 8),
+                          const Text('UserAvatar.fromUid(uid: "L4i...")'),
+                        ],
+                      ),
+                    Row(
+                      children: [
+                        const SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: ThumbnailImage(
+                            url:
+                                'https://firebasestorage.googleapis.com/v0/b/withcenter-test-4.appspot.com/o/users%2FShl6IN3nQAgqxFx5WKB4SF8lKzu1%2Fimage_picker_1D095BF3-3009-4D8E-89A7-C7EF11586BF3-26365-00000036F821F7EC.jpg?alt=media&token=7456aca2-f889-48a1-acc3-92db5f458dc8',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          color: Colors.blue,
+                          height: 50,
+                          width: 50,
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://firebasestorage.googleapis.com/v0/b/withcenter-test-4.appspot.com/o/users%2FShl6IN3nQAgqxFx5WKB4SF8lKzu1%2Fimage_picker_1D095BF3-3009-4D8E-89A7-C7EF11586BF3-26365-00000036F821F7EC.jpg?alt=media&token=7456aca2-f889-48a1-acc3-92db5f458dc8',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: UserAvatar.fromUid(uid: 'Shl6IN3nQAgqxFx5WKB4SF8lKzu1'),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        UserAvatar.fromUid(uid: 'ugQbQbZ1ilVkc9OlLX3OozgoX8G3'),
+                        const SizedBox(width: 8),
+                        const Text('UserAvatar.fromUid(uid: "ugQbQ...")'),
+                      ],
+                    ),
+                    UserAvatar.fromUid(uid: 't9zv6Y8JCEM5qcEjUEe2DqZrxI43'),
+                    UserAvatar.fromUid(uid: 'ohSJSLwJkfhcgCNMdbQmCnqQNpG2'),
+                    UserAvatar.fromUid(uid: 'mFHhhZA5rgX9lPQVINmTyQcmZ822'),
+                    UserAvatar.fromUid(uid: 'irvnReNOlVVCaLSsSCw5mRsenlC2'),
+                    UserAvatar.fromUid(uid: 'iAqhcyZuMigpgqUkRvTaSvSShe02'),
+                    UserAvatar.fromUid(uid: 'dDFHbEVOiOV8cQ2YADytcSHJQ513'),
+                  ],
+                )),
+
+            Container(
+                padding: const EdgeInsets.all(24),
+                height: 150,
+                child: ListView(
+                  children: [
+                    Row(
+                      children: [
+                        const SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: ThumbnailImage(
+                            url:
+                                'https://firebasestorage.googleapis.com/v0/b/withcenter-test-4.appspot.com/o/users%2FShl6IN3nQAgqxFx5WKB4SF8lKzu1%2Fimage_picker_1D095BF3-3009-4D8E-89A7-C7EF11586BF3-26365-00000036F821F7EC.jpg?alt=media&token=7456aca2-f889-48a1-acc3-92db5f458dc8',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: UserAvatar.fromUid(uid: 'Shl6IN3nQAgqxFx5WKB4SF8lKzu1'),
+                        )
+                      ],
+                    ),
+                  ],
+                )),
+
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {});
+                },
+                child: const Text('setState')),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    add = !add;
+                  });
+                },
+                child: const Text('add')),
             Row(
               children: [
                 Text('version'.t),
@@ -282,58 +392,58 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             //
-            SizedBox(
-              height: 180,
-              child: UserListView(
-                itemBuilder: (user, index) {
-                  return Row(
-                    children: [
-                      UserAvatar(
-                        photoUrl: user.photoUrl,
-                        initials: (user.displayName).or((user.name).or(user.uid)),
-                      ),
-                      Text('c: $index'),
-                      TextButton(
-                        onPressed: () => ChatService.instance.showChatRoomScreen(
-                          context,
-                          user: user,
-                          // room: room,
-                        ),
-                        child: const Text('Chat'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          await i.block(context: context, otherUid: user.uid);
-                        },
-                        child: UserBlocked(
-                          otherUid: user.uid,
-                          builder: (b) => Text(b ? 'Un-block' : 'Block'),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          await ReportService.instance.report(
-                            context: context,
-                            reportee: user.uid,
-                            path: user.ref.path,
-                            type: 'user',
-                            summary: 'Reporting: ${user.displayName}, uid: ${user.uid}',
-                          );
-                        },
-                        child: const Text('Report'),
-                      ),
-                      TextButton(
-                        onPressed: () => i.showPublicProfileScreen(
-                          context,
-                          user: user,
-                        ),
-                        child: const Text('Public'),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
+            // SizedBox(
+            //   height: 180,
+            //   child: UserListView(
+            //     itemBuilder: (user, index) {
+            //       return Row(
+            //         children: [
+            //           UserAvatar(
+            //             photoUrl: user.photoUrl,
+            //             initials: (user.displayName).or((user.name).or(user.uid)),
+            //           ),
+            //           Text('c: $index'),
+            //           TextButton(
+            //             onPressed: () => ChatService.instance.showChatRoomScreen(
+            //               context,
+            //               user: user,
+            //               // room: room,
+            //             ),
+            //             child: const Text('Chat'),
+            //           ),
+            //           TextButton(
+            //             onPressed: () async {
+            //               await i.block(context: context, otherUid: user.uid);
+            //             },
+            //             child: UserBlocked(
+            //               otherUid: user.uid,
+            //               builder: (b) => Text(b ? 'Un-block' : 'Block'),
+            //             ),
+            //           ),
+            //           TextButton(
+            //             onPressed: () async {
+            //               await ReportService.instance.report(
+            //                 context: context,
+            //                 reportee: user.uid,
+            //                 path: user.ref.path,
+            //                 type: 'user',
+            //                 summary: 'Reporting: ${user.displayName}, uid: ${user.uid}',
+            //               );
+            //             },
+            //             child: const Text('Report'),
+            //           ),
+            //           TextButton(
+            //             onPressed: () => i.showPublicProfileScreen(
+            //               context,
+            //               user: user,
+            //             ),
+            //             child: const Text('Public'),
+            //           ),
+            //         ],
+            //       );
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),
