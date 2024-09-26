@@ -22,8 +22,7 @@ class _MenuScreenState extends State<MenuScreen> {
         children: [
           const Text("Menu"),
           ElevatedButton(
-            onPressed: () =>
-                UserService.instance.showProfileUpdaeScreen(context),
+            onPressed: () => UserService.instance.showProfileUpdateScreen(context),
             child: const Text('Profile update'),
           ),
           ElevatedButton(

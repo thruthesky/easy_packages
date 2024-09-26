@@ -177,15 +177,15 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
 
                           /// Get the chat room
                           chatRoom = await ChatRoom.get(newRoomRef.key!);
-                          // await ChatService.instance.join(
-                          //   chatRoom!,
-                          //   protocol: ChatProtocol.create,
-                          // );
+                          await ChatService.instance.join(
+                            chatRoom!,
+                            protocol: ChatProtocol.create,
+                          );
 
                           // This will prevent the newly Uploaded photo to be deleted
                           iconUrl = null;
                           if (!context.mounted) return;
-                          Navigator.of(context).pop(chatRoom!.ref);
+                          Navigator.of(context).pop(chatRoom.ref);
                           ChatService.instance.showChatRoomScreen(context, room: chatRoom);
                         } catch (e) {
                           dog("Failed on chat room creation: ${e.toString()}");

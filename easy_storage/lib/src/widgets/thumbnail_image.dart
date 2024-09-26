@@ -35,6 +35,7 @@ class ThumbnailImage extends StatelessWidget {
     required this.url,
     this.size = 'small',
     this.fit = BoxFit.cover,
+    this.placeholder,
   });
 
   final String url;
@@ -42,6 +43,7 @@ class ThumbnailImage extends StatelessWidget {
   final String size;
 
   final BoxFit fit;
+  final Widget Function(BuildContext, String)? placeholder;
 
   @override
   Widget build(BuildContext context) {
@@ -52,15 +54,15 @@ class ThumbnailImage extends StatelessWidget {
       thumbnaileUrl = url.thumbnailLarge;
     }
 
-    print('thumbnail: $thumbnaileUrl');
-
     return CachedNetworkImage(
       imageUrl: thumbnaileUrl,
       fit: fit,
+      placeholder: placeholder,
       errorWidget: (context, errorUrl, error) {
         return CachedNetworkImage(
           imageUrl: url,
           fit: fit,
+          placeholder: placeholder,
           errorWidget: (context, url, error) => const Icon(Icons.error),
         );
       },
