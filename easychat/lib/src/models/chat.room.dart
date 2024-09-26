@@ -116,8 +116,7 @@ class ChatRoom {
     if (data.value is int) {
       dog("data.value is int");
     }
-    return ChatRoom.fromJson(
-        (Map<String, dynamic>.from(data.value as Map)), data.key!);
+    return ChatRoom.fromJson((Map<String, dynamic>.from(data.value as Map)), data.key!);
   }
 
   /// Return the chat room object from the json.
@@ -130,17 +129,13 @@ class ChatRoom {
       open: json[field.open],
       single: json[field.single],
       group: json[field.group],
-      users: json[field.users] is Map
-          ? Map<String, bool>.from(json[field.users])
-          : {},
+      users: json[field.users] is Map ? Map<String, bool>.from(json[field.users]) : {},
       masterUsers: List<String>.from(json[field.masterUsers]),
       blockedUsers: Map<String, bool>.from(json[field.blockedUsers] ?? {}),
-      createdAt: json[field.createdAt] is num
-          ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt])
-          : DateTime.now(),
-      updatedAt: json[field.updatedAt] is num
-          ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt])
-          : DateTime.now(),
+      createdAt:
+          json[field.createdAt] is num ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt]) : DateTime.now(),
+      updatedAt:
+          json[field.updatedAt] is num ? DateTime.fromMillisecondsSinceEpoch(json[field.updatedAt]) : DateTime.now(),
       lastMessageAt: json[field.lastMessageAt] == null
           ? DateTime.now()
           : DateTime.fromMillisecondsSinceEpoch(json[field.lastMessageAt]),
@@ -164,23 +159,21 @@ class ChatRoom {
       field.users: users,
       field.masterUsers: masterUsers,
       field.blockedUsers: blockedUsers,
-      field.createdAt: createdAt,
-      field.updatedAt: updatedAt,
-      field.lastMessageAt: lastMessageAt,
+      field.createdAt: createdAt.millisecondsSinceEpoch,
+      field.updatedAt: updatedAt.millisecondsSinceEpoch,
+      field.lastMessageAt: lastMessageAt?.millisecondsSinceEpoch,
       field.allMembersCanInvite: allMembersCanInvite,
       field.gender: gender,
       field.domain: domain,
     };
   }
 
-  @Deprecated(
-      'DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
+  @Deprecated('DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
   copyFromSnapshot(DataSnapshot doc) {
     copyFrom(ChatRoom.fromSnapshot(doc));
   }
 
-  @Deprecated(
-      'DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
+  @Deprecated('DO NOT USE THIS: Why do we need this? Use it if it saved time and money')
   copyFrom(ChatRoom room) {
     // copy all the fields from the room
     id = room.id;
@@ -228,6 +221,7 @@ class ChatRoom {
     String gender = '',
     String domain = '',
   }) async {
+    // TODO: Should (create and join) be one write upon create?
     if (single == true && (group == true || open == true)) {
       throw 'chat-room-create/single-cannot-be-group-or-open Single chat room cannot be group or open';
     }
@@ -243,7 +237,7 @@ class ChatRoom {
       field.single: single,
       field.group: group,
       // if (invitedUsers != null) field.invitedUsers: invitedUsers,
-      field.users: users,
+      field.users: [],
       field.masterUsers: [myUid],
       field.allMembersCanInvite: allMembersCanInvite,
       field.gender: gender,
@@ -258,6 +252,8 @@ class ChatRoom {
     } else {
       newChatRoomRef = ChatService.instance.roomsRef.child(id);
     }
+
+    /// Create the chat room. It's update method but it's creating a new chat room.
     await newChatRoomRef.update(newRoom);
     return newChatRoomRef;
   }
@@ -317,8 +313,7 @@ class ChatRoom {
       if (open != null) field.open: open,
       if (single != null) field.single: single,
       if (group != null) field.group: group,
-      if (allMembersCanInvite != null)
-        field.allMembersCanInvite: allMembersCanInvite,
+      if (allMembersCanInvite != null) field.allMembersCanInvite: allMembersCanInvite,
       field.updatedAt: ServerValue.timestamp,
     };
 

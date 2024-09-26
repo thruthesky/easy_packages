@@ -1,38 +1,35 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_like/easy_like.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 /// Support like only. Not dislike.
 /// See README.md for more information.
 class Like {
-  static CollectionReference get col =>
-      FirebaseFirestore.instance.collection('likes');
-
   /// original document reference. It is called 'target document reference'.
-  final DocumentReference documentReference;
+  final DatabaseReference parentReference;
 
   /// Like document reference. The document ID is the same as the target document ID.
-  DocumentReference get likeRef => col.doc(documentReference.id);
-  DocumentReference get ref => likeRef;
+  DatabaseReference get likeRef => LikeService.instance.likeRef(parentReference.key!.replaceAll('-', '/'));
+  DatabaseReference get ref => likeRef;
 
   String? id;
   List<String> likedBy = [];
 
   Like({
-    required this.documentReference,
+    required this.parentReference,
     this.likedBy = const [],
     this.id,
   });
 
-  factory Like.fromSnapshot(DocumentSnapshot snapshot) {
+  factory Like.fromSnapshot(DataSnapshot snapshot) {
     return Like.fromJson(
-      snapshot.data() as Map<String, dynamic>,
-      snapshot.id,
+      snapshot.value as Map<String, dynamic>,
+      snapshot.key!,
     );
   }
 
   factory Like.fromJson(Map<String, dynamic> json, String id) {
     return Like(
-      documentReference: json['documentReference'],
+      parentReference: FirebaseDatabase.instance.ref(json['parentReference'].replaceAll('-', '/')),
       likedBy: List<String>.from(json['likedBy'] ?? []),
     );
   }
@@ -55,63 +52,28 @@ class Like {
 
     final uid = currentUser.uid;
 
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      FieldValue $likedBy;
+    final snapshot = await likeRef.get();
 
-      List<String> likedBy = [];
-      final snapshot = await likeRef.get();
-      if (snapshot.exists) {
-        final Map<String, dynamic> data =
-            snapshot.data() as Map<String, dynamic>;
-        likedBy = List<String>.from(data['likedBy'] ?? []);
-      }
+    /// Read the list from database to double check if all the data is updated.
+    List<String> likedBy = [];
+    if (snapshot.exists) {
+      likedBy = List<String>.from((snapshot.value as Map).keys);
+    }
 
-      int $likeCount = likedBy.length;
+    bool hasLiked = likedBy.contains(uid);
+    final updates = {
+      parentReference.path.replaceAll('-', '/'): ServerValue.increment(1),
+      ref.path: hasLiked ? {uid: null} : {uid: true},
+    };
 
-      /// Check if to like or to unlike.
-      ///
-      /// If likedBy contains the uid, the uid liked it already. So, it should unlike it.
-      /// If likedBy does not contain the uid, then like it.
-      bool hasLiked = likedBy.contains(uid);
+    await FirebaseDatabase.instance.ref().update(updates);
 
-      /// If the user has liked it, then unlike it.
-      if (hasLiked) {
-        $likedBy = FieldValue.arrayRemove([uid]);
-        $likeCount--;
-      } else {
-        /// If the user has not liked it, then like it.
-        $likedBy = FieldValue.arrayUnion([uid]);
-        $likeCount++;
-      }
-
-      ///
-      transaction.set(
-          documentReference,
-          {
-            'likeCount': $likeCount,
-          },
-          SetOptions(
-            merge: true,
-          ));
-
-      transaction.set(
-        likeRef,
-        {
-          'documentReference': documentReference,
-          'likedBy': $likedBy,
-        },
-        SetOptions(
-          merge: true,
-        ),
-      );
-
-      LikeService.instance.onLiked?.call(
-        like: Like.fromJson({
-          'documentReference': documentReference,
-          'likedBy': likedBy,
-        }, likeRef.id),
-        isLiked: !hasLiked,
-      );
-    });
+    LikeService.instance.onLiked?.call(
+      like: Like.fromJson({
+        'parentReference': parentReference,
+        'likedBy': likedBy,
+      }, parentReference.key!),
+      isLiked: !hasLiked,
+    );
   }
 }

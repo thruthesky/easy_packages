@@ -23,6 +23,12 @@ import 'package:flutter/material.dart';
 ///
 /// Refer README.md for more information
 ///
+/// Note,
+/// - If the thumbnail image does not exist, it will display the original image
+///   * and it will flickering in this case !!
+/// - If the thumbnail image exists, it will not flicker even if a setState is
+///   called from outside or even if the parent widget is removed from widget
+///   tree and re-created.
 class ThumbnailImage extends StatelessWidget {
   const ThumbnailImage({
     super.key,
@@ -46,6 +52,8 @@ class ThumbnailImage extends StatelessWidget {
       thumbnaileUrl = url.thumbnailLarge;
     }
 
+    print('thumbnail: $thumbnaileUrl');
+
     return CachedNetworkImage(
       imageUrl: thumbnaileUrl,
       fit: fit,
@@ -57,7 +65,7 @@ class ThumbnailImage extends StatelessWidget {
         );
       },
       errorListener: (value) => debugPrint(
-        'Thumbnail not found: $thumbnaileUrl, Displaying original image: $url',
+        'Thumbnail not found -> Displaying original image.',
       ),
     );
   }

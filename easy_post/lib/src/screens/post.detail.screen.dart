@@ -13,23 +13,17 @@ class PostDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// The post must be in realtime to update the post in realtime
-    return PostDoc(
-        post: post,
-        sync: true,
-        builder: (post) {
-          /// If the post has no youtube video, return the normal scallfold.
-          if (post.hasYoutube == false) {
-            return PostDetailScaffold(post: post);
-          }
+    /// If the post has no youtube video, return the normal scallfold.
+    if (post.hasYoutube == false) {
+      return PostDetailScaffold(post: post);
+    }
 
-          /// If the post has youtube video, return the youtube fullscreen
-          /// builder.
-          return YoutubeFullscreenBuilder(
-              post: post,
-              builder: (context, player) {
-                return PostDetailScaffold(post: post, youtubePlayer: player);
-              });
+    /// If the post has youtube video, return the youtube fullscreen
+    /// builder.
+    return YoutubeFullscreenBuilder(
+        post: post,
+        builder: (context, player) {
+          return PostDetailScaffold(post: post, youtubePlayer: player);
         });
   }
 }

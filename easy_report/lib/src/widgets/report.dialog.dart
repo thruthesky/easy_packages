@@ -47,21 +47,12 @@ class ReportDialog extends StatelessWidget {
 
             /// REVIEW: Get user data from RTDB
             // const Text("TODO: Get user data from RTDB, and display"),
-            UserDoc(
+
+            UserAvatar.fromUid(
               uid: reportee,
-              builder: (user) {
-                if (user == null) {
-                  return Text('User not found'.t);
-                }
-                return Column(
-                  children: [
-                    UserAvatar(user: user),
-                    const SizedBox(height: 8),
-                    Text(user.displayName),
-                  ],
-                );
-              },
             ),
+            const SizedBox(height: 8),
+            DisplayName(uid: reportee),
             Text('Type: $type'),
             Text('Summary: $summary'),
             const SizedBox(height: 24),

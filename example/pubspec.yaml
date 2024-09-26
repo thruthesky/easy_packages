@@ -1,7 +1,7 @@
 name: example
 description: "A new Flutter project."
 
-# publish_to: "none"
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -10,14 +10,12 @@ environment:
 
 dependencies:
   cached_network_image: ^3.3.1
-  cloud_firestore: ^5.4.2
   cloud_functions: ^5.1.2
   cupertino_icons: ^1.0.6
   dio: ^5.4.3+1
   easy_category: ^0.0.2
   easy_comment:
   easy_engine:
-  easy_firestore:
   easy_helpers:
   easy_like:
   easy_locale:
@@ -25,10 +23,8 @@ dependencies:
   easy_post_v2:
   easy_realtime_database:
   easy_report:
-  easy_setting_v2:
+  easy_user_setting:
   easy_storage:
-  easy_task:
-  easy_user_group:
   easy_youtube:
   easychat:
   easyuser:
@@ -37,8 +33,7 @@ dependencies:
   firebase_database: ^11.1.3
   firebase_messaging: ^15.1.2
   firebase_storage: ^12.3.1
-  firebase_ui_firestore: ^1.6.4
-  firebase_vertexai: ^0.2.3+3
+  firebase_vertexai: ^0.2.2+1
   flutter:
     sdk: flutter
   flutter_local_notifications: ^17.2.1+2
@@ -52,7 +47,6 @@ dependencies:
   phone_sign_in: ^0.0.8
   record: ^5.1.2
   social_design_system: ^0.0.19
-  web: ^1.0.0
 
 dependency_overrides:
   rxdart: ^0.28.0
@@ -60,8 +54,6 @@ dependency_overrides:
     path: ../easy_comment
   easy_engine:
     path: ../easy_engine
-  easy_firestore:
-    path: ../easy_firestore
   easy_helpers:
     path: ../easy_helpers
   easy_like:
@@ -76,20 +68,23 @@ dependency_overrides:
     path: ../easy_realtime_database
   easy_report:
     path: ../easy_report
-  easy_setting_v2:
-    path: ../easy_setting
+  easy_user_setting:
+    path: ../easy_user_setting
   easy_storage:
     path: ../easy_storage
-  easy_task:
-    path: ../easy_task
-  easy_user_group:
-    path: ../easy_user_group
   easy_youtube:
     path: ../easy_youtube
   easychat:
     path: ../easychat
   easyuser:
     path: ../easyuser
+
+  # TODO: Recheck once flutter_inappwebview version >6.0.0 is released
+  flutter_inappwebview_ios:
+    git:
+      url: https://github.com/IncM/flutter_inappwebview
+      path: flutter_inappwebview_ios
+      ref: cbc214c7b2cf5fd7996ff2e9e25d203946b74bc3
 
 dev_dependencies:
   flutter_test:

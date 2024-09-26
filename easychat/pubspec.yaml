@@ -11,11 +11,11 @@ dependencies:
   cached_network_image: ^3.3.1
   easy_helpers: ^0.0.11
   easy_locale: ^0.0.11
-  easy_realtime_database: ^0.0.7
-  easy_report: ^0.0.6
+  easy_realtime_database: ^0.0.9
+  easy_report: ^0.0.8
   easy_storage: ^0.0.13
   easy_url_preview: ^0.0.4
-  easyuser: ^0.0.26
+  easyuser: ^0.0.35
   firebase_auth: ^5.3.0
   firebase_core: ^3.5.0
   firebase_database: ^11.1.3

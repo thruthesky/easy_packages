@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -145,8 +145,7 @@ class _UploadState extends State<Upload> {
                     )
                   : isNotUploading
                       ? const Center(
-                          child:
-                              Text('Upload image into Firebase Cloud Storage'),
+                          child: Text('Upload image into Firebase Cloud Storage'),
                         )
                       : const SizedBox.shrink(),
             ),
@@ -255,10 +254,11 @@ class _UploadAtState extends State<UploadAt> {
                             onPressed: () async {
                               await StorageService.instance.delete(
                                 uploadAtUrl,
-                                ref: FirebaseFirestore.instance
-                                    .collection('storage')
-                                    .doc(widget.uid),
-                                field: 'url',
+                                // ref: FirebaseFirestore.instance
+                                //     .collection('storage')
+                                //     .doc(widget.uid),
+                                // field: 'url',
+                                ref: FirebaseDatabase.instance.ref('storage').child(widget.uid).child('url'),
                               );
                               uploadAtUrl = null;
                               setState(() {});
@@ -305,10 +305,9 @@ class _UploadAtState extends State<UploadAt> {
             uploadAtUrl = await StorageService.instance.uploadAt(
               progress: (p) => setState(() => progress = p),
               complete: () => setState(() => progress = null),
-              ref: FirebaseFirestore.instance
-                  .collection('storage')
-                  .doc(widget.uid),
-              field: 'url',
+              // ref: FirebaseFirestore.instance.collection('storage').doc(widget.uid),
+              // field: 'url',
+              ref: FirebaseDatabase.instance.ref('storage').child(widget.uid).child('url'),
               context: context,
             );
             if (uploadAtUrl == null) {

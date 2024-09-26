@@ -3,6 +3,7 @@ import 'package:easy_locale/easy_locale.dart';
 import 'package:easychat/easychat.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessagesListView extends StatelessWidget {
@@ -12,9 +13,23 @@ class ChatMessagesListView extends StatelessWidget {
     this.itemBuilder,
     this.padding = const EdgeInsets.only(bottom: 8),
     this.controller,
+    this.scrollDirection = Axis.vertical,
+    this.reverse = false,
+    this.primary,
+    this.physics,
+    this.shrinkWrap = false,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    this.cacheExtent,
+    this.dragStartBehavior = DragStartBehavior.start,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.onDrag,
+    this.restorationId,
+    this.clipBehavior = Clip.hardEdge,
   });
 
   final ChatRoom room;
+
   final Widget Function(
     BuildContext context,
     ChatMessage message,
@@ -23,12 +38,27 @@ class ChatMessagesListView extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final ScrollController? controller;
 
+  final Axis scrollDirection;
+  final bool reverse;
+  final bool? primary;
+  final ScrollPhysics? physics;
+  final bool shrinkWrap;
+  final bool addAutomaticKeepAlives;
+  final bool addRepaintBoundaries;
+  final bool addSemanticIndexes;
+  final double? cacheExtent;
+  final DragStartBehavior dragStartBehavior;
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+  final String? restorationId;
+  final Clip clipBehavior;
+
   DatabaseReference get ref => ChatService.instance.messageRef(room.id);
 
   @override
   Widget build(BuildContext context) {
     return FirebaseDatabaseQueryBuilder(
       query: ref.orderByChild(ChatMessage.field.order),
+      pageSize: 20,
       builder: (context, snapshot, _) {
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');
@@ -49,6 +79,20 @@ class ChatMessagesListView extends StatelessWidget {
           itemCount: snapshot.docs.length,
           // controller: widget.controller,
           padding: padding,
+          scrollDirection: scrollDirection,
+          controller: controller,
+          primary: primary,
+          physics: physics,
+          shrinkWrap: shrinkWrap,
+          addAutomaticKeepAlives: addAutomaticKeepAlives,
+          addRepaintBoundaries: addRepaintBoundaries,
+          addSemanticIndexes: addSemanticIndexes,
+          cacheExtent: cacheExtent,
+          dragStartBehavior: dragStartBehavior,
+          keyboardDismissBehavior: keyboardDismissBehavior,
+          restorationId: restorationId,
+          clipBehavior: clipBehavior,
+
           itemBuilder: (context, index) {
             // if we reached the end of the currently obtained items, we try to
             // obtain more items

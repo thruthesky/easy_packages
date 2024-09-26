@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -7,20 +6,23 @@ import 'package:flutter/material.dart';
 ///
 ///
 class PostDetailPhotos extends StatelessWidget {
-  const PostDetailPhotos({super.key, required this.post});
+  const PostDetailPhotos({
+    super.key,
+    required this.urls,
+  });
 
-  final Post post;
+  final List<String> urls;
 
   @override
   Widget build(BuildContext context) {
-    if (post.urls.isEmpty) return const SizedBox.shrink();
+    if (urls.isEmpty) return const SizedBox.shrink();
     final double halfWidth = MediaQuery.of(context).size.width / 2 - 16;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (post.urls.length == 1)
+        if (urls.length == 1)
           SizedBox(
             width: MediaQuery.of(context).size.width - 32,
             height: 200,
@@ -30,21 +32,21 @@ class PostDetailPhotos extends StatelessWidget {
                   context: context,
                   pageBuilder: (context, _, __) {
                     return PhotoViewerScreen(
-                      urls: post.urls,
+                      urls: urls,
                       selectedIndex: 0,
                     );
                   },
                 );
               },
               child: CachedNetworkImage(
-                imageUrl: post.urls[0],
+                imageUrl: urls[0],
                 fit: BoxFit.cover,
               ),
             ),
           )
-        else if (post.urls.length == 2)
+        else if (urls.length == 2)
           Wrap(
-            children: post.urls.asMap().entries.map((entry) {
+            children: urls.asMap().entries.map((entry) {
               return SizedBox(
                 width: halfWidth,
                 height: 200,
@@ -54,7 +56,7 @@ class PostDetailPhotos extends StatelessWidget {
                       context: context,
                       pageBuilder: (context, _, __) {
                         return PhotoViewerScreen(
-                          urls: post.urls,
+                          urls: urls,
                           selectedIndex: entry.key,
                         );
                       },
@@ -68,7 +70,7 @@ class PostDetailPhotos extends StatelessWidget {
               );
             }).toList(),
           )
-        else if (post.urls.length > 2)
+        else if (urls.length > 2)
           Wrap(
             children: [
               SizedBox(
@@ -80,14 +82,14 @@ class PostDetailPhotos extends StatelessWidget {
                       context: context,
                       pageBuilder: (context, _, __) {
                         return PhotoViewerScreen(
-                          urls: post.urls,
+                          urls: urls,
                           selectedIndex: 0,
                         );
                       },
                     );
                   },
                   child: CachedNetworkImage(
-                    imageUrl: post.urls[0],
+                    imageUrl: urls[0],
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -101,7 +103,7 @@ class PostDetailPhotos extends StatelessWidget {
                       context: context,
                       pageBuilder: (context, _, __) {
                         return PhotoViewerScreen(
-                          urls: post.urls,
+                          urls: urls,
                           selectedIndex: 1,
                         );
                       },
@@ -112,15 +114,15 @@ class PostDetailPhotos extends StatelessWidget {
                       CachedNetworkImage(
                         width: halfWidth,
                         height: halfWidth,
-                        imageUrl: post.urls[1],
+                        imageUrl: urls[1],
                         fit: BoxFit.cover,
                       ),
-                      if (post.urls.length > 2)
+                      if (urls.length > 2)
                         Container(
                           color: Colors.black54,
                           child: Center(
                             child: Text(
-                              '+${post.urls.length - 2}',
+                              '+${urls.length - 2}',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,

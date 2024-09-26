@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_category/easy_category.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/screens/post.list.screen.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// PostService is a service class that provides a set of methods to interact with the post collection in Firestore.
@@ -12,20 +12,22 @@ class PostService {
   PostService._();
 
   bool initialized = false;
-  CollectionReference get col => FirebaseFirestore.instance.collection('posts');
+
+  FirebaseDatabase get database => FirebaseDatabase.instance;
+
+  DatabaseReference get postsRef => database.ref().child('posts');
 
   Future Function(BuildContext, Post)? $showPostDetailScreen;
-  Future<DocumentReference?> Function(BuildContext, String?)?
-      $showPostCreateScreen;
-  Future<DocumentReference?> Function(BuildContext, Post)?
-      $showPostUpdateScreen;
+  Future<DatabaseReference?> Function(BuildContext, String?)? $showPostCreateScreen;
+  Future<DatabaseReference?> Function(BuildContext, Post)? $showPostUpdateScreen;
 
   String? youtubeDataApi;
 
   /// Callback on post create, use this if you want to do task after post is created.,
   /// Usage: e.g. send push notification to category subscribers after post is created.
   /// Callback will have the [Post] of the newly created `post` information.
-  Function(Post)? onCreate;
+  Function(Post)? afterCreate;
+  Function(Post)? beforeCreate;
 
   /// Add custom widget on chatroom header,.
   /// e.g. push notification toggle button
@@ -34,12 +36,11 @@ class PostService {
 
   init({
     Future Function(BuildContext, Post)? showPostDetailScreen,
-    Future<DocumentReference?> Function(BuildContext, String?)?
-        showPostCreateScreen,
-    Future<DocumentReference?> Function(BuildContext, Post)?
-        showPostUpdateScreen,
+    Future<DatabaseReference?> Function(BuildContext, String?)? showPostCreateScreen,
+    Future<DatabaseReference?> Function(BuildContext, Post)? showPostUpdateScreen,
     String? youtubeDataApi,
-    Function(Post)? onCreate,
+    Function(Post)? beforeCreate,
+    Function(Post)? afterCreate,
     Widget Function(String? category)? postListActionButton,
   }) {
     if (initialized) {
@@ -51,18 +52,19 @@ class PostService {
     $showPostCreateScreen = showPostCreateScreen;
     $showPostUpdateScreen = showPostUpdateScreen;
     this.youtubeDataApi = youtubeDataApi;
-    this.onCreate = onCreate;
+    this.beforeCreate = beforeCreate;
+    this.afterCreate = afterCreate;
     this.postListActionButton = postListActionButton;
     addPostTranslations();
   }
 
   @Deprecated('Use showPostCreateScreen or showPostUpdateScreen instead')
-  Future<DocumentReference?> showPostEditScreen({
+  Future<DatabaseReference?> showPostEditScreen({
     required BuildContext context,
     required String? category,
     Post? post,
   }) {
-    return showGeneralDialog<DocumentReference?>(
+    return showGeneralDialog<DatabaseReference?>(
       context: context,
       pageBuilder: (_, __, ___) {
         return PostEditScreen(category: category);
@@ -71,7 +73,7 @@ class PostService {
   }
 
   /// Show a screen to create a new post.
-  Future<DocumentReference?> showPostCreateScreen({
+  Future<DatabaseReference?> showPostCreateScreen({
     required BuildContext context,
     String? category,
     bool enableYoutubeUrl = false,
@@ -89,7 +91,7 @@ class PostService {
   }
 
   ///
-  Future<DocumentReference?> showPostUpdateScreen({
+  Future<DatabaseReference?> showPostUpdateScreen({
     required BuildContext context,
     required Post post,
     bool enableYoutubeUrl = false,
@@ -149,34 +151,26 @@ class PostService {
         });
   }
 
-  /// Get the last n posts of the category from the Firestore.
+  /// Get the last n posts of the category from the Database.
   Future<List<Post>> getPosts({
+    required String category,
     Query? query,
-    String? category,
-    String? uid,
+    // String? uid,
     String? orderBy,
     int limit = 10,
   }) async {
     if (query != null) {
       return await getPostsFromQuery(query);
     }
-
-    Query q = col;
-    if (category != null) {
-      q = q.where('category', isEqualTo: category);
-    }
-    if (uid != null) {
-      q = q.where('uid', isEqualTo: uid);
-    }
-    q = q.orderBy('createdAt', descending: true);
-    q = q.limit(limit);
-
+    Query q = postsRef.child(category);
+    q = q.orderByChild(category);
+    q = q.limitToFirst(limit);
     return await getPostsFromQuery(q);
   }
 
   /// Get posts from snapshot
-  List<Post> getPostsFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) => Post.fromSnapshot(doc)).toList();
+  List<Post> getPostsFromSnapshot(DataSnapshot snapshot) {
+    return snapshot.children.map((doc) => Post.fromSnapshot(doc)).toList();
   }
 
   /// Get posts from Query

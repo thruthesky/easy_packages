@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_comment/easy_comment.dart';
 import 'package:easy_locale/easy_locale.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -15,17 +15,17 @@ import 'package:flutter/scheduler.dart';
 class CommentEditDialog extends StatefulWidget {
   const CommentEditDialog({
     super.key,
-    this.documentReference,
+    this.ref,
     this.parent,
     this.comment,
     this.showUploadDialog,
     this.focusOnContent,
   }) : assert(
-          comment == null || documentReference == null,
+          comment == null || ref == null,
           'comment and documentReference cannot be both non-null. If comment is not null, it is update. If documentReference is not null, it is create.',
         );
 
-  final DocumentReference? documentReference;
+  final DatabaseReference? ref;
   final Comment? parent;
   final Comment? comment;
   final bool? showUploadDialog;
@@ -44,8 +44,7 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
   Comment? _comment;
   Comment get comment => _comment!;
 
-  DocumentReference get documentReference =>
-      widget.documentReference ?? widget.parent!.documentReference;
+  DatabaseReference get ref => widget.ref ?? widget.parent!.ref;
 
   final contentController = TextEditingController();
 
@@ -58,11 +57,13 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
       _comment = widget.comment;
       contentController.text = widget.comment!.content;
     } else {
-      // 새 코멘트 생성.
+      // TODO: refactoring-database
       //
-      // DB 에 존재하지 않는 Comment object 를 만들어 사용한다.
-      // 글 작성 및 파일 업로드 등의 로직을 통일 할 수 있어서 이렇게 사용한다.
-      _comment = Comment.fromDocumentReference(documentReference);
+      /// Create an empty comment object that does not exist in the DB.
+      _comment = Comment.fromJson({
+        'content': '',
+        'urls': [],
+      }, '');
     }
 
     if (widget.showUploadDialog == true) {
@@ -73,10 +74,15 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
   }
 
   @override
+  dispose() {
+    contentController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -115,7 +121,7 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
                   onPressed: () async {
                     if (isCreate) {
                       await Comment.create(
-                        documentReference: documentReference,
+                        parentRef: ref,
                         content: contentController.text,
                         urls: comment.urls,
                         parent: widget.parent,

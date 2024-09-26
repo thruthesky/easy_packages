@@ -75,8 +75,8 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
               ElevatedButton(
                 onPressed: () async {
                   widget.beforeLogin?.call();
-                  dog("Email: ${emailController.text}");
-                  dog("Password: ${passwordController.text}");
+                  // dog("Email: ${emailController.text}");
+                  // dog("Password: ${passwordController.text}");
 
                   if (emailController.text.trim().isEmpty) {
                     throw Exception(
@@ -108,8 +108,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
                   );
                   try {
                     /// link with current user.
-                    await FirebaseAuth.instance.currentUser
-                        ?.linkWithCredential(credential);
+                    await FirebaseAuth.instance.currentUser?.linkWithCredential(credential);
                     widget.onLogin?.call();
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'email-already-in-use') {

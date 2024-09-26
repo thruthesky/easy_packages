@@ -133,7 +133,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemExtent: 72,
                   itemBuilder: (context, index) {
-                    return UserDoc(
+                    return UserModel(
                       uid: room!.userUids[index],
                       builder: (user) => user == null
                           ? const SizedBox.shrink()
@@ -277,7 +277,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemExtent: 72,
                     itemBuilder: (context, index) {
-                      return UserDoc(
+                      return UserModel(
                         uid: room!.blockedUids[index],
                         builder: (user) => user == null
                             ? const SizedBox.shrink()
@@ -340,19 +340,6 @@ class ChatRoomMenuDrawer extends StatelessWidget {
               const SizedBox(height: 24),
               if (user?.admin != true) label(context: context, text: "options".t),
               const SizedBox(height: 8),
-              ListTile(
-                title: Text('report'.t),
-                onTap: () {
-                  ReportService.instance.report(
-                    context: context,
-                    path: room?.ref.path ?? user!.ref.path,
-                    type: 'Chat',
-                    reportee: user?.uid ?? room!.masterUsers.first,
-                    summary:
-                        room?.group == true ? "reporting the master because of his/her room".t : "report this user".t,
-                  );
-                },
-              ),
               if (room?.joined == true) ...[
                 if (room!.group && room!.masterUsers.contains(my.uid))
                   ListTile(

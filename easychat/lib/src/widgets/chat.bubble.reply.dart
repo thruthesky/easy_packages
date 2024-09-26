@@ -45,8 +45,7 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
     // No need to listen if it is deleted
     if (replyTo?.deleted == true) return;
     // Listen to the reply message
-    final ref =
-        ChatService.instance.messageRef(message.roomId!).child(replyTo!.id);
+    final ref = ChatService.instance.messageRef(message.roomId!).child(replyTo!.id);
     subscription = ref.onValue.listen((event) {
       final replySource = ChatMessage.fromSnapshot(event.snapshot);
       if (isDifferentText(replySource.text ?? "", replyTo!.text ?? "") ||
@@ -106,129 +105,100 @@ class _ChatBubbleReplyState extends State<ChatBubbleReply> {
                 maxWidth: maxWidth(context),
               ),
               child: Column(
-                crossAxisAlignment: message.uid != myUid
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  UserDoc(
-                    uid: message.replyTo!.uid,
-                    builder: (user) {
-                      if (user == null) {
-                        return const SizedBox.shrink();
-                      }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (replyTo?.url != null) ...[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 12, 0, 12),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                            ),
+                            clipBehavior: Clip.hardEdge,
+                            height: 56,
+                            width: 56,
+                            child: CachedNetworkImage(
+                              key: ValueKey("reply_${message.url}"),
+                              fadeInDuration: Duration.zero,
+                              fadeOutDuration: Duration.zero,
+                              fit: BoxFit.cover,
+                              imageUrl: replyTo!.url!,
+                              errorWidget: (context, url, error) {
+                                dog("Error in Image Chat Bubble: $error");
+                                return Center(
+                                  child: Icon(
+                                    Icons.error,
+                                    color: context.error,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(width: 12),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            0,
+                            12,
+                            12,
+                            12,
+                          ),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (replyTo?.url != null) ...[
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 12, 0, 12),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainerHighest,
-                                    ),
-                                    clipBehavior: Clip.hardEdge,
-                                    height: 56,
-                                    width: 56,
-                                    child: CachedNetworkImage(
-                                      key: ValueKey("reply_${message.url}"),
-                                      fadeInDuration: Duration.zero,
-                                      fadeOutDuration: Duration.zero,
-                                      fit: BoxFit.cover,
-                                      imageUrl: replyTo!.url!,
-                                      errorWidget: (context, url, error) {
-                                        dog("Error in Image Chat Bubble: $error");
-                                        return Center(
-                                          child: Icon(
-                                            Icons.error,
-                                            color: context.error,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              const SizedBox(width: 12),
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    0,
-                                    12,
-                                    12,
-                                    12,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "replying to user".tr(
-                                          args: {
-                                            "username":
-                                                user.displayName.isNotEmpty
-                                                    ? user.displayName
-                                                    : user.name
-                                          },
-                                        ),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              color: context.onSurface
-                                                  .withAlpha(150),
-                                            ),
-                                        maxLines: 1,
+                              UserField<String?>(
+                                  sync: false,
+                                  uid: replyTo!.uid,
+                                  field: 'displayName',
+                                  builder: (displayName) {
+                                    return Text(
+                                      "replying to user".tr(
+                                        args: {"username": displayName.or('...')},
                                       ),
-                                      if (replyTo?.text != null &&
-                                          replyTo!.text!.isNotEmpty)
-                                        Text(
-                                          replyTo!.text!,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        )
-                                      else if (replyTo?.url != null &&
-                                          replyTo!.url!.isNotEmpty)
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.photo,
-                                              color: context.onSurface
-                                                  .withAlpha(200),
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              "[${'photo'.t}]",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium
-                                                  ?.copyWith(
-                                                    color: context.onSurface
-                                                        .withAlpha(150),
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                    ],
-                                  ),
+                                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: context.onSurface.withAlpha(150),
+                                          ),
+                                      maxLines: 1,
+                                    );
+                                  }),
+                              if (replyTo?.text != null && replyTo!.text!.isNotEmpty)
+                                Text(
+                                  replyTo!.text!,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              else if (replyTo?.url != null && replyTo!.url!.isNotEmpty)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.photo,
+                                      color: context.onSurface.withAlpha(200),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "[${'photo'.t}]",
+                                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                            color: context.onSurface.withAlpha(150),
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                              ),
                             ],
                           ),
-                        ],
-                      );
-                    },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

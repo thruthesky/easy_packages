@@ -74,6 +74,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
 
     // Current user automatically joins upon viewing open rooms.
+    // NOTE: room.joined is only based on `/chat/room/` user
+    //       might not be joined yet based on `/chat/join/`
     if (room!.joined == false && room!.open) {
       await join();
     }
@@ -187,7 +189,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           children: [
             appBarIcon(),
             Expanded(
-              child: Text(roomTitle(room, user, widget.join)),
+              child: Text(roomTitle(room, user?.displayName, widget.join)),
             ),
           ],
         ),
@@ -246,8 +248,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ),
                   SafeArea(
                     top: false,
-                    child: ChatRoomInputBox(
-                      room: room!,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        10,
+                        0,
+                        10,
+                        MediaQuery.of(context).viewPadding.bottom > 0 ? 0 : 10,
+                      ),
+                      child: ChatRoomInputBox(
+                        room: room!,
+                      ),
                     ),
                   ),
                 ],
@@ -267,7 +277,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     } else if (user != null) {
       child = GestureDetector(
         child: UserAvatar(
-          user: user!,
+          photoUrl: user!.photoUrl,
+          initials: user!.displayName.or(user!.uid),
           size: 36,
           radius: 15,
         ),

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_storage/easy_storage.dart';
@@ -9,7 +8,7 @@ import 'package:easy_locale/easy_locale.dart';
 ///
 /// Displays the user's avatar.
 ///
-/// [badgeNumber] is the number of notifications.
+///
 ///
 /// [delete] is the callback function that is being called when the user taps the delete button.
 ///
@@ -22,7 +21,6 @@ class UserUpdateAvatar extends StatefulWidget {
     super.key,
     this.size = 140,
     this.radius = 60,
-    this.badgeNumber,
     this.delete = false,
     this.onUploadSuccess,
     this.uploadStrokeWidth = 6,
@@ -35,7 +33,6 @@ class UserUpdateAvatar extends StatefulWidget {
 
   final double size;
   final double radius;
-  final int? badgeNumber;
   final bool delete;
   final double uploadStrokeWidth;
   final double shadowBlurRadius;
@@ -62,11 +59,8 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        ///
-        final url = await StorageService.instance.uploadAt(
+        final url = await StorageService.instance.upload(
           context: context,
-          ref: my.doc,
-          field: 'photoUrl',
           progress: (p) => setState(() => progress = p),
           complete: () => setState(() => progress = null),
         );
@@ -77,7 +71,8 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
         children: [
           MyDoc(
             builder: (user) => UserAvatar(
-              user: user!,
+              photoUrl: user?.photoUrl,
+              initials: (user?.displayName).or((user?.name).or(user?.uid ?? "")),
               size: widget.size,
               radius: widget.radius,
             ),
@@ -111,46 +106,34 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
               ),
             ),
           if (widget.delete && isNotUploading)
-            StreamBuilder(
-                stream: UserService.instance.col.doc(my.uid).snapshots(),
-                builder: (_, event) {
-                  if (event.data == null) return const SizedBox.shrink();
-                  if (!event.hasData && !event.data!.exists) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final data = event.data!.data() as Map<String, dynamic>?;
-                  return data!.containsKey('photoUrl')
-                      ? Positioned(
-                          top: 0,
-                          left: 0,
-                          child: IconButton(
-                            onPressed: () async {
-                              /// 이전 사진 삭제
-                              ///
-                              /// 삭제 실패해도, 계속 진행되도록 한다.
-                              ///
-                              final re = await confirm(
-                                  context: context,
-                                  title: Text('Delete Avatar?'.t),
-                                  message: Text(
-                                      'Are you sure you wanted to delete this avatar?'
-                                          .t));
-                              if (re == false) return;
-                              StorageService.instance.delete(data['photoUrl']);
-                              my.update(photoUrl: FieldValue.delete());
-                            },
-                            padding: EdgeInsets.zero,
-                            visualDensity: VisualDensity.compact,
-                            icon: Icon(
-                              Icons.remove_circle,
-                              color: Colors.grey.shade600,
-                              size: 30,
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink();
-                }),
+            Positioned(
+              top: 0,
+              left: 0,
+              child: MyDoc(
+                builder: (my) {
+                  if (my == null || my.photoUrl == null) return const SizedBox.shrink();
+                  return IconButton(
+                    onPressed: () async {
+                      /// Delete exisiting photo. Continue to delete evenif the photo does not exist.
+                      final re = await confirm(
+                          context: context,
+                          title: Text('Delete Avatar?'.t),
+                          message: Text('Are you sure you wanted to delete this avatar?'.t));
+                      if (re == false) return;
+                      await StorageService.instance.delete(my.photoUrl);
+                      await my.deleteFields([User.field.photoUrl]);
+                    },
+                    padding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                    icon: Icon(
+                      Icons.remove_circle,
+                      color: Colors.grey.shade600,
+                      size: 30,
+                    ),
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );

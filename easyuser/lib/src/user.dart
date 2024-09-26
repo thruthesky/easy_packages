@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:memory_cache/memory_cache.dart';
 
 /// User model
@@ -15,8 +15,8 @@ class User {
     updatedAt: 'updatedAt',
     name: 'name',
     displayName: 'displayName',
-    caseIncensitiveName: 'caseIncensitiveName',
-    caseIncensitiveDisplayName: 'caseIncensitiveDisplayName',
+    caseInsensitiveName: 'caseInsensitiveName',
+    caseInsensitiveDisplayName: 'caseInsensitiveDisplayName',
     birthYear: 'birthYear',
     birthMonth: 'birthMonth',
     birthDay: 'birthDay',
@@ -37,16 +37,16 @@ class User {
 
   String displayName;
 
-  /// [caseIncensitiveDisplayName] is the display name that is case insensitive.
+  /// [caseInsensitiveDisplayName] is the display name that is case insensitive.
   /// It is saved in the database and used to search user name.
   /// Note that this is not needed for serialization.
-  String caseIncensitiveDisplayName;
+  String caseInsensitiveDisplayName;
   String name;
 
-  /// [caseIncensitiveName] is the name that is case insensitive.
+  /// [caseInsensitiveName] is the name that is case insensitive.
   /// It is saved in the database and used to search user name.
   /// Note that this is not needed for serialization.
-  String caseIncensitveName;
+  String caseInsensitiveName;
 
   String? gender;
 
@@ -65,26 +65,27 @@ class User {
 
   /// Collection reference of the user's collection.
   ///
-  CollectionReference col = UserService.instance.col;
-  CollectionReference metaCol = UserService.instance.metaCol;
+  DatabaseReference usersRef = UserService.instance.usersRef;
+
+  /// Get the ref of the login user.
+  ///
+  /// This is for login user only!
+  /// This must be a getter, Or it will throw an exception of user not logged in.
+  DatabaseReference get settingsRef => UserService.instance.settingsRef;
 
   /// [doc] is the document reference of this user model.
-  DocumentReference get doc => col.doc(uid);
+  DatabaseReference get doc => usersRef.child(uid);
 
   /// [ref] is an alias of [doc].
-  DocumentReference get ref => doc;
-
-  /// Current user's mirror reference in the RTDB.
-  DatabaseReference get mirrorRef =>
-      UserService.instance.mirrorUsersRef.child(uid);
+  DatabaseReference get ref => doc;
 
   User({
     required this.uid,
     this.admin = false,
     this.displayName = '',
-    this.caseIncensitiveDisplayName = '',
+    this.caseInsensitiveDisplayName = '',
     this.name = '',
-    this.caseIncensitveName = '',
+    this.caseInsensitiveName = '',
     this.gender,
     this.createdAt,
     this.updatedAt,
@@ -127,27 +128,13 @@ class User {
       throw Exception('User.fromDatabaseSnapshot: value is null.');
     }
 
-    final Map<String, dynamic> data =
-        Map<String, dynamic>.from((snapshot.value as Map?) ?? {});
+    final Map<String, dynamic> data = Map<String, dynamic>.from((snapshot.value as Map?) ?? {});
 
     return User.fromJson(data, snapshot.key!);
   }
 
-  factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
-    if (snapshot.exists == false) {
-      throw Exception('User.fromSnapshot: Document does not exist.');
-    }
-    final Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
-    if (data == null) {
-      throw Exception('User.fromSnapshot: Document data is null.');
-    }
-
-    return User.fromJson(data, snapshot.id);
-  }
-
   /// Serialize the user data to the json format.
   ///
-  /// TODO: the date time can be Firestore Timestamp or Realtime Database integer.
   factory User.fromJson(Map<String, dynamic> json, String uid) {
     return User(
       uid: uid,
@@ -155,15 +142,10 @@ class User {
       displayName: json['displayName'] ?? '',
       name: json['name'] ?? '',
       gender: json['gender'],
-      createdAt: json['createdAt'] is Timestamp
-          ? (json['createdAt'] as Timestamp).toDate()
-          : null,
-      updatedAt: json['updatedAt'] is Timestamp
-          ? (json['updatedAt'] as Timestamp).toDate()
-          : null,
-      lastLoginAt: json['lastLoginAt'] is Timestamp
-          ? (json['lastLoginAt'] as Timestamp).toDate()
-          : null,
+      createdAt: json['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['createdAt']) : DateTime.now(),
+      updatedAt: json['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['updatedAt']) : DateTime.now(),
+      lastLoginAt:
+          json['lastLoginAt'] is int ? DateTime.fromMillisecondsSinceEpoch(json['lastLoginAt']) : DateTime.now(),
       birthYear: json['birthYear'],
       birthMonth: json['birthMonth'],
       birthDay: json['birthDay'],
@@ -174,12 +156,15 @@ class User {
     );
   }
 
+  /// Serialize the user data to the json format.
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['uid'] = uid;
     data['admin'] = admin;
     data['displayName'] = displayName;
     data['name'] = name;
+    data['caseInsensitiveName'] = caseInsensitiveName;
+    data['caseInsensitiveDisplayName'] = caseInsensitiveDisplayName;
     data['gender'] = gender;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
@@ -203,15 +188,35 @@ class User {
     String uid, {
     bool cache = true,
   }) async {
-    return await getData(uid, cache: cache, database: true);
+    return await getData(uid, cache: cache);
   }
 
-  /// Get the user data from Firestore
-  static Future<User?> getFromFirestore(
-    String uid, {
+  static Future getField<T>({
+    required String uid,
+    required String field,
     bool cache = true,
   }) async {
-    return await getData(uid, cache: cache, firestore: true);
+    String key = '$uid+$field';
+    final value = MemoryCache.instance.read<T>(key);
+    if (cache && value != null) {
+      return value;
+    }
+
+    ///
+    // final snapshot = await userFieldRef(uid, field).get();
+    debugPrint("userFieldRef(uid, field).path: ${userFieldRef(uid, field).path}");
+    // TODO using get is getting all the fields. Need to review.
+    final snapshot = await userFieldRef(uid, field).once();
+    // final snapshot = await userFieldRef(uid, field).get();
+
+    debugPrint("Snapshot Value: ${snapshot.snapshot.value}");
+
+    if (snapshot.snapshot.exists) {
+      final value = snapshot.snapshot.value;
+      MemoryCache.instance.create(key, value);
+      return value;
+    }
+    return null;
   }
 
   /// Get the user data with the given [uid].
@@ -224,13 +229,9 @@ class User {
   /// If [firestore] is true, it will get the data from Firestore.
   ///
   /// if [database] is true, it will get the data from the RTDB.
-  ///
-  /// TODO: unit test is needed.
   static Future<User?> getData(
     String uid, {
     bool cache = true,
-    bool? firestore,
-    bool? database,
   }) async {
     User? user;
     if (cache) {
@@ -240,36 +241,18 @@ class User {
       }
     }
 
-    /// Get the user data from the server
-    if (firestore == true) {
-      final DocumentSnapshot snapshot =
-          await UserService.instance.col.doc(uid).get();
-      if (snapshot.exists) {
-        user = User.fromSnapshot(snapshot);
-      }
-    } else if (database == true) {
-      DataSnapshot snapshot;
-      final ref = UserService.instance.mirrorUsersRef.child(uid);
-
-      ///
-      try {
-        snapshot = await ref.get();
-      } catch (e) {
-        throw UserException(
-          'user/get-data from database: at: ${ref.path} ',
-          e.toString(),
-        );
-      }
-
-      ///
-      if (snapshot.exists) {
-        user = User.fromDatabaseSnapshot(snapshot);
-      }
-    } else {
+    DataSnapshot snapshot;
+    final ref = UserService.instance.usersRef.child(uid);
+    try {
+      snapshot = await ref.get();
+    } catch (e) {
       throw UserException(
-        'user/get-data',
-        'firestore or database must be true.',
+        'user/get-data from database: at: ${ref.path} ',
+        e.toString(),
       );
+    }
+    if (snapshot.exists) {
+      user = User.fromDatabaseSnapshot(snapshot);
     }
 
     /// If the snapshot does not exist, return null.
@@ -282,10 +265,8 @@ class User {
   /// Don't use create method. It's not for creating a user.
   ///
   /// Use update method instead to create user data.
-  @Deprecated('This is not for use.')
-  static create({
-    required String uid,
-  }) {
+  @Deprecated('User data is created automatically when the user logs in. This is not for use.')
+  static create() {
     throw UnimplementedError('This is not for use.');
   }
 
@@ -294,9 +275,6 @@ class User {
   /// User `update` method is used to update the user data.
   ///
   /// [photoUrl] is dynamic since it can be a string of url or FieldValue.delete().
-  ///
-  /// It mirros the data to the RTDB and it does not use transaction because
-  /// mirroring is not for transaction.
   Future<void> update({
     String? displayName,
     String? name,
@@ -304,44 +282,42 @@ class User {
     int? birthMonth,
     int? birthDay,
     String? gender,
-    dynamic photoUrl,
+    String? photoUrl,
     String? stateMessage,
     String? statePhotoUrl,
   }) async {
     final data = <String, dynamic>{
-      'updatedAt': FieldValue.serverTimestamp(),
-      if (displayName != null) 'displayName': displayName.trim(),
-      if (displayName != null)
-        'caseIncensitiveDisplayName': displayName.toLowerCase().trim(),
-      if (name != null) 'name': name.trim(),
-      if (name != null) 'caseIncensitveName': name.toLowerCase().trim(),
-      if (birthYear != null) 'birthYear': birthYear,
-      if (birthMonth != null) 'birthMonth': birthMonth,
-      if (birthDay != null) 'birthDay': birthDay,
-      if (gender != null) 'gender': gender,
-      if (photoUrl != null) 'photoUrl': photoUrl,
-      if (stateMessage != null) 'stateMessage': stateMessage,
-      if (statePhotoUrl != null) 'statePhotoUrl': statePhotoUrl,
+      field.updatedAt: ServerValue.timestamp,
+      if (displayName != null) field.displayName: displayName.trim(),
+      if (displayName != null) field.caseInsensitiveDisplayName: displayName.toLowerCase().trim(),
+      if (name != null) field.name: name.trim(),
+      if (name != null) field.caseInsensitiveName: name.toLowerCase().trim(),
+      if (birthYear != null) field.birthYear: birthYear,
+      if (birthMonth != null) field.birthMonth: birthMonth,
+      if (birthDay != null) field.birthDay: birthDay,
+      if (gender != null) field.gender: gender,
+      if (photoUrl != null) field.photoUrl: photoUrl,
+      if (stateMessage != null) field.stateMessage: stateMessage,
+      if (statePhotoUrl != null) field.statePhotoUrl: statePhotoUrl,
     };
-    final List<Future> futures = [];
-    futures.add(ref.set(
-      data,
-      SetOptions(merge: true),
-    ));
 
-    /// Mirror to RTDB. Update the same data to the RTDB.
-    ///
-    /// TODO: Make a function in easy_firebase to convert the data for rtdb.
-    if (data['updatedAt'] != null) {
-      data['updatedAt'] = ServerValue.timestamp;
+    await ref.update(data);
+  }
+
+  /// Delete the specified fields of user doc.
+  ///
+  /// Purpose: To delete the values of the fields.
+  ///
+  /// Why: Using the update method wont work in deletion in RTDB.
+  ///
+  /// Reason: If we set "null" in the User.update method, it won't do anything
+  ///         since we check it like (fieldName != null).
+  Future<void> deleteFields(List<String> fieldNames) async {
+    final data = <String, dynamic>{};
+    for (final fieldName in fieldNames) {
+      data[fieldName] = null;
     }
-    if (data['photoUrl'] == FieldValue.delete()) {
-      data['photoUrl'] = null;
-    }
-
-    futures.add(mirrorRef.update(data));
-
-    await Future.wait(futures);
+    await ref.update(data);
   }
 
   /// delete user
@@ -351,6 +327,6 @@ class User {
     if (uid != my.uid) {
       throw 'user-delete/not-your-document You dont have permission to delete other user';
     }
-    await doc.delete();
+    await ref.set(null);
   }
 }

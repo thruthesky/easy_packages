@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_storage/easy_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 /// DisplayEditableUploads
@@ -35,8 +35,7 @@ class DisplayEditableUploads extends StatelessWidget {
               /// but not the width resulting to unbalance of the images in [GridView]
               width: double.infinity,
               height: 200,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(16)),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
               child: Image.network(
                 url,
                 fit: BoxFit.cover,
@@ -47,8 +46,7 @@ class DisplayEditableUploads extends StatelessWidget {
               right: 0,
               child: IconButton(
                 style: IconButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
+                  backgroundColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.5),
                 ),
                 onPressed: () async {
                   try {

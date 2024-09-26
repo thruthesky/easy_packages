@@ -1,12 +1,31 @@
-# Easy Extensions
+# Easy Engine
 
 The `easy_engine` package is the counter part of the [easy-engine](https://github.com/thruthesky/easy-engine) built as the firebase cloud functions to support various essential features that cannot be done from font-end applications like enabling and disabling user account, sending push notifications, and more.
+
+
+
+- [Easy Engine](#easy-engine)
+- [Terms](#terms)
+- [Installation](#installation)
+- [Why the cloud functions?](#why-the-cloud-functions)
+- [ClaimAdmin](#claimadmin)
+  - [ClaimAdminButton](#claimadminbutton)
+- [Delete Account](#delete-account)
+- [Push notifications](#push-notifications)
+
+
 
 
 # Terms
 
 
 - `easy-engin` (with a hyphen) is the cloud function project. Meanwhile, `easy_engine` (with an underscore) is the Flutter package that supports access to the cloud functions of the `easy-engine`.
+
+
+# Installation
+
+- To install the `easy-engine` cloud functions, refer to the [cloud functions install at easy-engine](https://github.com/thruthesky/easy-engine?tab=readme-ov-file#cloud-functions-install) project.
+
 
 # Why the cloud functions?
 

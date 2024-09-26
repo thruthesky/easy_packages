@@ -136,48 +136,63 @@ class ChatBubble extends StatelessWidget {
             if (message.uid != myUid) ...[
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
-                child: UserDoc.sync(
-                  key: ValueKey("ChatAvatarDoc_${message.id}"),
-                  uid: message.uid,
-                  builder: (user) => user == null
-                      ? const ChatAvatarLoader()
-                      : GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => UserService.instance.showPublicProfileScreen(context, user: user),
-                          // MUST REVIEW
-                          // Something is wrong in the User Avatar
-                          // Somehow, the image must reload when Firebase list
-                          // is updated (upon testing in real iPhone Device)
-                          //
-                          // It may be because of ThumbnailImage.
-                          // Upon checking it is calling the thumbnail image first.
-                          // When it errors, it shows the original image.
-                          //
-                          // child: UserAvatar(
-                          //   user: user,
-                          // ),
-                          //
-                          // For now, using this instead of UserAvatar:
-                          child: user.photoUrl != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Container(
-                                    width: 48,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.primaryContainer,
-                                      borderRadius: BorderRadius.circular(20),
-                                      // border: border,
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: user.photoUrl!,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                )
-                              : UserAvatar.buildAnonymouseAvatar(size: 48),
-                        ),
-                ),
+                child:
+                    // TODO: It's blinking. Rewrite the whole UserAvatar widget.
+                    // TODO: Somehow, UserAvatar photoUrl, initials are duplicated. It does not need these two value.
+                    // TODO: Make it very simple. And make it not flickering. By improve the ThumbnailImage.
+                    UserAvatar.fromUid(
+                        key: ValueKey("ChatAvatarDocOther_${message.id}"),
+                        uid: message.uid,
+                        onTap: () async {
+                          final user = await User.get(message.uid);
+                          if (context.mounted) {
+                            UserService.instance.showPublicProfileScreen(context, user: user!);
+                          }
+                        }),
+
+                //     UserModel(
+                //   key: ValueKey("ChatAvatarDoc_${message.id}"),
+                //   uid: message.uid,
+                //   builder: (user) => user == null
+                //       ? const ChatAvatarLoader()
+                //       : GestureDetector(
+                //           behavior: HitTestBehavior.opaque,
+                //           onTap: () => UserService.instance.showPublicProfileScreen(context, user: user),
+                //           // MUST REVIEW
+                //           // Something is wrong in the User Avatar
+                //           // Somehow, the image must reload when Firebase list
+                //           // is updated (upon testing in real iPhone Device)
+                //           //
+                //           // It may be because of ThumbnailImage.
+                //           // Upon checking it is calling the thumbnail image first.
+                //           // When it errors, it shows the original image.
+                //           //
+                //           // child: UserAvatar(
+                //           //   user: user,
+                //           // ),
+                //           //
+                //           // For now, using this instead of UserAvatar:
+                //           child: user.photoUrl != null
+                //               ? ClipRRect(
+                //                   borderRadius: BorderRadius.circular(20),
+                //                   child: Container(
+                //                     width: 48,
+                //                     height: 48,
+                //                     decoration: BoxDecoration(
+                //                       color: Theme.of(context).colorScheme.primaryContainer,
+                //                       borderRadius: BorderRadius.circular(20),
+                //                       // border: border,
+                //                     ),
+                //                     child: CachedNetworkImage(
+                //                       placeholder: (context, url) => const ChatAvatarLoader(),
+                //                       imageUrl: user.photoUrl!,
+                //                       fit: BoxFit.cover,
+                //                     ),
+                //                   ),
+                //                 )
+                //               : const AnonymousAvatar(size: 48),
+                //         ),
+                // ),
               ),
               const SizedBox(width: 8),
             ],
@@ -191,17 +206,14 @@ class ChatBubble extends StatelessWidget {
                     message.uid != myUid ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   if (message.uid != myUid) ...[
-                    UserField(
+                    UserField<String?>(
+                      key: ValueKey("ChatDisplayNameDoc_${message.id}"),
                       uid: message.uid,
-                      initialData: message.displayName.trim().isEmpty ? "..." : message.displayName,
+                      initialData: message.displayName.or('...'),
+                      onLoading: const Text("..."),
                       field: 'displayName',
-                      builder: (v, r) {
-                        // REVIEW need to review this User Field because
-                        //        There is a chance of flicker when other user has no display name.
-                        if (v == null) {
-                          return const Text("...");
-                        }
-                        return Text(v.trim().isEmpty ? "..." : v);
+                      builder: (v) {
+                        return Text(v.or('...'));
                       },
                     ),
                     const SizedBox(width: 8),

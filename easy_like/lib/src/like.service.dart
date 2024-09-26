@@ -1,10 +1,16 @@
 import 'package:easy_like/easy_like.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class LikeService {
   static LikeService? _instance;
   static LikeService get instance => _instance ??= LikeService._();
   LikeService._();
+
+  FirebaseDatabase get database => FirebaseDatabase.instance;
+
+  DatabaseReference get likesRef => database.ref('likes');
+  DatabaseReference likeRef(String id) => likesRef.child(id);
 
   /// Callback after on Like event.
   /// Usage: e.g. send push notification to the user of the event. (post, comment, profile, etc)
