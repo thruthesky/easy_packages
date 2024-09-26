@@ -49,7 +49,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                 color: Colors.white,
               ),
               onPressed: () {
-                i.showProfileUpdaeScreen(context);
+                i.showProfileUpdateScreen(context);
               },
             ),
         ],

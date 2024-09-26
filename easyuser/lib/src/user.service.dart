@@ -78,7 +78,8 @@ class UserService {
   List<Widget> Function(User)? suffixActionBuilderOnPublicProfileScreen;
 
   /// True if the user is signed in with phone number.
-  bool get isPhoneSignIn => currentUser?.providerData.where((e) => e.providerId == 'phone').isNotEmpty ?? false;
+  bool get isPhoneSignIn =>
+      currentUser?.providerData.where((e) => e.providerId == 'phone').isNotEmpty ?? false;
 
   init({
     bool enableAnonymousSignIn = false,
@@ -287,7 +288,8 @@ class UserService {
   ///
   /// See README.md for details
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
-    final doc = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber).child("lastSignedInAt");
+    final doc =
+        database.ref().child('user-phone-sign-in-numbers').child(phoneNumber).child("lastSignedInAt");
     final snapshot = await doc.get();
     return snapshot.exists;
   }
@@ -306,7 +308,7 @@ class UserService {
     );
   }
 
-  showProfileUpdaeScreen(BuildContext context) {
+  showProfileUpdateScreen(BuildContext context) {
     return showGeneralDialog(
       context: context,
       pageBuilder: (context, _, __) => $showProfileUpdateScreen?.call() ?? const UserProfileUpdateScreen(),

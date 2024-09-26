@@ -30,6 +30,14 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
 
+
+# TODO remove this because this is not allowed upon publishing
+# testing only
+dependency_overrides:
+  easy_storage:
+    path: ../easy_storage
+
+
 repository: https://github.com/thruthesky/easy_packages/tree/main/easyuser
 issue_tracker: https://github.com/thruthesky/easy_packages/issues
 topics:

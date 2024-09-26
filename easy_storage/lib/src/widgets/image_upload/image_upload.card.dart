@@ -110,9 +110,7 @@ class _UploadImageState extends State<ImageUploadCard> {
         } else {
           uploadedUrl = await StorageService.instance.uploadAt(
             context: context,
-            // TODO review
             ref: widget.ref!,
-            // field: widget.field!,
             spacing: widget.uploadBottomSheetSpacing,
             padding: widget.uploadBottomSheetPadding,
             progress: (p) => setState(() => progress = p),
