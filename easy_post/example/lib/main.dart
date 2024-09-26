@@ -68,6 +68,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void dispose() {
+    titleController.dispose();
+    titleFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -130,8 +137,8 @@ class _MyAppState extends State<MyApp> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          PostService.instance
-                              .showPostCreateScreen(context: context, enableYoutubeUrl: true, category: category);
+                          PostService.instance.showPostCreateScreen(
+                              context: context, enableYoutubeUrl: true, category: category);
                         },
                         child: const Text('Create Youtube Post'),
                       ),

@@ -31,8 +31,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
 
   String? url;
 
-  double photoWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.56 / 2;
+  double photoWidth(BuildContext context) => MediaQuery.of(context).size.width * 0.56 / 2;
 
   BorderSide? enabledBorderSide(BuildContext context) =>
       Theme.of(context).inputDecorationTheme.enabledBorder?.borderSide;
@@ -53,6 +52,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
       StorageService.instance.delete(url);
     }
     textFocus.dispose();
+    uploadProgress.close();
     super.dispose();
   }
 
@@ -78,8 +78,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                   initialData: uploadProgress.value,
                   stream: uploadProgress,
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting &&
-                        !snapshot.hasData) {
+                    if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
                       return const Padding(
                         padding: EdgeInsets.only(bottom: 8.0),
                         child: LinearProgressIndicator(),
@@ -145,14 +144,12 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                 ],
                 Theme(
                   data: Theme.of(context).copyWith(
-                    inputDecorationTheme:
-                        Theme.of(context).inputDecorationTheme.copyWith(
-                              border: OutlineInputBorder(
-                                borderSide: enabledBorderSide(context) ??
-                                    const BorderSide(),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
+                    inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
+                          border: OutlineInputBorder(
+                            borderSide: enabledBorderSide(context) ?? const BorderSide(),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                   ),
                   child: TextField(
                     controller: textController,
@@ -161,10 +158,8 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
                     minLines: 1,
                     decoration: InputDecoration(
                       prefixIcon: UploadIconButton.image(
-                        progress: (prog) =>
-                            mounted ? uploadProgress.add(prog) : null,
-                        complete: () =>
-                            mounted ? uploadProgress.add(null) : null,
+                        progress: (prog) => mounted ? uploadProgress.add(prog) : null,
+                        complete: () => mounted ? uploadProgress.add(null) : null,
                         onUpload: (url) async {
                           if (this.url != null && this.url != message.url) {
                             // let message.update() handle deleting the
@@ -195,8 +190,7 @@ class _EditChatMessageDialogState extends State<EditChatMessageDialog> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if ((url == null || url.isEmpty) &&
-                    textController.text.isEmpty) {
+                if ((url == null || url.isEmpty) && textController.text.isEmpty) {
                   final re = await confirm(
                     context: context,
                     title: Text('empty message'.t),

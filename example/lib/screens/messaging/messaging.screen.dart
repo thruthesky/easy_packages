@@ -10,18 +10,25 @@ class MessagingScreen extends StatefulWidget {
 }
 
 class _MessagingScreenState extends State<MessagingScreen> {
-  TextEditingController uidController =
-      TextEditingController(text: 'GatA8bgsNlcGDEmQ5m4N3xhkVmZ2');
+  TextEditingController uidController = TextEditingController(text: 'GatA8bgsNlcGDEmQ5m4N3xhkVmZ2');
   TextEditingController tokenController = TextEditingController(
       text:
           'cdgqMhK3QGm7pfBELsHQUq:APA91bGP8XoW1u6UOTZ_Q1gTwUvDLU5sMFCa9jFc0fbv2nKzl1Odu-LfBzJn8ejDIsTkiBE1mcNMZqchHzi5OXDSOztqyQBgMi8Ipx4MJztrivkpiZ5FAPM-SV8AlN3lx2eRuuXXsSZ9');
-  TextEditingController subscriptionController =
-      TextEditingController(text: 'testSubscription');
-  TextEditingController titleController =
-      TextEditingController(text: 'title ${DateTime.now()}');
-  TextEditingController bodyController =
-      TextEditingController(text: 'body ${DateTime.now()}');
+  TextEditingController subscriptionController = TextEditingController(text: 'testSubscription');
+  TextEditingController titleController = TextEditingController(text: 'title ${DateTime.now()}');
+  TextEditingController bodyController = TextEditingController(text: 'body ${DateTime.now()}');
   TextEditingController dataController = TextEditingController();
+
+  @override
+  void dispose() {
+    uidController.dispose();
+    tokenController.dispose();
+    subscriptionController.dispose();
+    titleController.dispose();
+    bodyController.dispose();
+    dataController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +43,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
               controller: uidController,
               decoration: InputDecoration(
                 labelText: 'uid',
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 suffixIcon: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -50,8 +56,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         },
                         child: Icon(
                           Icons.clear,
-                          color:
-                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                          color: Theme.of(context).iconTheme.color!.withAlpha(80),
                         ),
                       ),
                   ],
@@ -62,8 +67,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
               controller: tokenController,
               decoration: InputDecoration(
                 labelText: 'token',
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 suffixIcon: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -76,8 +80,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         },
                         child: Icon(
                           Icons.clear,
-                          color:
-                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                          color: Theme.of(context).iconTheme.color!.withAlpha(80),
                         ),
                       ),
                   ],
@@ -88,8 +91,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
               controller: subscriptionController,
               decoration: InputDecoration(
                 labelText: 'subscription',
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 suffixIcon: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -102,8 +104,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         },
                         child: Icon(
                           Icons.clear,
-                          color:
-                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                          color: Theme.of(context).iconTheme.color!.withAlpha(80),
                         ),
                       ),
                   ],
@@ -114,8 +115,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
               controller: titleController,
               decoration: InputDecoration(
                 labelText: 'title',
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 suffixIcon: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -128,8 +128,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         },
                         child: Icon(
                           Icons.clear,
-                          color:
-                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                          color: Theme.of(context).iconTheme.color!.withAlpha(80),
                         ),
                       ),
                   ],
@@ -140,8 +139,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
               controller: bodyController,
               decoration: InputDecoration(
                 labelText: 'body',
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 suffixIcon: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -154,8 +152,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                         },
                         child: Icon(
                           Icons.clear,
-                          color:
-                              Theme.of(context).iconTheme.color!.withAlpha(80),
+                          color: Theme.of(context).iconTheme.color!.withAlpha(80),
                         ),
                       ),
                   ],
