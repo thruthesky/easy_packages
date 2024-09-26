@@ -113,8 +113,9 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
 
             //
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 12, 0, 0),
+              padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
               child: CheckboxListTile(
+                contentPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
                 title: Text('open chat'.t),
                 subtitle: Text('anyone can join this chat room'.t),
                 value: open,
@@ -128,8 +129,9 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             ),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 12, 0, 0),
+              padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
               child: CheckboxListTile(
+                contentPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
                 // When it is open group, basically all members can invite
                 enabled: !open,
                 title: Text('members can invite'.t),
