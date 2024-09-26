@@ -123,8 +123,7 @@ class MessagingService {
 
       /// Check if permission had given.
       if (settings.authorizationStatus == AuthorizationStatus.denied) {
-        onNotificationPermissionDenied?.call() ??
-            Exception('messaging/permission-denied Permission Denied');
+        onNotificationPermissionDenied?.call() ?? Exception('messaging/permission-denied Permission Denied');
         return;
       }
       if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
@@ -271,7 +270,7 @@ class MessagingService {
     required String title,
     required String body,
     required Map<String, dynamic> data,
-    String? imageUrl,
+    String? image,
   }) async {
     final http.Response response = await httpPost(
       sendMessageToTokensApi,
@@ -279,7 +278,7 @@ class MessagingService {
         "title": title,
         "body": body,
         "data": data,
-        if (imageUrl != null) "imageUrl": imageUrl,
+        if (image != null) "image": image,
         "tokens": tokens,
       },
     );
@@ -298,7 +297,7 @@ class MessagingService {
     required String title,
     required String body,
     required Map<String, dynamic> data,
-    String? imageUrl,
+    String? image,
     String subscriptionName = '',
     bool excludeSubscribers = false,
   }) async {
@@ -311,7 +310,7 @@ class MessagingService {
         "uids": uids,
         "subscriptionName": subscriptionName,
         "excludeSubscribers": excludeSubscribers,
-        if (imageUrl != null) "imageUrl": imageUrl,
+        if (image != null) "image": image,
       },
     );
 
@@ -327,17 +326,11 @@ class MessagingService {
     required String title,
     required String body,
     required Map<String, dynamic> data,
-    String? imageUrl,
+    String? image,
   }) async {
     final http.Response response = await httpPost(
       sendMessageToSubscriptionApi,
-      {
-        "title": title,
-        "body": body,
-        "data": data,
-        if (imageUrl != null) "imageUrl": imageUrl,
-        "subscription": subscription
-      },
+      {"title": title, "body": body, "data": data, if (image != null) "image": image, "subscription": subscription},
     );
 
     return handleResponse(response);
