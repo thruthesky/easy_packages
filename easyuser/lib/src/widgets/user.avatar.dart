@@ -60,34 +60,36 @@ class UserAvatar extends StatelessWidget {
   /// updated. If the [uid] is null, sync will be ignored.
   static Widget fromUid({
     Key? key,
-    required String? uid,
+    required String uid,
     double size = 48,
     double radius = 20,
     Border? border,
     bool sync = false,
     final Function()? onTap,
   }) {
-    return uid == null
-        ? UserBuildAvatar(
-            photoUrl: null,
-            initials: null,
-            onTap: onTap,
-            size: size,
-            radius: radius,
-            border: border,
-          )
-        : UserField<String?>(
-            uid: uid,
-            field: User.field.photoUrl,
-            sync: sync,
-            builder: (url) => UserBuildAvatar(
-              photoUrl: url,
-              initials: uid,
-              onTap: onTap,
-              size: size,
-              radius: radius,
-              border: border,
-            ),
-          );
+    return UserField<String?>(
+      uid: uid,
+      field: User.field.photoUrl,
+      sync: sync,
+      // Need to add onLoading Widget because UserField cannot
+      // Cache null values. If it is not cached, it
+      // has to show some onLoading Widget.
+      onLoading: UserBuildAvatar(
+        photoUrl: null,
+        initials: uid,
+        onTap: onTap,
+        size: size,
+        radius: radius,
+        border: border,
+      ),
+      builder: (url) => UserBuildAvatar(
+        photoUrl: url,
+        initials: uid,
+        onTap: onTap,
+        size: size,
+        radius: radius,
+        border: border,
+      ),
+    );
   }
 }

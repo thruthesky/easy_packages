@@ -34,8 +34,8 @@ class _CommentInputBoxState extends State<CommentInputBox> {
 
   @override
   void dispose() {
-    super.dispose();
     commentController.dispose();
+    super.dispose();
   }
 
   @override

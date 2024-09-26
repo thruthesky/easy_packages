@@ -141,6 +141,7 @@ class ChatBubble extends StatelessWidget {
                     // TODO: Somehow, UserAvatar photoUrl, initials are duplicated. It does not need these two value.
                     // TODO: Make it very simple. And make it not flickering. By improve the ThumbnailImage.
                     UserAvatar.fromUid(
+                        key: ValueKey("ChatAvatarDocOther_${message.id}"),
                         uid: message.uid,
                         onTap: () async {
                           final user = await User.get(message.uid);
@@ -209,9 +210,9 @@ class ChatBubble extends StatelessWidget {
                       key: ValueKey("ChatDisplayNameDoc_${message.id}"),
                       uid: message.uid,
                       initialData: message.displayName.or('...'),
+                      onLoading: const Text("..."),
                       field: 'displayName',
                       builder: (v) {
-                        if (v == null) dog("displayName is null, ${v.or('...')}");
                         return Text(v.or('...'));
                       },
                     ),

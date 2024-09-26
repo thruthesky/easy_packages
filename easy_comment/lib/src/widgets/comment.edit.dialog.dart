@@ -74,6 +74,12 @@ class _CommentEditDialogState extends State<CommentEditDialog> {
   }
 
   @override
+  dispose() {
+    contentController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),

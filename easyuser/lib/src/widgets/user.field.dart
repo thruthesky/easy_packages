@@ -85,14 +85,7 @@ class UserField<T> extends StatelessWidget {
         MemoryCache.instance.create(cacheKey, v);
         return builder(v as T);
       },
-      // onLoading: onLoading,
-      onLoading: Builder(
-        builder: (context) {
-          return const Text(
-            'loading',
-          );
-        },
-      ),
+      onLoading: onLoading,
     );
   }
 
