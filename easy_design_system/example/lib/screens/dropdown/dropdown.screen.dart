@@ -56,6 +56,12 @@ class _DropDownExampleState extends State<DropDownExample> {
   final TextEditingController menuController = TextEditingController();
 
   @override
+  void dispose() {
+    menuController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     String dropdownValue = list.first;
     return Column(
@@ -134,8 +140,7 @@ class _DropDownExampleState extends State<DropDownExample> {
             PopupMenuButton<String>(
               initialValue: '',
               onSelected: (String item) {},
-              itemBuilder: (BuildContext context) =>
-                  list.map<PopupMenuEntry<String>>((String v) {
+              itemBuilder: (BuildContext context) => list.map<PopupMenuEntry<String>>((String v) {
                 return PopupMenuItem<String>(
                   value: v,
                   child: Text(v),
@@ -151,8 +156,7 @@ class _DropDownExampleState extends State<DropDownExample> {
           children: [
             const Text('Menu Anchor'),
             MenuAnchor(
-              builder: (BuildContext context, MenuController controller,
-                  Widget? child) {
+              builder: (BuildContext context, MenuController controller, Widget? child) {
                 return IconButton(
                   onPressed: () {
                     if (controller.isOpen) {

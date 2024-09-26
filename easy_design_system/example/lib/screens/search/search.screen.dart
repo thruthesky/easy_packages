@@ -66,17 +66,14 @@ class _SearchScreenState extends State<SearchScreen> {
     const SearchItem(name: 'Dropdown', screen: DropdownScreen()),
     const SearchItem(name: 'Dialog', screen: DialogScreen()),
     const SearchItem(name: 'Divider', screen: DividerScreen()),
-    const SearchItem(
-        name: 'Floating Action Button', screen: FloatingActionButtonScreen()),
+    const SearchItem(name: 'Floating Action Button', screen: FloatingActionButtonScreen()),
     const SearchItem(name: 'IconButton', screen: IconButtonScreen()),
     const SearchItem(name: 'ListTile', screen: ListTileScreen()),
     const SearchItem(name: 'Login Screen', screen: ComicLoginDemo()),
     const SearchItem(name: 'NavigationBar', screen: NavigationBarScreen()),
-    const SearchItem(
-        name: "NavigationDrawer", screen: NavigationDrawerScreen()),
+    const SearchItem(name: "NavigationDrawer", screen: NavigationDrawerScreen()),
     const SearchItem(name: 'NavigationRail', screen: NavigationRailScreen()),
-    const SearchItem(
-        name: 'Progress Indicator', screen: ProgressIndicatorScreen()),
+    const SearchItem(name: 'Progress Indicator', screen: ProgressIndicatorScreen()),
     const SearchItem(name: 'Segmented Button', screen: SegmentedButtonScreen()),
     const SearchItem(name: 'SnackBar', screen: SnackBarScreen()),
     const SearchItem(name: 'TabBar', screen: TabBarScreen()),
@@ -85,12 +82,9 @@ class _SearchScreenState extends State<SearchScreen> {
     const SearchItem(name: 'ComicListView', screen: ComicListViewScreen()),
     const SearchItem(name: 'SleekListView', screen: SleekListViewScreen()),
     const SearchItem(name: 'Setting', screen: SettingScreen()),
-    const SearchItem(
-        name: 'Basic Carousel Entry', screen: BasicCarouselEntryScreen()),
-    const SearchItem(
-        name: 'Wave Carousel Entry', screen: WaveCarouselEntryScreen()),
-    const SearchItem(
-        name: 'Round Carousel Entry', screen: RoundCarouselEntryScreen()),
+    const SearchItem(name: 'Basic Carousel Entry', screen: BasicCarouselEntryScreen()),
+    const SearchItem(name: 'Wave Carousel Entry', screen: WaveCarouselEntryScreen()),
+    const SearchItem(name: 'Round Carousel Entry', screen: RoundCarouselEntryScreen()),
     const SearchItem(name: 'Sleep Walker', screen: SleepWalkerScreen()),
     const SearchItem(name: 'Color scheme', screen: CurrentThemeScreen()),
   ];
@@ -114,6 +108,12 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     _result = _items;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override

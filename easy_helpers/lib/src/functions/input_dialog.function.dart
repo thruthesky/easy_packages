@@ -28,20 +28,20 @@ Future<String?> input({
   String? initialValue,
   int? minLines,
   int? maxLines,
-}) {
-  return
-      //  HouseService.instance.inputDialog?.call(
-      //         context: context,
-      //         title: title,
-      //         subtitle: subtitle,
-      //         hintText: hintText,
-      //         minLines: minLines,
-      //         maxLines: maxLines,
-      //         initialValue: initialValue) ??
-      showDialog<String?>(
+}) async {
+  // return
+  //  HouseService.instance.inputDialog?.call(
+  //         context: context,
+  //         title: title,
+  //         subtitle: subtitle,
+  //         hintText: hintText,
+  //         minLines: minLines,
+  //         maxLines: maxLines,
+  //         initialValue: initialValue) ??
+  final controller = TextEditingController(text: initialValue);
+  final result = await showDialog<String?>(
     context: context,
     builder: (BuildContext context) {
-      final controller = TextEditingController(text: initialValue);
       return AlertDialog(
         title: title,
         content: Column(
@@ -79,4 +79,6 @@ Future<String?> input({
       );
     },
   );
+  controller.dispose();
+  return result;
 }

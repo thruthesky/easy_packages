@@ -13,8 +13,7 @@ class SleekScreenDemoScreen extends StatefulWidget {
   State<SleekScreenDemoScreen> createState() => _SleekScreenDemoScreenState();
 }
 
-class _SleekScreenDemoScreenState extends State<SleekScreenDemoScreen>
-    with SingleTickerProviderStateMixin {
+class _SleekScreenDemoScreenState extends State<SleekScreenDemoScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   int index = 0;
@@ -27,6 +26,12 @@ class _SleekScreenDemoScreenState extends State<SleekScreenDemoScreen>
       length: 3,
       vsync: this,
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -127,8 +132,7 @@ class _SleekScreenDemoScreenState extends State<SleekScreenDemoScreen>
                     data: SleekTheme.of(context),
                     child: AlertDialog(
                       title: const Text('Are you sure?'),
-                      content: const Text(
-                          'Do you want to logout? (This is a demonstation only)'),
+                      content: const Text('Do you want to logout? (This is a demonstation only)'),
                       actions: [
                         ElevatedButton(
                           onPressed: () {
@@ -151,8 +155,7 @@ class _SleekScreenDemoScreenState extends State<SleekScreenDemoScreen>
                                   ),
                                   actions: [
                                     ElevatedButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
+                                      onPressed: () => Navigator.of(context).pop(),
                                       child: const Text('Ok'),
                                     ),
                                   ],
@@ -217,10 +220,7 @@ class _SleekScreenDemoScreenState extends State<SleekScreenDemoScreen>
                         child: Badge(
                           label: Text(
                             '5',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall!
-                                .copyWith(
+                            style: Theme.of(context).textTheme.labelSmall!.copyWith(
                                   fontSize: 10,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
@@ -243,9 +243,7 @@ class _SleekScreenDemoScreenState extends State<SleekScreenDemoScreen>
         floatingActionButton: index == 0
             ? FloatingActionButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) => const StatusDialog());
+                  showDialog(context: context, builder: (context) => const StatusDialog());
                 },
                 child: const Icon(Icons.add_reaction_outlined),
               )
