@@ -13,8 +13,7 @@ class ComicScreenDemoScreen extends StatefulWidget {
   State<ComicScreenDemoScreen> createState() => _ComicScreenDemoScreenState();
 }
 
-class _ComicScreenDemoScreenState extends State<ComicScreenDemoScreen>
-    with SingleTickerProviderStateMixin {
+class _ComicScreenDemoScreenState extends State<ComicScreenDemoScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   int index = 0;
@@ -27,6 +26,12 @@ class _ComicScreenDemoScreenState extends State<ComicScreenDemoScreen>
       length: 3,
       vsync: this,
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -127,8 +132,7 @@ class _ComicScreenDemoScreenState extends State<ComicScreenDemoScreen>
                     data: ComicTheme.of(context),
                     child: AlertDialog(
                       title: const Text('Are you sure?'),
-                      content: const Text(
-                          'Do you want to logout? (This is a demonstation only)'),
+                      content: const Text('Do you want to logout? (This is a demonstation only)'),
                       actions: [
                         ElevatedButton(
                           onPressed: () {
@@ -151,8 +155,7 @@ class _ComicScreenDemoScreenState extends State<ComicScreenDemoScreen>
                                   ),
                                   actions: [
                                     ElevatedButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
+                                      onPressed: () => Navigator.of(context).pop(),
                                       child: const Text('Ok'),
                                     ),
                                   ],
@@ -217,10 +220,7 @@ class _ComicScreenDemoScreenState extends State<ComicScreenDemoScreen>
                         child: Badge(
                           label: Text(
                             '5',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall!
-                                .copyWith(
+                            style: Theme.of(context).textTheme.labelSmall!.copyWith(
                                   fontSize: 10,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
@@ -243,9 +243,7 @@ class _ComicScreenDemoScreenState extends State<ComicScreenDemoScreen>
         floatingActionButton: index == 0
             ? FloatingActionButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) => const StatusDialog());
+                  showDialog(context: context, builder: (context) => const StatusDialog());
                 },
                 child: const Icon(Icons.add_reaction_outlined),
               )

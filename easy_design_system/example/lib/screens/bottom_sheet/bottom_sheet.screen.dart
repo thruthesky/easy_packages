@@ -64,14 +64,19 @@ class DisplayBottomSheet extends StatefulWidget {
   State<DisplayBottomSheet> createState() => _DisplayBottomSheetState();
 }
 
-class _DisplayBottomSheetState extends State<DisplayBottomSheet>
-    with SingleTickerProviderStateMixin {
+class _DisplayBottomSheetState extends State<DisplayBottomSheet> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override

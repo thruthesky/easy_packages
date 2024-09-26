@@ -165,10 +165,10 @@ packages:
     dependency: "direct main"
     description:
       name: easy_realtime_database
-      sha256: "775e1bdd2306ad8689d823b8885169b39e7402dd89a8f96d7eabb1be19582315"
+      sha256: abaddad7204419f565b2a01ef8f86d2a2857c7ad2651264a253d9a3cb546f175
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7"
+    version: "0.0.9"
   easy_report:
     dependency: "direct main"
     description:
@@ -196,10 +196,9 @@ packages:
   easyuser:
     dependency: "direct main"
     description:
-      name: easyuser
-      sha256: e01902157ef66b9a6a992442fc95909a3a6359136124cfbd53d423a8c3698c66
-      url: "https://pub.dev"
-    source: hosted
+      path: "../easyuser"
+      relative: true
+    source: path
     version: "0.0.35"
   fake_async:
     dependency: transitive
