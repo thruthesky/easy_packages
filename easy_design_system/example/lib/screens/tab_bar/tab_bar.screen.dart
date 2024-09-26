@@ -9,8 +9,7 @@ class TabBarScreen extends StatefulWidget {
   TabBarScreenState createState() => TabBarScreenState();
 }
 
-class TabBarScreenState extends State<TabBarScreen>
-    with SingleTickerProviderStateMixin {
+class TabBarScreenState extends State<TabBarScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   int index = 0;
@@ -23,6 +22,12 @@ class TabBarScreenState extends State<TabBarScreen>
       length: 3,
       vsync: this,
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override

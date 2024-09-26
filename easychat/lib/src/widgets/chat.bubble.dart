@@ -39,8 +39,9 @@ class ChatBubble extends StatelessWidget {
 
   double photoHeight(BuildContext context) => MediaQuery.of(context).size.width * 0.56;
 
-  Color replyDividerColor(BuildContext context) =>
-      message.uid == myUid ? const Color.fromARGB(255, 232, 205, 130) : Theme.of(context).colorScheme.outlineVariant;
+  Color replyDividerColor(BuildContext context) => message.uid == myUid
+      ? const Color.fromARGB(255, 232, 205, 130)
+      : Theme.of(context).colorScheme.outlineVariant;
 
   static const items = (
     reply: 'reply',
@@ -140,6 +141,7 @@ class ChatBubble extends StatelessWidget {
                     // TODO: Somehow, UserAvatar photoUrl, initials are duplicated. It does not need these two value.
                     // TODO: Make it very simple. And make it not flickering. By improve the ThumbnailImage.
                     UserAvatar.fromUid(
+                        key: ValueKey("ChatAvatarDocOther_${message.id}"),
                         uid: message.uid,
                         onTap: () async {
                           final user = await User.get(message.uid);
@@ -200,12 +202,15 @@ class ChatBubble extends StatelessWidget {
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: message.uid != myUid ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                crossAxisAlignment:
+                    message.uid != myUid ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   if (message.uid != myUid) ...[
                     UserField<String?>(
+                      key: ValueKey("ChatDisplayNameDoc_${message.id}"),
                       uid: message.uid,
                       initialData: message.displayName.or('...'),
+                      onLoading: const Text("..."),
                       field: 'displayName',
                       builder: (v) {
                         return Text(v.or('...'));
@@ -236,7 +241,8 @@ class ChatBubble extends StatelessWidget {
                   ],
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: message.uid != myUid ? MainAxisAlignment.start : MainAxisAlignment.end,
+                    mainAxisAlignment:
+                        message.uid != myUid ? MainAxisAlignment.start : MainAxisAlignment.end,
                     children: [
                       if (message.uid == myUid) timeText(context),
                       Flexible(

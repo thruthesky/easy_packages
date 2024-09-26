@@ -55,8 +55,7 @@ class _BasicCarouselEntryState extends State<BasicCarouselEntry> {
     super.initState();
 
     if (widget.autoSwipeInterval > 100) {
-      autoSwipe = Timer.periodic(
-          Duration(milliseconds: widget.autoSwipeInterval), (timer) {
+      autoSwipe = Timer.periodic(Duration(milliseconds: widget.autoSwipeInterval), (timer) {
         if (mounted) {
           controller
               .nextPage(
@@ -204,8 +203,7 @@ class _BasicCarouselEntryState extends State<BasicCarouselEntry> {
                         dotWidth: 8.0,
                         dotHeight: 8.0,
                         dotColor: widget.indicatorColor ?? Colors.white,
-                        activeDotColor:
-                            widget.indicatorActiveColor ?? Colors.white,
+                        activeDotColor: widget.indicatorActiveColor ?? Colors.white,
                       ),
                     );
                   },
@@ -222,9 +220,7 @@ class _BasicCarouselEntryState extends State<BasicCarouselEntry> {
                 child: StreamBuilder<Object>(
                     stream: indicator,
                     builder: (context, snapshot) {
-                      return widget
-                          .items[int.parse(snapshot.data?.toString() ?? '0')]
-                          .title;
+                      return widget.items[int.parse(snapshot.data?.toString() ?? '0')].title;
                     }),
               ),
             ),
@@ -247,9 +243,7 @@ class _BasicCarouselEntryState extends State<BasicCarouselEntry> {
                   child: StreamBuilder<Object>(
                     stream: indicator,
                     builder: (context, snapshot) {
-                      return widget
-                          .items[int.parse(snapshot.data?.toString() ?? '0')]
-                          .subtitle;
+                      return widget.items[int.parse(snapshot.data?.toString() ?? '0')].subtitle;
                     },
                   ),
                 ),

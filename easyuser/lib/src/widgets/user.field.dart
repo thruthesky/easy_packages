@@ -80,7 +80,7 @@ class UserField<T> extends StatelessWidget {
     return Value(
       sync: false,
       ref: userFieldRef(uid, field),
-      initialData: value,
+      initialData: value ?? initialData,
       builder: (v, _) {
         MemoryCache.instance.create(cacheKey, v);
         return builder(v as T);

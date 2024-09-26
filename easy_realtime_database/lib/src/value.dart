@@ -84,7 +84,7 @@ class Value<T> extends StatelessWidget {
         initialData: initialData,
         future: ref.once().then((event) => event.snapshot.value),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == false) {
+          if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
             return onLoading ?? const SizedBox.shrink();
           }
           if (snapshot.hasError) {

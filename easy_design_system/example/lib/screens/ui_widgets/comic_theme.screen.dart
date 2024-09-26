@@ -6,12 +6,10 @@ class ComicThemeUiWidgetsScreen extends StatefulWidget {
   const ComicThemeUiWidgetsScreen({super.key});
 
   @override
-  State<ComicThemeUiWidgetsScreen> createState() =>
-      _ComicThemeUiWidgetsScreenState();
+  State<ComicThemeUiWidgetsScreen> createState() => _ComicThemeUiWidgetsScreenState();
 }
 
-class _ComicThemeUiWidgetsScreenState extends State<ComicThemeUiWidgetsScreen>
-    with TickerProviderStateMixin {
+class _ComicThemeUiWidgetsScreenState extends State<ComicThemeUiWidgetsScreen> with TickerProviderStateMixin {
   final _scaffoldState = GlobalKey<ScaffoldState>();
 
   final TextEditingController menuController = TextEditingController();
@@ -50,6 +48,14 @@ class _ComicThemeUiWidgetsScreenState extends State<ComicThemeUiWidgetsScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _animationController = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _animationController.dispose();
+    menuController.dispose();
+    super.dispose();
   }
 
   @override
@@ -147,8 +153,7 @@ class _ComicThemeUiWidgetsScreenState extends State<ComicThemeUiWidgetsScreen>
                       controller: menuController,
                       label: const Text('Dropdown Menu'),
                       onSelected: (String? v) {},
-                      dropdownMenuEntries:
-                          list.map<DropdownMenuEntry<String>>((String v) {
+                      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String v) {
                         return DropdownMenuEntry<String>(
                           value: v,
                           label: v,
@@ -234,12 +239,9 @@ class _ComicThemeUiWidgetsScreenState extends State<ComicThemeUiWidgetsScreen>
                   BottomAppBar(
                     child: Row(
                       children: [
-                        IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.star)),
-                        IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.favorite)),
-                        IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.thumb_up)),
+                        IconButton(onPressed: () {}, icon: const Icon(Icons.star)),
+                        IconButton(onPressed: () {}, icon: const Icon(Icons.favorite)),
+                        IconButton(onPressed: () {}, icon: const Icon(Icons.thumb_up)),
                       ],
                     ),
                   ),
@@ -304,16 +306,13 @@ class _ComicThemeUiWidgetsScreenState extends State<ComicThemeUiWidgetsScreen>
                     onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text('This is a Snackbar'),
-                        action: SnackBarAction(
-                            label: 'Close',
-                            onPressed: () => Navigator.of(context).pop()),
+                        action: SnackBarAction(label: 'Close', onPressed: () => Navigator.of(context).pop()),
                       ),
                     ),
                     child: const Text('SnackBar'),
                   ),
                   OutlinedButton(
-                    onPressed: () =>
-                        _scaffoldState.currentState?.showBottomSheet(
+                    onPressed: () => _scaffoldState.currentState?.showBottomSheet(
                       (context) => BottomSheet(
                         animationController: _animationController,
                         onClosing: () {},
@@ -395,12 +394,9 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
           ),
         ),
-        NavigationDrawerDestination(
-            icon: Icon(Icons.home), label: Text('Home')),
-        NavigationDrawerDestination(
-            icon: Icon(Icons.message), label: Text('Chat')),
-        NavigationDrawerDestination(
-            icon: Icon(Icons.person), label: Text('Profile'))
+        NavigationDrawerDestination(icon: Icon(Icons.home), label: Text('Home')),
+        NavigationDrawerDestination(icon: Icon(Icons.message), label: Text('Chat')),
+        NavigationDrawerDestination(icon: Icon(Icons.person), label: Text('Profile'))
       ],
     );
   }

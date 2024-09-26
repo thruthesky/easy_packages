@@ -75,6 +75,17 @@ class UserAvatar extends StatelessWidget {
       uid: uid,
       field: User.field.photoUrl,
       sync: sync,
+      // Need to add onLoading Widget because UserField cannot
+      // Cache null values. If it is not cached, it
+      // has to show some onLoading Widget.
+      onLoading: UserBuildAvatar(
+        photoUrl: null,
+        initials: uid,
+        onTap: onTap,
+        size: size,
+        radius: radius,
+        border: border,
+      ),
       builder: (url) => UserBuildAvatar(
         photoUrl: url,
         initials: uid,

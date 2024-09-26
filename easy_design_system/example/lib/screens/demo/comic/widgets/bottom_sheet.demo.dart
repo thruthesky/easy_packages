@@ -10,14 +10,19 @@ class BottomSheetDemo extends StatefulWidget {
   State<BottomSheetDemo> createState() => _BottomSheetDemoState();
 }
 
-class _BottomSheetDemoState extends State<BottomSheetDemo>
-    with SingleTickerProviderStateMixin {
+class _BottomSheetDemoState extends State<BottomSheetDemo> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,10 +51,9 @@ class _BottomSheetDemoState extends State<BottomSheetDemo>
                         alignment: Alignment.centerRight,
                         child: Text(
                           "- Countee Cullen",
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                           textAlign: TextAlign.end,
                         ),
                       ),
