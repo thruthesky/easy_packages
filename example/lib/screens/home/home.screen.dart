@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
             ),
             onTap: () => i.signedIn
-                ? UserService.instance.showProfileUpdaeScreen(context)
+                ? UserService.instance.showProfileUpdateScreen(context)
                 : context.push(SignInScreen.routeName),
           ),
           IconButton(
