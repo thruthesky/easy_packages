@@ -23,7 +23,7 @@ dependencies:
   easy_post_v2:
   easy_realtime_database:
   easy_report:
-  easy_setting_v2:
+  easy_user_setting:
   easy_storage:
   easy_youtube:
   easychat:
@@ -68,8 +68,8 @@ dependency_overrides:
     path: ../easy_realtime_database
   easy_report:
     path: ../easy_report
-  easy_setting_v2:
-    path: ../easy_setting
+  easy_user_setting:
+    path: ../easy_user_setting
   easy_storage:
     path: ../easy_storage
   easy_youtube:

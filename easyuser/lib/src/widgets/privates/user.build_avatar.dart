@@ -39,7 +39,7 @@ class UserBuildAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final child = photoUrl == null
         ? initials == null || initials!.isEmpty
-            // No photo url and no initials
+            // No photo url and no initials -> Anonymous avatar
             ? UserCircleAvatar(
                 size: size,
                 radius: radius,
@@ -50,15 +50,11 @@ class UserBuildAvatar extends StatelessWidget {
                 ),
               )
             :
-            // No photo url but initials
-            Container(
-                width: size,
-                height: size,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(radius),
-                  border: border,
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                ),
+            // No photo url but initials -> First letter of the initials
+            UserCircleAvatar(
+                size: size,
+                radius: radius,
+                border: border,
                 child: Center(
                   child: Text(
                     initials![0].toUpperCase(),

@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 /// [radius] is the radius of the avatar.
 ///
 /// [onTap] is a function that is called when the avatar is tapped.
+/// * Note that, if the [onTap] is NOT set, the GestureDetector will not be
+/// added to the avatar.
 ///
 class UserAvatar extends StatelessWidget {
   const UserAvatar({
@@ -53,11 +55,13 @@ class UserAvatar extends StatelessWidget {
 
   /// Display user's avatar from the user's uid.
   ///
-  /// [uid] is the user's uid. It can be a null value. If it is null, an
-  /// anonymous avatar will be displayed.
+  /// [uid] is the user's uid. It can not be a null value.
   ///
-  /// [sync] is supported to support realtime update when the user's data is
-  /// updated. If the [uid] is null, sync will be ignored.
+  /// If [sync] is set to true, the image will be updated when the user updates
+  /// his profile. By default it's false.
+  ///
+  /// It uses UserField to get the user's photo url. And the UserField uses
+  /// memory cache internally. So, memory cache is enabled by default.
   static Widget fromUid({
     Key? key,
     required String uid,

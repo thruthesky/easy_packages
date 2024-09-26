@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 ///
 /// [child] is the widget to display inside the circle avatar. It can be any
 /// widget.
+///
 class UserCircleAvatar extends StatelessWidget {
   const UserCircleAvatar({
     super.key,
