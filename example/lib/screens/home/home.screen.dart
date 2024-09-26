@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   test() async {
     final room = await ChatRoom.get('-O7fycrHFwAQsR4bJuRa');
+    if (!mounted) return;
     ChatService.instance.showChatRoomScreen(
       context,
       room: room,

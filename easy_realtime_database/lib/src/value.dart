@@ -36,15 +36,6 @@ class Value<T> extends StatelessWidget {
     this.sync = true,
   });
 
-  // TODO deprecate
-  // const Value.once({
-  //   super.key,
-  //   required this.ref,
-  //   required this.builder,
-  //   this.initialData,
-  //   this.onLoading,
-  // }) : sync = false;
-
   final DatabaseReference ref;
 
   final dynamic initialData;
