@@ -69,7 +69,8 @@ class ChatOpenRoomListScreen extends StatelessWidget {
             onPressed: () {
               ChatService.instance.showChatRoomEditScreen(
                 context,
-                defaultOpen: true,
+                open: true,
+                tilePadding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
               );
             },
             icon: const Icon(Icons.add),
