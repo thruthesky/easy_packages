@@ -38,6 +38,13 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
   final passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: widget.padding ?? const EdgeInsets.all(16.0),

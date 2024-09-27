@@ -56,8 +56,8 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
 
   @override
   void dispose() {
-    super.dispose();
     searchController.dispose();
+    super.dispose();
   }
 
   Query get query {

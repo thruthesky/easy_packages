@@ -42,20 +42,20 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             const SizedBox(height: 24.0),
             DatePicker(
-              onChanged: (year, month, day) => print('$year, $month, $day'),
+              onChanged: (year, month, day) => debugPrint('onChange Date Picker: $year, $month, $day'),
             ),
             const SizedBox(height: 24.0),
             DatePicker(
               beginYear: 2020,
               endYear: 2029,
-              onChanged: (year, month, day) => print('$year, $month, $day'),
+              onChanged: (year, month, day) => debugPrint('onChange Date Picker: $year, $month, $day'),
             ),
             const SizedBox(height: 24.0),
             DatePicker(
               beginYear: 2020,
               endYear: 2029,
               ascendingYear: false,
-              onChanged: (year, month, day) => print('$year, $month, $day'),
+              onChanged: (year, month, day) => debugPrint('onChange Date Picker: $year, $month, $day'),
             ),
             const SizedBox(height: 24.0),
             DatePicker(
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
               endYear: 2029,
               ascendingYear: false,
               initialDate: (year: 2023, month: null, day: null),
-              onChanged: (year, month, day) => print('$year, $month, $day'),
+              onChanged: (year, month, day) => debugPrint('onChange Date Picker: $year, $month, $day'),
             ),
             const SizedBox(height: 24.0),
             ElevatedButton(
@@ -97,7 +97,7 @@ class DatePickerDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             DatePicker(
-              onChanged: (year, month, day) => print('$year, $month, $day'),
+              onChanged: (year, month, day) => debugPrint('onChange Date Picker: $year, $month, $day'),
             ),
             const SizedBox(height: 24.0),
             ElevatedButton(

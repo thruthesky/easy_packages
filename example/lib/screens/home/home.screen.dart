@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   test() async {
     final room = await ChatRoom.get('-O7fycrHFwAQsR4bJuRa');
+    if (!mounted) return;
     ChatService.instance.showChatRoomScreen(
       context,
       room: room,
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
             ),
             onTap: () => i.signedIn
-                ? UserService.instance.showProfileUpdaeScreen(context)
+                ? UserService.instance.showProfileUpdateScreen(context)
                 : context.push(SignInScreen.routeName),
           ),
           IconButton(

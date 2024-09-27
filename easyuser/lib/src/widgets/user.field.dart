@@ -49,7 +49,7 @@ class UserField<T> extends StatelessWidget {
   final String field;
   final T? initialData;
   final bool cache;
-  final Widget Function(T) builder;
+  final Widget Function(T?) builder;
   final bool sync;
   final Widget? onLoading;
 
@@ -64,7 +64,7 @@ class UserField<T> extends StatelessWidget {
         initialData: value ?? initialData,
         builder: (v, _) {
           MemoryCache.instance.create(cacheKey, v);
-          return builder(v as T);
+          return builder(v as T?);
         },
         onLoading: onLoading,
       );

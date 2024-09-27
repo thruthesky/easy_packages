@@ -37,44 +37,47 @@ class UserBuildAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = photoUrl == null
-        ? initials == null || initials!.isEmpty
-            // No photo url and no initials -> Anonymous avatar
-            ? UserCircleAvatar(
-                size: size,
-                radius: radius,
-                border: border,
-                child: Icon(
-                  Icons.person,
-                  size: size / 1.5,
+    Widget child;
+    if ((photoUrl == null || photoUrl!.isEmpty) && (initials == null || initials!.isEmpty)) {
+      // No photo url and no initials -> Anonymous avatar
+      child = UserCircleAvatar(
+        size: size,
+        radius: radius,
+        border: border,
+        child: Icon(
+          Icons.person,
+          size: size / 1.5,
+        ),
+      );
+    } else if (photoUrl != null && photoUrl!.isNotEmpty) {
+      // Photo url -> Display the photo
+      child = UserCircleAvatar(
+        size: size,
+        radius: radius,
+        border: border,
+        child: ThumbnailImage(
+          url: photoUrl!,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      // No photo url but initials -> First letter of the initials
+      child = UserCircleAvatar(
+        size: size,
+        radius: radius,
+        border: border,
+        child: Center(
+          child: Text(
+            initials![0].toUpperCase(),
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.bold,
+                  fontSize: size / 1.5,
                 ),
-              )
-            :
-            // No photo url but initials -> First letter of the initials
-            UserCircleAvatar(
-                size: size,
-                radius: radius,
-                border: border,
-                child: Center(
-                  child: Text(
-                    initials![0].toUpperCase(),
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.bold,
-                          fontSize: size / 1.5,
-                        ),
-                  ),
-                ),
-              )
-        : UserCircleAvatar(
-            size: size,
-            radius: radius,
-            border: border,
-            child: ThumbnailImage(
-              url: photoUrl!,
-              fit: BoxFit.cover,
-            ),
-          );
+          ),
+        ),
+      );
+    }
 
     if (onTap == null) {
       return child;

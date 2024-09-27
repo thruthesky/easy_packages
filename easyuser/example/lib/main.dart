@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Text('User UID: ${user.uid}'),
                           ElevatedButton(
-                            onPressed: () => UserService.instance.showProfileUpdaeScreen(context),
+                            onPressed: () => UserService.instance.showProfileUpdateScreen(context),
                             child: const Text('Profile update'),
                           ),
                           ElevatedButton(
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Divider(),
             ElevatedButton(
               onPressed: () async {
-                await UserService.instance.showProfileUpdaeScreen(context);
+                await UserService.instance.showProfileUpdateScreen(context);
               },
               child: const Text("Update Profile"),
             ),

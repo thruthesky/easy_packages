@@ -25,7 +25,8 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
   final double? spacing;
 
   /// if padding and uploadBottmSheetPadding is not set return `EdgeInsets.zero`
-  EdgeInsetsGeometry get getPadding => padding ?? StorageService.instance.uploadBottomSheetPadding ?? EdgeInsets.zero;
+  EdgeInsetsGeometry get getPadding =>
+      padding ?? StorageService.instance.uploadBottomSheetPadding ?? EdgeInsets.zero;
 
   /// if spacing and uploadBottomSheetSpacing is not set return `null`
   double? get getSpacing => spacing ?? StorageService.instance.uploadBottomSheetSpacing;
@@ -49,9 +50,14 @@ class StorageUploadSelectionBottomSheet extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.cancel),
+                IconButtonTheme(
+                  // It should not be affected in themings because
+                  // sometimes it might be wierd to have borders here.
+                  data: const IconButtonThemeData(),
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.cancel),
+                  ),
                 ),
               ],
             ),

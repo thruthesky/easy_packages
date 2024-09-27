@@ -13,11 +13,13 @@ class ChatRoomEditScreen extends StatefulWidget {
   const ChatRoomEditScreen({
     super.key,
     this.room,
-    this.defaultOpen = false,
+    this.open = false,
+    this.tilePadding,
   });
 
   final ChatRoom? room;
-  final bool defaultOpen;
+  final bool open;
+  final EdgeInsets? tilePadding;
 
   @override
   State<ChatRoomEditScreen> createState() => _ChatRoomEditScreenState();
@@ -41,7 +43,7 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
   void initState() {
     super.initState();
     if (isCreate) {
-      open = widget.defaultOpen;
+      open = widget.open;
       return;
     }
     nameController.text = room!.name;
@@ -111,11 +113,17 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
               },
             ),
 
+            const SizedBox(height: 36),
             //
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              padding: widget.tilePadding ?? const EdgeInsets.all(0),
               child: CheckboxListTile(
-                contentPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+                contentPadding: EdgeInsets.fromLTRB(
+                  widget.tilePadding == null ? 24 : 16,
+                  0,
+                  widget.tilePadding == null ? 24 : 8,
+                  0,
+                ),
                 title: Text('open chat'.t),
                 subtitle: Text('anyone can join this chat room'.t),
                 value: open,
@@ -129,9 +137,14 @@ class _ChatRoomEditScreenState extends State<ChatRoomEditScreen> {
             ),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              padding: widget.tilePadding ?? const EdgeInsets.all(0),
               child: CheckboxListTile(
-                contentPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+                contentPadding: EdgeInsets.fromLTRB(
+                  widget.tilePadding == null ? 24 : 16,
+                  0,
+                  widget.tilePadding == null ? 24 : 8,
+                  0,
+                ),
                 // When it is open group, basically all members can invite
                 enabled: !open,
                 title: Text('members can invite'.t),
