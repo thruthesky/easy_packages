@@ -73,6 +73,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       );
     }
 
+    // This has problem:
+    // If the room is just created, it will still join here.
+
     // Current user automatically joins upon viewing open rooms.
     // NOTE: room.joined is only based on `/chat/room/` user
     //       might not be joined yet based on `/chat/join/`
@@ -163,10 +166,23 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (room != null) return;
     final newRoomRef = await ChatRoom.createSingle(user!.uid);
     room = await ChatRoom.get(newRoomRef.key!);
-    ChatService.instance.join(
+    await ChatService.instance.join(
       room!,
       protocol: ChatProtocol.invitationNotSent,
     );
+    // `room!.users[myUid!] = true` is added to prevent the join
+    // if user is not joined yet and can join the room.
+    //
+    // To understand, check the function `onRoomReady`.
+    // It auto joins the user if user is not a member based on
+    // `chat/room`. Since Chat Room is just created and user was
+    // not in ChatRoom's users field yet, it may join again.
+    //
+    // Why we still need it: Because auto joins will send a different protocol.
+    //                       It should display "Invitation not sent yet".
+    //                       It will be removed by auto joins' protocol,
+    //                       "You joined the room".
+    room!.users[myUid!] = true;
   }
 
   /// Returns true if the login user can view the chat messages.

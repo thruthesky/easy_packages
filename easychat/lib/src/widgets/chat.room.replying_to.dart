@@ -9,7 +9,7 @@ class ChatRoomReplyingTo extends StatelessWidget {
   const ChatRoomReplyingTo({
     super.key,
     required this.replyTo,
-    this.margin = const EdgeInsets.fromLTRB(12, 0, 12, 8),
+    this.margin = const EdgeInsets.fromLTRB(2, 0, 2, 8),
     this.onPressClose,
     this.maxWidth,
   });
@@ -78,9 +78,9 @@ class ChatRoomReplyingTo extends StatelessWidget {
                 const SizedBox(height: 8),
                 UserField(
                   uid: replyTo.uid,
-                  field: 'creatdAt',
-                  builder: (user) {
-                    if (user == null) return const SizedBox.shrink();
+                  field: User.field.createdAt,
+                  builder: (createdAt) {
+                    if (createdAt == null) return const SizedBox.shrink();
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
