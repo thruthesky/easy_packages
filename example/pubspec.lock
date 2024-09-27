@@ -73,33 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-<<<<<<< HEAD
-  cloud_firestore:
-    dependency: "direct main"
-    description:
-      name: cloud_firestore
-      sha256: "55872d611344977cd8ca657a4fb8ebf9f58298b791a3f34d979982b09a17ce38"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.4.2"
-  cloud_firestore_platform_interface:
-    dependency: transitive
-    description:
-      name: cloud_firestore_platform_interface
-      sha256: e9a095429f94ecb774302bac88e62a80f46047a532005bdd580b5addc19956e3
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.4.2"
-  cloud_firestore_web:
-    dependency: transitive
-    description:
-      name: cloud_firestore_web
-      sha256: "6caa18235bf2641ac9457e7620adf0e65d7469596af1e3b4db76481e2bb66166"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.3.1"
-=======
->>>>>>> 98a6888e3f9d46e7aabee23c727f747dc7137c57
   cloud_functions:
     dependency: "direct main"
     description:
@@ -410,17 +383,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_app_check
-<<<<<<< HEAD
-      sha256: "836e23ccf1acaf0f8d539597897ce1a47d1d0491097a58c813b35bb0d127e29c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1+2"
-=======
       sha256: a523507988614a0a73a171a151bde91ece403bc8bc061c18b0d09bf19866bb4c
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
->>>>>>> 98a6888e3f9d46e7aabee23c727f747dc7137c57
   firebase_app_check_platform_interface:
     dependency: transitive
     description:
@@ -577,17 +543,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_vertexai
-<<<<<<< HEAD
-      sha256: db9ce0b6ff49d5c90f51cd7fe9a0851d1c4f124baa79f09abaf72a2376ea3870
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.3+3"
-=======
       sha256: be1bc3e2b66e1a7ba1ffd6726b489ec79ce65ef5ea822af9666578dd1b4c8b5f
       url: "https://pub.dev"
     source: hosted
     version: "0.2.3+1"
->>>>>>> 98a6888e3f9d46e7aabee23c727f747dc7137c57
   fixnum:
     dependency: transitive
     description:

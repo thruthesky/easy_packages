@@ -120,8 +120,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.6+1"
-<<<<<<< HEAD
-=======
   firebase_ui_database:
     dependency: transitive
     description:
@@ -138,7 +136,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
->>>>>>> 98a6888e3f9d46e7aabee23c727f747dc7137c57
   flutter:
     dependency: "direct main"
     description: flutter
