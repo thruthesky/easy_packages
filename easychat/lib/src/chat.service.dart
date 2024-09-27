@@ -193,20 +193,34 @@ class ChatService {
   /// Show the chat room edit screen. It's for borth create and update.
   /// Return Dialog/Screen that may return DocReference
   ///
-  Future<T?> showChatRoomEditScreen<T>(BuildContext context, {ChatRoom? room, bool defaultOpen = false}) {
+  Future<T?> showChatRoomEditScreen<T>(
+    BuildContext context, {
+    ChatRoom? room,
+    bool open = false,
+    EdgeInsets? tilePadding,
+  }) {
     return $showChatRoomEditScreen?.call<T>(context, room: room) ??
         showGeneralDialog<T>(
           context: context,
           pageBuilder: (_, __, ___) => ChatRoomEditScreen(
             room: room,
-            defaultOpen: defaultOpen,
+            open: open,
+            tilePadding: tilePadding,
           ),
         );
   }
 
   /// Wrapper of showChatRoomEditScreen
-  Future<T?> showChatRoomCreateScreen<T>(BuildContext context, {ChatRoom? room, bool defaultOpen = false}) async {
-    return await showChatRoomEditScreen(context, defaultOpen: defaultOpen);
+  Future<T?> showChatRoomCreateScreen<T>(
+    BuildContext context, {
+    bool open = false,
+    EdgeInsets? tilePadding,
+  }) async {
+    return await showChatRoomEditScreen(
+      context,
+      open: open,
+      tilePadding: tilePadding,
+    );
   }
 
   /// Display the chat room screen.

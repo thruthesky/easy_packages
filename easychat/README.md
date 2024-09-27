@@ -43,6 +43,7 @@ This `easychat` package offers everything you need to build a chat app. With thi
   - [ChatRoomListView](#chatroomlistview)
   - [Displaying open chat room list](#displaying-open-chat-room-list)
 - [Coding Guideline](#coding-guideline)
+  - [Displaying chat room create screen and edit screen](#displaying-chat-room-create-screen-and-edit-screen)
   - [How to get server timestamp](#how-to-get-server-timestamp)
 - [Developer Coding Guideline](#developer-coding-guideline)
   - [Create a random user](#create-a-random-user)
@@ -330,6 +331,11 @@ For invitation ordering, it is using negative of Server timestamp to give more i
   - 1. Write a sample time data to the realtime database.
   - 2. Get the time
   - 3. Use it.
+
+
+- One thing to note is that, the ordering is not only used for the order of the chat room. It is also used to display the unread chat rooms on the top.
+  - This is why the order in ascending order with `reverseQuery` is not working. The order number must be in a negative value to display the chat rooms in reverse order with the new chat rooms on the top.
+
 
 
 
@@ -708,6 +714,28 @@ showGeneralDialog(
 
 
 # Coding Guideline
+
+
+
+
+## Displaying chat room create screen and edit screen
+
+- To display the chat room create screen, use `ChatService.instance.showChatRoomCreateScreen(context)`.
+  - You can add some options like `defaultOpen` and `tilePadding`.
+Example:
+```dart
+ChatService.instance.showChatRoomCreateScreen(context,
+  defaultOpen: false,
+  tilePadding: const EdgeInsets.symmetric(
+    horizontal: 24,
+    vertical: 8,
+  )
+);
+```
+
+- To display the chat room edit screen, use `ChatService.instance.showChatRoomEditScreen(context)`.
+  - You can add some options like `tilePadding`, `room`, `defaultOpen`.
+
 
 
 ## How to get server timestamp
