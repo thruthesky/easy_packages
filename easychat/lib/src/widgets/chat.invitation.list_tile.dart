@@ -60,12 +60,19 @@ class _ChatInvitationListTileState extends State<ChatInvitationListTile> {
                 user: user!,
               ),
             ),
-            title: DisplayName(uid: otherUid),
+            title: DisplayName(
+              uid: otherUid,
+              overflow: TextOverflow.ellipsis,
+            ),
             subtitle: UserField<String?>(
               uid: otherUid,
               field: User.field.stateMessage,
               builder: (stateMessage) {
-                return Text(stateMessage ?? '');
+                return Text(
+                  stateMessage ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                );
               },
             ),
             trailing: ChatInvitationListTileActions(
