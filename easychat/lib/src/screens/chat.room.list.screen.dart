@@ -9,9 +9,7 @@ class ChatRoomListScreen extends StatefulWidget {
     this.single,
     this.group,
     this.open,
-  }) : assert(
-            (single == true) ^ (group == true) ^ (open == true) ||
-                (single == null && group == null && open == null),
+  }) : assert((single == true) ^ (group == true) ^ (open == true) || (single == null && group == null && open == null),
             'Only one of single, group, or open can be true.');
 
   /// If true, will list only single chats
@@ -71,7 +69,7 @@ class _ChatRoomListScreenState extends State<ChatRoomListScreen> {
             onPressed: () {
               ChatService.instance.showChatRoomEditScreen(
                 context,
-                defaultOpen: currentOption == _openChats,
+                open: currentOption == _openChats,
               );
             },
             icon: const Icon(Icons.add),

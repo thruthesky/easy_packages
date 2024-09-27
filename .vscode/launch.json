@@ -21,6 +21,14 @@
             "program": "lib/main.dart",
         },
         {
+            "name": "PhiLov - A15",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "SM A155F",
+            "cwd": "apps/philov",
+            "program": "lib/main.dart",
+        },
+        {
             "name": "PhiLov - Asus",
             "request": "launch",
             "type": "dart",
