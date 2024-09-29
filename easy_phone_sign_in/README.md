@@ -1,4 +1,4 @@
-# Phone Sign In
+# Easy Phone Sign In
 
 This Flutter package is designed to streamline the integration of Google's phone sign-in functionality into your application, making the process seamless and efficient.
 

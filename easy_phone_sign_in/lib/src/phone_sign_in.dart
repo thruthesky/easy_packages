@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:country_picker/country_picker.dart';
+import 'package:easy_phone_sign_in/phone_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:phone_sign_in/phone_sign_in.dart';
 
 /// A widget that allows users to sign in with their phone number.
 ///
@@ -116,21 +116,15 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                 favorite: widget.countryPickerOptions?.favorite,
                 exclude: widget.countryPickerOptions?.exclude,
                 countryFilter: widget.countryPickerOptions?.countryFilter,
-                showPhoneCode:
-                    widget.countryPickerOptions?.showPhoneCode ?? true,
-                customFlagBuilder:
-                    widget.countryPickerOptions?.customFlagBuilder,
-                countryListTheme:
-                    widget.countryPickerOptions?.countryListTheme ??
-                        CountryListThemeData(
-                          bottomSheetHeight:
-                              MediaQuery.of(context).size.height * 0.5,
-                          borderRadius: BorderRadius.circular(16.8),
-                        ),
-                searchAutofocus:
-                    widget.countryPickerOptions?.searchAutofocus ?? false,
-                showWorldWide:
-                    widget.countryPickerOptions?.showWorldWide ?? false,
+                showPhoneCode: widget.countryPickerOptions?.showPhoneCode ?? true,
+                customFlagBuilder: widget.countryPickerOptions?.customFlagBuilder,
+                countryListTheme: widget.countryPickerOptions?.countryListTheme ??
+                    CountryListThemeData(
+                      bottomSheetHeight: MediaQuery.of(context).size.height * 0.5,
+                      borderRadius: BorderRadius.circular(16.8),
+                    ),
+                searchAutofocus: widget.countryPickerOptions?.searchAutofocus ?? false,
+                showWorldWide: widget.countryPickerOptions?.showWorldWide ?? false,
                 showSearch: widget.countryPickerOptions?.showSearch ?? true,
                 useSafeArea: widget.countryPickerOptions?.useSafeArea ?? true,
                 onSelect: (Country country) {
@@ -139,10 +133,8 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                     widget.countryPickerOptions?.onSelect?.call(country);
                   });
                 },
-                useRootNavigator:
-                    widget.countryPickerOptions?.useRootNavigator ?? false,
-                moveAlongWithKeyboard:
-                    widget.countryPickerOptions?.moveAlongWithKeyboard ?? false,
+                useRootNavigator: widget.countryPickerOptions?.useRootNavigator ?? false,
+                moveAlongWithKeyboard: widget.countryPickerOptions?.moveAlongWithKeyboard ?? false,
               );
             },
             child: Column(
@@ -150,9 +142,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (country == null)
-                  widget.labelCountryPicker ??
-                      const Text('Select your country'),
+                if (country == null) widget.labelCountryPicker ?? const Text('Select your country'),
                 if (country != null)
                   widget.labelCountryPickerSelected ??
                       widget.labelCountryPicker ??
@@ -163,14 +153,12 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                   Text('(+${country!.phoneCode}) ${country!.name}',
                       style: Theme.of(context).textTheme.titleLarge),
                   widget.labelChangeCountry ??
-                      Text('Change',
-                          style: Theme.of(context).textTheme.labelSmall),
+                      Text('Change', style: Theme.of(context).textTheme.labelSmall),
                 ]
               ],
             ),
           ),
-        if (showSmsCodeInput == false &&
-            (countryPicker == false || country != null)) ...[
+        if (showSmsCodeInput == false && (countryPicker == false || country != null)) ...[
           const SizedBox(height: 16),
           widget.labelPhoneNumber ?? const Text('Enter your phone number'),
           TextField(
@@ -191,10 +179,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                   : null,
               hintText: widget.hintTextPhoneNumberTextField ?? 'Phone number',
               hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.4),
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                   ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -202,8 +187,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
             ),
             onChanged: (value) => setState(() {}),
           ),
-          if (widget.labelUnderPhoneNumberTextField != null)
-            widget.labelUnderPhoneNumberTextField!,
+          if (widget.labelUnderPhoneNumberTextField != null) widget.labelUnderPhoneNumberTextField!,
           if (phoneNumberController.text.isNotEmpty) ...[
             const SizedBox(height: 16),
             progress
@@ -214,8 +198,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                       if (widget.specialAccounts?.emailLogin == true &&
                           phoneNumberController.text.contains('@')) {
                         return doEmailLogin();
-                      } else if (completePhoneNumber ==
-                          widget.specialAccounts?.reviewPhoneNumber) {
+                      } else if (completePhoneNumber == widget.specialAccounts?.reviewPhoneNumber) {
                         return doReviewPhoneNumberSubmit();
                       } else if (completePhoneNumber.isEmpty) {
                         throw Exception(
@@ -224,15 +207,13 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                       }
 
                       showProgress();
-                      FirebaseAuth.instance
-                          .setLanguageCode(widget.firebaseAuthLanguageCode);
+                      FirebaseAuth.instance.setLanguageCode(widget.firebaseAuthLanguageCode);
 
                       await FirebaseAuth.instance.verifyPhoneNumber(
                         timeout: const Duration(seconds: 60),
                         phoneNumber: completePhoneNumber,
                         // Android Only. Automatic SMS code resolved. Just go home.
-                        verificationCompleted:
-                            (PhoneAuthCredential credential) async {
+                        verificationCompleted: (PhoneAuthCredential credential) async {
                           log('--> PhoneSignIn::build() -> verificationCompleted: $credential');
                           // Note that, the app logs in automatically in Anroid, the app may throw time-expire or invalid sms code.
                           // You can ignore this erorrs.
@@ -245,8 +226,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                               log('Linking current user account with phone number ');
                               await linkOrSignInWithCredential(credential);
                             } else {
-                              await FirebaseAuth.instance
-                                  .signInWithCredential(credential);
+                              await FirebaseAuth.instance.signInWithCredential(credential);
                             }
 
                             onSignInSuccess();
@@ -291,8 +271,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                         },
                       );
                     },
-                    child: widget.labelVerifyPhoneNumberButton ??
-                        const Text('Verify phone number'),
+                    child: widget.labelVerifyPhoneNumberButton ?? const Text('Verify phone number'),
                   ),
           ],
         ],
@@ -329,12 +308,10 @@ class _PhoneSignInState extends State<PhoneSignIn> {
               if (smsCodeController.text.isNotEmpty)
                 progress
                     ? const Padding(
-                        padding: EdgeInsets.only(right: 16),
-                        child: CircularProgressIndicator.adaptive())
+                        padding: EdgeInsets.only(right: 16), child: CircularProgressIndicator.adaptive())
                     : ElevatedButton(
                         onPressed: () async {
-                          if (onCompletePhoneNumber() ==
-                              widget.specialAccounts?.reviewPhoneNumber) {
+                          if (onCompletePhoneNumber() == widget.specialAccounts?.reviewPhoneNumber) {
                             return doReviewSmsCodeSubmit();
                           }
                           showProgress();
@@ -352,16 +329,14 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                               log('Linking current user account with phone number ');
                               await linkOrSignInWithCredential(credential);
                             } else {
-                              await FirebaseAuth.instance
-                                  .signInWithCredential(credential);
+                              await FirebaseAuth.instance.signInWithCredential(credential);
                             }
                             onSignInSuccess();
                           } on FirebaseAuthException catch (e) {
                             onSignInFailed(e);
                           }
                         },
-                        child: widget.labelVerifySmsCodeButton ??
-                            const Text('Verify SMS code'),
+                        child: widget.labelVerifySmsCodeButton ?? const Text('Verify SMS code'),
                       ),
             ],
           )
@@ -564,8 +539,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
       );
     } catch (e) {
       // create
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
     }
   }
 

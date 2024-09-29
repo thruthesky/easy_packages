@@ -1,5 +1,5 @@
+import 'package:easy_phone_sign_in/phone_sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:phone_sign_in/phone_sign_in.dart';
 
 class PhoneSignInScreen extends StatefulWidget {
   const PhoneSignInScreen({super.key});
@@ -33,9 +33,7 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image:
-                            Image.network('https://picsum.photos/250?image=9')
-                                .image,
+                        image: Image.network('https://picsum.photos/250?image=9').image,
                       ),
                     ),
                   ),
