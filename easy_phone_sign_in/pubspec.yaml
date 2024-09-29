@@ -1,7 +1,7 @@
 name: easy_phone_sign_in
 description: "Phone number sign-in package for easy phone sign-in with firebase auth."
 version: 0.0.13
-repository: https://github.com/thruthesky/phone_sign_in
+homepage: https://github.com/thruthesky/easy_packages
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -19,7 +19,8 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
 
-issue_tracker: https://github.com/thruthesky/phone_sign_in/issues
+repository: https://github.com/thruthesky/easy_packages/tree/main/easy_phone_sign_in
+issue_tracker: https://github.com/thruthesky/easy_packages/issues
 topics:
   - phone-sign-in
   - auth

@@ -1,5 +1,5 @@
 import 'package:country_picker/country_picker.dart';
-import 'package:easy_phone_sign_in/phone_sign_in.dart';
+import 'package:easy_phone_sign_in/easy_phone_sign_in.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:example/phone_sign_in.screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

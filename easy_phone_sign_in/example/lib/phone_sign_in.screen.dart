@@ -1,4 +1,4 @@
-import 'package:easy_phone_sign_in/phone_sign_in.dart';
+import 'package:easy_phone_sign_in/easy_phone_sign_in.dart';
 import 'package:flutter/material.dart';
 
 class PhoneSignInScreen extends StatefulWidget {
