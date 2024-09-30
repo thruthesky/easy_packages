@@ -32,7 +32,7 @@ class UserService {
   DatabaseReference get usersRef => database.ref().child('users');
 
   // Should we simple set it into setting? Or should we get it from easy_settings as dependency?
-  DatabaseReference get settingsRef => database.ref().child('settings');
+  DatabaseReference get settingsRef => database.ref().child('user-settings');
 
   DatabaseReference get blockDoc => settingsRef.child(myUid!).child('blocks');
 
