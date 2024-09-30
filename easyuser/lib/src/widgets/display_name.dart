@@ -1,3 +1,4 @@
+import 'package:easy_locale/easy_locale.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class DisplayName extends StatelessWidget {
       field: User.field.displayName,
       builder: (displayName) {
         return Text(
-          displayName ?? '',
+          displayName ?? 'no name'.t,
           maxLines: maxLines,
           overflow: overflow,
           // Originally, we have put here `Theme.of(context).textTheme.labelMedium`.

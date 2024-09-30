@@ -69,7 +69,7 @@ class _ChatInvitationListTileState extends State<ChatInvitationListTile> {
               field: User.field.stateMessage,
               builder: (stateMessage) {
                 return Text(
-                  stateMessage ?? '',
+                  stateMessage ?? '...',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 );
