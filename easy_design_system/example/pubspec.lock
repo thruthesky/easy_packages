@@ -579,7 +579,11 @@ packages:
       sha256: cd3543bd5798f6ad290ea73d210f423502e71900302dde696f8bff84bf89a1cb
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "1.1.0"
+=======
+    version: "1.0.0"
+>>>>>>> umain
   xdg_directories:
     dependency: transitive
     description:
