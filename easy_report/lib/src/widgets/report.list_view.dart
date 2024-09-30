@@ -91,8 +91,8 @@ class ReportListView extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () {
-              report.ref.remove();
+            onPressed: () async {
+              await ReportService.instance.delete(report.id);
             },
           ),
         );
