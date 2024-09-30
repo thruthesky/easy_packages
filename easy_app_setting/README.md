@@ -19,10 +19,8 @@
 ## Database Structure
 
 - `/app-settings`: is the node of each app's settings.
-
-  - `/app-settings/<uid>`: is the app's settings node.
-    - `/app-settings/<uid>/<key>`: is the key of the setting.
-    - `/app-settings/<uid>/<key>: value`: is the value of the setting.
+    - `/app-settings/<key>`: is the key of the setting.
+    - `/app-settings/<key>: value`: is the value of the setting. value can be any type of data.
 
 - The data is public, the users can only read the data. The admin is the only one who can write.
 

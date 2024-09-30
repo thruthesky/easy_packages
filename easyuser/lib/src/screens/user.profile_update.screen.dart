@@ -72,6 +72,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 24),
                       const Center(
                         child: UserUpdateAvatar(
                           size: 140,
