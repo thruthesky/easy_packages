@@ -68,14 +68,13 @@ class PostListView extends StatelessWidget {
       query: query,
       pageSize: pageSize,
       builder: (context, snapshot, _) {
-        if (snapshot.isFetching) {
-          return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
-        }
-
         if (snapshot.hasError) {
           dog('Error: ${snapshot.error}');
           return errorBuilder?.call(snapshot.error.toString()) ??
               Text('Something went wrong! ${snapshot.error}');
+        }
+        if (snapshot.isFetching && !snapshot.hasData) {
+          return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
         }
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
