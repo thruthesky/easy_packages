@@ -39,6 +39,7 @@ class PhoneSignIn extends StatefulWidget {
     this.linkCurrentUser = false,
     this.specialAccounts,
     this.isPhoneNumberRegistered,
+    this.debug = false,
   });
 
   final String? countryCode;
@@ -73,6 +74,9 @@ class PhoneSignIn extends StatefulWidget {
   final SpecialAccounts? specialAccounts;
 
   final Future<bool> Function(String)? isPhoneNumberRegistered;
+
+  ///
+  final bool debug;
 
   @override
   State<PhoneSignIn> createState() => _PhoneSignInState();
@@ -194,6 +198,8 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                 ? const Center(child: CircularProgressIndicator.adaptive())
                 : ElevatedButton(
                     onPressed: () async {
+                      debug(
+                          'PhoneSignIn::build() -> onPressed("Verify phone number") -> Begin: phone number verification');
                       final completePhoneNumber = onCompletePhoneNumber();
                       if (widget.specialAccounts?.emailLogin == true &&
                           phoneNumberController.text.contains('@')) {
@@ -209,12 +215,14 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                       showProgress();
                       FirebaseAuth.instance.setLanguageCode(widget.firebaseAuthLanguageCode);
 
+                      debug(
+                          'Begin: FirebaseAuth.instance.verifyPhoneNumber with completePhoneNumber: $completePhoneNumber');
                       await FirebaseAuth.instance.verifyPhoneNumber(
                         timeout: const Duration(seconds: 60),
                         phoneNumber: completePhoneNumber,
                         // Android Only. Automatic SMS code resolved. Just go home.
                         verificationCompleted: (PhoneAuthCredential credential) async {
-                          log('--> PhoneSignIn::build() -> verificationCompleted: $credential');
+                          debug('verificationCompleted: $credential');
                           // Note that, the app logs in automatically in Anroid, the app may throw time-expire or invalid sms code.
                           // You can ignore this erorrs.
                           // Sign the user in (or link) with the auto-generated credential
@@ -223,9 +231,12 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                           try {
                             /// Is if for linking the current user with the phone number.
                             if (widget.linkCurrentUser) {
-                              log('Linking current user account with phone number ');
+                              debug(
+                                  'linkCurrentUser options is set. Linking current user account with the phone number ');
                               await linkOrSignInWithCredential(credential);
                             } else {
+                              debug(
+                                  'linkCurrentUser options is NOT set. Signing in with the phone number.');
                               await FirebaseAuth.instance.signInWithCredential(credential);
                             }
 
@@ -237,13 +248,13 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                         // Phone number verification failed or there is an error on Firebase like quota exceeded.
                         // This is not for the failures of SMS code verification!
                         verificationFailed: (FirebaseAuthException e) {
-                          log('---> PhoneSignIn::build() -> verificationFailed: $e');
+                          debug('---> PhoneSignIn::build() -> verificationFailed: $e');
                           onSignInFailed(e);
                         },
                         // Phone number verfied and SMS code sent to user.
                         // Show SMS code input UI.
                         codeSent: (String verificationId, int? resendToken) {
-                          log('---> PhoneSignIn::build() -> codeSent: $verificationId');
+                          debug('---> PhoneSignIn::build() -> codeSent: $verificationId');
                           this.verificationId = verificationId;
                           setState(() {
                             showSmsCodeInput = true;
@@ -326,7 +337,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                           try {
                             /// Is if for linking the current user with the phone number.
                             if (widget.linkCurrentUser) {
-                              log('Linking current user account with phone number ');
+                              debug('Linking current user account with phone number ');
                               await linkOrSignInWithCredential(credential);
                             } else {
                               await FirebaseAuth.instance.signInWithCredential(credential);
@@ -365,11 +376,12 @@ class _PhoneSignInState extends State<PhoneSignIn> {
   /// 누구의 전화번호인지 알 수 없도록 한다. 용도는 전화번호가 가입되어져 있는지 아닌지만 확인하기 위해서 기록을 한다.
   ///
   Future<void> linkOrSignInWithCredential(AuthCredential credential) async {
-    log('linkOrSignInWithCredential()');
+    debug('Begin: linkOrSignInWithCredential();');
 
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
-      log('Currently user is not signed in. Not even as anonymous. So, it will sign in with the phone number.');
+      debug(
+          'currentUser == null. Meaning, the user is not signed in. Not even as anonymous. So, it will simply sign in with the phone number.');
       await FirebaseAuth.instance.signInWithCredential(credential);
       return;
     }
@@ -377,15 +389,18 @@ class _PhoneSignInState extends State<PhoneSignIn> {
     /// 전화 번호가 이미 사용되었는지 확인하는 콜백 함수
     ///
     /// 만약, 전화번호가 이미 사용되었으면, link 하지 말고 그냥 로그인한다.
+    debug('Check if the phone number is already registered with: isPhoneNumberRegistered() callback.');
     final re = await widget.isPhoneNumberRegistered!(onCompletePhoneNumber());
     if (re) {
-      log('--> linkOrSignInWithCredential() -> Phone number already in use!! So, it will sign-in with phone number without linking.');
+      debug('Phone number already in use!! So, it will sign-in with phone number without linking.');
       await FirebaseAuth.instance.signInWithCredential(credential);
       return;
     }
 
     /// 현재 사용자가 로그인 되어 있는 경우, 전화번호로 로그인을 시도한다.
-    log('--> linkOrSignInWithCredential() -> The phone number is not in use. Currently user is signed in (maybe as an anonymous). Try to link with the phone number sign-in credential.');
+    debug(
+      'The phone number is not in use. And the user is signed in (maybe as an anonymous). Try to link with the phone number sign-in credential.',
+    );
     await currentUser.linkWithCredential(credential);
   }
 
@@ -424,7 +439,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
     number = number.replaceFirst(RegExp(r'^0'), '');
 
     if (number.startsWith('+')) {
-      log('--> onCompletePhoneNumber: $number starts with +. No formatting needed.');
+      debug('onCompletePhoneNumber(): $number starts with +. No formatting needed.');
       return number;
     }
 
@@ -465,7 +480,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
   }
 
   doEmailLogin([String? emailPassword]) async {
-    log('BEGIN: doEmailLogin()');
+    debug('BEGIN: doEmailLogin()');
 
     emailPassword ??= phoneNumberController.text;
 
@@ -483,7 +498,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
       );
       onSignInSuccess();
     } on FirebaseAuthException catch (e) {
-      log('ERROR: doEmailLogin error: $e');
+      debug('ERROR: doEmailLogin error: $e');
       onSignInFailed(e);
       if (context.mounted) {
         hideProgress();
@@ -546,6 +561,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
   /// test2@email.com:12345a
   doReviewPhoneNumberSubmit() {
     if (context.mounted) {
+      debug('Begin: doReviewPhoneNumberSubmit()');
       setState(() {
         showSmsCodeInput = true;
         progress = false;
@@ -563,6 +579,12 @@ class _PhoneSignInState extends State<PhoneSignIn> {
           content: Text('Invalid SMS code. Please retry.'),
         ),
       );
+    }
+  }
+
+  debug(String message) {
+    if (widget.debug) {
+      log("[🐈] $message");
     }
   }
 }
