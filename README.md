@@ -46,6 +46,8 @@
 
 - This framework includes various small packages, each designed for a specific purpose. You can use any package individually or combine them to enhance your app. The goal is to provide key app functionalities as standalone, user-friendly packages available on pub.dev, making app development more efficient and modular.
 
+
+
 # Key Features
 
 - **Independence**: Each package is independent. You can use only what you need. For example, if your app needs a chat feature, you can just add the `easychat` package.

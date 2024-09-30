@@ -1,3 +1,6 @@
+## 0.0.14
+* Add. Debug option to show the debug message.
+
 ## 0.0.13
 * Refactor. Change the package name and put it in the easy packages series.
 
