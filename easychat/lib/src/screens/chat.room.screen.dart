@@ -254,6 +254,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     ),
                   ),
                 ),
+                // SafeArea(
+                //   top: false,
+                //   child: Padding(
+                //     padding: const EdgeInsets.fromLTRB(
+                //       10,
+                //       0,
+                //       10,
+                //       10,
+                //     ),
+                //     child: ChatRoomInputBox(
+                //       room: room!,
+                //     ),
+                //   ),
+                // ),
                 SafeArea(
                   top: false,
                   child: Padding(
@@ -261,12 +275,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       10,
                       0,
                       10,
-                      10,
+                      0,
                     ),
                     child: ChatRoomInputBox(
                       room: room!,
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
               ],
             ),

@@ -117,9 +117,9 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                       /// Delete exisiting photo. Continue to delete evenif the photo does not exist.
                       final re = await confirm(
                           context: context,
-                          title: Text('Delete Avatar?'.t),
-                          message: Text('Are you sure you wanted to delete this avatar?'.t));
-                      if (re == false) return;
+                          title: Text('delete Avatar?'.t),
+                          message: Text('are you sure you wanted to delete this avatar?'.t));
+                      if (re != true) return;
                       await StorageService.instance.delete(my.photoUrl);
                       await my.deleteFields([User.field.photoUrl]);
                     },
