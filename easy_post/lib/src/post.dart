@@ -57,6 +57,8 @@ class Post {
   /// The database reference of current post
   DatabaseReference get ref => postRef(id);
 
+  String get categoryId => category.split('-')[0];
+
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
 
