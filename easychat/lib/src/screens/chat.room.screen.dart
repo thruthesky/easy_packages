@@ -257,11 +257,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 SafeArea(
                   top: false,
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(
+                    padding: const EdgeInsets.fromLTRB(
                       10,
                       0,
                       10,
-                      MediaQuery.of(context).viewPadding.bottom > 0 ? 0 : 10,
+                      10,
                     ),
                     child: ChatRoomInputBox(
                       room: room!,
