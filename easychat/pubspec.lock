@@ -196,10 +196,9 @@ packages:
   easyuser:
     dependency: "direct main"
     description:
-      name: easyuser
-      sha256: e01902157ef66b9a6a992442fc95909a3a6359136124cfbd53d423a8c3698c66
-      url: "https://pub.dev"
-    source: hosted
+      path: "../easyuser"
+      relative: true
+    source: path
     version: "0.0.35"
   fake_async:
     dependency: transitive

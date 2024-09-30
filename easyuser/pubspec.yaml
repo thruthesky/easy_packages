@@ -1,6 +1,6 @@
 name: easyuser
 description: "An easy to use user management package with Firebase as backend."
-version: 0.0.35
+version: 0.0.36
 homepage: https://github.com/thruthesky/easy_packages
 
 environment:
@@ -29,13 +29,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-
-
-# TODO remove this because this is not allowed upon publishing
-# testing only
-dependency_overrides:
-  easy_storage:
-    path: ../easy_storage
 
 
 repository: https://github.com/thruthesky/easy_packages/tree/main/easyuser

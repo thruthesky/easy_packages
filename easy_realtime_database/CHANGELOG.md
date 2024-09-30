@@ -1,3 +1,6 @@
+## 0.0.10
+* Corrected the conditions in Value Widget when showing onLoading Widget.
+
 ## 0.0.9
 * Add. `ValueListView`.
 

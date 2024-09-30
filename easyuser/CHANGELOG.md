@@ -1,3 +1,7 @@
+## 0.0.36
+* Updated Value Widget. Logic was corrected for onLoading Widget.
+* Display name: When empty, it will show "No name".
+
 ## 0.0.35
 * Fix. UserAvatar.
 
