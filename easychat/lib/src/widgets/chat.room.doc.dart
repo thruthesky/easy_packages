@@ -30,7 +30,11 @@ class ChatRoomDoc extends StatelessWidget {
       ref: ref,
       initialData: chatRoomDataCache[roomId],
       builder: (v, r) {
-        chatRoomDataCache[roomId] = Map<String, dynamic>.from(v as Map);
+        // In case, chat room is null or does not exist, return empty SizedBox
+        if (v == null) {
+          return const SizedBox.shrink();
+        }
+        chatRoomDataCache[roomId] = Map<String, dynamic>.from((v) as Map);
         final room = ChatRoom.fromJson(
           Map<String, dynamic>.from(v),
           ref.key!,

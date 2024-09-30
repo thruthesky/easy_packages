@@ -21,6 +21,14 @@
             "program": "lib/main.dart",
         },
         {
+            "name": "PhiLov - iPad Air",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPad Air 11-inch",
+            "cwd": "apps/philov",
+            "program": "lib/main.dart",
+        },
+        {
             "name": "PhiLov - A15",
             "request": "launch",
             "type": "dart",

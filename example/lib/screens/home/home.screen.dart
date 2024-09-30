@@ -3,7 +3,6 @@ import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
 import 'package:easy_storage/easy_storage.dart';
-import 'package:easy_youtube/easy_youtube.dart';
 import 'package:easychat/easychat.dart';
 import 'package:easyuser/easyuser.dart';
 import 'package:example/screens/firebase_database_list_view/firebase_database_list_view.screen.dart';

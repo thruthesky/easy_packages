@@ -121,3 +121,17 @@ flowchart TB
 ```
 
 
+
+
+
+# Phone number number sign-in
+
+- If user signs in with phone number, then the phone number is saved in the `user-phone-sign-in-numbers/<phone-number>` node.
+  - This is only the purpose of checking if the phone number is already registered or not.
+  - If the phone nubmer is not registered, then the user can link his account with phone number.
+  - If the phone number is already registered, then the user cannot link the phone number to his account. Instead, the user can sign in with the phone number.
+
+- If ever, the system needs to reset the phone numbers of the users, then run `tsx reset-phone-sign-in-numbers` command in `easy-engine/tools` directory.
+
+
+

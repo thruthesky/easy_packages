@@ -273,9 +273,7 @@ class UserService {
     if (phoneNumber == null) return;
 
     final ref = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber);
-    await ref.set({
-      'lastSignedInAt': ServerValue.timestamp,
-    });
+    await ref.set(DateTime.now().millisecondsSinceEpoch);
   }
 
   /// Check if the phone number is registered.
@@ -288,8 +286,7 @@ class UserService {
   ///
   /// See README.md for details
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
-    final doc =
-        database.ref().child('user-phone-sign-in-numbers').child(phoneNumber).child("lastSignedInAt");
+    final doc = database.ref().child('user-phone-sign-in-numbers').child(phoneNumber);
     final snapshot = await doc.get();
     return snapshot.exists;
   }
