@@ -66,16 +66,20 @@ class UserPublicProfileScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   )
-                : CachedNetworkImage(
-                    errorWidget: (context, url, error) => Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                : SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: CachedNetworkImage(
+                      errorWidget: (context, url, error) => Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
+                      imageUrl: user.statePhotoUrl!,
+                      fit: BoxFit.cover,
                     ),
-                    imageUrl: user.statePhotoUrl!,
-                    fit: BoxFit.cover,
                   ),
           ),
           Positioned(
