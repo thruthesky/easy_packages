@@ -22,7 +22,7 @@ class YoutubePlayerBuilder extends StatefulWidget {
   final YoutubePlayer player;
 
   /// Builds the widget below this [builder].
-  final Widget Function(BuildContext, Widget) builder;
+  final Widget Function(BuildContext context, Widget player) builder;
 
   /// Callback to notify that the player has entered fullscreen.
   final VoidCallback? onEnterFullScreen;
@@ -34,8 +34,7 @@ class YoutubePlayerBuilder extends StatefulWidget {
   State<YoutubePlayerBuilder> createState() => _YoutubePlayerBuilderState();
 }
 
-class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder>
-    with WidgetsBindingObserver {
+class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder> with WidgetsBindingObserver {
   final GlobalKey playerKey = GlobalKey();
 
   @override
