@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_realtime_database/easy_realtime_database.dart';
 import 'package:easy_report/easy_report.dart';
+import 'package:easyuser/easyuser.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:flutter/gestures.dart';
@@ -68,17 +68,8 @@ class ReportListView extends StatelessWidget {
       itemBuilder: (context, snapshot) {
         final report = Report.fromSnapshot(snapshot);
         return ListTile(
-          leading: Value(
-            sync: false,
-            ref: FirebaseDatabase.instance
-                .ref(ReportService.instance.userNamePath.replaceFirst('{uid}', report.reportee)),
-            builder: (v, r) {
-              if (v == null) {
-                return const SizedBox.shrink();
-              }
-              return CircleAvatar(child: CachedNetworkImage(imageUrl: (v as String).thumbnail));
-            },
-          ),
+          minTileHeight: 92,
+          leading: UserAvatar.fromUid(uid: report.reportee),
           title: Value(
             sync: false,
             ref: FirebaseDatabase.instance
@@ -99,8 +90,8 @@ class ReportListView extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () {
-              report.ref.remove();
+            onPressed: () async {
+              await ReportService.instance.delete(report.id);
             },
           ),
         );

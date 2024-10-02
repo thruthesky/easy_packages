@@ -23,7 +23,7 @@ dependencies:
   firebase_ui_database: ^1.4.4
   flutter:
     sdk: flutter
-  youtube_player_flutter: ^9.1.0
+  youtube_player_flutter: ^9.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,6 @@
+## 0.0.8
+* Bump `youtube_player_flutter` to latest version.
+
 ## 0.0.7
 * Fix. Dependency update.
 
