@@ -1,3 +1,4 @@
+import 'package:easy_url_preview/easy_url_preview.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,6 +24,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String text =
+      "This is the text: https://www.flutterflow.io/flutterflow-developer-groups. Press the button below to see the preview.";
+  bool preview = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,23 +38,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'This is the text: https://www.google.com. Press the button below to see the preview.',
-            ),
+            Text(text),
             ElevatedButton(
               onPressed: () async {
-                final model = UrlPreviewModel();
-                await model.load(text);
-                if (!model.hasData) return;
-                await message.update(
-                  previewUrl: model.firstLink,
-                  previewTitle: model.title,
-                  previewDescription: model.description,
-                  previewImageUrl: model.image,
-                );
+                setState(() {
+                  preview = true;
+                });
               },
               child: const Text('Show Preview'),
             ),
+            if (preview)
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width * .6,
+                child: UrlPreview(text: text),
+              ),
           ],
         ),
       ),
