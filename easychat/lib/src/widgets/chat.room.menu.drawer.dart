@@ -223,8 +223,10 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                       }
 
                       // Get if user is already invited and rejected the invitation
-                      final rejection =
-                          await ChatService.instance.rejectedUserRef(selectedUser.uid).child(room!.id).get();
+                      final rejection = await ChatService.instance
+                          .rejectedUserRef(selectedUser.uid)
+                          .child(room!.id)
+                          .get();
                       if (rejection.exists) {
                         dog("The user is already rejected: ${rejection.value}");
                         throw ChatException(
@@ -247,8 +249,9 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                           // "${selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName} has been invited.",
                           'user has been invited'.tr(
                             args: {
-                              'username':
-                                  selectedUser.displayName.isEmpty ? selectedUser.name : selectedUser.displayName,
+                              'username': selectedUser.displayName.isEmpty
+                                  ? selectedUser.name
+                                  : selectedUser.displayName,
                             },
                           ),
                         ),
@@ -338,7 +341,7 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                   const SizedBox(height: 12),
               ],
               const SizedBox(height: 24),
-              if (user?.admin != true) label(context: context, text: "options".t),
+              label(context: context, text: "options".t),
               const SizedBox(height: 8),
               if (room?.joined == true) ...[
                 if (room!.group && room!.masterUsers.contains(my.uid))
@@ -372,7 +375,9 @@ class ChatRoomMenuDrawer extends StatelessWidget {
                 if (room?.single == true || user != null)
                   ListTile(
                     title: Text(
-                      UserService.instance.blockChanges.value.containsKey(user!.uid) ? "unblock".t : "block".t,
+                      UserService.instance.blockChanges.value.containsKey(user!.uid)
+                          ? "unblock".t
+                          : "block".t,
                     ),
                     onTap: () async {
                       final re = await UserService.instance.block(
@@ -421,7 +426,8 @@ class ChatRoomMenuDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return ChatService.instance.membersDialogBuilder?.call(context, room!) ?? ChatRoomMemberListDialog(room: room!);
+        return ChatService.instance.membersDialogBuilder?.call(context, room!) ??
+            ChatRoomMemberListDialog(room: room!);
       },
     );
   }
