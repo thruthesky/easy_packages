@@ -21,7 +21,9 @@ class UserService {
   static UserService? _instance;
   static UserService get instance => _instance ??= UserService._();
 
-  UserService._();
+  UserService._() {
+    applyUserLocales();
+  }
 
   bool initialized = false;
 

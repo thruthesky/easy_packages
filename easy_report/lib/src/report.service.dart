@@ -110,6 +110,12 @@ class ReportService {
     }
   }
 
+  Future<void> delete(String reportId) async {
+    await reportsRef.child('---key-list').child(reportId).remove();
+
+    await myReportsRef.child(reportId).remove();
+  }
+
   /// Show post list screen
   void showReportListScreen(BuildContext context) {
     showGeneralDialog(

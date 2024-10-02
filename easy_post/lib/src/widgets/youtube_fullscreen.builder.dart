@@ -1,3 +1,4 @@
+import 'package:easy_helpers/easy_helpers.dart';
 import 'package:easy_post_v2/easy_post_v2.dart';
 import 'package:easy_post_v2/src/widgets/youtube_player_builder.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class YoutubeFullscreenBuilder extends StatefulWidget {
   });
 
   final Post post;
-  final Widget Function(BuildContext, Widget) builder;
+  final Widget Function(BuildContext context, Widget player) builder;
   final Widget? thumbnail;
   final bool autoPlay;
 
@@ -35,8 +36,9 @@ class YoutubeFullscreenBuilder extends StatefulWidget {
 class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   YoutubePlayerController? youtubeController;
   ValueNotifier<bool> isPlayingNotifier = ValueNotifier(false);
+
   // bool isPlaying = false;
-  bool isReady = false;
+  // bool isReady = false;
   late PlayerState playerState;
 
   @override
@@ -62,8 +64,13 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
 
   @override
   void dispose() {
-    youtubeController?.pause();
+    // For some reason, pausing first will cause error in innappwebview
+    // MissingPluginException (MissingPluginException(No implementation found for method evaluateJavascript on channel com.pichillilorenzo/flutter_inappwebview_1))
+    // No need to pause when it will be disposed anyway.
+    // youtubeController?.pause();
+    youtubeController?.removeListener(listener);
     youtubeController?.dispose();
+
     isPlayingNotifier.dispose();
     super.dispose();
   }
@@ -89,7 +96,9 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
       }
       if (oldWidget.post.youtube['id'] != widget.post.youtube['id']) {
         youtubeController?.load(widget.post.youtube['id']);
-        youtubeController?.pause();
+        // youtubeController?.pause();
+        // Auto-play when video is changed in YoutubePlayer
+        youtubeController?.play();
       }
     });
   }
@@ -98,7 +107,12 @@ class _YoutubeFullscreenBuilderState extends State<YoutubeFullscreenBuilder> {
   Widget build(BuildContext context) {
     return YoutubePlayerBuilder(
       player: YoutubePlayer(
+        onReady: () {
+          // Auto-play when the YoutubePlayer first loaded
+          youtubeController?.play();
+        },
         bottomActions: [
+          // This is the pause and play at the bottom of the video
           ValueListenableBuilder<bool>(
               valueListenable: isPlayingNotifier,
               builder: (context, isPlaying, _) {
