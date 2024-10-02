@@ -174,7 +174,7 @@ class UserPublicProfileScreen extends StatelessWidget {
                           child: UserBlocked(
                             otherUid: user.uid,
                             builder: (blocked) => Text(
-                              blocked ? 'Unblock'.t : 'block'.t,
+                              blocked ? 'unblock'.t : 'block'.t,
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
