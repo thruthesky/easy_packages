@@ -1,3 +1,6 @@
+## 0.0.7
+* Fix. Shared preferences version to `^2.2.2` to support FlutterFlow.
+
 ## 0.0.6
 * Fix. Dart SDK version to `>=3.0.0 <4.0.0`.
 
