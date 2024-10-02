@@ -1,3 +1,7 @@
+## 0.0.5
+* Update. UrlPreview widget to load and display the preview data.
+* Update. UrlPreviewModel is caching the preview data in local storage.
+
 ## 0.0.4
 * Fix. null error handling on `load`.
 
