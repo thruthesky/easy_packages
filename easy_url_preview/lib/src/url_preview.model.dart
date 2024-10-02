@@ -1,10 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
-import 'package:http/http.dart';
 import 'package:linkify/linkify.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:crypto/crypto.dart';
 
 class UrlPreviewModel {
   /// The input text that may contain a URL.
@@ -120,26 +118,10 @@ class UrlPreviewModel {
   /// Get the content of the URL.
   ///
   Future<String> getUrlContent() async {
-    final md5Key = md5.convert(firstLink!.codeUnits).toString();
-
-    // Obtain shared preferences.
-    final prefs = await SharedPreferences.getInstance();
-    String? html = prefs.getString(md5Key);
-    if (html != null) {
-      return html;
-    }
-
-    final response = await get(Uri.parse(firstLink!));
-
-    final contentType = response.headers['content-type'];
-    if (contentType == null || !contentType.contains('text/html')) {
-      return Future.value('');
-    }
-
-    html = response.body;
-    // Save an String value to 'action' key.
-    await prefs.setString(md5Key, html);
-    return Future.value(html);
+    final dio = Dio();
+    Response response;
+    response = await dio.post(firstLink!);
+    return response.data.toString();
   }
 
   @override

@@ -9,6 +9,10 @@ This package helps to get and display the url preview.
 - Display the preview data in a widget.
 - Save the preview data to local storage and reuse it.
 
+## Known issues
+
+- When this package is used in web, the preview data may not be loaded due to the CORS policy. It is recommended to use this package in mobile apps.
+
 ## UrlPreview widget
 
 - `text`: The text that contains the url.

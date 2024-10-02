@@ -60,14 +60,14 @@ class _UrlPreviewState extends State<UrlPreview> {
   }
 
   void loadPreview() async {
-    log('-> loadPreview() begin;');
+    // log('-> loadPreview() begin;');
     final model = UrlPreviewModel();
     String? firstLink = model.getFirstLink(text: widget.text!);
-    log('-> firstLink: $firstLink');
+    // log('-> firstLink: $firstLink');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (firstLink != null) {
       final String? data = prefs.getString(firstLink);
-      log('-> Using cached data: $data');
+      // log('-> Using cached data: $data');
       if (data != null) {
         /// [parts] is a list of strings that are separated by '||'
         final List<String> parts = data.split('||');
@@ -84,7 +84,7 @@ class _UrlPreviewState extends State<UrlPreview> {
     }
 
     await model.load(widget.text);
-    log('-> model.load() -> result: $model');
+    // log('-> model.load() -> result: $model');
     if (!model.hasData) return;
 
     setState(() {

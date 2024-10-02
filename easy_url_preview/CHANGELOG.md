@@ -1,3 +1,6 @@
+## 0.0.8
+* Chnage. `http` package is replaced by `dio` package.
+
 ## 0.0.7
 * Fix. Shared preferences version to `^2.2.2` to support FlutterFlow.
 

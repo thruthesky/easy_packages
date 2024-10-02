@@ -25,7 +25,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String text =
-      "This is the text: https://www.flutterflow.io/flutterflow-developer-groups. Press the button below to see the preview.";
+      "This is the text: https://philgo.com  https://www.flutterflow.io/flutterflow-developer-groups. Press the button below to see the preview.";
   bool preview = false;
   @override
   Widget build(BuildContext context) {
