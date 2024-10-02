@@ -1,3 +1,6 @@
+## 0.0.6
+* Fix. Dart SDK version to `>=3.0.0 <4.0.0`.
+
 ## 0.0.5
 * Update. UrlPreview widget to load and display the preview data.
 * Update. UrlPreviewModel is caching the preview data in local storage.
