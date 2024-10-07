@@ -1,10 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
-import 'package:http/http.dart';
 import 'package:linkify/linkify.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:crypto/crypto.dart';
 
 class UrlPreviewModel {
   /// The input text that may contain a URL.
@@ -40,10 +38,8 @@ class UrlPreviewModel {
 
     //
     this.text = text;
-    firstLink = getFirstLink();
-    if (firstLink == null ||
-        firstLink!.isEmpty ||
-        !firstLink!.startsWith('http')) {
+    firstLink = getFirstLink(text: text);
+    if (firstLink == null || firstLink!.isEmpty || !firstLink!.startsWith('http')) {
       return;
     }
     html = await getUrlContent();
@@ -53,10 +49,7 @@ class UrlPreviewModel {
   }
 
   bool get hasData {
-    if (firstLink == null ||
-        firstLink!.isEmpty ||
-        html == null ||
-        html!.isEmpty) {
+    if (firstLink == null || firstLink!.isEmpty || html == null || html!.isEmpty) {
       return false;
     } else {
       return true;
@@ -68,8 +61,7 @@ class UrlPreviewModel {
 
     siteName = getOGTag(doc, 'og:site_name');
     title = getOGTag(doc, 'og:title') ?? getTag(doc, 'title');
-    description =
-        getOGTag(doc, 'og:description') ?? getMeta(doc, 'description');
+    description = getOGTag(doc, 'og:description') ?? getMeta(doc, 'description');
     image = getOGTag(doc, 'og:image');
   }
 
@@ -107,9 +99,9 @@ class UrlPreviewModel {
   /// Attempts to extract link from a string.
   ///
   /// If no link is found, then return null.
-  String? getFirstLink() {
+  String? getFirstLink({required String text}) {
     List<LinkifyElement> elements = linkify(
-      text!,
+      text,
       options: const LinkifyOptions(
         humanize: false,
       ),
@@ -126,26 +118,10 @@ class UrlPreviewModel {
   /// Get the content of the URL.
   ///
   Future<String> getUrlContent() async {
-    final md5Key = md5.convert(firstLink!.codeUnits).toString();
-
-    // Obtain shared preferences.
-    final prefs = await SharedPreferences.getInstance();
-    String? html = prefs.getString(md5Key);
-    if (html != null) {
-      return html;
-    }
-
-    final response = await get(Uri.parse(firstLink!));
-
-    final contentType = response.headers['content-type'];
-    if (contentType == null || !contentType.contains('text/html')) {
-      return Future.value('');
-    }
-
-    html = response.body;
-    // Save an String value to 'action' key.
-    await prefs.setString(md5Key, html);
-    return Future.value(html);
+    final dio = Dio();
+    Response response;
+    response = await dio.post(firstLink!);
+    return response.data.toString();
   }
 
   @override

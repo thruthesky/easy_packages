@@ -57,6 +57,8 @@ class Post {
   /// The database reference of current post
   DatabaseReference get ref => postRef(id);
 
+  String get categoryId => (category.split('-')..removeLast()).join('-');
+
   /// get the first image url
   String? get imageUrl => urls.isNotEmpty ? urls.first : null;
 
@@ -104,10 +106,12 @@ class Post {
       subtitle: json[field.subtitle] ?? '',
       content: json[field.content] ?? '',
       uid: json[field.uid],
-      createdAt:
-          json[field.createdAt] is int ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt]) : DateTime.now(),
-      updateAt:
-          json[field.updateAt] is int ? DateTime.fromMillisecondsSinceEpoch(json[field.updateAt]) : DateTime.now(),
+      createdAt: json[field.createdAt] is int
+          ? DateTime.fromMillisecondsSinceEpoch(json[field.createdAt])
+          : DateTime.now(),
+      updateAt: json[field.updateAt] is int
+          ? DateTime.fromMillisecondsSinceEpoch(json[field.updateAt])
+          : DateTime.now(),
 
       /// youtubeUrl never be null. But just in case, it put empty string as default.
       youtubeUrl: json[field.youtubeUrl] ?? '',
@@ -256,7 +260,8 @@ class Post {
     await ref.update(
       {
         ...data,
-        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl) field.youtube: await getYoutubeSnippet(youtubeUrl),
+        if (youtubeUrl != null && this.youtubeUrl != youtubeUrl)
+          field.youtube: await getYoutubeSnippet(youtubeUrl),
         field.updateAt: ServerValue.timestamp,
         ...?extra,
       },

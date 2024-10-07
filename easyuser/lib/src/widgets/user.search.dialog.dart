@@ -93,7 +93,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                 ),
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search user'.t,
+                    hintText: 'search user'.t,
                     suffixIcon: IconButton(
                       onPressed: onSubmit,
                       icon: const Icon(Icons.send),
@@ -117,7 +117,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                           SizedBox(
                             height: 224,
                             child: Center(
-                              child: Text('No User found'.t),
+                              child: Text('no user found'.t),
                             ),
                           ),
                       itemBuilder: (user, index) =>
@@ -133,7 +133,7 @@ class _UserSearchDialogState extends State<UserSearchDialog> {
                       SizedBox(
                         height: 224,
                         child: Center(
-                          child: Text('Search user description'.t),
+                          child: Text('search user description'.t),
                         ),
                       ),
                 }

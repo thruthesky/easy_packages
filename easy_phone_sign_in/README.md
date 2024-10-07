@@ -15,6 +15,11 @@ This Flutter package is designed to streamline the integration of Google's phone
 - And do the setup as stated in [Firebase Phone Authentication Setup](https://firebase.google.com/docs/auth/flutter/phone-auth#setup)
 
 
+## Debug
+
+- If `debug` is set to true in the `PhoneSignIn` widget, the widget will display the debug messages in the console. This is useful for debugging purposes.
+
+
 ## Phone number input
 
 If the user's phone number starts with '+', the phone number entered by the user is recognized as an international phone number format. And the app will ignore the selected country information, and the user will log in with the phone number they entered.

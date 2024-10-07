@@ -117,10 +117,17 @@ class _UserUpdateAvatarState extends State<UserUpdateAvatar> {
                       /// Delete exisiting photo. Continue to delete evenif the photo does not exist.
                       final re = await confirm(
                           context: context,
-                          title: Text('Delete Avatar?'.t),
-                          message: Text('Are you sure you wanted to delete this avatar?'.t));
-                      if (re == false) return;
-                      await StorageService.instance.delete(my.photoUrl);
+                          title: Text('delete avatar?'.t),
+                          message: Text('are you sure you wanted to delete this avatar?'.t));
+                      if (re != true) return;
+                      try {
+                        // To still proceed on deleting the field even if there is an error here.
+                        //
+                        await StorageService.instance.delete(my.photoUrl);
+                      } catch (e) {
+                        dog("Error deleting. The file might not exist, or the url is not valid. Error: $e");
+                        if (!e.toString().contains("ensure it's a valid storage url")) rethrow;
+                      }
                       await my.deleteFields([User.field.photoUrl]);
                     },
                     padding: EdgeInsets.zero,

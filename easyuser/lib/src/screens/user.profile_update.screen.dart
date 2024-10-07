@@ -62,7 +62,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Update Profile'.t),
+          title: Text('update profile'.t),
         ),
         body: UserService.instance.registered == false
             ? Center(child: Text('sign-in first'.t))
@@ -147,7 +147,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                         controller: stateMessageController,
                       ),
                       const SizedBox(height: 24),
-                      Text('State Photo'.t),
+                      Text('state photo'.t),
                       ValueListenableBuilder(
                         valueListenable: statePhotoUploadProgress,
                         builder: (context, v, child) {
@@ -202,7 +202,7 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                           children: [
                             const Icon(Icons.camera_alt),
                             const SizedBox(width: 8),
-                            Text('Upload State Photo'.t),
+                            Text('upload state photo'.t),
                           ],
                         ),
                         progress: (v) => statePhotoUploadProgress.value = v,
@@ -230,10 +230,10 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                               );
                               toast(
                                 context: context,
-                                message: Text('Profile Updated Successfully'.t),
+                                message: Text('profile updated successfully'.t),
                               );
                             },
-                            child: Text('Update'.t),
+                            child: Text('update'.t),
                           ),
                         ),
                       ),

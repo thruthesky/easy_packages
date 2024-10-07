@@ -486,8 +486,10 @@ final localeTexts = <String, Map<String, dynamic>>{
   // protocols ----------------
 
   'protocol.invitationNotSent': {
-    'en': 'Invitation has NOT been sent.',
-    'ko': '친구 초대가 전송되지 않았습니다.',
+    // 'en': 'Invitation has NOT been sent.',
+    'en': 'To send an invitation, you must send your first message.',
+    // 'ko': '친구 초대가 전송되지 않았습니다.',
+    'ko': '친구 초대를 전송하려면 첫 번째 메시지를 보내야 합니다',
   },
   'protocol.join': {
     'en': '{displayName} joined the chat room',

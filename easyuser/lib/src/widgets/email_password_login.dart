@@ -55,7 +55,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
-              label: Text('emAIL'.t),
+              label: Text('email'.t),
               prefixIcon: const Icon(
                 Icons.email,
               ),
@@ -129,7 +129,7 @@ class _EmailPasswordLoginState extends State<EmailPasswordLogin> {
                     }
                   }
                 },
-                child: Text('Link Account'.t),
+                child: Text('link account'.t),
               )
             ],
           ),
