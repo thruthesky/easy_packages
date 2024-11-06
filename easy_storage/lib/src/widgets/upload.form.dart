@@ -61,6 +61,7 @@ class _UploadFormState extends State<UploadForm> {
               complete: () => setState(
                 () => uploadProgress = null,
               ),
+              onBeginUpload: null,
             ),
             const Spacer(),
             widget.button,

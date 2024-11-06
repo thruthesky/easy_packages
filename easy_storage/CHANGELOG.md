@@ -1,3 +1,6 @@
+## 0.0.20
+* Adding `onBeginUpload` on `UploadIconImage.xxxx`
+
 ## 0.0.19
 * Refactor. bump to 19
 
