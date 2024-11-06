@@ -34,6 +34,11 @@
   - `user-phone-sign-in-numbers/<phoneNumber>`: is a phone number that a user used to sign in.
     - `user-phone-sign-in-numbers/<phoneNumber>/lastSignedInAt`: is the milliseconds when the user used the phone number.
 
+## Admins
+
+To be an Admin, the user must:
+1. have his/her uid listed in the `admins/` ref.
+2. have `admin:true` in his users field; `users/<uid>/admin:true`.
 
 
 

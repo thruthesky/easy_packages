@@ -34,13 +34,13 @@ class ValueListView extends StatelessWidget {
       pageSize: pageSize,
       reverseQuery: reverseQuery,
       builder: (context, snapshot, _) {
-        if (snapshot.isFetching && snapshot.hasData == false) {
-          return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
-        }
-
         if (snapshot.hasError) {
           return errorBuilder?.call(snapshot.error.toString()) ??
               Center(child: Text('Something went wrong! ${snapshot.error}'));
+        }
+
+        if (snapshot.isFetching && snapshot.hasData == false) {
+          return loadingBuilder?.call() ?? const Center(child: CircularProgressIndicator.adaptive());
         }
 
         if (snapshot.hasData && snapshot.docs.isEmpty && !snapshot.hasMore) {
