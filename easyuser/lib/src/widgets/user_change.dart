@@ -12,6 +12,8 @@ class UserChange extends StatelessWidget {
   /// [builder] is the UI builder callback that will be called when the user's
   /// authentication state changes.
   ///
+  /// *IMPORTANT: It doesn't rebuild on FirebaseAuth.instance.signInAnonymously
+  ///
   const UserChange({super.key, required this.builder});
 
   final Widget Function(User?) builder;
@@ -26,8 +28,7 @@ class UserChange extends StatelessWidget {
       /// but other changes like when the user auth change or link credential
       stream: FirebaseAuth.instance.userChanges(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.hasData == false) {
+        if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
           return const Center(
             child: CircularProgressIndicator(),
           );

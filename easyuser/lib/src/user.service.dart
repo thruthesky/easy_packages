@@ -155,17 +155,19 @@ class UserService {
         /// update the user document. And this will lead [MyDoc] to be rebuild.
         ///
         /// Refer README.md for more details.
-        try {
-          // If there is cache, use it.
-          final databaseEvent = await signedInUserRef.once();
-          if (!databaseEvent.snapshot.exists) throw "User not cached!";
-          user = User.fromDatabaseSnapshot(databaseEvent.snapshot);
-          changes.add(user);
-        } catch (e) {
-          // If there is no cache, use the uid.
-          user = User.fromUid(faUser.uid);
-          changes.add(user);
-        }
+        // try {
+        //   // If there is cache, use it.
+        //   final databaseEvent = await signedInUserRef.once();
+        //   if (!databaseEvent.snapshot.exists) throw "User not cached!";
+        //   user = User.fromDatabaseSnapshot(databaseEvent.snapshot);
+        //   changes.add(user);
+        // } catch (e) {
+        //   // If there is no cache, use the uid.
+        //   user = User.fromUid(faUser.uid);
+        //   changes.add(user);
+        // }
+
+        await loadUserData(faUser);
 
         /// User is anonymous
         dog('User signed in. The Firebase User is${faUser.isAnonymous ? ' ' : " NOT "}anonymous');
@@ -193,6 +195,26 @@ class UserService {
     });
   }
 
+  /// * Fire user document update immediately *
+  /// This is required for the case where the app(or device) has no
+  /// internet. This will trigger the [UserService.instance.changes] to
+  /// update the user document. And this will lead [MyDoc] to be rebuild.
+  ///
+  /// Refer README.md for more details.
+  loadUserData(fa.User? faUser) async {
+    try {
+      // If there is cache, use it.
+      final databaseEvent = await usersRef.child(faUser!.uid).once();
+      if (!databaseEvent.snapshot.exists) throw "User not cached!";
+      user = User.fromDatabaseSnapshot(databaseEvent.snapshot);
+      changes.add(user);
+    } catch (e) {
+      // If there is no cache, use the uid.
+      user = User.fromUid(faUser!.uid);
+      changes.add(user);
+    }
+  }
+
   /// Initialize anonymous sign in if the app is configured to do so.
   initAnonymousSignIn() async {
     if (enableAnonymousSignIn != true) return;
@@ -200,6 +222,7 @@ class UserService {
     if (user != null) return;
     dog('initAnonymousSignIn: sign in anonymously');
     await auth.signInAnonymously();
+    await loadUserData(currentUser);
   }
 
   /// Get my user document
