@@ -1,3 +1,6 @@
+## 0.0.28
+* Document update.
+
 ## 0.0.27
 * Refactor. move the code base to `easy_packages`.
 

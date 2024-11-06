@@ -1,6 +1,6 @@
 name: easy_design_system
 description: "Elegant and easy-to-use UI/UX design library for Flutter, crafted to enhance your app's aesthetics and user experience."
-version: 0.0.27
+version: 0.0.28
 homepage: https://github.com/thruthesky/easy_packages/
 environment:
   sdk: ">=3.3.3 <4.0.0"
