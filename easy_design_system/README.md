@@ -6,7 +6,7 @@ And again, ***there is nothing to learn.*** Just install the package and apply t
 
 ## Getting started
 
-To learn more, please visit the [Easy Design System document website](https://thruthesky.github.io/easy_design_system/).
+To learn more, please visit the [Easy Design System document website](https://thruthesky.github.io/easy_design_system_backup_2024_09_24/).
 
 ## Entry Screens
 
@@ -62,7 +62,7 @@ const ComicTheme(
 ),
 ```
 
-For more details, please visit the [Easy Design System document website](https://thruthesky.github.io/easy_design_system/)
+For more details, please visit the [Easy Design System document website](https://thruthesky.github.io/easy_design_system_backup_2024_09_24/)
 
 ## Things to learn
 
