@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 /// Displays a card style UI for uploading an image. It displays a circle
 /// image, title, and subtitle.
 ///
+///
 /// [ref] is the RTDB reference of the field.
 ///
 /// If the [ref] and [field] are provided, the uploaded image will be saved to
@@ -26,6 +27,10 @@ import 'package:flutter/material.dart';
 /// [imageBuilder] is a builder to build image widget. If the image widget is
 /// not circle, the [progressBar] and [progressIndicatorBackdrop] should be
 /// set to false for bettter UI.
+///
+/// Usages:
+/// - This is good for uploading profile images on user profile update screen.
+/// - You can customize the UI better han the ones with `UploadIconButton.xxxx`.
 class ImageUploadCard extends StatefulWidget {
   const ImageUploadCard({
     super.key,

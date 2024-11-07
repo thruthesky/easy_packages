@@ -69,26 +69,47 @@ packages:
     dependency: transitive
     description:
       name: cloud_functions
+<<<<<<< HEAD
       sha256: b64cea501f14380e9cc59c917e92a7ec1f84e1d2a1307b3171271a68dc4d944c
       url: "https://pub.dev"
     source: hosted
     version: "5.1.3"
+=======
+      sha256: "225447ae732d01aacc5238f2b6ecea0550d91dbee72924bbbbb17fea70a2ec70"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.2"
+>>>>>>> firestore-to-database
   cloud_functions_platform_interface:
     dependency: transitive
     description:
       name: cloud_functions_platform_interface
+<<<<<<< HEAD
       sha256: af1f061095fb96a0e139e6b8d6b8b8dde7e54dd09d63a60f93f6d81ff81f4da3
       url: "https://pub.dev"
     source: hosted
     version: "5.5.37"
+=======
+      sha256: "0a624fe8a25db0bbc00bf6aece8db843b3af835d16559d3872f3f6021bd7ad35"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.36"
+>>>>>>> firestore-to-database
   cloud_functions_web:
     dependency: transitive
     description:
       name: cloud_functions_web
+<<<<<<< HEAD
       sha256: fa69599007837601870efb2ca18dace55298842357ecda304c9a241917135cbc
       url: "https://pub.dev"
     source: hosted
     version: "4.10.2"
+=======
+      sha256: ea5903f58ec62efc3c0c9ec2db0e316d7288bc3eaa30ec88e5e90bf822a4e0cb
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.10.1"
+>>>>>>> firestore-to-database
   collection:
     dependency: transitive
     description:
@@ -165,10 +186,17 @@ packages:
     dependency: transitive
     description:
       name: easy_realtime_database
+<<<<<<< HEAD
       sha256: eede83fc4d48a5020c4659a43d3652d46f0655defae7b2436eecc1300a4dabc6
       url: "https://pub.dev"
     source: hosted
     version: "0.0.10"
+=======
+      sha256: abaddad7204419f565b2a01ef8f86d2a2857c7ad2651264a253d9a3cb546f175
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
+>>>>>>> firestore-to-database
   easy_report:
     dependency: "direct main"
     description:
@@ -708,10 +736,17 @@ packages:
     dependency: transitive
     description:
       name: sqflite_common
+<<<<<<< HEAD
       sha256: "2d8e607db72e9cb7748c9c6e739e2c9618320a5517de693d5a24609c4671b1a4"
       url: "https://pub.dev"
     source: hosted
     version: "2.5.4+4"
+=======
+      sha256: "4058172e418eb7e7f2058dcb7657d451a8fc264afa0dea4dbd0f304a57131611"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.4+3"
+>>>>>>> firestore-to-database
   stack_trace:
     dependency: transitive
     description:

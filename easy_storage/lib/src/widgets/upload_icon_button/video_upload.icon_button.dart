@@ -47,6 +47,7 @@ class VideoUploadIconButton extends StatelessWidget {
       videoGallery: gallery,
       progress: progress,
       complete: complete,
+      onBeginUpload: null,
       icon: icon,
       iconSize: iconSize,
       visualDensity: visualDensity,

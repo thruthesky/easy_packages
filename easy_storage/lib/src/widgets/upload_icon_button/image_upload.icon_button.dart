@@ -51,6 +51,7 @@ class ImageUploadIconButton extends StatelessWidget {
       fromFile: false,
       progress: progress,
       complete: complete,
+      onBeginUpload: null,
       icon: icon,
       iconSize: iconSize,
       visualDensity: visualDensity,

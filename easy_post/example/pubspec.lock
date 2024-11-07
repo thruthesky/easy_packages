@@ -196,10 +196,17 @@ packages:
     dependency: transitive
     description:
       name: easy_realtime_database
+<<<<<<< HEAD
       sha256: eede83fc4d48a5020c4659a43d3652d46f0655defae7b2436eecc1300a4dabc6
       url: "https://pub.dev"
     source: hosted
     version: "0.0.10"
+=======
+      sha256: abaddad7204419f565b2a01ef8f86d2a2857c7ad2651264a253d9a3cb546f175
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
+>>>>>>> firestore-to-database
   easy_report:
     dependency: transitive
     description:
@@ -432,18 +439,32 @@ packages:
     dependency: transitive
     description:
       name: flutter_inappwebview
+<<<<<<< HEAD
       sha256: "274edbb07196944e316722d9f6f641c77d0e71261200869887e10f59614c0458"
       url: "https://pub.dev"
     source: hosted
     version: "6.1.3"
+=======
+      sha256: f918b6d8ec1e988f72bdbd65b7317dbdf626ce8b7c00dd93c271e030ff66218f
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.1"
+>>>>>>> firestore-to-database
   flutter_inappwebview_android:
     dependency: transitive
     description:
       name: flutter_inappwebview_android
+<<<<<<< HEAD
       sha256: f48203a11c5eb0c23dd5a3cb3638ae678056b6ceae22819373e36c6cb4f1d46a
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+=======
+      sha256: "94690a226193bb8ee0648c69a1cd8f1e3c6466cfb1b8dd813c1bb1a498343f3b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0+3"
+>>>>>>> firestore-to-database
   flutter_inappwebview_internal_annotations:
     dependency: transitive
     description:
@@ -465,34 +486,62 @@ packages:
     dependency: transitive
     description:
       name: flutter_inappwebview_macos
+<<<<<<< HEAD
       sha256: "68e0c3785d8d789710cda7d7efe6effa337c91bf300dd28af7efc2d358fa1a98"
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+=======
+      sha256: "6b6d4ebfaaf0559ea65e53969f6011a6fad5eba8bd01346132cf9b6fce6c3780"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0+2"
+>>>>>>> firestore-to-database
   flutter_inappwebview_platform_interface:
     dependency: transitive
     description:
       name: flutter_inappwebview_platform_interface
+<<<<<<< HEAD
       sha256: "97b4ab116d949ede20c90c7e3d15d24afaf1b706cc0af96b060770293cd6c49d"
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+=======
+      sha256: "685b82b62c7704275e10781273bf87b4abfc086a3b83c7ef20ebc679ee551c43"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0+1"
+>>>>>>> firestore-to-database
   flutter_inappwebview_web:
     dependency: transitive
     description:
       name: flutter_inappwebview_web
+<<<<<<< HEAD
       sha256: f7f97b6faa39416e4e86da1184edd4de6c27b271d036f0838ea3ff9a250a1de2
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+=======
+      sha256: e0f4418493ba55d7f905de530d2abb22281e4e98d867cda3aba90005cf9546d5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0+1"
+>>>>>>> firestore-to-database
   flutter_inappwebview_windows:
     dependency: transitive
     description:
       name: flutter_inappwebview_windows
+<<<<<<< HEAD
       sha256: "86702d2109384311f8ea634855e90ee143b9bfabddd3858696d905a2c28808aa"
       url: "https://pub.dev"
     source: hosted
     version: "0.4.0"
+=======
+      sha256: "583f7b2b050cf0f14f4f4b326f0829c81f0fcae37e408085b9a765ce8f8e6b14"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
+>>>>>>> firestore-to-database
   flutter_lints:
     dependency: "direct overridden"
     description:

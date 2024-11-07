@@ -16,6 +16,10 @@ import 'package:flutter/material.dart';
 ///
 /// The [onUpload] function is called when the upload is complete.
 ///
+/// [onBeginUpload] is called before the upload starts. If it's null, then it will continue uploading;
+/// If it's not null and If it returns false, the upload will not start.
+///
+///
 /// If [photoGallery] is set to true, it will get only photos from gallery.
 ///
 /// If [videoGallery] is set to true, it will get only videos from gallery.
@@ -42,6 +46,7 @@ class UploadIconButton extends StatelessWidget {
     this.fromFile = true,
     this.progress,
     this.complete,
+    this.onBeginUpload,
     this.icon = const Icon(Icons.add),
     this.iconSize,
     this.visualDensity,
@@ -56,6 +61,7 @@ class UploadIconButton extends StatelessWidget {
   final Widget icon;
   final Function(double)? progress;
   final Function()? complete;
+  final Future Function()? onBeginUpload;
   final VisualDensity? visualDensity;
 
   final bool photoCamera;
@@ -81,6 +87,7 @@ class UploadIconButton extends StatelessWidget {
     this.photoGallery = true,
     this.progress,
     this.complete,
+    this.onBeginUpload,
     this.icon = const Icon(Icons.camera_alt),
     this.iconSize,
     this.visualDensity,
@@ -101,6 +108,7 @@ class UploadIconButton extends StatelessWidget {
     this.videoGallery = true,
     this.progress,
     this.complete,
+    this.onBeginUpload,
     this.icon = const Icon(Icons.videocam),
     this.iconSize,
     this.visualDensity,
@@ -121,6 +129,7 @@ class UploadIconButton extends StatelessWidget {
     this.fromFile = true,
     this.progress,
     this.complete,
+    this.onBeginUpload,
     this.icon = const Icon(Icons.attach_file),
     this.iconSize,
     this.visualDensity,
@@ -140,22 +149,30 @@ class UploadIconButton extends StatelessWidget {
       visualDensity: visualDensity,
       padding: iconPadding,
       onPressed: () async {
-        final uploadedUrl = await StorageService.instance.upload(
-          context: context,
-          photoGallery: photoGallery,
-          photoCamera: photoCamera,
-          videoGallery: videoGallery,
-          videoCamera: videoCamera,
-          fromGallery: fromGallery,
-          fromFile: fromFile,
-          progress: progress,
-          complete: complete,
-          spacing: uploadBottomSheetSpacing,
-          padding: uploadBottomSheetPadding,
-          onUploadSourceSelected: onUploadSourceSelected,
-        );
-        if (uploadedUrl != null) {
-          onUpload.call(uploadedUrl);
+        if (onBeginUpload != null) {
+          final re = await onBeginUpload!.call();
+          if (re == false) {
+            return;
+          }
+        }
+        if (context.mounted) {
+          final uploadedUrl = await StorageService.instance.upload(
+            context: context,
+            photoGallery: photoGallery,
+            photoCamera: photoCamera,
+            videoGallery: videoGallery,
+            videoCamera: videoCamera,
+            fromGallery: fromGallery,
+            fromFile: fromFile,
+            progress: progress,
+            complete: complete,
+            spacing: uploadBottomSheetSpacing,
+            padding: uploadBottomSheetPadding,
+            onUploadSourceSelected: onUploadSourceSelected,
+          );
+          if (uploadedUrl != null) {
+            onUpload.call(uploadedUrl);
+          }
         }
       },
     );

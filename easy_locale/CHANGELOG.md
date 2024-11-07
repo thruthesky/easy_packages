@@ -1,3 +1,6 @@
+## 0.0.12
+* Document updates
+
 ## 0.0.11
 * Fix. `key` in `merge`.
 

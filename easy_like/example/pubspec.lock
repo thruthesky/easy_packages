@@ -68,10 +68,17 @@ packages:
     dependency: transitive
     description:
       name: easy_realtime_database
+<<<<<<< HEAD
       sha256: eede83fc4d48a5020c4659a43d3652d46f0655defae7b2436eecc1300a4dabc6
       url: "https://pub.dev"
     source: hosted
     version: "0.0.10"
+=======
+      sha256: abaddad7204419f565b2a01ef8f86d2a2857c7ad2651264a253d9a3cb546f175
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
+>>>>>>> firestore-to-database
   fake_async:
     dependency: transitive
     description:
@@ -151,7 +158,12 @@ packages:
       sha256: daf3fbde892ff5f2ea7469eff1ab22b7988fe96b637919fdec6890141eb51023
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "0.2.6+2"
+=======
+    version: "0.2.6+1"
+<<<<<<< HEAD
+>>>>>>> firestore-to-database
   firebase_ui_database:
     dependency: transitive
     description:
@@ -168,6 +180,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> umain
+>>>>>>> firestore-to-database
   flutter:
     dependency: "direct main"
     description: flutter

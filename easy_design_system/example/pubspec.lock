@@ -5,10 +5,14 @@ packages:
     dependency: transitive
     description:
       name: args
-      sha256: "7cf60b9f0cc88203c5a190b4cd62a99feea42759a7fa695010eb5de1c0b2252a"
+      sha256: bf9f5caeea8d8fe6721a9c358dd8a5c1947b27f1cfaa18b39c301273594919e6
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "2.5.0"
+=======
+    version: "2.6.0"
+>>>>>>> firestore-to-database
   async:
     dependency: transitive
     description:
@@ -77,10 +81,17 @@ packages:
     dependency: transitive
     description:
       name: crypto
+<<<<<<< HEAD
       sha256: ec30d999af904f33454ba22ed9a86162b35e52b44ac4807d1d93c288041d7d27
       url: "https://pub.dev"
     source: hosted
     version: "3.0.5"
+=======
+      sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.6"
+>>>>>>> firestore-to-database
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -124,18 +135,22 @@ packages:
     dependency: transitive
     description:
       name: file
-      sha256: "5fc22d7c25582e38ad9a8515372cd9a93834027aacf1801cf01164dac0ffa08c"
+      sha256: a3b4f84adafef897088c160faf7dfffb7696046cb13ae90b508c2cbc95d3b8d4
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "7.0.0"
+=======
+    version: "7.0.1"
+>>>>>>> firestore-to-database
   fixnum:
     dependency: transitive
     description:
       name: fixnum
-      sha256: "25517a4deb0c03aa0f32fd12db525856438902d9c16536311e76cdc57b31d7d1"
+      sha256: b6dc7065e46c974bc7c5f143080a6764ec7a4be6da1285ececdc37be96de53be
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -299,18 +314,25 @@ packages:
     dependency: transitive
     description:
       name: path_provider
-      sha256: fec0d61223fba3154d87759e3cc27fe2c8dc498f6386c6d6fc80d1afdd1bf378
+      sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.5"
   path_provider_android:
     dependency: transitive
     description:
       name: path_provider_android
+<<<<<<< HEAD
       sha256: "6f01f8e37ec30b07bc424b4deabac37cacb1bc7e2e515ad74486039918a37eb7"
       url: "https://pub.dev"
     source: hosted
     version: "2.2.10"
+=======
+      sha256: c464428172cb986b758c6d1724c603097febb8fb855aa265aeecc9280c294d4a
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.12"
+>>>>>>> firestore-to-database
   path_provider_foundation:
     dependency: transitive
     description:
@@ -347,10 +369,10 @@ packages:
     dependency: transitive
     description:
       name: platform
-      sha256: "9b71283fc13df574056616011fb138fd3b793ea47cc509c189a6c3fa5f8a1a65"
+      sha256: "5d6b1b0036a5f331ebc77c850ebc8506cbc1e9416c27e59b439f917a902a4984"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.5"
+    version: "3.1.6"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -408,18 +430,56 @@ packages:
     dependency: transitive
     description:
       name: sqflite
+<<<<<<< HEAD
       sha256: ff5a2436ef8ebdfda748fbfe957f9981524cb5ff11e7bafa8c42771840e8a788
       url: "https://pub.dev"
     source: hosted
     version: "2.3.3+2"
+=======
+      sha256: "79a297dc3cc137e758c6a4baf83342b039e5a6d2436fcdf3f96a00adaaf2ad62"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
+  sqflite_android:
+    dependency: transitive
+    description:
+      name: sqflite_android
+      sha256: "78f489aab276260cdd26676d2169446c7ecd3484bbd5fead4ca14f3ed4dd9ee3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
+>>>>>>> firestore-to-database
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
+<<<<<<< HEAD
       sha256: "2d8e607db72e9cb7748c9c6e739e2c9618320a5517de693d5a24609c4671b1a4"
       url: "https://pub.dev"
     source: hosted
     version: "2.5.4+4"
+=======
+      sha256: "4468b24876d673418a7b7147e5a08a715b4998a7ae69227acafaab762e0e5490"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.4+5"
+  sqflite_darwin:
+    dependency: transitive
+    description:
+      name: sqflite_darwin
+      sha256: "769733dddf94622d5541c73e4ddc6aa7b252d865285914b6fcd54a63c4b4f027"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1-1"
+  sqflite_platform_interface:
+    dependency: transitive
+    description:
+      name: sqflite_platform_interface
+      sha256: "8dd4515c7bdcae0a785b0062859336de775e8c65db81ae33dd5445f35be61920"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
+>>>>>>> firestore-to-database
   stack_trace:
     dependency: transitive
     description:
@@ -472,26 +532,33 @@ packages:
     dependency: transitive
     description:
       name: typed_data
-      sha256: facc8d6582f16042dd49f2463ff1bd6e2c9ef9f3d5da3d9b087e244a7b564b3c
+      sha256: f9049c039ebfeb4cf7a7104a675823cd72dba8297f264b6637062516699fa006
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.2"
+    version: "1.4.0"
   url_launcher:
     dependency: transitive
     description:
       name: url_launcher
-      sha256: "21b704ce5fa560ea9f3b525b43601c678728ba46725bab9b01187b4831377ed3"
+      sha256: "9d06212b1362abc2f0f0d78e6f09f726608c74e3b9462e8368bb03314aa8d603"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.0"
+    version: "6.3.1"
   url_launcher_android:
     dependency: transitive
     description:
       name: url_launcher_android
+<<<<<<< HEAD
       sha256: e35a698ac302dd68e41f73250bd9517fe3ab5fa4f18fe4647a0872db61bacbab
       url: "https://pub.dev"
     source: hosted
     version: "6.3.10"
+=======
+      sha256: "6fc2f56536ee873eeb867ad176ae15f304ccccc357848b351f6f0d8d4a40d193"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.3.14"
+>>>>>>> firestore-to-database
   url_launcher_ios:
     dependency: transitive
     description:
@@ -536,10 +603,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_windows
-      sha256: "49c10f879746271804767cb45551ec5592cdab00ee105c06dddde1a98f73b185"
+      sha256: "44cf3aabcedde30f2dba119a9dea3b0f2672fbe6fa96e85536251d678216b3c4"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
   uuid:
     dependency: transitive
     description:
@@ -584,10 +651,10 @@ packages:
     dependency: transitive
     description:
       name: xdg_directories
-      sha256: faea9dee56b520b55a566385b84f2e8de55e7496104adada9962e0bd11bcff1d
+      sha256: "7a3f37b05d989967cdddcbb571f1ea834867ae2faa29725fd085180e0883aa15"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.1.0"
 sdks:
   dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.24.0"

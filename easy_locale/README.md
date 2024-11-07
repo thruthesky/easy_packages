@@ -46,13 +46,13 @@ For reference, this `easy_locale` can be used together with other multilingual p
 - It is recommended to initialize before calling `runApp` in the `main()` function. If this is not possible, you can do it in the `initState` of the first page screen widget of the app.
 
 
-- By calling `init` as shown below, you can use the language settings of the phone (device). Depending on the situation, you may add the `await` keyword before `TranslationService.instance.init()`.
+- By calling `init` as shown below, you can use the language settings of the phone (device). Depending on the situation, you may add the `await` keyword before `LocaleService.instance.init()`.
 
 
 ```dart
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  TranslationService.instance.init();
+  LocaleService.instance.init();
   runApp(const MyApp());
 }
 ```
@@ -61,7 +61,7 @@ void main() async {
 
 
 ```dart
-TranslationService.instance.init(
+LocaleService.instance.init(
     deviceLocale: true,
     defaultLocale: 'ko',
     fallbackLocale: 'en',
@@ -76,9 +76,6 @@ If `deviceLocale` is set to false, the `defaultLanguage` will be used. In other 
 If a translated string cannot be found in the multilingual settings, it will look for a translated string in the language specified by `fallbackLocale` and use it if found. The default value is `en`.
 
 If `useKeyAsDefaultText` is true, it means using the language code (key) as is when a translated string cannot be found. If this value is false, the language code (key) will be used with `.t` appended to the end and displayed on the screen.
-
-
-
 
 
 ## How to use
@@ -128,10 +125,10 @@ applyChatLocales() async {
 If you are developing an app, you should create a text translation file somewhere in the app project, and apply it to `easy_local`'s text object by calling `lo.set()`.
 
 
-By using `TranslationService.instance.set()`, you can change existing translation strings to something else or add new ones if they do not already exist. Therefore, you can use the in-house multilingual feature to translate the strings used in the app.
+By using `LocaleService.instance.set()`, you can change existing translation strings to something else or add new ones if they do not already exist. Therefore, you can use the in-house multilingual feature to translate the strings used in the app.
 
 ```dart
-TranslationService.instance.set(
+LocaleService.instance.set(
   key: 'hello',
   locale: 'en',
   value: 'Hello',
@@ -251,7 +248,7 @@ final localeTexts = {
 Example:
 
 ```dart
-TranslationService.instance.set(
+LocaleService.instance.set(
   key: 'apple',
   locale: 'en',
   value: {

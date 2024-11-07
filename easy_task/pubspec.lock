@@ -5,10 +5,24 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
+<<<<<<< HEAD
       sha256: "5534e701a2c505fed1f0799e652dd6ae23bd4d2c4cf797220e5ced5764a7c1c2"
       url: "https://pub.dev"
     source: hosted
     version: "1.3.44"
+=======
+<<<<<<< HEAD
+      sha256: "5534e701a2c505fed1f0799e652dd6ae23bd4d2c4cf797220e5ced5764a7c1c2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.44"
+=======
+      sha256: "5fdcea390499dd26c808a3c662df5f4208d6bbc0643072eee94f1476249e2818"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.43"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   async:
     dependency: transitive
     description:
@@ -69,50 +83,134 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_firestore
+<<<<<<< HEAD
       sha256: a08d0f4aae40e63e7a57102de890d5d3c93d719ce38985b2a36c2672283af7d2
       url: "https://pub.dev"
     source: hosted
     version: "5.4.3"
+=======
+<<<<<<< HEAD
+      sha256: a08d0f4aae40e63e7a57102de890d5d3c93d719ce38985b2a36c2672283af7d2
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.3"
+=======
+      sha256: "55872d611344977cd8ca657a4fb8ebf9f58298b791a3f34d979982b09a17ce38"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.2"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
       name: cloud_firestore_platform_interface
+<<<<<<< HEAD
       sha256: "884fa34c6be2d9c7c1f4af86f90f36c0a3b3afef585a12b350a5d15368e7ec7a"
       url: "https://pub.dev"
     source: hosted
     version: "6.4.3"
+=======
+<<<<<<< HEAD
+      sha256: "884fa34c6be2d9c7c1f4af86f90f36c0a3b3afef585a12b350a5d15368e7ec7a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.4.3"
+=======
+      sha256: e9a095429f94ecb774302bac88e62a80f46047a532005bdd580b5addc19956e3
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.4.2"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
+<<<<<<< HEAD
       sha256: "6e621bbcc999f32db0bc6bfcb18d9991617ec20f8d6bf51b6a1571f5c324fafd"
       url: "https://pub.dev"
     source: hosted
     version: "4.3.2"
+=======
+<<<<<<< HEAD
+      sha256: "6e621bbcc999f32db0bc6bfcb18d9991617ec20f8d6bf51b6a1571f5c324fafd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.2"
+=======
+      sha256: "6caa18235bf2641ac9457e7620adf0e65d7469596af1e3b4db76481e2bb66166"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.1"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   cloud_functions:
     dependency: transitive
     description:
       name: cloud_functions
+<<<<<<< HEAD
       sha256: b64cea501f14380e9cc59c917e92a7ec1f84e1d2a1307b3171271a68dc4d944c
       url: "https://pub.dev"
     source: hosted
     version: "5.1.3"
+=======
+<<<<<<< HEAD
+      sha256: b64cea501f14380e9cc59c917e92a7ec1f84e1d2a1307b3171271a68dc4d944c
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.3"
+=======
+      sha256: "225447ae732d01aacc5238f2b6ecea0550d91dbee72924bbbbb17fea70a2ec70"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.2"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   cloud_functions_platform_interface:
     dependency: transitive
     description:
       name: cloud_functions_platform_interface
+<<<<<<< HEAD
       sha256: af1f061095fb96a0e139e6b8d6b8b8dde7e54dd09d63a60f93f6d81ff81f4da3
       url: "https://pub.dev"
     source: hosted
     version: "5.5.37"
+=======
+<<<<<<< HEAD
+      sha256: af1f061095fb96a0e139e6b8d6b8b8dde7e54dd09d63a60f93f6d81ff81f4da3
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.37"
+=======
+      sha256: "0a624fe8a25db0bbc00bf6aece8db843b3af835d16559d3872f3f6021bd7ad35"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.36"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   cloud_functions_web:
     dependency: transitive
     description:
       name: cloud_functions_web
+<<<<<<< HEAD
       sha256: fa69599007837601870efb2ca18dace55298842357ecda304c9a241917135cbc
       url: "https://pub.dev"
     source: hosted
     version: "4.10.2"
+=======
+<<<<<<< HEAD
+      sha256: fa69599007837601870efb2ca18dace55298842357ecda304c9a241917135cbc
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.10.2"
+=======
+      sha256: ea5903f58ec62efc3c0c9ec2db0e316d7288bc3eaa30ec88e5e90bf822a4e0cb
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.10.1"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   collection:
     dependency: transitive
     description:
@@ -189,10 +287,24 @@ packages:
     dependency: transitive
     description:
       name: easy_realtime_database
+<<<<<<< HEAD
       sha256: eede83fc4d48a5020c4659a43d3652d46f0655defae7b2436eecc1300a4dabc6
       url: "https://pub.dev"
     source: hosted
     version: "0.0.10"
+=======
+<<<<<<< HEAD
+      sha256: "775e1bdd2306ad8689d823b8885169b39e7402dd89a8f96d7eabb1be19582315"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
+=======
+      sha256: abaddad7204419f565b2a01ef8f86d2a2857c7ad2651264a253d9a3cb546f175
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   easy_report:
     dependency: transitive
     description:
@@ -285,34 +397,90 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_auth
+<<<<<<< HEAD
       sha256: d453acec0d958ba0e25d41a9901b32cb77d1535766903dea7a61b2788c304596
       url: "https://pub.dev"
     source: hosted
     version: "5.3.1"
+=======
+<<<<<<< HEAD
+      sha256: d453acec0d958ba0e25d41a9901b32cb77d1535766903dea7a61b2788c304596
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.3.1"
+=======
+      sha256: "16b0b70e837539b27d4cec059b5169eaf116af9deca896b923e9f84d83af9cc6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.3.0"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_auth_platform_interface:
     dependency: transitive
     description:
       name: firebase_auth_platform_interface
+<<<<<<< HEAD
       sha256: "78966c2ef774f5bf2a8381a307222867e9ece3509110500f7a138c115926aa65"
       url: "https://pub.dev"
     source: hosted
     version: "7.4.7"
+=======
+<<<<<<< HEAD
+      sha256: "78966c2ef774f5bf2a8381a307222867e9ece3509110500f7a138c115926aa65"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.4.7"
+=======
+      sha256: f1f32cdba3f5620082c63d18545dd58dde8f5ffc66caa43feb9b9fe57e93d4b6
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.4.6"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_auth_web:
     dependency: transitive
     description:
       name: firebase_auth_web
+<<<<<<< HEAD
       sha256: "77ad3b252badedd3f08dfa21a4c7fe244be96c6da3a4067f253b13ea5d32424c"
       url: "https://pub.dev"
     source: hosted
     version: "5.13.2"
+=======
+<<<<<<< HEAD
+      sha256: "77ad3b252badedd3f08dfa21a4c7fe244be96c6da3a4067f253b13ea5d32424c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.13.2"
+=======
+      sha256: "5731d0e51ef7aa93f9c421798b92b6961411c15c18adaff939a3c9f84e8e456b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.13.1"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_core:
     dependency: "direct main"
     description:
       name: firebase_core
+<<<<<<< HEAD
       sha256: "51dfe2fbf3a984787a2e7b8592f2f05c986bfedd6fdacea3f9e0a7beb334de96"
       url: "https://pub.dev"
     source: hosted
     version: "3.6.0"
+=======
+<<<<<<< HEAD
+      sha256: "51dfe2fbf3a984787a2e7b8592f2f05c986bfedd6fdacea3f9e0a7beb334de96"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.0"
+=======
+      sha256: c7de9354eb2cd8bfe8059e1112174c9a58beda7051807207306bc48283277cfb
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.5.0"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -333,50 +501,134 @@ packages:
     dependency: transitive
     description:
       name: firebase_database
+<<<<<<< HEAD
       sha256: "64f8076912139e83f3db3d853df5bffd4c6150a71ffef393584318efd4883f7c"
       url: "https://pub.dev"
     source: hosted
     version: "11.1.4"
+=======
+<<<<<<< HEAD
+      sha256: "64f8076912139e83f3db3d853df5bffd4c6150a71ffef393584318efd4883f7c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.1.4"
+=======
+      sha256: cb938384ee71e06eb403e98810ec0183f2b980234ff6b5c35eeb167393c466da
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.1.3"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_database_platform_interface:
     dependency: transitive
     description:
       name: firebase_database_platform_interface
+<<<<<<< HEAD
       sha256: "750e9076a41bc78ce87b95f9d0548f224e5b0679009f6236bf5cf98884db60dd"
       url: "https://pub.dev"
     source: hosted
     version: "0.2.5+44"
+=======
+<<<<<<< HEAD
+      sha256: "750e9076a41bc78ce87b95f9d0548f224e5b0679009f6236bf5cf98884db60dd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.5+44"
+=======
+      sha256: "5cd93d591887be775da71e3f4930b93cdcb2503f6bbb8a1df3d326dc4bfbf9bd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.5+43"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_database_web:
     dependency: transitive
     description:
       name: firebase_database_web
+<<<<<<< HEAD
       sha256: daf3fbde892ff5f2ea7469eff1ab22b7988fe96b637919fdec6890141eb51023
       url: "https://pub.dev"
     source: hosted
     version: "0.2.6+2"
+=======
+<<<<<<< HEAD
+      sha256: daf3fbde892ff5f2ea7469eff1ab22b7988fe96b637919fdec6890141eb51023
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.6+2"
+=======
+      sha256: fc0877403b37f31178741409fb79b93abf526e9c59db27ebcbb4b7678d9beb6a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.6+1"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_storage:
     dependency: "direct main"
     description:
       name: firebase_storage
+<<<<<<< HEAD
       sha256: "8a8a21f3a359129a1257e2e77ece1de9678f40e43876635b3d411388ee388729"
       url: "https://pub.dev"
     source: hosted
     version: "12.3.2"
+=======
+<<<<<<< HEAD
+      sha256: "8a8a21f3a359129a1257e2e77ece1de9678f40e43876635b3d411388ee388729"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.3.2"
+=======
+      sha256: "81a111623da3af66c90f8aae2dabc35d8fc78a497c14c66b6ac89be3b6dda264"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.3.1"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_storage_platform_interface:
     dependency: transitive
     description:
       name: firebase_storage_platform_interface
+<<<<<<< HEAD
       sha256: "462621bbdb5ab496518aa0f4785cb6db87763d5f1063aa228e1f65562937af1d"
       url: "https://pub.dev"
     source: hosted
     version: "5.1.31"
+=======
+<<<<<<< HEAD
+      sha256: "462621bbdb5ab496518aa0f4785cb6db87763d5f1063aa228e1f65562937af1d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.31"
+=======
+      sha256: "8c7e40e841b9ec664c81a873b91af049cba89dfdb4111adeb6ff1f6be8863457"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.30"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_storage_web:
     dependency: transitive
     description:
       name: firebase_storage_web
+<<<<<<< HEAD
       sha256: "40c52d5585ce63659b4b698fee0d47412ce499392ae3edf69c8e6141c22daf9a"
       url: "https://pub.dev"
     source: hosted
     version: "3.10.2"
+=======
+<<<<<<< HEAD
+      sha256: "40c52d5585ce63659b4b698fee0d47412ce499392ae3edf69c8e6141c22daf9a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.10.2"
+=======
+      sha256: "75a1497d012295549eeb5530985a7f63e7ee000bae3f6c815b01ef5fe85cee10"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.10.1"
+>>>>>>> 18268f4499247ca6d88a106af60224cededdfdf4
+>>>>>>> firestore-to-database
   firebase_ui_database:
     dependency: transitive
     description:
