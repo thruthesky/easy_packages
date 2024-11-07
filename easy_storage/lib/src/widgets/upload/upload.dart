@@ -1,9 +1,9 @@
 import 'package:easy_storage/easy_storage.dart';
 import 'package:flutter/material.dart';
 
-/// General Upload Icon Button
+/// General Upload Widget
 ///
-/// This widget is displaying an IconButton and is used to upload an image,
+/// This widget is displaying an child widget and is used to upload an image,
 /// video, or file.
 ///
 /// You can change the following `photoCamera,photoGallery,videoCamera,videoGallery,fromGallery,fromFile` upload source property
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 /// Or Simply use the following named constructor to:
 ///
 /// Upload specific types of files you can use the name constructor:
-/// [UploadIconButton.image], [UploadIconButton.video],  [UploadIconButton.file].
+/// [Upload.image], [Upload.video],  [Upload.file].
 ///
 /// The [onUpload] function is called when the upload is complete.
 ///
@@ -33,8 +33,8 @@ import 'package:flutter/material.dart';
 ///
 /// If [fromFile] is set to true, it will get whatever from file storage(Not from gallery).
 /// It can be any file like image, pdf, zip, video, audio, etc.
-class UploadIconButton extends StatelessWidget {
-  const UploadIconButton({
+class Upload extends StatelessWidget {
+  const Upload({
     super.key,
     required this.onUpload,
     this.onUploadSourceSelected,
@@ -47,8 +47,7 @@ class UploadIconButton extends StatelessWidget {
     this.progress,
     this.complete,
     this.onBeginUpload,
-    this.icon = const Icon(Icons.add),
-    this.iconSize,
+    this.child = const Icon(Icons.add),
     this.visualDensity,
     this.iconPadding,
     this.uploadBottomSheetPadding,
@@ -58,7 +57,7 @@ class UploadIconButton extends StatelessWidget {
   final void Function(String url) onUpload;
   final void Function(SourceType?)? onUploadSourceSelected;
 
-  final Widget icon;
+  final Widget child;
   final Function(double)? progress;
   final Function()? complete;
   final Future Function()? onBeginUpload;
@@ -73,13 +72,12 @@ class UploadIconButton extends StatelessWidget {
   final bool fromGallery;
   final bool fromFile;
 
-  final double? iconSize;
   final EdgeInsetsGeometry? iconPadding;
   final EdgeInsetsGeometry? uploadBottomSheetPadding;
   final double? uploadBottomSheetSpacing;
 
   /// Upload Icon Button for Image from Galery and Camera
-  const UploadIconButton.image({
+  const Upload.image({
     required this.onUpload,
     super.key,
     this.onUploadSourceSelected,
@@ -88,8 +86,7 @@ class UploadIconButton extends StatelessWidget {
     this.progress,
     this.complete,
     this.onBeginUpload,
-    this.icon = const Icon(Icons.camera_alt),
-    this.iconSize,
+    this.child = const Icon(Icons.camera_alt),
     this.visualDensity,
     this.iconPadding,
     this.uploadBottomSheetPadding,
@@ -100,7 +97,7 @@ class UploadIconButton extends StatelessWidget {
         fromFile = false;
 
   /// Upload Icon Button for Video from Galery and Camera
-  const UploadIconButton.video({
+  const Upload.video({
     required this.onUpload,
     super.key,
     this.onUploadSourceSelected,
@@ -109,8 +106,7 @@ class UploadIconButton extends StatelessWidget {
     this.progress,
     this.complete,
     this.onBeginUpload,
-    this.icon = const Icon(Icons.videocam),
-    this.iconSize,
+    this.child = const Icon(Icons.videocam),
     this.visualDensity,
     this.iconPadding,
     this.uploadBottomSheetPadding,
@@ -121,7 +117,7 @@ class UploadIconButton extends StatelessWidget {
         fromFile = false;
 
   /// Upload Icon Button for files from Gallery and file storage
-  const UploadIconButton.file({
+  const Upload.file({
     required this.onUpload,
     super.key,
     this.onUploadSourceSelected,
@@ -130,8 +126,7 @@ class UploadIconButton extends StatelessWidget {
     this.progress,
     this.complete,
     this.onBeginUpload,
-    this.icon = const Icon(Icons.attach_file),
-    this.iconSize,
+    this.child = const Icon(Icons.attach_file),
     this.visualDensity,
     this.iconPadding,
     this.uploadBottomSheetPadding,
@@ -143,12 +138,10 @@ class UploadIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: icon,
-      iconSize: iconSize,
-      visualDensity: visualDensity,
-      padding: iconPadding,
-      onPressed: () async {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: child,
+      onTap: () async {
         if (onBeginUpload != null) {
           final re = await onBeginUpload!.call();
           if (re == false) {

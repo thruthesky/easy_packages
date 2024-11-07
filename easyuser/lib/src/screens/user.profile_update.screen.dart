@@ -191,14 +191,14 @@ class _UserProfileUpdateScreenState extends State<UserProfileUpdateScreen> {
                                 );
                         },
                       ),
-                      UploadIconButton(
+                      Upload(
                         photoCamera: true,
                         photoGallery: true,
                         videoCamera: false,
                         videoGallery: false,
                         fromGallery: false,
                         fromFile: false,
-                        icon: Row(
+                        child: Row(
                           children: [
                             const Icon(Icons.camera_alt),
                             const SizedBox(width: 8),

@@ -71,8 +71,8 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  UploadIconButton(
-                    icon: const Icon(
+                  Upload(
+                    child: const Icon(
                       Icons.image,
                       size: 80,
                     ),
@@ -80,17 +80,17 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
                       debugPrint('Uploaded: $url');
                     },
                   ),
-                  UploadIconButton.image(
+                  Upload.image(
                     onUpload: (url) {
                       debugPrint('Uploaded: $url');
                     },
                   ),
-                  UploadIconButton.video(
+                  Upload.video(
                     onUpload: (url) {
                       debugPrint('Uploaded: $url');
                     },
                   ),
-                  UploadIconButton.file(
+                  Upload.file(
                     onUpload: (url) {
                       debugPrint('Uploaded: $url');
                     },
@@ -134,8 +134,8 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
                         size: 52,
                       ),
                     ),
-                    UploadIconButton(
-                      icon: const Icon(
+                    Upload(
+                      child: const Icon(
                         Icons.image,
                         size: 52,
                       ),
@@ -143,17 +143,17 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
                         debugPrint('Uploaded: $url');
                       },
                     ),
-                    UploadIconButton.image(
+                    Upload.image(
                       onUpload: (url) {
                         debugPrint('Uploaded: $url');
                       },
                     ),
-                    UploadIconButton.video(
+                    Upload.video(
                       onUpload: (url) {
                         debugPrint('Uploaded: $url');
                       },
                     ),
-                    UploadIconButton.file(
+                    Upload.file(
                       onUpload: (url) {
                         debugPrint('Uploaded: $url');
                       },

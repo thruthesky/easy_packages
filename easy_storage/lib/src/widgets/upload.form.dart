@@ -48,8 +48,7 @@ class _UploadFormState extends State<UploadForm> {
             }),
         Row(
           children: [
-            UploadIconButton(
-              icon: const Icon(Icons.camera_alt),
+            Upload(
               onUpload: (url) {
                 widget.urls.add(url);
                 setState(() {});
@@ -62,6 +61,7 @@ class _UploadFormState extends State<UploadForm> {
                 () => uploadProgress = null,
               ),
               onBeginUpload: null,
+              child: const Icon(Icons.camera_alt),
             ),
             const Spacer(),
             widget.button,
