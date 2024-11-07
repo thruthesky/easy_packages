@@ -1,3 +1,6 @@
+## 0.0.21
+* Refactor `UploadIconButton`. It is renamed to `Upload` and is no longer use IconButton inisde.
+
 ## 0.0.20
 * Adding `onBeginUpload` on `UploadIconImage.xxxx`
 
