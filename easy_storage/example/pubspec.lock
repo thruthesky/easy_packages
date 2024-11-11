@@ -263,11 +263,7 @@ packages:
       sha256: daf3fbde892ff5f2ea7469eff1ab22b7988fe96b637919fdec6890141eb51023
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "0.2.6+2"
-=======
-    version: "0.2.6+1"
->>>>>>> firestore-to-database
   firebase_storage:
     dependency: transitive
     description:
