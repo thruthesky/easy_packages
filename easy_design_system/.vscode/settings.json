@@ -1,7 +1,0 @@
-{
-	
-	"editor.codeActionsOnSave": {
-		"source.fixAll.markdownlint": "always",
-		"source.fixAll": "always",
-	},
-}
