@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:country_picker/country_picker.dart';
+// import 'package:country_picker/country_picker.dart';
 import 'package:easy_phone_sign_in/easy_phone_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +34,7 @@ class PhoneSignIn extends StatefulWidget {
     this.labelCountryPickerSelected,
     this.labelChangeCountry,
     this.labelEmptyCountry,
+    this.codeAutoRetrievalTimeoutText,
     this.hintTextPhoneNumberTextField,
     this.hintTextSmsCodeTextField,
     this.linkCurrentUser = false,
@@ -65,6 +66,7 @@ class PhoneSignIn extends StatefulWidget {
   final Widget? labelCountryPickerSelected;
   final Widget? labelChangeCountry;
   final Widget? labelEmptyCountry;
+  final Widget? codeAutoRetrievalTimeoutText;
 
   final String? hintTextPhoneNumberTextField;
   final String? hintTextSmsCodeTextField;
@@ -148,16 +150,12 @@ class _PhoneSignInState extends State<PhoneSignIn> {
               children: [
                 if (country == null) widget.labelCountryPicker ?? const Text('Select your country'),
                 if (country != null)
-                  widget.labelCountryPickerSelected ??
-                      widget.labelCountryPicker ??
-                      const Text('Select your country'),
+                  widget.labelCountryPickerSelected ?? widget.labelCountryPicker ?? const Text('Select your country'),
                 if (country == null)
                   widget.labelEmptyCountry ?? const SizedBox.shrink()
                 else ...[
-                  Text('(+${country!.phoneCode}) ${country!.name}',
-                      style: Theme.of(context).textTheme.titleLarge),
-                  widget.labelChangeCountry ??
-                      Text('Change', style: Theme.of(context).textTheme.labelSmall),
+                  Text('(+${country!.phoneCode}) ${country!.name}', style: Theme.of(context).textTheme.titleLarge),
+                  widget.labelChangeCountry ?? Text('Change', style: Theme.of(context).textTheme.labelSmall),
                 ]
               ],
             ),
@@ -201,8 +199,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                       debug(
                           'PhoneSignIn::build() -> onPressed("Verify phone number") -> Begin: phone number verification');
                       final completePhoneNumber = onCompletePhoneNumber();
-                      if (widget.specialAccounts?.emailLogin == true &&
-                          phoneNumberController.text.contains('@')) {
+                      if (widget.specialAccounts?.emailLogin == true && phoneNumberController.text.contains('@')) {
                         return doEmailLogin();
                       } else if (completePhoneNumber == widget.specialAccounts?.reviewPhoneNumber) {
                         return doReviewPhoneNumberSubmit();
@@ -235,8 +232,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                                   'linkCurrentUser options is set. Linking current user account with the phone number ');
                               await linkOrSignInWithCredential(credential);
                             } else {
-                              debug(
-                                  'linkCurrentUser options is NOT set. Signing in with the phone number.');
+                              debug('linkCurrentUser options is NOT set. Signing in with the phone number.');
                               await FirebaseAuth.instance.signInWithCredential(credential);
                             }
 
@@ -268,10 +264,11 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                           // Auto-resolution timed out...
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'SMS code auto-resolution timed out. Please retry.',
-                                ),
+                              SnackBar(
+                                content: widget.codeAutoRetrievalTimeoutText ??
+                                    const Text(
+                                      'SMS code auto-resolution timed out. Please retry.',
+                                    ),
                               ),
                             );
                             setState(() {
@@ -318,8 +315,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
               const Spacer(),
               if (smsCodeController.text.isNotEmpty)
                 progress
-                    ? const Padding(
-                        padding: EdgeInsets.only(right: 16), child: CircularProgressIndicator.adaptive())
+                    ? const Padding(padding: EdgeInsets.only(right: 16), child: CircularProgressIndicator.adaptive())
                     : ElevatedButton(
                         onPressed: () async {
                           if (onCompletePhoneNumber() == widget.specialAccounts?.reviewPhoneNumber) {
@@ -571,8 +567,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
 
   doReviewSmsCodeSubmit() {
     if (smsCodeController.text == widget.specialAccounts?.reviewSmsCode) {
-      return doEmailLogin(
-          "${widget.specialAccounts!.reviewEmail}:${widget.specialAccounts!.reviewPassword}");
+      return doEmailLogin("${widget.specialAccounts!.reviewEmail}:${widget.specialAccounts!.reviewPassword}");
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

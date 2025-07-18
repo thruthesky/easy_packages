@@ -1,46 +1,66 @@
+## 0.0.16
+
+- Document update
+- `codeAutoRetrievalTimeoutText` has been added to the `PhoneSignIn` widget.
+
 ## 0.0.15
-* Exporting country picker package.
+
+- Exporting country picker package.
 
 ## 0.0.14
-* Add. Debug option to show the debug message.
+
+- Add. Debug option to show the debug message.
 
 ## 0.0.13
-* Refactor. Change the package name and put it in the easy packages series.
+
+- Refactor. Change the package name and put it in the easy packages series.
 
 ## 0.0.12
-* Update. document update only.
+
+- Update. document update only.
 
 ## 0.0.11
-* Update. sms text error message
+
+- Update. sms text error message
 
 ## 0.0.10
-* Update. documentation.
+
+- Update. documentation.
 
 ## 0.0.9
-* Add. more design properies.
-* Update. documentation.
+
+- Add. more design properies.
+- Update. documentation.
 
 ## 0.0.8
-* Change. `lableOnCountryPicker` -> `labelCountryPicker`
+
+- Change. `lableOnCountryPicker` -> `labelCountryPicker`
 
 ## 0.0.7
-* Add. link current user option
+
+- Add. link current user option
 
 ## 0.0.6
-* Update. dependencies
+
+- Update. dependencies
 
 ## 0.0.5
-* Update. document
+
+- Update. document
 
 ## 0.0.4
-* Fix. malformed phone number string
+
+- Fix. malformed phone number string
 
 ## 0.0.3
-* Update. minor ui update
+
+- Update. minor ui update
 
 ## 0.0.2
-* Add. review accounts and email login
-* Fix. Firebase phone sign in
+
+- Add. review accounts and email login
+- Fix. Firebase phone sign in
 
 ## 0.0.1
-* Initial release
+
+- Initial release

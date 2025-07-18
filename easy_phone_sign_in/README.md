@@ -14,11 +14,9 @@ This Flutter package is designed to streamline the integration of Google's phone
 
 - And do the setup as stated in [Firebase Phone Authentication Setup](https://firebase.google.com/docs/auth/flutter/phone-auth#setup)
 
-
 ## Debug
 
 - If `debug` is set to true in the `PhoneSignIn` widget, the widget will display the debug messages in the console. This is useful for debugging purposes.
-
 
 ## Phone number input
 
@@ -28,8 +26,6 @@ For example, if the user selects the country as 'Philippines' and then enters a 
 
 If the phone number begins with '0', then it will be removed. So, when you make the review phone number, don't make it begin with '0'.
 
-
-
 ## countryPickerOptions
 
 - `countryPickerOptions`: allows you to select a country.
@@ -37,56 +33,61 @@ If the phone number begins with '0', then it will be removed. So, when you make 
 - Add this option to display country picker widget.
 
 - If this option is omitted, the widget does not display the country selection on the screen.
+
   - If there is no country selection? then?
     - You may not need a country selection widget because you will only use your country code in your app.
     - Or, user may input the coutry code like `+82` along with the phone number.
 
 - `moveAlongWithKeyboard`: by default, the search result may be hidden below the keypad. Set this to true, and the result will not be hidden beneath the keyboard.
 
-
-
-
-
 ## countryCode
 
 When this option is enabled, the button for selecting the country code is hidden and the country code is set to a fixed value. Consequently, users are unable to modify the country selection.
-
 
 ## firebaseAuthLanguageCode
 
 `firebaseAuthLanguageCode` is the default language used in Firebase phone number login. This is the same option used in Firebase Auth.
 
-
 ## onCompletePhoneNumber
 
-The `PhoneSignIn` widget automatically formats the phone number entered by the user into an international number, based on the country selected.
+The `PhoneSignIn` widget automatically formats the phone number with the country code based on the country selected.
 
-However, if you wish to customize the international phone number, you can utilize the `onCompletePhoneNumber` callback. This function is invoked when the widget requires the phone number in an international format. It will only pass the phone number entered by the user, excluding the country code. Therefore, if you want to use the country code selected by the user, you should avoid setting this callback function and allow the widget to automatically construct the international phone number.
+However, if you wish to customize the international phone number, you can utilize the `onCompletePhoneNumber` callback function. If this callback function is provided, it will be invoked when the widget requires the phone number in an international format ignoring the default logic to format the phone number as an international number. the phone number entered by the user will be passed as a parameter(excluding the country code). Therefore, if you want to use the country code selected by the user, you should avoid setting this callback function and allow the widget to automatically construct the international phone number.
 
-You might want to simplify the process for users by automatically adding the country code to their phone number. For example, in Korea, phone numbers always start with "010", and in the Philippines, they start with "09". So, if a user enters their phone number as "01012345678", you can programmatically update it to "+821012345678" to convert it into an international format. Similarly, if a user enters their phone number as "091212345678", you can update it to "+6391212345678".
+You may use this callback function to programmatically add the country code to the phone number entered by the user. This is particularly useful when you want to ensure that the phone number is always in a specific international format, regardless of the user's input.
+For example, if you want to ensure that the phone number is always in the format `+821012345678` for Korean numbers, you can implement the `onCompletePhoneNumber` function like this:
 
-This function is primarily used when `countryPickerOptions` and `countryCode` are not specified. In this case, since the user cannot select the country code on the screen, it is used to programmatically add the country code.
+```dart
+onCompletePhoneNumber: (String phoneNumber) {
+  // Assuming the user entered a Korean phone number without the country code
+  if (phoneNumber.startsWith('010')) {
+    // Convert to international format
+    return '+82' + phoneNumber.substring(1); // Remove '0' and add country code
+  }
+  // For other cases, return the phone number as is
+  return phoneNumber;
+}
+```
+
+You may want to easy to the user when they enter their phone number. Some users don't know their country code. They can simply input their phone number only, and the app turns it into international phone number. For example, in Korea, phone numbers always start with "010", while it starts with "09" in the Philippines. So, if a user enters his phone number as "01012345678", you can programmatically update it to "+821012345678" and return it. Similarly, if a user enters his phone number as "091212345678", you can update it to "+6391212345678" and return it.
+
+This function is used when `countryPickerOptions` and `countryCode` are not specified. In this case, you should provide `onCompletePhoneNumber` callback function.
 
 Note, if the phone number entered by the user starts with '+', the `onCompletePhoneNumber` function is not called. In other words, the widget recognizes the user's input as a complete international phone number and does not call the `onCompletePhoneNumber` function to convert it into an international format.
 
-So, if `countryPickerOptions` and `countryCode` are not specified, and the user does not enter a phone number starting with '+', the `onCompletePhoneNumber` will be called and return the phone number in international format.
+So, if `countryPickerOptions` and `countryCode` are not specified, and the user does not enter a phone number starting with '+', then the `onCompletePhoneNumber` will be called and return the phone number in international format.
 
 The `onCompletePhoneNumber` function receives the phone number entered by the user, stripped of unnecessary special characters. If the phone number starts with '0', it is removed. For example, if the user enters '010-1111-2222', '1011112222' is passed as a parameter.
-
 
 ## linkCurrentUser
 
 if `linkCurrentUser` is set to true, it will attempts to link the current user account to the provided phone sign in credential, and if the provided phone sign account is already in used it will just perform a normal sign with the existing account. And if the user didn't signed in, it will just perform a normal sign in.
 
-
 Note that, when the user signed as a phone number, he cannot link with another phone number credential. To know more about it, refer Firebase Auth documents.
-
 
 ## isPhoneNumberRegistered
 
 When `linkCurrentUser` is set to true, this callback function must be set and return true if the phone number is already in use.
-
-
 
 ## onDisplayPhoneNumber
 
@@ -98,12 +99,9 @@ Especially after entering the phone number and sending the SMS code, you need to
 
 The `onDisplayPhoneNumber` function receives the international phone number. More precisely, it receives the value returned by `onCompletePhoneNumber`.
 
-
-
 ## no country code picker
 
 - If the app does not set `countryCode` and `countryPickerOption`, then the widget cannot make an international phone number. And the user cannot choose a country. But the user may input the international phone number by himself.
-
 
 ## countryCode
 
@@ -111,12 +109,9 @@ The `onDisplayPhoneNumber` function receives the international phone number. Mor
 
 - If this option is set, the corresponding country code is fixed and the user cannot change the country.
 
-
-
 ## onSignInFailed
 
 - If the phone number sign-in fails for various reasons, the `onSignInFailed` callback function is called. This function receives `FirebaseAuthException` as a parameter.
-
 
 ## specialAccount
 
@@ -125,6 +120,7 @@ The `specialAccount` option allows you to log in using methods other than phone 
 - `reviewPhoneNumber` and `reviewSmsCode` are temporary phone numbers and SMS codes. `reviewPhoneNumber` must be stored in international phone number format like `+11234567890`. After the user's input phone number, the phone number is converted into an international phone number format, it is compared with `reviewPhoneNumber`. If they match, a review (temporary) login is performed. By setting this option, you can simulate the entire process of actual phone number login. These options can be used for review when submitting to the iOS Appstore.
 
 - Don't make the review number begins with '0' since it will be removed.
+
   - For instance, If the developer set the review phone number as `+10123456789` and the user may choose the country code as `+1` and input the review number as `0123456789`, then the beginning `0` will be removed. And it will become `+1123456789` which is incorrect number.
 
 - `reviewEmail` and `reviewPassword` are the email address and password for review that will be used to log in when a temporary phone number and SMS code are entered. If you log in with the above `reviewPhoneNumber` and `reviewSmsCode`, you do not actually log in with this phone number, but instead log in with this `reviewEmail`.
@@ -135,27 +131,21 @@ The `specialAccount` option allows you to log in using methods other than phone 
 
 ## Labels and Hints
 
-
 ### labelEmptyCountry
 
 - `labelEmptyCountry` is a widget that will be displayed on the screen when no country is selected. When a country is selected, this widget disappears and the country information appears.
-
 
 ### labelPhoneNumber
 
 - `labelPhoneNumber`: Displays a text on phone number
 
-
 ### labelPhoneNumberSelected
 
 - `labelPhoneNumberSelected`: Display a text on phone number if the phone is selected.
 
-
-
 ### labelUnderPhoneNumberTextField
 
 ### labelVerifyPhoneNumberButton
-
 
 ### labelOnSmsCodeTextField
 
@@ -172,7 +162,6 @@ The `specialAccount` option allows you to log in using methods other than phone 
 - `labelCountryPickerSelected`: Displays a text on the country picker. If this is given, it will be used instead of `labelCountryPicker` when the country is selected.
 - Purpose of this parameter is to display different design when the country is selected.
 
-
 ### labelChangeCountry
 
 ### labelEmptyCountry
@@ -181,12 +170,9 @@ The `specialAccount` option allows you to log in using methods other than phone 
 
 ### hintTextSmsCodeTextField
 
-
-
 ## Error handling
 
 If an error occurs, the `onSignInFailed` callback function is called and `FirebaseAuthException` is passed as an argument. You can use this error argument to appropriately notify the user of the error message.
-
 
 ```dart
 PhoneSignIn(
@@ -208,12 +194,9 @@ PhoneSignIn(
 }
 ```
 
-
-
 ## Examples
 
 - For more detailed examples and usage, please refer to the `main.dart` file in the `example` directory.
-
 
 ### Display number in large font size
 
@@ -236,10 +219,6 @@ Theme(
 ### Customize user input phone number with onCompletePhoneNumber
 
 If a user enters a Korean phone number like "01012345678" and you want to convert it to an international phone number like "+821012345678", you can refer to the example code in the `phone_sign_in/example/lib/main.dart` source file.
-
-
-
-
 
 ### Example of complete phone sign in
 
@@ -380,9 +359,6 @@ Padding(
   }
 ```
 
-
-
 ## Exceptions
 
 - `Exception: @phone_sign_in/malformed-phone-number Phone number is empty or malformed.` will be thrown when the user input a invlaid phone number. You would meet this exception especially when the `emailLogin` is set to true, and you input email.
-
